@@ -3,6 +3,8 @@
 
 
 // Import absolutely EVERYTHING
+
+
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_net::tcp::client::{TcpClient, TcpClientState};
@@ -23,6 +25,7 @@ use embassy_net::{Ipv4Cidr, Ipv4Address};
 use embassy_stm32::gpio::{Level, Output, Speed};
 use heapless::Vec;
 
+mod core;
 
 /// We need to include the external variables imported from build.rs
 
