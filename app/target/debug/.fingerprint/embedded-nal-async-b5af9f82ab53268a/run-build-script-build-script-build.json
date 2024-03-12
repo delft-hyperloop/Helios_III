@@ -1,0 +1,1 @@
+{"rustc":4655907318340583122,"features":"","declared_features":"","target":0,"profile":0,"path":0,"deps":[[6155567075065207970,"build_script_build",false,3558585480393022854]],"local":[{"RerunIfChanged":{"output":"debug/build/embedded-nal-async-b5af9f82ab53268a/output","paths":["build.rs"]}}],"rustflags":[],"metadata":0,"config":0,"compile_kind":0}

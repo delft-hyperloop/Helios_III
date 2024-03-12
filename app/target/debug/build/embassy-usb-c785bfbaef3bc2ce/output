@@ -1,0 +1,3 @@
+cargo:rerun-if-changed=build.rs
+cargo:rerun-if-env-changed=EMBASSY_USB_MAX_INTERFACE_COUNT
+cargo:rerun-if-env-changed=EMBASSY_USB_MAX_HANDLER_COUNT
