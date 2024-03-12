@@ -22,7 +22,7 @@ pub enum State {
 
 
 //All the functionalities states can have like converting to id's or format print statements should go here
-//! The actual implementation of each state should just be attached to the state machine in separate files
+// The actual implementation of each state should just be attached to the state machine in separate files
 impl State {
     pub fn fmt(&self) {
         match self {
@@ -136,9 +136,9 @@ impl Event {
     }
 }
 
-//!TODO: Add all the parameters that the FSM might need to have
-//! This bad boy will be a singleton and it will be passed around everywhere
-//! Just be careful with the STD's
+//TODO: Add all the parameters that the FSM might need to have
+// This bad boy will be a singleton and it will be passed around everywhere
+// Just be careful with the STD's
 pub struct FSM {
     state: State,
     peripherals: Peripherals,
