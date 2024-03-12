@@ -1,5 +1,0 @@
-cargo:rustc-link-search=/home/kiko/.cargo/git/checkouts/stm32-data-generated-cb34dad5f3150296/594f8f8/stm32-metapac/src/chips/stm32h743zi
-cargo:rustc-link-search=/home/kiko/.cargo/git/checkouts/stm32-data-generated-cb34dad5f3150296/594f8f8/stm32-metapac/src/chips/stm32h743zi/memory_x/
-cargo:rustc-env=STM32_METAPAC_PAC_PATH=chips/stm32h743zi/pac.rs
-cargo:rustc-env=STM32_METAPAC_METADATA_PATH=chips/stm32h743zi/metadata.rs
-cargo:rerun-if-changed=build.rs

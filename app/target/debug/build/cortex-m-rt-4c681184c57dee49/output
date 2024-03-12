@@ -1,3 +1,0 @@
-cargo:rustc-link-search=/home/kiko/RustroverProjects/Helios_III/app/target/debug/build/cortex-m-rt-4c681184c57dee49/out
-cargo:rerun-if-changed=build.rs
-cargo:rerun-if-changed=link.x.in
