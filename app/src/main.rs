@@ -24,7 +24,7 @@ use {defmt_rtt as _, panic_probe as _};
 use embassy_net::{Ipv4Cidr, Ipv4Address};
 use embassy_stm32::gpio::{Level, Output, Speed};
 use heapless::Vec;
-
+use heapless::Deque;
 mod core;
 
 /// We need to include the external variables imported from build.rs
@@ -70,6 +70,11 @@ async fn main(spawner: Spawner) -> ! {
         	Timer::after_millis(500).await;	
 		nucleo_green_led.set_low();
         	Timer::after_millis(500).await;
+
+
+
+		// event = fsm.queue.pop_front();
+		// fsm.react(event);
 	}
 }
 

@@ -70,6 +70,7 @@ pub enum Event {
     LVPropulsionReadyEvent,
     LVPowertrainReadyEvent,
     ArmBrakesCommand,
+    TurnOnHVCommand,
 
 
     // HV System Checking state
@@ -131,7 +132,10 @@ impl Event {
             Event::ConnectionLossEvent => info!("ConnectionLossEvent"),
             Event::ArmBrakesCommand => info!("ArmBrakesCommand"),
             Event::ExitEvent => info!("QuitEvent"),
-            _ => info! { "Unknown"},
+            Event::TurnOnHVCommand => info!("TurnOnHVCommand"),
+            Event::RunConfigFailedEvent => info!("Run configuration failed"),
+            Event::RunConfigCompleteEvent => info!("RunConfigComplete"),
+            _ => info! {"Unknown"},
         }
     }
 }
@@ -144,6 +148,11 @@ pub struct FSM {
     peripherals: Peripherals,
 }
 
+
+/**
+    * Finite State Machine (FSM) for the DH08 POD -> Helios III
+    * This FSM is a singleton and an entity. Its name is Megalo coming from the ancient greek word for "Big" and from the gods Megahni and Gonzalo
+**/
 impl FSM {
     pub fn new(p: Peripherals) -> Self {
 
@@ -153,6 +162,19 @@ impl FSM {
             state: State::Boot,
             peripherals:p,
         }
+    }
+
+/**
+    * Function used to transit states of Megalo --> Comes from Megahni and Gonzalo
+**/
+    pub fn transit(&mut self, next_state: State) {
+
+        info!("Exiting state: ");
+        self.state.fmt();
+        info!("Entering state: ");
+        next_state.fmt();
+        self.state = next_state;
+        self.entry();
     }
     pub fn entry(&mut self) {
         match self.state {
@@ -166,7 +188,7 @@ impl FSM {
                 self.entry_idle();
             }
             State::RunConfig => {
-                self.entry_path_checking();
+                self.entry_run_config();
             }
             State::HVSystemChecking => {
                 self.entry_hv_system_checking();
@@ -209,7 +231,7 @@ impl FSM {
                 self.react_idle(event);
             }
             State::RunConfig => {
-                self.react_path_checking(event);
+                self.react_run_config(event);
             }
             State::HVSystemChecking => {
                 self.react_hv_system_checking(event);
@@ -250,7 +272,7 @@ impl FSM {
                 self.exit_idle();
             }
             State::RunConfig => {
-                self.exit_path_checking();
+                self.exit_run_config();
             }
             State::HVSystemChecking => {
                 self.exit_hv_system_checking();

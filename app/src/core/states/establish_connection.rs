@@ -1,32 +1,34 @@
 use defmt::info;
 use crate::core::finite_state_machine::{Event, FSM, State};
 
-impl FSM {
-    pub fn boot_entry(&mut self) {
+impl FSM{
+    pub fn entry_establish_connection(&mut self) {
 
         todo!();
 
     }
 
-    pub fn react_boot(&mut self, event: Event) {
+    pub fn react_establish_connection(&mut self, event: Event) {
         match event {
-            Event::BootingCompleteEvent => {
+            Event::ConnectionEstablishedEvent => {
 
                 todo!();
 
-                self.transit(State::EstablishConnection);
+                self.transit(State::RunConfig);
             }
-            Event::BootingFailedEvent => {
-
+            Event::ConnectionEstablishmentFailedEvent => {
 
                 todo!();
 
-                self.transit(State::Exit)
+                self.transit(State::Exit);
             }
+
             _ => {
                 info!("The current state ignores");
                 event.fmt();
             }
         }
     }
+
+
 }
