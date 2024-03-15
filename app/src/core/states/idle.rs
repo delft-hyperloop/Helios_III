@@ -34,13 +34,14 @@ impl FSM {
                 todo!();
 
             }
-            /// Here this events can be triggered for the first time, but they'll transit to Exit State instead of emergency breaking as HV is off
-            Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent|Event::ConnectionLossEvent=> {
-
-                todo!();
-
-                self.transit(State::Exit)
-            }
+            /// This is commented out because it was refactored to be handled by the default react ///
+            // /// Here this events can be triggered for the first time, but they'll transit to Exit State instead of emergency breaking as HV is off
+            // Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent|Event::ConnectionLossEvent=> {
+            //
+            //     todo!();
+            //
+            //     self.transit(State::Exit)
+            // }
             _ => {
                 info!("The current state ignores");
                 event.fmt();

@@ -3,7 +3,7 @@ use crate::core::finite_state_machine::{Event, FSM, State};
 
 impl FSM{
 
-    pub fn emergency_braking_entry(&mut self) {
+    pub fn entry_emergency_braking(&mut self) {
 
         todo!();
 
