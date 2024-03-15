@@ -1,2 +1,3 @@
-mod finite_state_machine;
-mod states;
+pub mod finite_state_machine;
+pub mod states;
+pub(crate) mod finite_state_machine_peripherals;

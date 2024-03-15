@@ -32,14 +32,14 @@ impl FSM{
 
                 self.transit(State::Levitating)
             }
-
-            /// Error Events that are core from all states that HV is on
-            Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {
-
-                todo!();
-
-                self.transit(State::EmergencyBraking)
-            }
+            /// This is commented out because it was refactored to be handled by the default react ///
+            // /// Error Events that are core from all states that HV is on
+            // Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {
+            //
+            //     todo!();
+            //
+            //     self.transit(State::EmergencyBraking)
+            // }
             _ => {
                 info!("The current state ignores");
                 event.fmt();
