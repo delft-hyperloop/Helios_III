@@ -7,6 +7,13 @@ use std::str::FromStr;
 use regex::Regex;
 use serde::Deserialize;
 
+/*
+    BUILD CONFIGURATION
+    POD MAIN APPLICATION
+
+ */
+
+
 #[derive(Debug, Deserialize)]
 struct Config {
     gs: GS,
@@ -28,6 +35,7 @@ fn main() {
 
     println!("cargo:rerun-if-changed={}", NETCONFIG_PATH);
 
+    // linking
     println!("cargo:rustc-link-arg-bins=--nmagic");
     println!("cargo:rustc-link-arg-bins=-Tlink.x");
     println!("cargo:rustc-link-arg-bins=-Tdefmt.x");
