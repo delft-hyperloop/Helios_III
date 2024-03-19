@@ -4,14 +4,15 @@ use crate::core::finite_state_machine::{Event, FSM, State};
 impl FSM {
     pub fn boot_entry(&mut self) {
 
-        todo!();
+        info!("I like potatoes")
+
 
     }
 
     pub fn react_boot(&mut self, event: Event) {
         match event {
             Event::BootingCompleteEvent => {
-
+                info!("Booting complete");
                 todo!();
 
                 self.transit(State::EstablishConnection);

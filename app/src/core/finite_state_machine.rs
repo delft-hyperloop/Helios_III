@@ -47,7 +47,7 @@ impl State {
 
 
 //Enum holding different events that the FSM can react to
-
+#[derive(Debug, PartialEq, Eq)]
 pub enum Event {
     DefaultEvent,
 
@@ -108,6 +108,7 @@ pub enum Event {
     ExitEvent,
 }
 // Again some functionalities that might be useful for the events to have mut be here
+
 impl Event {
     pub fn fmt(&self) {
         match self {
@@ -152,16 +153,22 @@ impl Event {
 
 use core::cmp::{Ordering, PartialEq, Eq};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
-use embassy_sync::priority_channel::PriorityChannel;
+use embassy_sync::priority_channel::{PriorityChannel, Receiver};
 use heapless::binary_heap::Max;
 
-impl PartialEq for Event {
-    fn eq(&self, other: &Self) -> bool {
-        self == other
+impl Event {
+    // Function to get priority of events
+    fn priority(&self) -> usize {
+        match self {
+            Event::EmergencyBrakeCommand => 5,
+            Event::LevitationErrorEvent => 4,
+            Event::PropulsionErrorEvent => 3,
+            Event::PowertrainErrorEvent => 2,
+            Event::ConnectionLossEvent => 1,
+            _ => 0, // Lower priority for all other events
+        }
     }
 }
-
-impl Eq for Event {}
 
 impl PartialOrd for Event {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -171,24 +178,15 @@ impl PartialOrd for Event {
 
 impl Ord for Event {
     fn cmp(&self, other: &Self) -> Ordering {
-        if (self.eq(&Event::EmergencyBrakeCommand) || (self.eq(&Event::LevitationErrorEvent) || (self.eq(&Event::PropulsionErrorEvent) || (self.eq(&Event::PowertrainErrorEvent) || (self.eq(&Event::ConnectionLossEvent)))))){
-            return Ordering::Greater;
-        }
-        else if (other.eq(&Event::EmergencyBrakeCommand) || (other.eq(&Event::LevitationErrorEvent) || (other.eq(&Event::PropulsionErrorEvent) || (other.eq(&Event::PowertrainErrorEvent) || (other.eq(&Event::ConnectionLossEvent)))))){
-            return Ordering::Less;
-        }
-        else {
-            return Ordering::Equal;
-        }
+        self.priority().cmp(&other.priority())
     }
 }
-
 
 
 pub struct FSM {
     state: State,
     pub peripherals: FSMPeripherals,
-    pub event_queue: PriorityChannel<NoopRawMutex,Event,Max,16>,
+    pub  event_queue: Receiver<'static,NoopRawMutex,Event,Max,16>,
 }
 
 
@@ -197,7 +195,7 @@ pub struct FSM {
     * This FSM is a singleton and an entity. Its name is Megalo coming from the ancient greek word for "Big" and from the gods Megahni and Gonzalo
 **/
 impl FSM {
-    pub fn new(p : FSMPeripherals, pq :PriorityChannel<NoopRawMutex,Event,Max,16>, ) -> Self {
+    pub fn new(p : FSMPeripherals, pq : Receiver<'static,NoopRawMutex, Event, Max, 16>, ) -> Self {
 
         //TODO: Decide if main should be dirty with peripheral initialization or if it should be done here
 
