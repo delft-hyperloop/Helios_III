@@ -1,6 +1,8 @@
 use defmt::*;
 use embassy_stm32;
 use embassy_stm32::Peripherals;
+use heapless::Deque;
+use crate::core::finite_state_machine_peripherals::FSMPeripherals;
 
 
 //Enum holding different states that the FSM can be in
@@ -22,7 +24,7 @@ pub enum State {
 
 
 //All the functionalities states can have like converting to id's or format print statements should go here
-//! The actual implementation of each state should just be attached to the state machine in separate files
+// The actual implementation of each state should just be attached to the state machine in separate files
 impl State {
     pub fn fmt(&self) {
         match self {
@@ -45,7 +47,10 @@ impl State {
 
 
 //Enum holding different events that the FSM can react to
+#[derive(Debug, PartialEq, Eq)]
 pub enum Event {
+    DefaultEvent,
+
     // Boot state related events
     BootingCompleteEvent,
     BootingFailedEvent,
@@ -70,6 +75,7 @@ pub enum Event {
     LVPropulsionReadyEvent,
     LVPowertrainReadyEvent,
     ArmBrakesCommand,
+    TurnOnHVCommand,
 
 
     // HV System Checking state
@@ -102,6 +108,7 @@ pub enum Event {
     ExitEvent,
 }
 // Again some functionalities that might be useful for the events to have mut be here
+
 impl Event {
     pub fn fmt(&self) {
         match self {
@@ -131,28 +138,100 @@ impl Event {
             Event::ConnectionLossEvent => info!("ConnectionLossEvent"),
             Event::ArmBrakesCommand => info!("ArmBrakesCommand"),
             Event::ExitEvent => info!("QuitEvent"),
-            _ => info! { "Unknown"},
+            Event::TurnOnHVCommand => info!("TurnOnHVCommand"),
+            Event::RunConfigFailedEvent => info!("Run configuration failed"),
+            Event::RunConfigCompleteEvent => info!("RunConfigComplete"),
+            Event::DefaultEvent => info!("DefaultEvent"),
+            _ => info! {"Unknown"},
         }
     }
 }
 
-//!TODO: Add all the parameters that the FSM might need to have
-//! This bad boy will be a singleton and it will be passed around everywhere
-//! Just be careful with the STD's
-pub struct FSM {
-    state: State,
-    peripherals: Peripherals,
+//TODO: Add all the parameters that the FSM might need to have
+// This bad boy will be a singleton and it will be passed around everywhere
+// Just be careful with the STD's
+
+use core::cmp::{Ordering, PartialEq, Eq};
+use embassy_sync::blocking_mutex::raw::NoopRawMutex;
+use embassy_sync::priority_channel::{PriorityChannel, Receiver};
+use heapless::binary_heap::Max;
+
+impl Event {
+    // Function to get priority of events
+    fn priority(&self) -> usize {
+        match self {
+            Event::EmergencyBrakeCommand => 5,
+            Event::LevitationErrorEvent => 4,
+            Event::PropulsionErrorEvent => 3,
+            Event::PowertrainErrorEvent => 2,
+            Event::ConnectionLossEvent => 1,
+            _ => 0, // Lower priority for all other events
+        }
+    }
 }
 
+impl PartialOrd for Event {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Event {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.priority().cmp(&other.priority())
+    }
+}
+
+
+pub struct FSM {
+    state: State,
+    pub peripherals: FSMPeripherals,
+    pub  event_queue: Receiver<'static,NoopRawMutex,Event,Max,16>,
+}
+
+
+/**
+    * Finite State Machine (FSM) for the DH08 POD -> Helios III
+    * This FSM is a singleton and an entity. Its name is Megalo coming from the ancient greek word for "Big" and from the gods Megahni and Gonzalo
+**/
 impl FSM {
-    pub fn new(p: Peripherals) -> Self {
+    pub fn new(p : FSMPeripherals, pq : Receiver<'static,NoopRawMutex, Event, Max, 16>, ) -> Self {
 
         //TODO: Decide if main should be dirty with peripheral initialization or if it should be done here
 
         Self {
             state: State::Boot,
             peripherals:p,
+            event_queue: pq
         }
+    }
+
+    // pub  fn push_event(&mut self, event: Event) {
+    //     self.event_queue.send(event).await;
+    // }
+    // pub fn pop_event(&mut self) -> Event {
+    //     let res = self.event_queue.pop_front();
+    //     match res {
+    //         Some(event) => {
+    //             return event
+    //         }
+    //         None => {
+    //             Event::DefaultEvent
+    //         }
+    //     }
+    // }
+
+/**
+    * Function used to transit states of Megalo --> Comes from Megahni and Gonzalo
+**/
+    pub fn transit(&mut self, next_state: State) {
+
+        info!("Exiting state: ");
+        self.state.fmt();
+        info!("Entering state: ");
+        next_state.fmt();
+        self.state = next_state;
+        self.entry();
     }
     pub fn entry(&mut self) {
         match self.state {
@@ -166,7 +245,7 @@ impl FSM {
                 self.entry_idle();
             }
             State::RunConfig => {
-                self.entry_path_checking();
+                self.entry_run_config();
             }
             State::HVSystemChecking => {
                 self.entry_hv_system_checking();
@@ -181,7 +260,7 @@ impl FSM {
                 self.entry_cruising();
             }
             State::LaneSwitch => {
-                self.entry_lane_switching();
+                self.entry_lane_switch();
             }
             State::Braking => {
                 self.entry_braking();
@@ -198,6 +277,15 @@ impl FSM {
         }
     }
     pub(crate) fn react(&mut self, event: Event) {
+        match event {
+            Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {
+                self.transit(State::EmergencyBraking);
+                return;
+            }
+            _ => {
+
+            }
+        }
         match self.state {
             State::Boot => {
                 self.react_boot(event);
@@ -209,7 +297,7 @@ impl FSM {
                 self.react_idle(event);
             }
             State::RunConfig => {
-                self.react_path_checking(event);
+                self.react_run_config(event);
             }
             State::HVSystemChecking => {
                 self.react_hv_system_checking(event);
@@ -224,7 +312,7 @@ impl FSM {
                 self.react_cruising(event);
             }
             State::LaneSwitch => {
-                self.react_lane_switching(event);
+                self.react_lane_switch(event);
             }
             State::Braking => {
                 self.react_braking(event);
@@ -234,53 +322,6 @@ impl FSM {
             }
             _ => {
                 info!("Unknown state"); // <---- Kiko: Im forced to have this here but im against it
-            }
-        }
-    }
-
-    fn exit(&mut self) {
-        match self.state {
-            State::Boot => {
-                self.exit_boot();
-            }
-            State::EstablishConnection => {
-                self.exit_establish_connection();
-            }
-            State::Idle => {
-                self.exit_idle();
-            }
-            State::RunConfig => {
-                self.exit_path_checking();
-            }
-            State::HVSystemChecking => {
-                self.exit_hv_system_checking();
-            }
-            State::Levitating => {
-                self.exit_levitating();
-            }
-            State::Accelerating => {
-                self.exit_accelerating();
-            }
-            State::Cruising => {
-                self.exit_cruising();
-            }
-            State::LaneSwitch => {
-                self.exit_lane_switching();
-            }
-            State::Braking => {
-                self.exit_braking();
-            }
-            State::EmergencyBraking => {
-                self.exit_emergency_braking();
-            }
-            State::Crashing => {
-                self.exit_crashing();
-            }
-            State::Exit => {
-                self.exit_exit();
-            }
-            _ => {
-                info!("Unknown state"); // <---- Kiko: If this is ever triggered something is very wrong
             }
         }
     }
