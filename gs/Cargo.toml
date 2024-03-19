@@ -2,11 +2,28 @@
 name = "gs"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bin]]
+name = "gs"
+path = "src/main.rs"
+
+#[[bin]] # If we make TUI a separate binary executable, uncomment this
+#name = "gui" # for now, it will just be a module that runs optionally
+#path = "src/gui/main.rs" # on execution of the actual backend
 
 [dependencies]
 crossterm = "0.27.0"
 ratatui = "0.26.1"
-serde = "1.0.197"
+regex = "1.10.3"
+rayon = "1.9.0"
+colored = "2.1.0"
+serde = { version = "1.0.197", features = ["derive"] }
+chrono = "0.4.35"
+
+
+# Only for build.rs
+[build-dependencies]
+serde = { version = "1.0.197", features = ["derive"] }
+regex = "1.10.3"
 toml = "0.8.11"

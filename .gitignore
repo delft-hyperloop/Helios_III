@@ -2,3 +2,6 @@
 .idea/
 */.DS_Store
 */target/*
+.cargo/config.toml
+*.iml
+*/.idea/*
