@@ -24,6 +24,7 @@ stm32-fmc = "0.3.0"
 embedded-storage = "0.3.1"
 static_cell = "2"
 chrono = { version = "^0.4", default-features = false }
+#serde = { version = "1.0.197", features = ["derive"] }
 
 [dependencies.embassy-executor]
 git = "https://github.com/embassy-rs/embassy.git"

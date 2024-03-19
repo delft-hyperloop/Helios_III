@@ -4,7 +4,7 @@ use crate::core::finite_state_machine::{Event, FSM, State};
 impl FSM{
     pub fn entry_establish_connection(&mut self) {
 
-        todo!();
+        info!("Entering Establish Connection State");
 
     }
 

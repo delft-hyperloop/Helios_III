@@ -4,13 +4,14 @@
 
 // Import absolutely EVERYTHING
 
+use ::core::borrow::Borrow;
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_net::tcp::client::{TcpClient, TcpClientState};
 use embassy_net::{Stack, StackResources};
 use embassy_stm32::eth::generic_smi::GenericSMI;
 use embassy_stm32::eth::{Ethernet, PacketQueue, PHY};
-use embassy_stm32::peripherals::ETH;
+use embassy_stm32::peripherals::*;
 use embassy_stm32::rng::Rng;
 use embassy_stm32::{bind_interrupts, eth, peripherals, rng, Config, rcc};
 use embassy_stm32::rcc::*;
@@ -71,6 +72,7 @@ async fn main(spawner: Spawner) -> ! {
 	//let mut sender_one = event_queue.();
 	// static  SENDER_TWO : Sender<NoopRawMutex,Event,Max,16> = event_queue.sender();
 	let  sender: Sender<'static,NoopRawMutex,Event,Max,16> = event_queue.sender();
+	let  brake_sender: Sender<'static,NoopRawMutex,Event,Max,16> = event_queue.sender();
 	let  reciever: Receiver<'static,NoopRawMutex,Event,Max,16> = event_queue.receiver();
 
 
@@ -81,7 +83,7 @@ async fn main(spawner: Spawner) -> ! {
 	// Begin peripheral configuration
 
 
-	let per = FSMPeripherals::new(p);
+	let mut per: FSMPeripherals = FSMPeripherals::new(p,spawner.borrow(),brake_sender);
 	//let mut nucleo_green_led = Output::new(p.PB14, Level::High, Speed::Low); // <- TODO - Initialize all the peripherals in FSMPeripheral
 	
 	// End peripheral configuration
@@ -91,7 +93,6 @@ async fn main(spawner: Spawner) -> ! {
 
 	let mut fsm = FSM::new(per, reciever);
 	fsm.entry();
-	unwrap!(spawner.spawn(test_task(sender)));
 
 	///
 	
