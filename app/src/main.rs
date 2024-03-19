@@ -1,9 +1,8 @@
 #![no_std]
 #![no_main]
-
+#![allow(incomplete_features, unused_imports, unused_variables, unused_mut,dead_code)]
 
 // Import absolutely EVERYTHING
-
 
 use defmt::*;
 use embassy_executor::Spawner;
@@ -44,21 +43,7 @@ include!(concat!(env!("OUT_DIR"), "/config.rs"));
 
 /// Main Function: program entry point
 
-#[embassy_executor::task]
-async fn test_task() {
-	info!("------------ Test Task Starte! ------------");
-
-	let mut event_queue: PriorityChannel<NoopRawMutex,Event,Max,16>=PriorityChannel::new();
-loop{
-	event_queue.send(Event::ConnectionEstablishedEvent).await;
-}
-
-
-
-	info!("------------ Test Task Ended! ------------");
-}
-
-
+static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex,Event,Max,16>> = StaticCell::new();
 #[embassy_executor::main]
 async fn main(spawner: Spawner) -> ! {
 	info!("------------ Main Application Started! ------------");
@@ -82,10 +67,12 @@ async fn main(spawner: Spawner) -> ! {
 	// Configuration end. `p` is the most important object in our code; treat it with respect and caution
 	let p = embassy_stm32::init(config);
 
-	let mut event_queue: PriorityChannel<NoopRawMutex,Event,Max,16>=PriorityChannel::new();
+	let event_queue = EVENT_QUEUE.init(PriorityChannel::new());
 	//let mut sender_one = event_queue.();
 	// static  SENDER_TWO : Sender<NoopRawMutex,Event,Max,16> = event_queue.sender();
-	let mut receiver_one = event_queue.sender();
+	let  sender: Sender<'static,NoopRawMutex,Event,Max,16> = event_queue.sender();
+	let  reciever: Receiver<'static,NoopRawMutex,Event,Max,16> = event_queue.receiver();
+
 
 
 
@@ -102,8 +89,9 @@ async fn main(spawner: Spawner) -> ! {
 	/// Create FSM
 
 
-	let mut fsm = FSM::new(per, event_queue);
-	unwrap!(spawner.spawn(test_task()));
+	let mut fsm = FSM::new(per, reciever);
+	fsm.entry();
+	unwrap!(spawner.spawn(test_task(sender)));
 
 	///
 	
@@ -113,10 +101,12 @@ async fn main(spawner: Spawner) -> ! {
 	// let mut spawner = Spawner::new(&raw::Executor::new());
 	//Spawner::must_spawn(test_task(sender_one));
 	// Main Loop
-	fsm.entry();
+
 	loop {
-		let curr_event = fsm.event_queue.receive();
-		fsm.react(curr_event.await);
+		info!("in da loop");
+		let curr_event = fsm.event_queue.receive().await;
+		info!("in da loop");
+		fsm.react(curr_event);
 		// nucleo_green_led.set_high();
         // 	Timer::after_millis(500).await;
 		// nucleo_green_led.set_low();
@@ -129,3 +119,15 @@ async fn main(spawner: Spawner) -> ! {
 }
 
 
+#[embassy_executor::task]
+async fn test_task(sender: Sender<'static,NoopRawMutex,Event,Max,16>) {
+	info!("------------ Test Task Starte! ------------");
+
+	// let mut event_queue: PriorityChannel<NoopRawMutex,Event,Max,16>=PriorityChannel::new();
+
+		sender.send(Event::BootingCompleteEvent).await;
+	sender.send(Event::EmergencyBrakeCommand).await;
+
+
+	info!("------------ Test Task Ended! ------------");
+}
