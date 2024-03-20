@@ -7,23 +7,22 @@ use embassy_stm32::gpio::low_level::Pin;
 use embassy_sync::blocking_mutex::raw::{NoopRawMutex, RawMutex, ThreadModeRawMutex};
 use embassy_sync::mutex::Mutex;
 use embassy_sync::priority_channel::Sender;
-use embassy_time::{Duration, Timer};
+use embassy_time::{Duration, Instant, Timer};
 use heapless::binary_heap::Max;
 use crate::core::finite_state_machine::{Event, FSM};
 static mut BRAKE: bool = false;
 pub struct FSMPeripherals {
     // pub braking_heartbeat: Output<'static>,
     pub braking_rearm: Output<'static>,
-    pub braking_communication: Input<'static>,
-    // pub brake_retraction:bool,
+   pub braking_communication: Input<'static>,
+    pub brake_retraction:bool,
+    pub hvcontroller: HVController,
     // pub peripherals: Peripherals,
 }
 
 
 impl FSMPeripherals{
     pub fn new(p : Peripherals, x: &Spawner, s : Sender<'static,NoopRawMutex,Event,Max,16>) -> Self {
-
-
 
         let mut braking_heartbeat : Output = Output::new(p.PB8, Level::High, Speed::Low); // <--- If we want to break we set this to to low
                                                                                  // If we want to keep it alive we send a 10khz digital clock signal
@@ -35,50 +34,55 @@ impl FSMPeripherals{
         unwrap!(x.spawn(braking_pcb_heartbeat(s,braking_heartbeat)));
 
         let mut brake_retraction = false;
+
+        let mut hvcontroller = HVController::new();
+
         Self {
             // braking_heartbeat,
             braking_rearm,
             braking_communication,
+            brake_retraction,
+            hvcontroller,
 
         }
     }
     pub fn rearm_breaks(&mut self) -> bool{
         self.braking_rearm.set_high();
-        return if self.braking_communication.is_high() {
-            true
-        } else {
-            false
+        let time_stamp = Instant::now();
+        while (Instant::now() - time_stamp) < Duration::from_millis(100) {
+            if (self.braking_communication.is_high()){
+                self.brake_retraction = true;
+                return true;
+            }
         }
+        return false;
+
     }
-
-    // pub fn spawn_heartbeat(&self, sender: Sender<'static,NoopRawMutex,Event,Max,16>, spawner: &Spawner) {
-    //     let mut b = self.
-    //     unwrap!(spawner.spawn(braking_pcb_heartbeat(sender,self.braking_heartbeat, self.braking_communication)));
-    // }
-
+    pub fn unarm_breaks(&mut self){
+        self.braking_rearm.set_low();
+        self.brake_retraction = true;
+    }
 
 }
 #[embassy_executor::task]
 pub async fn braking_pcb_heartbeat(sender: Sender<'static,NoopRawMutex,Event,Max,16>, mut braking_heartbeat: Output<'static>) {
     info!("------------ Start Braking Heartbeat! ------------");
-    let mut booting =  false;
+    let mut booting =  true;
     loop {
         if unsafe {!BRAKE} {
             braking_heartbeat.set_high();
-            Timer::after(Duration::from_micros(100)).await;
+            // info!("------------ Start Braking Heartbeat! ------------");
+            Timer::after_micros(100).await;
             braking_heartbeat.set_low();
-            Timer::after(Duration::from_micros(100)).await;
+            // info!("Test");
+            Timer::after_micros(100).await;
         }
         else {
             braking_heartbeat.set_low();
-            // if p.braking_communication.is_high() {
-            //     unsafe {BRAKE = false;
-            //     }
-            //     sender.send(Event::DefaultEvent).await;  // <--- We are fucked here because it means the breaks decided not to break
-            // }
         }
         if (booting){
             sender.send(Event::BootingCompleteEvent).await;
+         //   sender.send(Event::EmergencyBrakeCommand).await;
             booting = false;
         }
 
@@ -87,3 +91,44 @@ pub async fn braking_pcb_heartbeat(sender: Sender<'static,NoopRawMutex,Event,Max
     info!("------------ Test Task Ended! ------------");
 }
 
+pub struct HVController{
+    pub propulsion_ready : bool,
+    pub levitation_ready : bool,
+    pub powertrain_ready : bool,
+}
+
+impl HVController {
+
+    pub fn new() -> Self {
+        Self {
+            propulsion_ready : false,
+            levitation_ready : false,
+            powertrain_ready : false,
+        }
+    }
+    pub fn check_propulsion(&mut self) -> bool {
+        self.propulsion_ready = true;
+        return true;
+    }
+    pub fn check_levitation(&mut self) -> bool {
+        self.levitation_ready = true;
+        return true;
+    }
+    pub fn check_powertrain(&mut self) -> bool {
+        self.powertrain_ready = true;
+        return true;
+    }
+    pub fn check_all(&mut self) -> bool {
+        if (self.propulsion_ready && self.levitation_ready && self.powertrain_ready){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    pub fn reset(&mut self){
+        self.propulsion_ready = false;
+        self.levitation_ready = false;
+        self.powertrain_ready = false;
+    }
+}

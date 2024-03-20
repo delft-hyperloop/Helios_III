@@ -108,14 +108,6 @@ async fn main(spawner: Spawner) -> ! {
 		let curr_event = fsm.event_queue.receive().await;
 		info!("in da loop");
 		fsm.react(curr_event);
-		// nucleo_green_led.set_high();
-        // 	Timer::after_millis(500).await;
-		// nucleo_green_led.set_low();
-        // 	Timer::after_millis(500).await;
-
-		// fsm.react(fsm.pop_event());
-		// event = fsm.queue.pop_front();
-		// fsm.react(event);
 	}
 }
 
