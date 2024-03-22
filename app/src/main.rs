@@ -13,7 +13,7 @@ use embassy_stm32::eth::generic_smi::GenericSMI;
 use embassy_stm32::eth::{Ethernet, PacketQueue, PHY};
 use embassy_stm32::peripherals::*;
 use embassy_stm32::rng::Rng;
-use embassy_stm32::{bind_interrupts, eth, peripherals, rng, Config, rcc};
+use embassy_stm32::{bind_interrupts, eth, peripherals, rng, Config, rcc, can};
 use embassy_stm32::rcc::*;
 use embassy_time::Timer;
 use embedded_io_async::Write;
@@ -40,7 +40,6 @@ include!(concat!(env!("OUT_DIR"), "/config.rs"));
 
 
 
-// static mut EVENT_QUEUE: Deque<Event, 8> = Deque::new();
 
 /// Main Function: program entry point
 
@@ -64,9 +63,10 @@ async fn main(spawner: Spawner) -> ! {
 		divq: Some(PllDiv::DIV8),
 		divr: Some(PllDiv::DIV8),
 	});
-
+	config.rcc.mux.fdcansel = rcc::mux::Fdcansel::PLL1_Q;
 	// Configuration end. `p` is the most important object in our code; treat it with respect and caution
 	let p = embassy_stm32::init(config);
+
 
 	let event_queue = EVENT_QUEUE.init(PriorityChannel::new());
 	//let mut sender_one = event_queue.();
