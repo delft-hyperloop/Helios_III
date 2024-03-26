@@ -2,7 +2,6 @@ extern crate serde;
 use std::env;
 use std::fs;
 use std::path::Path;
-use std::str::FromStr;
 use serde::{Deserialize};
 
 /*
@@ -24,7 +23,7 @@ struct GS {
 }
 
 
-pub const NETCONFIG_PATH: &str = "../config/netconfig.toml";
+pub const NETCONFIG_PATH: &str = "../config/config.toml";
 
 
 fn main() {

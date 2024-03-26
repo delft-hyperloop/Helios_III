@@ -1,4 +1,5 @@
 use defmt::info;
+use crate::core::communication::{Datapoint, Datatype};
 use crate::core::finite_state_machine::{Event, FSM, State};
 
 impl FSM {
@@ -6,7 +7,10 @@ impl FSM {
 
         info!("Entering Boot State");
 
-        if !(self.peripherals.rearm_breaks()) {
+        self.data_queue.send(Datapoint::new(Datatype::FSMState, 13, 69)).unwrap();
+        self.react(Event::BootingCompleteEvent);
+        return;
+        if !self.peripherals.braking_controller.rearm_breaks() {
             self.react(Event::BootingFailedEvent);
         }
         info!("Booting complete");

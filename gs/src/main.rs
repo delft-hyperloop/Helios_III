@@ -1,6 +1,7 @@
 mod gui;
 mod station;
 mod api;
+mod util;
 
 use std::thread;
 use rayon::prelude::*;

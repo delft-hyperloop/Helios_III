@@ -5,8 +5,7 @@ use std::process::exit;
 use std::sync::mpsc::{Receiver, Sender};
 use std::sync::{Mutex, RwLock};
 use colored::Colorize;
-use crate::{Command, Datapoint};
-use crate::Datapoint::Status;
+use crate::api::{Command, Datapoint};
 
 /// The connection manager of the application. This module is responsible for
 /// managing the connection to the main PCB.
@@ -36,6 +35,15 @@ pub struct Station {
     // pub event_rx: Receiver<Event>
 }
 
+impl Station {
+    pub fn print(msg: String, tx: Sender<Datapoint>) {
+        tx.send(Datapoint::Status(msg)).unwrap()
+    }
+    pub fn eprint(msg: &str, tx: Sender<Datapoint>) {
+        tx.send(Datapoint::Error(msg.parse().unwrap())).unwrap()
+    }
+}
+
 /// The main function of the connection handler,
 /// it will open a socket and wait for the pod to connect,
 /// then create a connection object and handle it
@@ -44,31 +52,34 @@ pub fn launch(tx : Sender<Datapoint>, rx : Receiver<Command>) {
 
     if server.is_err() {
         println!("{}\n  IP={}\n  timestamp={}\n", "Server failed to start".on_bright_red(), GS_SOCKET().ip().to_string(),chrono::Utc::now().timestamp().to_string());
-        println!("{}", "Try changing ../config/netconfig.toml".bright_yellow());
+        println!("{}", "Try changing ../config/config.toml".bright_yellow());
         exit(1);
     }
 
     let mut station: Station = Station::new(GS_SOCKET(), server.unwrap(), tx, rx);
 
     while station.running {
+        Station::print(format!("Waiting for connection on {}", station.gs_socket.to_string()), station.tx.clone());
         match station.listener.accept() {
             Ok((stream, addr)) => {
                 station.connected = true;
                 station.run(stream, addr); // this will be run from the server main thread since a) we dont want it to die and b) we will only ever accept one connection: the main pcb
             },
-            Err(e) => eprintln!("couldn't get client: {e:?}"),
+            Err(e) => Station::eprint("couldn't get client: {e:?}", station.tx.clone()),
         }
 
         if station.running {// if we get here the station disconnected from the main pcb.
-            println!("Connection terminated");
-            station.tx.send(Status(String::from("Connection was terminated! Trying to reconnect automatically."))).expect("Failed to send message to GUI!");
+            Station::eprint("Connection terminated", station.tx.clone());
+            station.tx.send(Datapoint::Status(String::from("Connection was terminated! Trying to reconnect automatically."))).expect("Failed to send message to GUI!");
         }
     }
     println!("Shutting down ground station");
 }
 
+/// TODO: implement receiving shit from the pod.
+/// for this we need to use the file of data types corresponding to message ids
 pub fn receive(buffer: [u8;IP_BUFFER_SIZE], n: usize, tx_channel : Sender<Datapoint> ) {
     // Process the received data.
     let data = String::from_utf8(Vec::from(&buffer[..n])).expect("failed to convert buffer to string");
-    println!("received {}", data.trim().on_bright_blue());
+    tx_channel.send(Datapoint::Status(format!("received {}", data.trim())));
 }
