@@ -2,8 +2,9 @@ use defmt::{info, unwrap};
 use embassy_executor::Spawner;
 use embassy_stm32::flash::Error::Size;
 use embassy_stm32::gpio::{Level, Output, Speed, Input, Pull};
-use embassy_stm32::{Peripheral, Peripherals,peripherals};
+use embassy_stm32::{bind_interrupts, can, Peripheral, Peripherals, peripherals};
 use embassy_stm32::gpio::low_level::Pin;
+use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_sync::blocking_mutex::raw::{NoopRawMutex, RawMutex, ThreadModeRawMutex};
 use embassy_sync::mutex::Mutex;
 use embassy_sync::priority_channel::Sender;
@@ -20,9 +21,29 @@ pub struct FSMPeripherals {
     // pub peripherals: Peripherals,
 }
 
-
+/// Kiko: Im assuming this is needed and ill not worry about it
+bind_interrupts!(struct CanOneInterrupts {
+    FDCAN1_IT0 => can::IT0InterruptHandler<FDCAN1>;
+    FDCAN1_IT1 => can::IT1InterruptHandler<FDCAN1>;
+});
+bind_interrupts!(struct CanTwoInterrupts {
+    FDCAN2_IT0 => can::IT0InterruptHandler<FDCAN2>;
+    FDCAN2_IT1 => can::IT1InterruptHandler<FDCAN2>;
+});
 impl FSMPeripherals{
     pub fn new(p : Peripherals, x: &Spawner, s : Sender<'static,NoopRawMutex,Event,Max,16>) -> Self {
+
+        //CAN configuration
+        //After this we will pass each one to their own task
+        let mut can1 = can::FdcanConfigurator::new(p.FDCAN1, p.PD0, p.PD1,CanOneInterrupts);
+
+        let mut can2 = can::FdcanConfigurator::new(p.FDCAN2, p.PB5, p.PB6,CanTwoInterrupts); // <--- Im not really sure if this are the correct pins
+
+        can1.set_bitrate(1_000_000);
+        can2.set_bitrate(1_000_000);
+
+        let mut can1 = can1.into_normal_mode();
+        let mut can2 = can2.into_normal_mode();
 
         let mut braking_heartbeat : Output = Output::new(p.PB8, Level::High, Speed::Low); // <--- If we want to break we set this to to low
                                                                                  // If we want to keep it alive we send a 10khz digital clock signal
@@ -36,6 +57,8 @@ impl FSMPeripherals{
         let mut brake_retraction = false;
 
         let mut hvcontroller = HVController::new();
+
+
 
         Self {
             // braking_heartbeat,
