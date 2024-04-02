@@ -50,6 +50,8 @@ struct InternalConfig {
     event_queue_size: usize,
     data_queue_size: usize,
     can_queue_size: usize,
+    ground_fault_detection_can_id_threshold : u16,
+    high_voltage_bms_can_id_threshold : u16,
 }
 
 #[derive(Debug, Deserialize)]
@@ -171,9 +173,12 @@ fn configure_pod(config: &Config) -> String {
         + &*format!("pub static POD_MAC_ADDRESS: [u8;6] = [{},{},{},{},{},{}];", config.pod.net.mac_addr[0], config.pod.net.mac_addr[1], config.pod.net.mac_addr[2], config.pod.net.mac_addr[3], config.pod.net.mac_addr[4], config.pod.net.mac_addr[5])
         + &*format!("pub const KEEP_ALIVE: u64 = {};", config.pod.net.keep_alive)
 }
-
+// ground_fault_detection_can_id_threshold = 0x40
+// high_voltage_bms_can_id_threshold = 0x150
 fn configure_internal(config: &Config) -> String {
     format!("pub const EVENT_QUEUE_SIZE: usize = {};", config.pod.internal.event_queue_size)
     + &*format!("pub const DATA_QUEUE_SIZE: usize = {};", config.pod.internal.data_queue_size)
     + &*format!("pub const CAN_QUEUE_SIZE: usize = {};", config.pod.internal.can_queue_size)
+    + &*format!("pub const GROUND_FAULT_DETECTION_CAN_ID_THRESHOLD: u16 = {};", config.pod.internal.ground_fault_detection_can_id_threshold)
+    + &*format!("pub const HIGH_VOLTAGE_BMS_CAN_ID_THRESHOLD: u16 = {};", config.pod.internal.high_voltage_bms_can_id_threshold)
 }

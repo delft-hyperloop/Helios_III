@@ -35,6 +35,7 @@ use embassy_stm32::gpio::low_level::Pin;
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_time::{Duration, Instant, Timer};
 use crate::core::communication::can::{can_one_receiving_handler, can_transmitter, can_two_receiver_handler};
+use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::ethernet_controller::EthernetPins;
 
 
@@ -61,7 +62,9 @@ impl CanController {
         can_one_receiver: CanReceiver,
         can_two_sender: CanSender,
         can_two_receiver: CanReceiver,
-        pins: CanPins
+        pins: CanPins,
+        hv_controller: &mut BatteryController,
+        lv_controller: &mut BatteryController,
     ) -> Self {
 
         let mut can1 = can::FdcanConfigurator::new(pins.fdcan1, pins.pd0_pin, pins.pd1_pin, CanOneInterrupts);
@@ -78,7 +81,7 @@ impl CanController {
         let (mut c2_tx, mut c2_rx) = can2.split();
 
         unwrap!(x.spawn(can_one_receiving_handler(x, event_sender.clone(), can_one_receiver.clone(), data_sender.clone(), c1_rx)));
-        unwrap!(x.spawn(can_two_receiver_handler(x, event_sender.clone(), can_two_receiver.clone(), data_sender.clone(), c2_rx)));
+        unwrap!(x.spawn(can_two_receiver_handler(x, event_sender.clone(), data_sender.clone(), c2_rx)));
 
         unwrap!(x.spawn(can_transmitter(can_one_receiver.clone(), c1_tx)));
         unwrap!(x.spawn(can_transmitter(can_two_receiver.clone(), c2_tx)));

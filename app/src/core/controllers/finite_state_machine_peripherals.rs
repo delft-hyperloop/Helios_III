@@ -21,10 +21,10 @@ use crate::core::controllers::can_controller::{CanController, CanPins};
 
 pub struct FSMPeripherals {
     pub braking_controller: BrakingController,
-    pub hv_controller: HVController,
+    pub hv_controller: BatteryController,
+    pub lv_controller: BatteryController,
     pub eth_controller: EthernetController,
     pub can_controller: CanController,
-    pub battery_controller: BatteryController,
 }
 
 impl FSMPeripherals{
@@ -34,7 +34,8 @@ impl FSMPeripherals{
         // let (braking_controller, init) = BrakingController::new(init);
         let braking_controller = BrakingController::new(x, i.event_sender.clone(), p.PB8, p.PG1, p.PF12);
 
-        let mut hv_controller = HVController::new(x, i.event_sender.clone());
+        let mut hv_controller = BatteryController::new(i.event_sender.clone(), 0,0,0,0,0); //TODO <------ This is just to make it build
+        let mut lv_controller = BatteryController::new(i.event_sender.clone(),0,0,0,0,0); //TODO <------ This is just to make it build
 
         let mut eth_controller = EthernetController::new(*x, i.event_sender.clone(), i.data_receiver.clone(),EthernetPins{
             p_rng: p.RNG,
@@ -50,6 +51,7 @@ impl FSMPeripherals{
             pa1_pin: p.PA1,
         });
 
+
         let mut can_controller = CanController::new(*x,
                                                     i.event_sender.clone(),
                                                     i.data_sender.clone(),
@@ -58,6 +60,7 @@ impl FSMPeripherals{
                                                     i.can_one_receiver.clone(),
                                                     i.can_two_sender.clone(),
                                                     i.can_two_receiver.clone(),
+
         CanPins {
             fdcan1: p.FDCAN1,
             fdcan2: p.FDCAN2,
@@ -65,16 +68,19 @@ impl FSMPeripherals{
             pd1_pin: p.PD1,
             pb5_pin: p.PB5,
             pb6_pin: p.PB6,
-        });
+        },
+        &mut hv_controller,
+        &mut lv_controller,
+        );
 
-        let mut battery_controller = BatteryController::new(*x, i.event_sender.clone());
 
         Self {
             braking_controller,
             hv_controller,
+            lv_controller,
             eth_controller,
             can_controller,
-            battery_controller,
+
         }
     }
 

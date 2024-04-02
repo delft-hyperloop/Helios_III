@@ -21,6 +21,8 @@ keep_alive = 1000 # keep alive interval, in milliseconds.
 event_queue_size = 16
 data_queue_size = 32
 can_queue_size = 16
+ground_fault_detection_can_id_threshold = 0x40
+high_voltage_bms_can_id_threshold = 0x150
 
 
 # Format for commands:

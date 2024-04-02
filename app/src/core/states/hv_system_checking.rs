@@ -10,25 +10,25 @@ impl FSM{
         match event {
             Event::HVLevitationReadyEvent => {
 
-                self.peripherals.hv_controller.check_levitation();
+                self.status.check_levitation();
 
 
             }
             Event::HVPowertrainReadyEvent => {
 
-                self.peripherals.hv_controller.check_powertrain();
+                self.status.check_powertrain();
 
 
             }
             Event::HVPropulsionReadyEvent => {
 
-            self.peripherals.hv_controller.check_propulsion();
+            self.status.check_propulsion();
 
 
             }
             Event::StartLevitatingCommand => {
 
-                if (self.peripherals.hv_controller.check_all()) {
+                if (self.status.check_all()) {
 
                     
                     self.transit(State::Levitating);
