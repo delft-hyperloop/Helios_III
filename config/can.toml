@@ -1,9 +1,10 @@
 
 
 # CAN IDs
+[can_ids]
 #----------- Sensor Hub -----------
 # ///  Pod Drop Switches  ///
-[sensor_hub]
+#[sensor_hub]
 DROP1 = 136
 DROP2 = 137
 DROP3 = 141
@@ -34,25 +35,25 @@ EME = 135
 
 
 #///   Pressure Sensors  ///
-[pressure]
+#[pressure]
 HIGH_PRESSURE_SENSOR = 140
 LOW_PRESSURE_SENSOR = 139
 
 #//   IMU    //
 #/\ Accelerometer /\
-[accelerometer]
+#[accelerometer]
 ACCX = 121
 ACCY = 120
 ACCZ = 119
 
 #/\ Gyroscope /\
-[gyroscope]
+#[gyroscope]
 GYRX = 118
 GYRY = 117
 GYRZ = 116
 
 #/\ Temperature /\
-[temperature]
+#[temperature]
 TEMP = 115
 
 #^^^^^^^^^^^^^^^^^^^^^^^^^^

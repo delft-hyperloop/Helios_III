@@ -1,11 +1,10 @@
 use core::cmp::Ordering;
 use crate::core::finite_state_machine::Event;
 use crate::encode_datatype;
-mod sensor_hub_communication;
 pub mod tcp;
 pub mod udp;
-mod dispatcher;
 mod parse;
+mod can;
 
 
 // IF YOU UPDATE THIS, ALSO LOOK AT config/config.toml

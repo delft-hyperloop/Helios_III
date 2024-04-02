@@ -20,6 +20,7 @@ keep_alive = 1000 # keep alive interval, in milliseconds.
 [pod.internal]
 event_queue_size = 16
 data_queue_size = 32
+can_queue_size = 16
 
 
 # Format for commands:

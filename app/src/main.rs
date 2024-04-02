@@ -14,7 +14,7 @@ use embassy_stm32::eth::generic_smi::GenericSMI;
 use embassy_stm32::eth::{Ethernet, PacketQueue, PHY};
 use embassy_stm32::peripherals::*;
 use embassy_stm32::rng::Rng;
-use embassy_stm32::{bind_interrupts, eth, peripherals, rng, Config, rcc};
+use embassy_stm32::{bind_interrupts, eth, peripherals, rng, Config, rcc, can};
 use embassy_stm32::rcc::*;
 use embassy_time::Timer;
 use embedded_io_async::Write;
@@ -38,10 +38,6 @@ use core::controllers::finite_state_machine_peripherals::*;
 use crate::core::communication::{Datapoint, Datatype};
 use crate::pconfig::default_configuration;
 
-type DataSender = embassy_sync::channel::Sender<'static,NoopRawMutex,Datapoint, { DATA_QUEUE_SIZE }>;
-type DataReceiver = embassy_sync::channel::Receiver<'static,NoopRawMutex,Datapoint, { DATA_QUEUE_SIZE }>;
-type EventSender = embassy_sync::priority_channel::Sender<'static,NoopRawMutex,Event,Max, { EVENT_QUEUE_SIZE }>;
-type EventReceiver = embassy_sync::priority_channel::Receiver<'static,NoopRawMutex,Event,Max, { EVENT_QUEUE_SIZE }>;
 
 /// We need to include the external variables imported from build.rs
 /// Imports:
@@ -53,9 +49,40 @@ bind_interrupts!(struct Irqs {
     ETH => eth::InterruptHandler;
     RNG => rng::InterruptHandler<peripherals::RNG>;
 });
+bind_interrupts!(struct CanOneInterrupts {
+    FDCAN1_IT0 => can::IT0InterruptHandler<FDCAN1>;
+    FDCAN1_IT1 => can::IT1InterruptHandler<FDCAN1>;
+});
+bind_interrupts!(struct CanTwoInterrupts {
+    FDCAN2_IT0 => can::IT0InterruptHandler<FDCAN2>;
+    FDCAN2_IT1 => can::IT1InterruptHandler<FDCAN2>;
+});
 
+
+/// Custom Data types-----------------------
+type DataSender = embassy_sync::channel::Sender<'static,NoopRawMutex,Datapoint, { DATA_QUEUE_SIZE }>;
+type DataReceiver = embassy_sync::channel::Receiver<'static,NoopRawMutex,Datapoint, { DATA_QUEUE_SIZE }>;
+type EventSender = embassy_sync::priority_channel::Sender<'static,NoopRawMutex,Event,Max, { EVENT_QUEUE_SIZE }>;
+type EventReceiver = embassy_sync::priority_channel::Receiver<'static,NoopRawMutex,Event,Max, { EVENT_QUEUE_SIZE }>;
+type CanSender = embassy_sync::channel::Sender<'static,NoopRawMutex, can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>;
+type CanReceiver = embassy_sync::channel::Receiver<'static,NoopRawMutex, can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>;
+// ^^^^^^^^^^^^^^^^^^^----------------------
+
+
+/// Static Allocations - just the MPMC queues for now (?)
 static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex,Event,Max,16>> = StaticCell::new();
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex,Datapoint, { DATA_QUEUE_SIZE }>> = StaticCell::new();
+static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex,can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>> = StaticCell::new();
+static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex,can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>> = StaticCell::new();
+
+pub struct InternalMessaging {
+	event_sender: EventSender,
+	data_receiver: DataReceiver,
+	can_one_sender: CanSender,
+	can_one_receiver: CanReceiver,
+	can_two_sender: CanSender,
+	can_two_receiver: CanReceiver,
+}
 
 /// Main Function: program entry point
 #[embassy_executor::main]
@@ -87,27 +114,38 @@ async fn main(spawner: Spawner) -> ! {
 
 	let data_sender: DataSender = data_queue.sender();
 	let data_receiver: DataReceiver = data_queue.receiver();
-	// Begin peripheral configuration
+
+	let can_one_queue : &'static mut Channel<NoopRawMutex,can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>  = CAN_ONE_QUEUE.init(Channel::new());
+	let can_one_sender: CanSender = can_one_queue.sender();
+	let can_one_receiver: CanReceiver = can_one_queue.receiver();
+
+	let can_two_queue : &'static mut Channel<NoopRawMutex,can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>  = CAN_TWO_QUEUE.init(Channel::new());
+	let can_two_sender: CanSender = can_two_queue.sender();
+	let can_two_receiver: CanReceiver = can_two_queue.receiver();
 
 
-	let mut per: FSMPeripherals = FSMPeripherals::new(p, spawner.borrow(), event_sender, data_receiver);
-	//let mut nucleo_green_led = Output::new(p.PB14, Level::High, Speed::Low); // <- TODO - Initialize all the peripherals in FSMPeripheral
-	
-	// End peripheral configuration
+	/// Begin peripheral configuration
+	let mut per: FSMPeripherals = FSMPeripherals::new(p, spawner.borrow(), InternalMessaging {
+		event_sender,
+		data_receiver,
+		can_one_sender,
+		can_one_receiver,
+		can_two_sender,
+		can_two_receiver,
+	});
+	/// End peripheral configuration
 
 	/// Create FSM
 	let mut fsm = FSM::new(per, event_receiver, data_sender);
 	fsm.entry();
-
 	///
 	
 	// Begin Spawn Tasks
 	
 	// End Spawn Tasks
 
-	// let mut spawner = Spawner::new(&raw::Executor::new());
-	//Spawner::must_spawn(test_task(sender_one));
-	// Main Loop
+
+	/// # Main Loop
 	loop {
 		info!("in da loop");
 		let curr_event = fsm.event_queue.receive().await;

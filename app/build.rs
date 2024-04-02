@@ -49,6 +49,7 @@ struct NetConfig {
 struct InternalConfig {
     event_queue_size: usize,
     data_queue_size: usize,
+    can_queue_size: usize,
 }
 
 #[derive(Debug, Deserialize)]
@@ -149,4 +150,5 @@ fn configure_pod(config: &Config) -> String {
 fn configure_internal(config: &Config) -> String {
     format!("pub const EVENT_QUEUE_SIZE: usize = {};", config.pod.internal.event_queue_size)
     + &*format!("pub const DATA_QUEUE_SIZE: usize = {};", config.pod.internal.data_queue_size)
+    + &*format!("pub const CAN_QUEUE_SIZE: usize = {};", config.pod.internal.can_queue_size)
 }

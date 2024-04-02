@@ -21,7 +21,6 @@ use embassy_sync::priority_channel::{Receiver, Sender};
 use heapless::binary_heap::Max;
 use heapless::Vec;
 use crate::{DataReceiver, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, NETWORK_BUFFER_SIZE, KEEP_ALIVE, IP_TIMEOUT};
-use crate::core::communication::dispatcher::ground_station_message_dispatcher;
 use crate::core::finite_state_machine::Event;
 use crate::pconfig::{embassy_socket_from_config, socket_from_config};
 
