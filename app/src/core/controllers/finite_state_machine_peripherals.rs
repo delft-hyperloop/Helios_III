@@ -52,6 +52,7 @@ impl FSMPeripherals{
 
         let mut can_controller = CanController::new(*x,
                                                     i.event_sender.clone(),
+                                                    i.data_sender.clone(),
                                                     i.data_receiver.clone(),
                                                     i.can_one_sender.clone(),
                                                     i.can_one_receiver.clone(),

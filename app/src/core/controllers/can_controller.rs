@@ -7,7 +7,7 @@ use embassy_stm32::peripherals::{ETH, PB5, PB6, PD0, PD1, PD5, PD6, RNG};
 use embassy_stm32::rng::Rng;
 use rand_core::RngCore;
 use static_cell::StaticCell;
-use crate::{CanOneInterrupts, CanReceiver, CanSender, CanTwoInterrupts, DataReceiver, EventSender, POD_MAC_ADDRESS};
+use crate::{CanOneInterrupts, CanReceiver, CanSender, CanTwoInterrupts, DataReceiver, DataSender, EventSender, POD_MAC_ADDRESS};
 
 use core::arch::asm;
 use defmt::*;
@@ -34,6 +34,7 @@ use embassy_stm32::{can, Peripheral, Peripherals};
 use embassy_stm32::gpio::low_level::Pin;
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_time::{Duration, Instant, Timer};
+use crate::core::communication::can::{can_one_receiving_handler, can_transmitter, can_two_receiver_handler};
 use crate::core::controllers::ethernet_controller::EthernetPins;
 
 
@@ -54,6 +55,7 @@ impl CanController {
     pub fn new(
         x: Spawner,
         event_sender: EventSender,
+        data_sender: DataSender,
         data_receiver: DataReceiver,
         can_one_sender: CanSender,
         can_one_receiver: CanReceiver,
@@ -71,6 +73,15 @@ impl CanController {
 
         let mut can1 = can1.into_normal_mode();
         let mut can2 = can2.into_normal_mode();
+
+        let (mut c1_tx, mut c1_rx) = can1.split();
+        let (mut c2_tx, mut c2_rx) = can2.split();
+
+        unwrap!(x.spawn(can_one_receiving_handler(x, event_sender.clone(), can_one_receiver.clone(), data_sender.clone(), c1_rx)));
+        unwrap!(x.spawn(can_two_receiver_handler(x, event_sender.clone(), can_two_receiver.clone(), data_sender.clone(), c2_rx)));
+
+        unwrap!(x.spawn(can_transmitter(can_one_receiver.clone(), c1_tx)));
+        unwrap!(x.spawn(can_transmitter(can_two_receiver.clone(), c2_tx)));
 
         Self {
 

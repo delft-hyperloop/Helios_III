@@ -77,6 +77,7 @@ static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex,can::frame::ClassicFrame, 
 
 pub struct InternalMessaging {
 	event_sender: EventSender,
+	data_sender: DataSender,
 	data_receiver: DataReceiver,
 	can_one_sender: CanSender,
 	can_one_receiver: CanReceiver,
@@ -127,6 +128,7 @@ async fn main(spawner: Spawner) -> ! {
 	/// Begin peripheral configuration
 	let mut per: FSMPeripherals = FSMPeripherals::new(p, spawner.borrow(), InternalMessaging {
 		event_sender,
+		data_sender,
 		data_receiver,
 		can_one_sender,
 		can_one_receiver,

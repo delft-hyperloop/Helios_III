@@ -4,7 +4,7 @@ use crate::encode_datatype;
 pub mod tcp;
 pub mod udp;
 mod parse;
-mod can;
+pub mod can;
 
 
 // IF YOU UPDATE THIS, ALSO LOOK AT config/config.toml
