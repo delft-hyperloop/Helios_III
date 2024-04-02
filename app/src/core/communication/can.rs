@@ -22,7 +22,7 @@ pub async fn can_transmitter(
     mut bus : FdcanTx<'static, impl Instance>
 ) -> ! {
     loop {
-        let frame = can_receiver.recv().await;
+        let frame = can_receiver.receive().await;
         bus.write(&frame).await;
     }
 }
