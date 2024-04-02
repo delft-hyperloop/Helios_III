@@ -8,6 +8,7 @@ mod dispatcher;
 mod parse;
 
 
+// IF YOU UPDATE THIS, ALSO LOOK AT config/config.toml
 pub enum Datatype {
     PropulsionTemperature,
     LevitationTemperature,
