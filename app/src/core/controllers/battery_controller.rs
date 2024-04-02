@@ -1,3 +1,36 @@
+use embassy_executor::Spawner;
+use crate::{DataReceiver, EventSender};
+use crate::core::controllers::ethernet_controller::EthernetPins;
+
+pub struct BatteryController {
+
+}
+
+impl BatteryController {
+    /// parameters needed:
+    /// - x: Spawner, to create the tasks that actually do stuff
+    /// - sender: EventSender, to send events to the FSM
+    /// - ?
+    pub fn new(
+        x: Spawner,
+        sender: EventSender,
+    ) -> Self {
+        // Initialise anything needed by the battery controller here
+
+        Self {
+
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
 //TODO
 // This file is just an idea butttt, we could make the can tasks here or go like fuck it they stay on the fsm peripherals which i also am considering renaming as i really dont like the name //
 

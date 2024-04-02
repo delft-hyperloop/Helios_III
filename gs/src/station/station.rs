@@ -1,3 +1,4 @@
+use std::fmt::format;
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::sync::{Arc, Mutex, RwLock};
@@ -5,8 +6,11 @@ use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use colored::Colorize;
 use crossterm::style::Stylize;
-use crate::{Command, Datapoint};
+use crate::api::{Command, Datapoint};
+use crate::gui::main::LogType;
+use crate::log;
 use crate::station::{receive, Station};
+
 // use crate::station::Event;
 include!(concat!(env!("OUT_DIR"), "/config.rs"));
 
@@ -27,7 +31,7 @@ impl Station {
 
     pub fn run(&mut self, mut stream: TcpStream, client_socket: SocketAddr) {
         // We have a connection, now we ball
-        println!("{} {}", "Accepted connection from".bright_green(), format!("{:?}", client_socket).on_bright_blue());
+        log!(self.tx.clone(), LogType::Success,format!("{} {}", "Accepted connection from", format!("{:?}", client_socket)));
 
         // Split the TcpStream into read and write parts
         let mut read_stream = stream.try_clone().expect("Failed to clone stream");
@@ -38,25 +42,32 @@ impl Station {
         let tx_clone = self.tx.clone();
         thread::spawn(move || {
             let mut buffer = [0; IP_BUFFER_SIZE];
+            let mut last_read_timestamp = std::time::Instant::now();
+            read_stream.set_read_timeout(Some(std::time::Duration::from_millis(IP_TIMEOUT))).unwrap();
             loop {
                  match read_stream.read(&mut buffer) {
                      Ok(0) => {
-                         println!("{}", "Connection closed by Main PCB!!".on_bright_red());
-                         disconnect_send.send(()).unwrap();
+                         log!(tx_clone.clone(), LogType::Error, "Connection closed by Main PCB!!");
+                         disconnect_send.send(0).unwrap();
                          break;
                      }
                      Ok(n) => {
+                         last_read_timestamp = std::time::Instant::now();
                          receive(buffer, n, tx_clone.clone());
                      }
                      Err(e) => {
-                         eprintln!("Failed to read from connection: {}", e);
-                         disconnect_send.send(()).unwrap();
+                         log!(tx_clone.clone(), LogType::Error, format!("Failed to read from connection: {}", e));
+                         disconnect_send.send(0).unwrap();
+                         break;
                      }
                 }
+                // if last_read_timestamp.elapsed().as_secs() > 5 {
+                //     log!(tx_clone.clone(), LogType::Error, "Connection timed out!!");
+                //     disconnect_send.send(0).unwrap();
+                //     break;
+                // }
             }
         });
-
-
         // (main thread) sending data in response to events
         loop {
             let received_event = self.rx.lock().unwrap().try_recv();
@@ -65,8 +76,9 @@ impl Station {
                     Command::Levitate => {
                         // Example: Send the data from the event
                         let data = "LEVITATE";
+                        log!(self.tx.clone(), LogType::Info, format!("Sending command: {}", data));
                         if let Err(e) = write_stream.write_all(data.as_bytes()) {
-                            eprintln!("Failed to send data: {}", e);
+                            log!(self.tx.clone(), LogType::Error, &format!("Failed to send data: {}", e));
                             break;
                         }
                     }
@@ -74,8 +86,9 @@ impl Station {
                     Command::StopLevitating => {
                         // Example: Send the data from the event
                         let data = "STOP LEVITATING";
+                        log!(self.tx.clone(), LogType::Info, format!("Sending command: {}", data));
                         if let Err(e) = write_stream.write_all(data.as_bytes()) {
-                            eprintln!("Failed to send data: {}", e);
+                            log!(self.tx.clone(), LogType::Error, format!("Failed to send data: {}", e));
                             break;
                         }
                     }
@@ -83,8 +96,9 @@ impl Station {
                     Command::Configure(config) => {
                         // Example: Send the data from the event
                         let data = format!("CONFIGURE {:?}", config);
+                        log!(self.tx.clone(), LogType::Info, format!("Sending command: {}", data));
                         if let Err(e) = write_stream.write_all(data.as_bytes()) {
-                            eprintln!("Failed to send data: {}", e);
+                            log!(self.tx.clone(), LogType::Error, format!("Failed to send data: {}", e));
                             break;
                         }
                     }
@@ -92,20 +106,21 @@ impl Station {
                     Command::Shutdown => {
                         // Example: Send the data from the event
                         let data = "SHUTDOWN";
+                        log!(self.tx.clone(), LogType::Info, format!("Sending command: {}", data));
                         if let Err(e) = write_stream.write_all(data.as_bytes()) {
-                            eprintln!("Failed to send data: {}", e);
+                            log!(self.tx.clone(), LogType::Error, format!("Failed to send data: {}", e));
                             break;
                         }
-                        println!("Shutting down the connection.");
-                        // .shutdown(std::net::Shutdown::Both).expect("Failed to shutdown connection");
+                        log!(self.tx.clone(), LogType::Info, "Shutting down the connection.");
                         break;
                     }
 
                     Command::EmergencyBrake => {
                         // Example: Send the data from the event
                         let data = "EMERGENCY BRAKE";
+                        log!(self.tx.clone(), LogType::Info, format!("Sending command: {}", data));
                         if let Err(e) = write_stream.write_all(data.as_bytes()) {
-                            eprintln!("Failed to send data: {}", e);
+                            log!(self.tx.clone(), LogType::Error, format!("Failed to send data: {}", e));
                             break;
                         }
                     }
@@ -113,8 +128,9 @@ impl Station {
                     Command::StartRun => {
                         // Example: Send the data from the event
                         let data = "START RUN";
+                        log!(self.tx.clone(), LogType::Info, format!("Sending command: {}", data));
                         if let Err(e) = write_stream.write_all(data.as_bytes()) {
-                            eprintln!("Failed to send data: {}", e);
+                            log!(self.tx.clone(), LogType::Error, format!("Failed to send data: {}", e));
                             break;
                         }
                     }
@@ -123,13 +139,13 @@ impl Station {
                     // No command received
                 }
                 Err(std::sync::mpsc::TryRecvError::Disconnected) => {
-                    eprintln!("Failed to receive command: channel disconnected");
+                    log!(self.tx.clone(), LogType::Error, format!("Failed to receive command: channel disconnected"));
                     break;
                 }
             }
             // check if the sender has disconnected
             if disconnect_receive.try_recv().is_ok() {
-                println!("Closing receiver: sender disconnected");
+                log!(self.tx.clone(), LogType::Warning, "Closing receiver: sender disconnected");
                 break;
             }
         }

@@ -5,7 +5,7 @@ use crate::core::finite_state_machine::{Event, FSM, State};
 impl FSM{
     pub fn entry_run_config(&mut self) {
 
-        if !self.peripherals.brake_retraction{
+        if !self.peripherals.braking_controller.brake_retraction {
             self.transit(State::Exit);
             //LOG BECAUSE BRAKES WERE NOT ALIVE
         }

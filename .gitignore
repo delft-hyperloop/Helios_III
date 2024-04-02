@@ -5,3 +5,4 @@
 .cargo/config.toml
 *.iml
 */.idea/*
+.DS_Store
