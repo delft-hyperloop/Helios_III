@@ -35,7 +35,7 @@ mod pconfig;
 
 use core::finite_state_machine::*;
 use core::controllers::finite_state_machine_peripherals::*;
-use crate::core::communication::{Datapoint, Datatype};
+use crate::core::communication::{Datapoint};
 use crate::pconfig::default_configuration;
 
 

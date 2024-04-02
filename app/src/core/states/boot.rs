@@ -1,6 +1,7 @@
 use defmt::info;
-use crate::core::communication::{Datapoint, Datatype};
+use crate::core::communication::{Datapoint};
 use crate::core::finite_state_machine::{Event, FSM, State};
+use crate::Datatype;
 
 impl FSM {
     pub fn boot_entry(&mut self) {

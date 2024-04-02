@@ -1,6 +1,6 @@
 use core::cmp::Ordering;
 use crate::core::finite_state_machine::Event;
-use crate::encode_datatype;
+use crate::{Datatype, encode_datatype};
 pub mod tcp;
 pub mod udp;
 mod parse;
@@ -8,19 +8,19 @@ pub mod can;
 
 
 // IF YOU UPDATE THIS, ALSO LOOK AT config/config.toml
-pub enum Datatype {
-    PropulsionTemperature,
-    LevitationTemperature,
-    BatteryVoltage,
-    BatteryCurrent,
-    BatteryTemperature,
-    BrakeTemperature,
-    PropulsionSpeed,
-    BrakePressure,
-    GroundVoltage,
-    FSMState,
-    FSMEvent,
-}
+// pub enum Datatype {
+//     PropulsionTemperature,
+//     LevitationTemperature,
+//     BatteryVoltage,
+//     BatteryCurrent,
+//     BatteryTemperature,
+//     BrakeTemperature,
+//     PropulsionSpeed,
+//     BrakePressure,
+//     GroundVoltage,
+//     FSMState,
+//     FSMEvent,
+// }
 
 // #[derive(Debug, PartialEq, Eq)]
 pub struct Datapoint {

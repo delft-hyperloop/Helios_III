@@ -111,7 +111,23 @@ fn main() {
 }
 
 fn configure_datatype_encoding(config: &Config) -> String {
-    format!("pub fn encode_datatype(datatype: &Datatype) -> u8 {{\
+    format!("pub enum Datatype {{\
+        PropulsionTemperature,\
+        LevitationTemperature,\
+        BatteryVoltage,\
+        BatteryCurrent,\
+        BatteryTemperature,\
+        SingleCellVoltage,\
+        SingleCellTemperature,\
+        BrakeTemperature,\
+        PropulsionSpeed,\
+        BrakePressure,\
+        HighVoltage,\
+        HighVoltageInsulation,\
+        FSMState,\
+        FSMEvent,\
+    }}")
+    + &*format!("pub fn encode_datatype(datatype: &Datatype) -> u8 {{\
         match datatype {{\
             Datatype::PropulsionTemperature => {},\
             Datatype::LevitationTemperature => {},\

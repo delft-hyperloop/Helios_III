@@ -48,7 +48,7 @@ struct Datapoints {
     BrakeTemperature: u8,
     PropulsionSpeed: u8,
     BrakePressure: u8,
-    GroundVoltage: u8,
+    HighVoltageInsulation: u8,
     FSMState: u8,
     FSMEvent: u8,
 }

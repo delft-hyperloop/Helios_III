@@ -7,8 +7,8 @@ use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::{PriorityChannel, Receiver};
 use heapless::binary_heap::Max;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
-use crate::{DataSender, EventReceiver};
-use crate::core::communication::{Datapoint, Datatype};
+use crate::{DataSender, Datatype, EventReceiver};
+use crate::core::communication::{Datapoint};
 
 
 //Enum holding different states that the FSM can be in
