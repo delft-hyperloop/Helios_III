@@ -31,13 +31,14 @@ pub async fn run(sender: Sender<'static,NoopRawMutex,Event,Max,16>, mut braking_
         }
         else {
             braking_heartbeat.set_low();
+            Timer::after_micros(100).await;
         }
         if booting {
             sender.send(Event::BootingCompleteEvent).await;
             //   sender.send(Event::EmergencyBrakeCommand).await;
             booting = false;
         }
-
+        Timer::after_micros(2000000).await;
     }
     // let mut event_queue: PriorityChannel<NoopRawMutex,Event,Max,16>=PriorityChannel::new()
     info!("------------ Braking ended; someone fucked up... ------------");

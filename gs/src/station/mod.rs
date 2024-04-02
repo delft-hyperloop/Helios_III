@@ -6,6 +6,8 @@ use std::sync::mpsc::{Receiver, Sender};
 use std::sync::{Mutex, RwLock};
 use colored::Colorize;
 use crate::api::{Command, Datapoint};
+use crate::gui::main::LogType;
+use crate::log;
 
 /// The connection manager of the application. This module is responsible for
 /// managing the connection to the main PCB.
@@ -59,18 +61,18 @@ pub fn launch(tx : Sender<Datapoint>, rx : Receiver<Command>) {
     let mut station: Station = Station::new(GS_SOCKET(), server.unwrap(), tx, rx);
 
     while station.running {
-        Station::print(format!("Waiting for connection on {}", station.gs_socket.to_string()), station.tx.clone());
+        log!(station.tx.clone(), LogType::Info, format!("Waiting for connection on {}", station.gs_socket.to_string()));
         match station.listener.accept() {
             Ok((stream, addr)) => {
                 station.connected = true;
                 station.run(stream, addr); // this will be run from the server main thread since a) we dont want it to die and b) we will only ever accept one connection: the main pcb
             },
-            Err(e) => Station::eprint("couldn't get client: {e:?}", station.tx.clone()),
+            Err(e) => log!(station.tx.clone(), LogType::Error, format!("couldn't get client: {e:?}")),
         }
 
         if station.running {// if we get here the station disconnected from the main pcb.
-            Station::eprint("Connection terminated", station.tx.clone());
-            station.tx.send(Datapoint::Status(String::from("Connection was terminated! Trying to reconnect automatically."))).expect("Failed to send message to GUI!");
+            log!(station.tx.clone(), LogType::Error, "Connection terminated");
+            log!(station.tx.clone(), LogType::Warning, "Connection was terminated! Trying to reconnect automatically.");
         }
     }
     println!("Shutting down ground station");
@@ -80,6 +82,6 @@ pub fn launch(tx : Sender<Datapoint>, rx : Receiver<Command>) {
 /// for this we need to use the file of data types corresponding to message ids
 pub fn receive(buffer: [u8;IP_BUFFER_SIZE], n: usize, tx_channel : Sender<Datapoint> ) {
     // Process the received data.
-    let data = String::from_utf8(Vec::from(&buffer[..n])).expect("failed to convert buffer to string");
-    tx_channel.send(Datapoint::Status(format!("received {}", data.trim())));
+    // let data = String::from_utf8(Vec::from(&buffer[..n])).expect("failed to convert buffer to string");
+    tx_channel.send(Datapoint::Status(format!("received {:?}", &buffer[..n]))).expect("TODO: panic message");
 }

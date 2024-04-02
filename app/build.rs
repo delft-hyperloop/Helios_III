@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 extern crate regex;
 extern crate serde;
 use std::env;
@@ -25,6 +27,7 @@ struct GS {
     port: u16,
     udp_port: u16,
     buffer_size: usize,
+    timeout: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -39,6 +42,7 @@ struct NetConfig {
     port: u16,
     udp_port: u16,
     mac_addr: [u8; 6],
+    keep_alive: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -132,12 +136,14 @@ fn configure_ip(config: &Config) -> String {
     format!("pub static GS_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port)
         + &*format!("pub static GS_UPD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.udp_port)
         + &*format!("pub const NETWORK_BUFFER_SIZE: usize = {};", config.gs.buffer_size)
+        + &*format!("pub const IP_TIMEOUT: u64 = {};", config.gs.timeout)
 }
 
 fn configure_pod(config: &Config) -> String {
     format!("pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});", config.pod.net.ip[0], config.pod.net.ip[1], config.pod.net.ip[2], config.pod.net.ip[3], config.pod.net.port)
         + &*format!("pub static POD_UDP_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});", config.pod.net.ip[0], config.pod.net.ip[1], config.pod.net.ip[2], config.pod.net.ip[3], config.pod.net.udp_port)
         + &*format!("pub static POD_MAC_ADDRESS: [u8;6] = [{},{},{},{},{},{}];", config.pod.net.mac_addr[0], config.pod.net.mac_addr[1], config.pod.net.mac_addr[2], config.pod.net.mac_addr[3], config.pod.net.mac_addr[4], config.pod.net.mac_addr[5])
+        + &*format!("pub const KEEP_ALIVE: u64 = {};", config.pod.net.keep_alive)
 }
 
 fn configure_internal(config: &Config) -> String {

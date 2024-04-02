@@ -1,15 +1,20 @@
 [gs]
-#ip = [192, 168, 1, 4]
-ip = [145,94,237,232]
+ip = [192, 168, 1, 4]
+#ip = [145,94,237,232]
+#ip = [145,94,210,198]
+#ip = [145,94,240,108]
+#ip = [145,94,216,225]
 port = 6942
 udp_port = 6943
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
+timeout = 15000 # this is the timeout for the socket, in milliseconds.
 
 [pod.net]
 ip = [192, 168, 1, 69]
 port = 17034
 udp_port = 17035
 mac_addr = [0x00, 0x1e, 0x67, 0x4c, 0x5c, 0x3e]
+keep_alive = 1000 # keep alive interval, in milliseconds.
 
 [pod.internal]
 event_queue_size = 16
@@ -28,7 +33,8 @@ Shutdown = [0x0f, 0x00]
 
 # Every time this file is changed, you also need to update:
 # pod:
-# -
+# - build.rs : configure_datatype_encoding, configure_commands
+# - communication/mod.rs
 # gs:
 # - api/mod.rs
 # -

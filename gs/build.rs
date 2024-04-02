@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 extern crate serde;
 use std::env;
 use std::fs;
@@ -20,6 +22,7 @@ struct GS {
     ip: [u8; 4],
     port: u16,
     buffer_size: usize,
+    timeout: u64,
 }
 
 
@@ -45,6 +48,7 @@ fn configure_ip(dest_path: &Path) {
     let ipconfig: Config = toml::from_str(&ip_file).unwrap();
     config.push_str(&format!("pub fn GS_SOCKET() -> std::net::SocketAddr {} std::net::SocketAddr::new(std::net::IpAddr::from([{},{},{},{}]),{}) {}\n", "{", ipconfig.gs.ip[0], ipconfig.gs.ip[1], ipconfig.gs.ip[2], ipconfig.gs.ip[3], ipconfig.gs.port, "}"));
     config.push_str(&format!("const IP_BUFFER_SIZE: usize = {};\n", ipconfig.gs.buffer_size));
+    config.push_str(&format!("const IP_TIMEOUT: u64 = {};\n", ipconfig.gs.timeout));
     println!("\n\n\n\n\n\n\nconfig.rs will have {}\n\n\n\n\n\n\n", config);
     fs::write(&dest_path, config).unwrap();
 }

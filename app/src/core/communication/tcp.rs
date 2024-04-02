@@ -7,7 +7,7 @@ use embassy_stm32::eth::{Ethernet, PacketQueue, PHY};
 use embassy_stm32::peripherals::ETH;
 use embassy_stm32::rng::Rng;
 use embassy_stm32::{bind_interrupts, eth, peripherals, rng, Config};
-use embassy_time::Timer;
+use embassy_time::{Duration, Timer};
 use embedded_io_async::{Read, Write};
 use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
 use rand_core::RngCore;
@@ -20,10 +20,10 @@ use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::{Receiver, Sender};
 use heapless::binary_heap::Max;
 use heapless::Vec;
-use crate::{DataReceiver, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, NETWORK_BUFFER_SIZE};
+use crate::{DataReceiver, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, NETWORK_BUFFER_SIZE, KEEP_ALIVE, IP_TIMEOUT};
 use crate::core::communication::dispatcher::ground_station_message_dispatcher;
 use crate::core::finite_state_machine::Event;
-use crate::pconfig::socket_from_config;
+use crate::pconfig::{embassy_socket_from_config, socket_from_config};
 
 
 /// This is the task that:
@@ -37,37 +37,69 @@ pub async fn tcp_connection_handler(
     event_sender : EventSender,
     data_receiver : DataReceiver,
 ) -> ! {
+    // info!("------------------------------------------------ TCP Connection Handler Started! ------------------------------------------");
     stack.wait_config_up().await;
 
-    // let state: TcpClientState<1, 1024, 1024> = TcpClientState::new();
+    // let state: TcpClientState<1, { NETWORK_BUFFER_SIZE }, { NETWORK_BUFFER_SIZE }> = TcpClientState::new();
     //
     // let client = TcpClient::new(&stack, &state);
 
-    let gs_addr = socket_from_config(GS_IP_ADDRESS);
-    let mut rx_buffer = [0u8; { NETWORK_BUFFER_SIZE }];
-    let mut tx_buffer = [0u8; { NETWORK_BUFFER_SIZE }];
-    let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+    let gs_addr = embassy_socket_from_config(GS_IP_ADDRESS);
+    let mut rx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
+    let mut tx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
+
+    let mut socket: TcpSocket = TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
 
     let mut buf = [0; 1024];
     loop {
-        socket.connect(gs_addr).await.unwrap();
-        info!("Connected to ground station");
+        // info!("====================================================Connecting to ground station______________________________");
+        socket.connect(gs_addr).await;
+        // let mut connection = client.connect(gs_addr).await.unwrap();
+        // info!("----------------------------------------------------------------Connected to ground station==========================");
 
-        let (mut tcp_reader,mut tcp_writer) = socket.split();
+        // socket.set_keep_alive(Some(Duration::from_millis(KEEP_ALIVE)));
+        // socket.set_timeout(Some(Duration::from_millis(IP_TIMEOUT)));
 
+        /*// let (mut tcp_reader,mut tcp_writer) = unsafe { socket.split() };
         // spawn the writer task: it will take messages from the channel and send them over the TCP connection
-        x.spawn(ground_station_message_dispatcher(tcp_writer, data_receiver.clone())).unwrap();
+        // x.spawn(ground_station_message_dispatcher(tcp_writer, data_receiver.clone())).unwrap();*/
 
+        match socket.write(b"aaaaaaaaaaaaaaa0").await {
+            Ok(_) => info!("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]Data sent successfully"),
+            Err(e) => info!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Failed to send data: {:?}", e),
+        }
+        // info!("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@THIS LINE NEVER GETS EXECUTED :(((((");
         // loop to receive data from the TCP connection
         loop {
-
-            let n = tcp_reader.read(&mut buf).await.unwrap();
-            if n == 0 {
-                break;
+            // info!("in the ethernet loop---------------------------");
+            // socket.write(b"in da tcp loop!").await;
+            event_sender.send(Event::DefaultEvent).await;
+            info!("[tcp] Sent default event");
+            if socket.can_recv() {
+                let n = socket.read(&mut buf).await.unwrap();
+                if n == 0 {
+                    break;
+                }
+                info!("[tcp] !!!!!!!!!!!!!!! Received::  {:?}", &buf[..n]);
             }
-            info!("Received: {:?}", &buf[..n]);
+            // socket.write_all(b"trying to receive on data mpmc").await;
+            socket.flush().await;
+            match data_receiver.try_receive() {
+                Ok(data) => {
+                    // socket.write(b"received on data mpmc").await;
+                    let mut data = data.as_bytes();
+                    info!("[tcp:mpmc] Sending data: {:?}", data);
+                    socket.write_all(&mut data).await.unwrap();
+                    // socket.
+                }
+                Err(_) => {
+                    // socket.write(b"took an L on data mpmc").await;
+                    info!("[tcp:mpmc] No data on mpmc channel to send");
+                }
+            }
+            Timer::after_millis(1000).await;
         }
-        socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
         // if this is reached, it means that the connection was dropped
+        info!("SOMETHING FUCKED UP! D:");
     }
 }

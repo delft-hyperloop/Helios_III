@@ -31,12 +31,17 @@ pub struct App {
     pub tx: Sender<Command>,
     pub rx: Receiver<Datapoint>,
     pub safety_score: Vec<(f64,f64)>,
+    pub unsafety_score: Vec<(f64,f64)>,
+    pub battery_voltages: Vec<(String,u64)>,
     pub exit: bool,
+    pub scroll: u16,
+    pub time_elapsed: u64,
+    pub selected: usize,
 }
 
 
 pub fn gui_main(tx : Sender<Command>, rx: Receiver<Datapoint>) -> io::Result<()> {
-    set_panic_hook(); // custom panic hook to restore the terminal before panicking
+    // set_panic_hook(); // custom panic hook to restore the terminal before panicking
 
     let mut terminal = tui::init()?; // initialise the crossterm magic
     let app_result = App::new(tx, rx).run(&mut terminal);

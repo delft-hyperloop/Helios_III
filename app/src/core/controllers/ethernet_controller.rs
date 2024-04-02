@@ -69,7 +69,7 @@ impl EthernetController {
 
         static PACKETS: StaticCell<PacketQueue<16, 16>> = StaticCell::new();
 
-        let mut device = Ethernet::new(
+        let mut device: Device = Ethernet::new(
             PACKETS.init(PacketQueue::<16, 16>::new()),
             pins.eth_pin,
             Irqs,
@@ -86,12 +86,12 @@ impl EthernetController {
             mac_addr,
         );
 
-        let eth_config = embassy_net::Config::dhcpv4(Default::default());
+        let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();
 
         static RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
-        let stack = &*STACK.init(Stack::new(
+        let stack: &Stack<Device> = &*STACK.init(Stack::new(
             device,
             eth_config,
             RESOURCES.init(StackResources::<3>::new()),

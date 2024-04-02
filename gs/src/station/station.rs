@@ -10,6 +10,7 @@ use crate::api::{Command, Datapoint};
 use crate::gui::main::LogType;
 use crate::log;
 use crate::station::{receive, Station};
+
 // use crate::station::Event;
 include!(concat!(env!("OUT_DIR"), "/config.rs"));
 
@@ -41,21 +42,30 @@ impl Station {
         let tx_clone = self.tx.clone();
         thread::spawn(move || {
             let mut buffer = [0; IP_BUFFER_SIZE];
+            let mut last_read_timestamp = std::time::Instant::now();
+            read_stream.set_read_timeout(Some(std::time::Duration::from_millis(IP_TIMEOUT))).unwrap();
             loop {
                  match read_stream.read(&mut buffer) {
                      Ok(0) => {
                          log!(tx_clone.clone(), LogType::Error, "Connection closed by Main PCB!!");
-                         disconnect_send.send(()).unwrap();
+                         disconnect_send.send(0).unwrap();
                          break;
                      }
                      Ok(n) => {
+                         last_read_timestamp = std::time::Instant::now();
                          receive(buffer, n, tx_clone.clone());
                      }
                      Err(e) => {
                          log!(tx_clone.clone(), LogType::Error, format!("Failed to read from connection: {}", e));
-                         disconnect_send.send(()).unwrap();
+                         disconnect_send.send(0).unwrap();
+                         break;
                      }
                 }
+                // if last_read_timestamp.elapsed().as_secs() > 5 {
+                //     log!(tx_clone.clone(), LogType::Error, "Connection timed out!!");
+                //     disconnect_send.send(0).unwrap();
+                //     break;
+                // }
             }
         });
         // (main thread) sending data in response to events
@@ -135,7 +145,7 @@ impl Station {
             }
             // check if the sender has disconnected
             if disconnect_receive.try_recv().is_ok() {
-                log!(self.tx.clone(), LogType::Success, "Closing receiver: sender disconnected");
+                log!(self.tx.clone(), LogType::Warning, "Closing receiver: sender disconnected");
                 break;
             }
         }

@@ -8,6 +8,7 @@ use embassy_sync::priority_channel::{PriorityChannel, Receiver};
 use heapless::binary_heap::Max;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::{DataSender, EventReceiver};
+use crate::core::communication::{Datapoint, Datatype};
 
 
 //Enum holding different states that the FSM can be in
@@ -169,6 +170,42 @@ impl Event {
             _ => 0, // Lower priority for all other events
         }
     }
+
+    pub fn as_u8(&self) -> u8 {
+        match self {
+            Event::BootingCompleteEvent => 0,
+            Event::BootingFailedEvent => 1,
+            Event::ConnectionEstablishedEvent => 2,
+            Event::ConnectionEstablishmentFailedEvent => 3,
+            Event::LVLevitationReadyEvent => 4,
+            Event::LVPropulsionReadyEvent => 5,
+            Event::LVPowertrainReadyEvent => 6,
+            Event::HVPowertrainReadyEvent => 7,
+            Event::HVLevitationReadyEvent => 8,
+            Event::StartLevitatingCommand => 9,
+            Event::HVPropulsionReadyEvent => 10,
+            Event::StartAcceleratingCommand => 11,
+            Event::DesiredSpeedReachedEvent => 12,
+            Event::BrakingPointReachedEvent => 13,
+            Event::DirectionChangedEvent => 14,
+            Event::SystemResetCommand => 15,
+            Event::LevitationErrorEvent => 16,
+            Event::PropulsionErrorEvent => 17,
+            Event::PowertrainErrorEvent => 18,
+            Event::EmergencyBrakeCommand => 19,
+            Event::RunFinishedEvent => 20,
+            Event::LaneSwitchingPointReachedEvent => 21,
+            Event::LaneSwitchingCompleteEvent => 22,
+            Event::ConnectionLossEvent => 23,
+            Event::ArmBrakesCommand => 24,
+            Event::ExitEvent => 25,
+            Event::TurnOnHVCommand => 26,
+            Event::RunConfigFailedEvent => 27,
+            Event::RunConfigCompleteEvent => 28,
+            Event::DefaultEvent => 29,
+            _ => 69
+        }
+    }
 }
 impl PartialOrd for Event { fn partial_cmp(&self, other: &Self) -> Option<Ordering> { Some(self.cmp(other)) } }
 impl Ord for Event { fn cmp(&self, other: &Self) -> Ordering { self.priority().cmp(&other.priority()) } }
@@ -226,7 +263,9 @@ impl FSM {
             }
         }
     }
-    pub(crate) fn react(&mut self, event: Event) {
+    pub(crate) async fn react(&mut self, event: Event) {
+        info!("[fsm] reacting to {}", event.as_u8());
+        self.data_queue.send(Datapoint::new(Datatype::FSMEvent, event.as_u8() as u64, 69)).await;
         match event {
             Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {
                 self.transit(State::EmergencyBraking);

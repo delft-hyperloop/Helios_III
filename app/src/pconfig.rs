@@ -50,6 +50,11 @@ pub fn default_configuration() -> Config {
 }
 
 #[inline]
-pub fn socket_from_config(t: ([u8;4],u16)) -> IpEndpoint {
+pub fn embassy_socket_from_config(t: ([u8;4],u16)) -> IpEndpoint {
     IpEndpoint::new(Ipv4(Ipv4Address::new(t.0[0],t.0[1],t.0[2],t.0[3])), t.1)
+}
+
+#[inline]
+pub fn socket_from_config(t: ([u8;4],u16)) -> SocketAddr {
+    SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(t.0[0],t.0[1],t.0[2],t.0[3]), t.1))
 }

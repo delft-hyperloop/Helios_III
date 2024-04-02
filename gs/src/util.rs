@@ -6,7 +6,7 @@ pub struct Util {
 
 impl Util {
     pub fn Now() -> String {
-        chrono::offset::Local::now().to_string()
+        chrono::offset::Local::now().format("%H:%M:%S.%3f").to_string()
     }
 
     pub fn Instant() -> f64 {

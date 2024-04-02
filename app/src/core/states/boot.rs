@@ -7,7 +7,7 @@ impl FSM {
 
         info!("Entering Boot State");
 
-        self.data_queue.send(Datapoint::new(Datatype::FSMState, 13, 69)).unwrap();
+        self.data_queue.send(Datapoint::new(Datatype::FSMState, 13, 69));
         self.react(Event::BootingCompleteEvent);
         return;
         if !self.peripherals.braking_controller.rearm_breaks() {
