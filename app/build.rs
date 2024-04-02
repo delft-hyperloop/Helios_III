@@ -68,12 +68,18 @@ struct Datapoints {
     BatteryVoltage: u8,
     BatteryCurrent: u8,
     BatteryTemperature: u8,
+    BatteryBalance: u8,
+    SingleCellVoltage: u8,
+    SingleCellTemperature: u8,
     BrakeTemperature: u8,
     PropulsionSpeed: u8,
     BrakePressure: u8,
-    GroundVoltage: u8,
+    HighVoltage: u8,
+    HighVoltageInsulation: u8,
     FSMState: u8,
     FSMEvent: u8,
+    //BMS INFO
+
 }
 
 
@@ -111,14 +117,17 @@ fn configure_datatype_encoding(config: &Config) -> String {
             Datatype::BatteryVoltage => {},\
             Datatype::BatteryCurrent => {},\
             Datatype::BatteryTemperature => {},\
+            Datatype::SingleCellVoltage => {},\
+            Datatype::SingleCellTemperature => {},\
             Datatype::BrakeTemperature => {},\
             Datatype::PropulsionSpeed => {},\
             Datatype::BrakePressure => {},\
-            Datatype::GroundVoltage => {},\
+            Datatype::HighVoltage => {},\
+            Datatype::HighVoltageInsulation => {},\
             Datatype::FSMState => {},\
             Datatype::FSMEvent => {},\
         }}\
-    }}", config.datapoints.PropulsionTemperature, config.datapoints.LevitationTemperature, config.datapoints.BatteryVoltage, config.datapoints.BatteryCurrent, config.datapoints.BatteryTemperature, config.datapoints.BrakeTemperature, config.datapoints.PropulsionSpeed, config.datapoints.BrakePressure, config.datapoints.GroundVoltage, config.datapoints.FSMState, config.datapoints.FSMEvent)
+    }}", config.datapoints.PropulsionTemperature, config.datapoints.LevitationTemperature, config.datapoints.BatteryVoltage, config.datapoints.BatteryCurrent, config.datapoints.BatteryTemperature,config.datapoints.SingleCellVoltage,config.datapoints.SingleCellTemperature ,config.datapoints.BrakeTemperature, config.datapoints.PropulsionSpeed, config.datapoints.BrakePressure, config.datapoints.HighVoltage,config.datapoints.HighVoltageInsulation, config.datapoints.FSMState, config.datapoints.FSMEvent)
 }
 
 fn configure_commands(config: &Config) -> String {

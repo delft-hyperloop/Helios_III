@@ -48,9 +48,9 @@ pub struct GroundFaultDetection{
     //TODO Add the treshoulds once powertrain do their job
 }
 pub async fn ground_fault_detection_isolation_details(data: &[u8]) {
-    let negative_isolation_resistance= ((data[0] as u16) << 8) | (data[1] as u16);
-    let positive_isolation_resistance = ((data[2] as u16)<< 8)  | (data[3] as u16);
-    let original_isolation_resistance = ((data[4] as u16)<< 8)  | (data[5] as u16);
+    let negative_insulation_resistance= ((data[0] as u16) << 8) | (data[1] as u16);
+    let positive_insulation_resistance = ((data[2] as u16)<< 8)  | (data[3] as u16);
+    let original_insulation_resistance = ((data[4] as u16)<< 8)  | (data[5] as u16);
     let measurement_counter = data[6];
     let isolation_quality = data[7];
     //TODO -> Do something here rn im just doing this for the sake of organization;

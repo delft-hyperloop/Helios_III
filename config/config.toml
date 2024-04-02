@@ -42,18 +42,21 @@ PropulsionInit = [0x12, 0x00]
 # gs:
 # - api/mod.rs
 # -
-
-
 [datapoints]
 PropulsionTemperature = 0x0b
 LevitationTemperature = 0x0a
-BatteryVoltage = 0x09
-BatteryCurrent = 0x08
-BatteryTemperature = 0x07
-BrakeTemperature = 0x06
-PropulsionSpeed = 0x05
-BrakePressure = 0x04
-GroundVoltage = 0x03
-FSMState = 0x02
-FSMEvent = 0x01
+BatteryVoltage = 0x0c
+BatteryCurrent = 0x0d
+BatteryTemperature = 0x0e
+BatteryBalance = 0x0f
+SingleCellVoltage = 0x10
+SingleCellTemperature = 0x11
+BrakeTemperature = 0x12
+PropulsionSpeed = 0x13
+BrakePressure = 0x14
+HighVoltage = 0x15
+HighVoltageInsulation = 0x16
+FSMState = 0x17
+FSMEvent = 0x18
+
 
