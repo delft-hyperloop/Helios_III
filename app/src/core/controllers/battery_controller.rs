@@ -7,11 +7,11 @@ pub struct BatteryController {
 }
 
 impl BatteryController {
+    /// parameters needed:
+    /// - x: Spawner, to create the tasks that actually do stuff
+    /// - sender: EventSender, to send events to the FSM
+    /// - ?
     pub fn new(
-        /// parameters needed:
-        /// - x: Spawner, to create the tasks that actually do stuff
-        /// - sender: EventSender, to send events to the FSM
-        /// - ?
         x: Spawner,
         sender: EventSender,
     ) -> Self {
