@@ -1,6 +1,6 @@
 use core::cmp::Ordering;
-use crate::core::finite_state_machine::Event;
-use crate::{Datatype, encode_datatype};
+use crate::Datatype;
+
 pub mod tcp;
 pub mod udp;
 mod parse;
@@ -40,9 +40,10 @@ impl Datapoint {
 
     pub fn as_bytes(&self) -> [u8; 13] {
         let mut bytes = [0; 13];
-        bytes[0] = encode_datatype(&self.datatype);
-        bytes[1..9].copy_from_slice(&self.value.to_le_bytes());
-        bytes[9..13].copy_from_slice(&self.timestamp.to_le_bytes());
+        bytes[0] = (self.datatype.to_id() & 0x00FF) as u8;
+        bytes[1] = (self.datatype.to_id() & 0xFF00) as u8;
+        bytes[2..10].copy_from_slice(&self.value.to_le_bytes());
+        bytes[10..14].copy_from_slice(&self.timestamp.to_le_bytes());
         bytes
     }
 }

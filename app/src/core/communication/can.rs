@@ -13,7 +13,6 @@ use embassy_sync::priority_channel::{Receiver, Sender};
 use heapless::binary_heap::Max;
 use heapless::Vec;
 use crate::{CanReceiver, DataReceiver, DataSender, EventSender};
-use crate::core::finite_state_machine::Event;
 
 
 #[embassy_executor::task]
@@ -37,15 +36,15 @@ pub async fn can_one_receiving_handler(
     mut bus : FdcanRx<'static, FDCAN1>
 ) -> ! {
     loop {
-        // match bus.read().await {
-        //     Ok(frame) => {
-        //         data_sender.send().await;
-        //     }
-        //     Err(_) => {
-        //         // info!("Error reading from CAN bus");
-        //     }
-        //
-        // }
+        match bus.read().await {
+            Ok(frame) => {
+                // data_sender.send().await;
+            }
+            Err(_) => {
+                // info!("Error reading from CAN bus");
+            }
+
+        }
     }
 }
 

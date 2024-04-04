@@ -151,7 +151,7 @@ async fn main(spawner: Spawner) -> ! {
 	loop {
 		info!("in da loop");
 		let curr_event = fsm.event_queue.receive().await;
-		info!("[main] received event: {:?}", curr_event.as_u8());
+		info!("[main] received event: {:?}", curr_event.to_id());
 		fsm.react(curr_event).await;
 		fsm.data_queue.send(Datapoint::new(Datatype::BatteryVoltage, 42, 42069)).await;
 	}

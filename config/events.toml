@@ -1,0 +1,155 @@
+[[Event]]
+name = "DefaultEvent"
+id = 0x00
+priority = 0
+
+[[Event]]
+name = "BootingCompleteEvent"
+id = 0x01
+priority = 0
+
+[[Event]]
+name = "BootingFailedEvent"
+id = 0x02
+priority = 0
+
+[[Event]]
+name = "ConnectionEstablishedEvent"
+id = 0x03
+priority = 0
+
+[[Event]]
+name = "ConnectionEstablishmentFailedEvent"
+id = 0x04
+priority = 0
+
+[[Event]]
+name = "SetRunConfig"
+id = 0x05
+priority = 0
+params = "u32"
+
+[[Event]]
+name = "RunConfigCompleteEvent"
+id = 0x06
+priority = 0
+
+[[Event]]
+name = "RunConfigFailedEvent"
+id = 0x07
+priority = 0
+
+[[Event]]
+name = "LevitationErrorEvent"
+id = 0x08
+priority = 4
+
+[[Event]]
+name = "PropulsionErrorEvent"
+id = 0x09
+priority = 3
+
+[[Event]]
+name = "PowertrainErrorEvent"
+id = 0x0A
+priority = 2
+
+[[Event]]
+name = "EmergencyBrakeCommand"
+id = 0x0B
+priority = 10
+
+[[Event]]
+name = "ConnectionLossEvent"
+id = 0x0C
+priority = 1
+
+[[Event]]
+name = "LVLevitationReadyEvent"
+id = 0x0D
+priority = 0
+
+[[Event]]
+name = "LVPropulsionReadyEvent"
+id = 0x0E
+priority = 0
+
+[[Event]]
+name = "LVPowertrainReadyEvent"
+id = 0x0F
+priority = 0
+
+[[Event]]
+name = "ArmBrakesCommand"
+id = 0x10
+priority = 0
+
+[[Event]]
+name = "TurnOnHVCommand"
+id = 0x11
+priority = 0
+
+[[Event]]
+name = "HVPowertrainReadyEvent"
+id = 0x12
+priority = 0
+
+[[Event]]
+name = "HVLevitationReadyEvent"
+id = 0x13
+priority = 0
+
+[[Event]]
+name = "StartLevitatingCommand"
+id = 0x14
+priority = 0
+
+[[Event]]
+name = "HVPropulsionReadyEvent"
+id = 0x15
+priority = 0
+
+[[Event]]
+name = "StartAcceleratingCommand"
+id = 0x16
+priority = 0
+
+[[Event]]
+name = "DesiredSpeedReachedEvent"
+id = 0x17
+priority = 0
+
+[[Event]]
+name = "BrakingPointReachedEvent"
+id = 0x18
+priority = 0
+
+[[Event]]
+name = "LaneSwitchingPointReachedEvent"
+id = 0x19
+priority = 0
+
+[[Event]]
+name = "LaneSwitchingCompleteEvent"
+id = 0x1A
+priority = 0
+
+[[Event]]
+name = "DirectionChangedEvent"
+id = 0x1B
+priority = 0
+
+[[Event]]
+name = "RunFinishedEvent"
+id = 0x1C
+priority = 0
+
+[[Event]]
+name = "SystemResetCommand"
+id = 0x1D
+priority = 0
+
+[[Event]]
+name = "ExitEvent"
+id = 0x1E
+priority = 0

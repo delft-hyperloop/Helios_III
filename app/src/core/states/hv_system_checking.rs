@@ -1,5 +1,6 @@
 use defmt::info;
 use crate::core::finite_state_machine::*;
+use crate::Event;
 
 impl FSM{
     pub fn entry_hv_system_checking(&mut self) {
@@ -46,8 +47,8 @@ impl FSM{
             //     self.transit(State::EmergencyBraking)
             // }
             _ => {
-                info!("The current state ignores");
-                event.fmt();
+                info!("The current state ignores {}", event.to_str());
+
             }
         }
     }

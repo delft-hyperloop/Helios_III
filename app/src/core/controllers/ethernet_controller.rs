@@ -28,7 +28,6 @@ use heapless::binary_heap::Max;
 use heapless::Vec;
 use crate::core::communication::tcp::tcp_connection_handler;
 use crate::core::communication::udp::udp_connection_handler;
-use crate::core::finite_state_machine::Event;
 
 type Device = Ethernet<'static, ETH, GenericSMI>;
 

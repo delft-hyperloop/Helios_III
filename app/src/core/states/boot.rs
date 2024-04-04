@@ -1,7 +1,7 @@
 use defmt::info;
 use crate::core::communication::{Datapoint};
-use crate::core::finite_state_machine::{Event, FSM, State};
-use crate::Datatype;
+use crate::core::finite_state_machine::{FSM, State};
+use crate::{Datatype, Event};
 
 impl FSM {
     pub fn boot_entry(&mut self) {
@@ -34,8 +34,8 @@ impl FSM {
                 self.transit(State::Exit)
             }
             _ => {
-                info!("The current state ignores");
-                event.fmt();
+                info!("The current state ignores {}", event.to_str());
+
             }
         }
     }

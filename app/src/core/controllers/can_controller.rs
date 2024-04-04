@@ -27,7 +27,6 @@ use heapless::binary_heap::Max;
 use heapless::Vec;
 use crate::core::communication::tcp::tcp_connection_handler;
 use crate::core::communication::udp::udp_connection_handler;
-use crate::core::finite_state_machine::Event;
 use embassy_stm32::flash::Error::Size;
 use embassy_stm32::gpio::{Input, Pull};
 use embassy_stm32::{can, Peripheral, Peripherals};

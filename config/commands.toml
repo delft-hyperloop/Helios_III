@@ -1,0 +1,35 @@
+[[Command]]
+name = "DefaultCommand"
+id = 0x00
+
+[[Command]]
+name = "Levitate"
+id = 0x0a
+
+[[Command]]
+name = "StopLevitating"
+id = 0x0b
+
+[[Command]]
+name = "Configure"
+id = 0x0c
+
+[[Command]]
+name = "StartRun"
+id = 0x0d
+
+[[Command]]
+name = "EmergencyBrake"
+id = 0xff
+
+[[Command]]
+name = "Shutdown"
+id = 0x0f
+
+[[Command]]
+name = "StartHV"
+id = 0x10
+
+[[Command]]
+name = "StopHV"
+id = 0x11
