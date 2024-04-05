@@ -27,7 +27,7 @@ priority = 0
 name = "SetRunConfig"
 id = 0x05
 priority = 0
-params = "u32"
+params = "u64"
 
 [[Event]]
 name = "RunConfigCompleteEvent"

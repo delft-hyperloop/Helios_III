@@ -38,5 +38,5 @@ pub fn main() -> String {
         match_from_id.push_str(&format!("{} => Datatype::{},\n", dtype.id, dtype.name));
     }
 
-    format!("pub enum Datatype {{ {} }}\nimpl Datatype {{\n  pub fn to_id(&self)->u16 {{ {} }} }}\n pub fn from_id(id:u16) -> Self {{ {} _ => Datatype::DefaultDatatype, }} }}\n}}", enum_definitions, match_to_id, match_from_id)
+    format!("\n\npub enum Datatype {{ {} }}\nimpl Datatype {{\n  pub fn to_id(&self)->u16 {{ {} }} }}\n pub fn from_id(id:u16) -> Self {{ {} _ => Datatype::DefaultDatatype, }} }}\n}}", enum_definitions, match_to_id, match_from_id)
 }

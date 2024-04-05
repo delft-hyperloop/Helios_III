@@ -58,7 +58,7 @@ pub fn main() -> String {
         to_str.push_str(&format!("\"{}\",", command.name));
     }
 
-    format!("pub static EVENTS_DISPLAY: [&str; {}] = [{}\"Unknown\"];", event_count+1, to_str)
+    format!("\n\npub static EVENTS_DISPLAY: [&str; {}] = [{}\"Unknown\"];\n", event_count+1, to_str)
     + &* format!("#[derive(Debug, PartialEq, Eq)]
              pub enum Event {{
                 {}

@@ -37,5 +37,5 @@ pub fn main() -> String {
         match_from_id.push_str(&format!("{} => Command::{}(0u64),\n", command.id, command.name));
     }
 
-    format!("pub enum Command {{ {} }}\nimpl Command {{\n  pub fn to_id(&self)->u16 {{ {} }} }}\n pub fn from_id(id:u16) -> Self {{ {} _ => Command::DefaultCommand(0), }} }}\n}}", enum_definitions, match_to_id, match_from_id)
+    format!("\n\npub enum Command {{ {} }}\nimpl Command {{\n  pub fn to_id(&self)->u16 {{ {} }} }}\n pub fn from_id(id:u16) -> Self {{ {} _ => Command::DefaultCommand(0), }} }}\n}}", enum_definitions, match_to_id, match_from_id)
 }
