@@ -1,5 +1,6 @@
 use defmt::info;
 use crate::core::finite_state_machine::*;
+use crate::Event;
 
 impl FSM{
     pub fn entry_hv_system_checking(&mut self) {
@@ -10,27 +11,27 @@ impl FSM{
         match event {
             Event::HVLevitationReadyEvent => {
 
-                self.peripherals.hv_controller.check_levitation();
+                self.status.check_levitation();
 
 
             }
             Event::HVPowertrainReadyEvent => {
 
-                self.peripherals.hv_controller.check_powertrain();
+                self.status.check_powertrain();
 
 
             }
             Event::HVPropulsionReadyEvent => {
 
-            self.peripherals.hv_controller.check_propulsion();
+                self.status.check_propulsion();
 
 
             }
             Event::StartLevitatingCommand => {
 
-                if (self.peripherals.hv_controller.check_all()) {
+                if (self.status.check_all()) {
 
-                    
+
                     self.transit(State::Levitating);
                 }
                 todo!();
@@ -46,8 +47,8 @@ impl FSM{
             //     self.transit(State::EmergencyBraking)
             // }
             _ => {
-                info!("The current state ignores");
-                event.fmt();
+                info!("The current state ignores {}", event.to_str());
+
             }
         }
     }

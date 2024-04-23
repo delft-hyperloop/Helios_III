@@ -1,5 +1,6 @@
 [gs]
 ip = [192, 168, 1, 4]
+#ip = [172,20,10,3]
 #ip = [145,94,237,159]
 #ip = [145,94,237,232]
 #ip = [145,94,210,198]
@@ -23,38 +24,4 @@ data_queue_size = 32
 can_queue_size = 16
 
 
-# Format for commands:
-# (identifier : u8, payload length: u16, payload: [u8; payload length])
-[command]
-Levitate = [0x0a, 0x00]
-StopLevitating = [0x0b, 0x00]
-Configure = [0x0c, 0x04]
-StartRun = [0x0d, 0x00]
-EmergencyBrake = [0xff, 0x00]
-Shutdown = [0x0f, 0x00]
-StartHV = [0x10, 0x00]
-StopHV = [0x11, 0x00]
-PropulsionInit = [0x12, 0x00]
-
-# Every time this file is changed, you also need to update:
-# pod:
-# - build.rs : configure_datatype_encoding, configure_commands
-# - communication/mod.rs
-# gs:
-# - api/mod.rs
-# -
-
-
-[datapoints]
-PropulsionTemperature = 0x0b
-LevitationTemperature = 0x0a
-BatteryVoltage = 0x09
-BatteryCurrent = 0x08
-BatteryTemperature = 0x07
-BrakeTemperature = 0x06
-PropulsionSpeed = 0x05
-BrakePressure = 0x04
-GroundVoltage = 0x03
-FSMState = 0x02
-FSMEvent = 0x01
 

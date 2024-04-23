@@ -35,7 +35,7 @@ mod pconfig;
 
 use core::finite_state_machine::*;
 use core::controllers::finite_state_machine_peripherals::*;
-use crate::core::communication::{Datapoint, Datatype};
+use crate::core::communication::{Datapoint};
 use crate::pconfig::default_configuration;
 
 
@@ -77,6 +77,7 @@ static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex,can::frame::ClassicFrame, 
 
 pub struct InternalMessaging {
 	event_sender: EventSender,
+	data_sender: DataSender,
 	data_receiver: DataReceiver,
 	can_one_sender: CanSender,
 	can_one_receiver: CanReceiver,
@@ -84,7 +85,7 @@ pub struct InternalMessaging {
 	can_two_receiver: CanReceiver,
 }
 
-/// Main Function: program entry point
+/// # Main Function: program entry point
 #[embassy_executor::main]
 async fn main(spawner: Spawner) -> ! {
 	info!("------------ Main Application Started! ------------");
@@ -127,6 +128,7 @@ async fn main(spawner: Spawner) -> ! {
 	/// Begin peripheral configuration
 	let mut per: FSMPeripherals = FSMPeripherals::new(p, spawner.borrow(), InternalMessaging {
 		event_sender,
+		data_sender,
 		data_receiver,
 		can_one_sender,
 		can_one_receiver,
@@ -149,7 +151,7 @@ async fn main(spawner: Spawner) -> ! {
 	loop {
 		info!("in da loop");
 		let curr_event = fsm.event_queue.receive().await;
-		info!("[main] received event: {:?}", curr_event.as_u8());
+		info!("[main] received event: {:?}", curr_event.to_id());
 		fsm.react(curr_event).await;
 		fsm.data_queue.send(Datapoint::new(Datatype::BatteryVoltage, 42, 42069)).await;
 	}

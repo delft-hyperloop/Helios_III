@@ -1,0 +1,81 @@
+## Every time this file is changed, you also need to update:
+## pod:
+## - communication/mod.rs
+## gs:
+## - api/mod.rs
+## -
+[[Datatype]]
+name = "DefaultDatatype"
+id = 0x00
+
+[[Datatype]]
+name = "PropulsionTemperature"
+id = 0x0a
+
+[[Datatype]]
+name = "LevitationTemperature"
+id = 0x0b
+
+[[Datatype]]
+name = "BatteryVoltage"
+id = 0x0c
+
+[[Datatype]]
+name = "BatteryCurrent"
+id = 0x0d
+
+[[Datatype]]
+name = "BatteryTemperature"
+id = 0x0e
+
+[[Datatype]]
+name = "BatteryBalance"
+id = 0x0f
+
+[[Datatype]]
+name = "SingleCellVoltage"
+id = 0x10
+
+[[Datatype]]
+name = "SingleCellTemperature"
+id = 0x11
+
+[[Datatype]]
+name = "ChargeState"
+id = 0x12
+
+[[Datatype]]
+name = "BrakeTemperature"
+id = 0x13
+
+[[Datatype]]
+name = "PropulsionSpeed"
+id = 0x14
+
+[[Datatype]]
+name = "BrakePressure"
+id = 0x15
+
+[[Datatype]]
+name = "HighVoltage"
+id = 0x16
+
+[[Datatype]]
+name = "HighVoltageInsulation"
+id = 0x17
+
+[[Datatype]]
+name = "FSMState"
+id = 0x18
+
+[[Datatype]]
+name = "FSMEvent"
+id = 0x19
+
+[[Datatype]]
+name = "PodDropTriggered"
+id = 0x1a
+
+[[Datatype]]
+name = "Localisation"
+id = 0x1b

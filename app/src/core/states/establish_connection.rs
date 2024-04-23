@@ -1,5 +1,6 @@
 use defmt::info;
-use crate::core::finite_state_machine::{Event, FSM, State};
+use crate::core::finite_state_machine::{FSM, State};
+use crate::Event;
 
 impl FSM{
     pub fn entry_establish_connection(&mut self) {
@@ -22,8 +23,8 @@ impl FSM{
             }
 
             _ => {
-                info!("The current state ignores");
-                event.fmt();
+                info!("The current state ignores {}", event.to_str());
+
             }
         }
     }
