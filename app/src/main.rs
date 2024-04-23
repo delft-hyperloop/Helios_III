@@ -85,7 +85,7 @@ pub struct InternalMessaging {
 	can_two_receiver: CanReceiver,
 }
 
-/// Main Function: program entry point
+/// # Main Function: program entry point
 #[embassy_executor::main]
 async fn main(spawner: Spawner) -> ! {
 	info!("------------ Main Application Started! ------------");

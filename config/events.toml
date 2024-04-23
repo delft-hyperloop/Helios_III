@@ -1,155 +1,165 @@
 [[Event]]
 name = "DefaultEvent"
-id = 0x00
-priority = 0
-
-[[Event]]
-name = "BootingCompleteEvent"
-id = 0x01
-priority = 0
-
-[[Event]]
-name = "BootingFailedEvent"
 id = 0x02
 priority = 0
 
 [[Event]]
+name = "BootingCompleteEvent"
+id = 0xa1
+priority = 0
+
+[[Event]]
+name = "BootingFailedEvent"
+id = 0xa2
+priority = 0
+
+[[Event]]
 name = "ConnectionEstablishedEvent"
-id = 0x03
+id = 0xa3
 priority = 0
 
 [[Event]]
 name = "ConnectionEstablishmentFailedEvent"
-id = 0x04
+id = 0xa4
 priority = 0
 
 [[Event]]
 name = "SetRunConfig"
-id = 0x05
+id = 0xa5
 priority = 0
 params = "u64"
 
 [[Event]]
 name = "RunConfigCompleteEvent"
-id = 0x06
+id = 0xa6
 priority = 0
 
 [[Event]]
 name = "RunConfigFailedEvent"
-id = 0x07
+id = 0xa7
 priority = 0
 
 [[Event]]
 name = "LevitationErrorEvent"
-id = 0x08
+id = 0xa8
 priority = 4
 
 [[Event]]
 name = "PropulsionErrorEvent"
-id = 0x09
+id = 0xa9
 priority = 3
 
 [[Event]]
 name = "PowertrainErrorEvent"
-id = 0x0A
+id = 0xaA
 priority = 2
 
 [[Event]]
 name = "EmergencyBrakeCommand"
-id = 0x0B
+id = 0xaB
 priority = 10
 
 [[Event]]
 name = "ConnectionLossEvent"
-id = 0x0C
+id = 0xaC
 priority = 1
 
 [[Event]]
 name = "LVLevitationReadyEvent"
-id = 0x0D
+id = 0xaD
 priority = 0
 
 [[Event]]
 name = "LVPropulsionReadyEvent"
-id = 0x0E
+id = 0xaE
 priority = 0
 
 [[Event]]
 name = "LVPowertrainReadyEvent"
-id = 0x0F
+id = 0xaF
 priority = 0
 
 [[Event]]
 name = "ArmBrakesCommand"
-id = 0x10
+id = 0xb0
 priority = 0
 
 [[Event]]
 name = "TurnOnHVCommand"
-id = 0x11
+id = 0xb1
 priority = 0
 
 [[Event]]
 name = "HVPowertrainReadyEvent"
-id = 0x12
+id = 0xb2
 priority = 0
 
 [[Event]]
 name = "HVLevitationReadyEvent"
-id = 0x13
+id = 0xb3
 priority = 0
 
 [[Event]]
 name = "StartLevitatingCommand"
-id = 0x14
+id = 0xb4
 priority = 0
 
 [[Event]]
 name = "HVPropulsionReadyEvent"
-id = 0x15
+id = 0xb5
 priority = 0
 
 [[Event]]
 name = "StartAcceleratingCommand"
-id = 0x16
+id = 0xb6
 priority = 0
 
 [[Event]]
 name = "DesiredSpeedReachedEvent"
-id = 0x17
+id = 0xb7
 priority = 0
 
 [[Event]]
 name = "BrakingPointReachedEvent"
-id = 0x18
+id = 0xb8
 priority = 0
 
 [[Event]]
 name = "LaneSwitchingPointReachedEvent"
-id = 0x19
+id = 0xb9
 priority = 0
 
 [[Event]]
 name = "LaneSwitchingCompleteEvent"
-id = 0x1A
+id = 0xbA
 priority = 0
 
 [[Event]]
 name = "DirectionChangedEvent"
-id = 0x1B
+id = 0xbB
 priority = 0
 
 [[Event]]
 name = "RunFinishedEvent"
-id = 0x1C
+id = 0xbC
 priority = 0
 
 [[Event]]
 name = "SystemResetCommand"
-id = 0x1D
+id = 0xbD
 priority = 0
 
 [[Event]]
+name = "PodDropSwitchTriggered"
+id = 0xbE
+priority = 5
+
+[[Event]]
+name = "EndOfTrackReached"
+id = 0xbF
+priority = 5
+
+[[Event]]
 name = "ExitEvent"
-id = 0x1E
+id = 0xc0
 priority = 0

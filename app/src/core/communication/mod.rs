@@ -26,11 +26,11 @@ pub mod can;
 pub struct Datapoint {
     pub datatype: Datatype,
     pub value: u64,
-    pub timestamp: u32,
+    pub timestamp: u64,
 }
 
 impl Datapoint {
-    pub fn new(datatype: Datatype, value: u64, timestamp: u32) -> Self {
+    pub fn new(datatype: Datatype, value: u64, timestamp: u64) -> Self {
         Self {
             datatype,
             value,
