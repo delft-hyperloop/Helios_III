@@ -27,6 +27,7 @@ dependencies = [
  "embassy-sync",
  "embassy-time",
  "embassy-usb",
+ "embedded-can",
  "embedded-hal 0.2.7",
  "embedded-hal-async",
  "embedded-io-async",

@@ -3,13 +3,9 @@
 extern crate regex;
 extern crate serde;
 
-use std::collections::HashSet;
-use std::env;
 use std::fs;
-use std::path::Path;
 use std::sync::Mutex;
 use serde::Deserialize;
-use toml::map::Map;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
