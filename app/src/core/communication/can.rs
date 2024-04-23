@@ -16,6 +16,8 @@ use heapless::Vec;
 use crate::{CanReceiver, DATA_IDS, DataReceiver, DataSender, Datatype, Event, EVENT_IDS, EventSender};
 use crate::core::communication::Datapoint;
 use crate::pconfig::{bytes_to_u64, id_as_value};
+use crate::core::controllers::battery_controller::{BatteryController, ground_fault_detection_isolation_details};
+
 
 
 #[embassy_executor::task]
@@ -66,10 +68,33 @@ pub async fn can_two_receiver_handler(
     event_sender : EventSender,
     can_receiver: CanReceiver,
     data_sender: DataSender,
-    bus : FdcanRx<'static, FDCAN2>
+    mut lv_controller: BatteryController,
+    mut hv_controller: BatteryController,
+    mut bus : FdcanRx<'static, FDCAN2>
 ) -> ! {
 
-    loop {
 
+
+
+
+    loop {
+        match bus.read().await {
+            Ok((frame,timestamp)) => {
+                let id = id_as_value(frame.id());
+                if id <= 0x40{  // <----- All the messages between 0 and 0x40 are from GFD
+
+                }
+                else if id < 0x40 && id <= 0x150 { // <----- All the messages between 0x40 and 0x150 are from HV BMS
+                    hv_controller.bms_can_handle(id,frame.data());
+                }
+                else { // <----- All the messages above 0x150 are from the LVBMS
+                        lv_controller.bms_can_handle(id,frame.data());
+                }
+            }
+            Err(_) => {
+                 info!("Error reading from CAN bus");
+            }
+
+        }
     }
 }

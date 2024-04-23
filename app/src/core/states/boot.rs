@@ -15,7 +15,6 @@ impl FSM {
             self.react(Event::BootingFailedEvent);
         }
         info!("Booting complete");
-
         // TODO -> Start also the connection with the sensor hub ||| I think this will be a task that starts can bus 1 and 2
     }
 
@@ -39,4 +38,5 @@ impl FSM {
             }
         }
     }
+
 }

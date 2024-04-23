@@ -6,7 +6,7 @@ impl FSM{
     pub fn entry_establish_connection(&mut self) {
 
         info!("Entering Establish Connection State");
-
+        // self.peripherals.braking_controller.brake();
         // TODO -> Start connection with the ground station, with levi and propulsion
 
     }
@@ -21,6 +21,7 @@ impl FSM{
 
                 self.transit(State::Exit);
             }
+
 
             _ => {
                 info!("The current state ignores {}", event.to_str());

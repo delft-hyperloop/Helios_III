@@ -67,7 +67,7 @@ pub async fn diagnostic_bms(data: &[u8]) {
     //Messy guy ill leave it for later
 }
 impl BatteryController{
-    pub async fn bms_can_handle(&mut self, id: Id, data: &[u8]) {
+    pub async fn bms_can_handle(&mut self, id: u16, data: &[u8]) {
         let own_id = self.id;
         // match id {
         //     Id::Standard(StandardId(x)) if x == own_id => {

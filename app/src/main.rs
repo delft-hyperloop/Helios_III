@@ -164,7 +164,7 @@ async fn test_task(sender: Sender<'static,NoopRawMutex,Event,Max,16>) {
 
 	// let mut event_queue: PriorityChannel<NoopRawMutex,Event,Max,16>=PriorityChannel::new();
 
-		sender.send(Event::BootingCompleteEvent).await;
+	sender.send(Event::BootingCompleteEvent).await;
 	sender.send(Event::EmergencyBrakeCommand).await;
 
 
