@@ -96,7 +96,7 @@ This is still to be decided but we are sure they have to go to the ground statio
  
  ISOLATION_DETAIL_INFO = 0x38 -> |[0,1] R_Iso_Neg| [2-3] R_Iso_Pos |[4-5] R_Iso_Original | Mesurement counter | Isolation Quality
 
-
+ Isolation Tresholds = 125k olms
 
 
 

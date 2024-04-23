@@ -21,9 +21,9 @@ use crate::core::controllers::can_controller::{CanController, CanPins};
 pub struct FSMPeripherals {
     pub braking_controller: BrakingController,
     pub eth_controller: EthernetController,
-   // pub can_controller: CanController,
-    pub hv_controller: BatteryController,
-    pub lv_controller: BatteryController,
+    pub can_controller: CanController,
+   //  pub hv_controller: BatteryController,
+   //  pub lv_controller: BatteryController,
 }
 
 impl FSMPeripherals{
@@ -50,29 +50,27 @@ impl FSMPeripherals{
             pa1_pin: p.PA1,
         });
 
-        // let mut can_controller = CanController::new(*x,
-        //                                             i.event_sender.clone(),
-        //                                             i.data_sender.clone(),
-        //                                             i.data_receiver.clone(),
-        //                                             i.can_one_sender.clone(),
-        //                                             i.can_one_receiver.clone(),
-        //                                             i.can_two_sender.clone(),
-        //                                             i.can_two_receiver.clone(),
-        // CanPins {
-        //     fdcan1: p.FDCAN1,
-        //     fdcan2: p.FDCAN2,
-        //     pd0_pin: p.PD0,
-        //     pd1_pin: p.PD1,
-        //     pb5_pin: p.PB5,
-        //     pb6_pin: p.PB6,
-        // },   &mut hv_controller,&mut lv_controller,);
+        let mut can_controller = CanController::new(*x,
+                                                    i.event_sender.clone(),
+                                                    i.data_sender.clone(),
+                                                    i.data_receiver.clone(),
+                                                    i.can_one_sender.clone(),
+                                                    i.can_one_receiver.clone(),
+                                                    i.can_two_sender.clone(),
+                                                    i.can_two_receiver.clone(),
+        CanPins {
+            fdcan1: p.FDCAN1,
+            fdcan2: p.FDCAN2,
+            pd0_pin: p.PD0,
+            pd1_pin: p.PD1,
+            pb5_pin: p.PB5,
+            pb6_pin: p.PB6,
+        },    hv_controller, lv_controller,);
 
         Self {
             braking_controller,
             eth_controller,
-            //can_controller,
-            hv_controller,
-            lv_controller
+            can_controller,
         }
     }
 

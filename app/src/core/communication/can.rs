@@ -1,7 +1,8 @@
 use defmt::*;
 use embassy_executor::Spawner;
-use embassy_stm32::{bind_interrupts, peripherals, rng, Config};
+use embassy_stm32::{bind_interrupts, peripherals, rng, Config, can};
 use embassy_stm32::can::{Fdcan, FdcanRx, FdcanTx, Instance};
+use embassy_stm32::can::frame::{ClassicFrame, Header};
 use embassy_time::{Duration, Timer};
 use embedded_io_async::{Read, Write};
 use static_cell::StaticCell;
@@ -10,6 +11,7 @@ use embassy_stm32::gpio::{Level, Output, Speed};
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::{Receiver, Sender};
+use embedded_hal::can::Id;
 // use embedded_hal::can::Id;
 use heapless::binary_heap::Max;
 use heapless::Vec;
@@ -70,25 +72,29 @@ pub async fn can_two_receiver_handler(
     data_sender: DataSender,
     mut lv_controller: BatteryController,
     mut hv_controller: BatteryController,
-    mut bus : FdcanRx<'static, FDCAN2>
+    mut bus_rx : FdcanRx<'static, impl Instance>,
+    mut bus_tx : FdcanTx<'static, impl Instance>
 ) -> ! {
 
+    bus_tx.write(&ClassicFrame::new_standard(1,&[0;8]).unwrap());
 
-
-
-
+    info!("CAN 2 Receiver Handler is on baby");
     loop {
-        match bus.read().await {
+        info!("CAN 2 Receiver Handler is on baby");
+        match bus_rx.read().await {
             Ok((frame,timestamp)) => {
                 let id = id_as_value(frame.id());
                 if id <= 0x40{  // <----- All the messages between 0 and 0x40 are from GFD
 
                 }
-                else if id < 0x40 && id <= 0x150 { // <----- All the messages between 0x40 and 0x150 are from HV BMS
+                else if id > 0x40 && id <= 0x150 { // <----- All the messages between 0x40 and 0x150 are from HV BMS
                     hv_controller.bms_can_handle(id,frame.data());
+                    info!("MSG recieved from HV BMS");
+
                 }
                 else { // <----- All the messages above 0x150 are from the LVBMS
                         lv_controller.bms_can_handle(id,frame.data());
+                        bus_tx.write(&ClassicFrame::new_standard(id,&[0;8]).unwrap());
                 }
             }
             Err(_) => {
