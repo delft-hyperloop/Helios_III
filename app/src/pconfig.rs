@@ -6,7 +6,8 @@ use embassy_stm32::can::config;
 use embassy_stm32::rcc::Pll;
 use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
 use embassy_stm32::rcc::*;
-
+// use embedded_hal::can::Id;
+use embedded_can::Id;
 use embedded_nal_async::AddrType::IPv4;
 
 #[inline]
@@ -66,4 +67,15 @@ pub fn bytes_to_u64(b : &[u8]) -> u64 {
         x |= (b[i] as u64) << i;
     }
     x
+}
+
+pub fn id_as_value(id : &embedded_can::Id) -> u16 {
+    match id {
+        Id::Standard(x) => {
+            x.as_raw()
+        }
+        Id::Extended(y) => {
+            y.as_raw() as u16
+        }
+    }
 }

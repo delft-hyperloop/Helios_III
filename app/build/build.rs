@@ -3,12 +3,10 @@
 mod commands;
 mod datatypes;
 mod events;
-mod can;
 
 extern crate regex;
 extern crate serde;
 
-use std::collections::HashSet;
 use std::env;
 use std::fs;
 use std::path::Path;

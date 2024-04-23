@@ -97,15 +97,15 @@ pub async fn tcp_connection_handler(
                         event_sender.send(Event::EmergencyBrakeCommand).await;
                         #[cfg(debug_assertions)]
                         info!("[tcp] EmergencyBrake command received!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        socket.flush();
-                        socket.write_all(b"")
+                        socket.flush().await;
+                        socket.write_all(b"").await;
                     }
                     Command::DefaultCommand(_) => {
                         #[cfg(debug_assertions)]
                         info!("[tcp] DefaultCommand received, unsure what to do with it...");
-                        socket.flush();
+                        socket.flush().await;
                         socket.write_all(b"DefaultCommand received, unsure what to do with it...").await;
-                        socket.flush();
+                        socket.flush().await;
                     }
                     Command::Levitate(_) => {
                         #[cfg(debug_assertions)]

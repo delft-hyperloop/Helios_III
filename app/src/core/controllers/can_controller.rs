@@ -33,7 +33,7 @@ use embassy_stm32::{can, Peripheral, Peripherals};
 use embassy_stm32::gpio::low_level::Pin;
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_time::{Duration, Instant, Timer};
-use crate::core::communication::can::{can_one_receiving_handler, can_receiving_handler, can_transmitter, can_two_receiver_handler};
+use crate::core::communication::can::{can_receiving_handler, can_transmitter, can_two_receiver_handler};
 use crate::core::controllers::ethernet_controller::EthernetPins;
 
 
