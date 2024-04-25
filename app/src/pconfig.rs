@@ -9,6 +9,7 @@ use embassy_stm32::rcc::*;
 // use embedded_hal::can::Id;
 use embedded_can::Id;
 use embedded_nal_async::AddrType::IPv4;
+use crate::Event;
 
 #[inline]
 pub fn default_configuration() -> Config {
@@ -78,4 +79,21 @@ pub fn id_as_value(id : &embedded_can::Id) -> u16 {
             y.as_raw() as u16
         }
     }
+}
+
+#[macro_export]
+macro_rules! try_spawn {
+    ($event_sender:expr, $e:expr) => {
+        match $e {
+            Ok(_) => {},
+            Err(embassy_executor::SpawnError::Busy) => {
+                defmt::error!("Failed to spawn task because your mom is SpawnError::Busy");
+                $event_sender.send(Event::BootingFailedEvent).await;
+            }
+            Err(err) => {
+                defmt::error!("Failed to spawn task: {:?}", err);
+                $event_sender.send(Event::BootingFailedEvent).await;
+            }
+        }
+    };
 }

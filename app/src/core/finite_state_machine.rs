@@ -126,7 +126,7 @@ impl Ord for Event { fn cmp(&self, other: &Self) -> Ordering { self.priority().c
 pub struct FSM {
     state: State,
     pub peripherals: FSMPeripherals,
-    pub event_queue: EventReceiver,
+    pub event_receiving: EventReceiver,
     pub data_queue: DataSender,
     pub status: Status,
 }
@@ -142,7 +142,7 @@ impl FSM {
         Self {
             state: State::Boot,
             peripherals:p,
-            event_queue: pq,
+            event_receiving: pq,
             data_queue: dq,
             status: Status::new(),
         }

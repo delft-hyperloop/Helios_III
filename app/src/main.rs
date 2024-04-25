@@ -23,6 +23,7 @@ use rand_core::RngCore;
 use static_cell::StaticCell;
 use {defmt_rtt as _, panic_probe as _};
 use embassy_net::{Ipv4Cidr, Ipv4Address};
+use embassy_stm32::can::frame::Frame;
 use embassy_stm32::gpio::{Level, Output, Speed};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
@@ -64,16 +65,16 @@ type DataSender = embassy_sync::channel::Sender<'static,NoopRawMutex,Datapoint, 
 type DataReceiver = embassy_sync::channel::Receiver<'static,NoopRawMutex,Datapoint, { DATA_QUEUE_SIZE }>;
 type EventSender = embassy_sync::priority_channel::Sender<'static,NoopRawMutex,Event,Max, { EVENT_QUEUE_SIZE }>;
 type EventReceiver = embassy_sync::priority_channel::Receiver<'static,NoopRawMutex,Event,Max, { EVENT_QUEUE_SIZE }>;
-type CanSender = embassy_sync::channel::Sender<'static,NoopRawMutex, can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>;
-type CanReceiver = embassy_sync::channel::Receiver<'static,NoopRawMutex, can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>;
+type CanSender = embassy_sync::channel::Sender<'static,NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>;
+type CanReceiver = embassy_sync::channel::Receiver<'static,NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>;
 // ^^^^^^^^^^^^^^^^^^^----------------------
 
 
 /// Static Allocations - just the MPMC queues for now (?)
 static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex,Event,Max,16>> = StaticCell::new();
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex,Datapoint, { DATA_QUEUE_SIZE }>> = StaticCell::new();
-static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex,can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>> = StaticCell::new();
-static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex,can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>> = StaticCell::new();
+static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex,can::frame::Frame, { CAN_QUEUE_SIZE }>> = StaticCell::new();
+static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex,can::frame::Frame, { CAN_QUEUE_SIZE }>> = StaticCell::new();
 
 pub struct InternalMessaging {
 	event_sender: EventSender,
@@ -116,11 +117,11 @@ async fn main(spawner: Spawner) -> ! {
 	let data_sender: DataSender = data_queue.sender();
 	let data_receiver: DataReceiver = data_queue.receiver();
 
-	let can_one_queue : &'static mut Channel<NoopRawMutex,can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>  = CAN_ONE_QUEUE.init(Channel::new());
+	let can_one_queue : &'static mut Channel<NoopRawMutex,can::frame::Frame, { CAN_QUEUE_SIZE }>  = CAN_ONE_QUEUE.init(Channel::new());
 	let can_one_sender: CanSender = can_one_queue.sender();
 	let can_one_receiver: CanReceiver = can_one_queue.receiver();
 
-	let can_two_queue : &'static mut Channel<NoopRawMutex,can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>  = CAN_TWO_QUEUE.init(Channel::new());
+	let can_two_queue : &'static mut Channel<NoopRawMutex,can::frame::Frame, { CAN_QUEUE_SIZE }>  = CAN_TWO_QUEUE.init(Channel::new());
 	let can_two_sender: CanSender = can_two_queue.sender();
 	let can_two_receiver: CanReceiver = can_two_queue.receiver();
 
@@ -134,7 +135,7 @@ async fn main(spawner: Spawner) -> ! {
 		can_one_receiver,
 		can_two_sender,
 		can_two_receiver,
-	});
+	}).await;
 	/// End peripheral configuration
 
 	/// Create FSM
@@ -150,23 +151,11 @@ async fn main(spawner: Spawner) -> ! {
 	/// # Main Loop
 	loop {
 		info!("in da loop");
-		let curr_event = fsm.event_queue.receive().await;
-		info!("[main] received event: {:?}", curr_event.to_id());
+		// can_one_queue.send(ClassicFrame::new_standard(69, &[42, 42, 69, 69]).unwrap()).await;
+		// event_queue.send(Event::DefaultEvent).await;
+		let curr_event = fsm.event_receiving.receive().await;
+		info!("[main] received event: {:?} (#{})", curr_event.to_str(), curr_event.to_id());
 		fsm.react(curr_event).await;
-		fsm.data_queue.send(Datapoint::new(Datatype::BatteryVoltage, 42, 42069)).await;
+		// fsm.data_queue.send(Datapoint::new(Datatype::BatteryVoltage, 42, 42069)).await;
 	}
-}
-
-
-#[embassy_executor::task]
-async fn test_task(sender: Sender<'static,NoopRawMutex,Event,Max,16>) {
-	info!("------------ Test Task Starte! ------------");
-
-	// let mut event_queue: PriorityChannel<NoopRawMutex,Event,Max,16>=PriorityChannel::new();
-
-		sender.send(Event::BootingCompleteEvent).await;
-	sender.send(Event::EmergencyBrakeCommand).await;
-
-
-	info!("------------ Test Task Ended! ------------");
 }

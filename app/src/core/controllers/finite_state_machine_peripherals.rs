@@ -3,7 +3,6 @@ use embassy_executor::Spawner;
 use embassy_stm32::flash::Error::Size;
 use embassy_stm32::gpio::{Level, Output, Speed, Input, Pull};
 use embassy_stm32::{bind_interrupts, can, eth, Peripheral, Peripherals, peripherals, rng};
-use embassy_stm32::gpio::low_level::Pin;
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_sync::blocking_mutex::raw::{NoopRawMutex, RawMutex, ThreadModeRawMutex};
 use embassy_sync::mutex::Mutex;
@@ -28,7 +27,7 @@ pub struct FSMPeripherals {
 
 impl FSMPeripherals{
     // pub fn new(p : Peripherals, x: &Spawner, q : &PriorityChannel<NoopRawMutex, Event, Max, 16>) -> Self {
-    pub fn new(p : Peripherals, x: &Spawner, i : InternalMessaging) -> Self {
+    pub async fn new(p : Peripherals, x: &Spawner, i : InternalMessaging) -> Self {
         // let mut init = PInit{p,x,q};
         // let (braking_controller, init) = BrakingController::new(init);
         let braking_controller = BrakingController::new(x, i.event_sender.clone(), p.PB8, p.PG1, p.PF12);
@@ -65,7 +64,7 @@ impl FSMPeripherals{
             pd1_pin: p.PD1,
             pb5_pin: p.PB5,
             pb6_pin: p.PB6,
-        },   &mut hv_controller,&mut lv_controller,);
+        },   &mut hv_controller,&mut lv_controller,).await;
 
         Self {
             braking_controller,

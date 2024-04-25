@@ -7,7 +7,7 @@ use embassy_stm32::peripherals::{ETH, PB5, PB6, PD0, PD1, PD5, PD6, RNG};
 use embassy_stm32::rng::Rng;
 use rand_core::RngCore;
 use static_cell::StaticCell;
-use crate::{CanOneInterrupts, CanReceiver, CanSender, CanTwoInterrupts, DataReceiver, DataSender, EventSender, POD_MAC_ADDRESS};
+use crate::{CanOneInterrupts, CanReceiver, CanSender, CanTwoInterrupts, DataReceiver, DataSender, EventSender, POD_MAC_ADDRESS, try_spawn};
 
 use core::arch::asm;
 use defmt::*;
@@ -30,13 +30,12 @@ use crate::core::communication::udp::udp_connection_handler;
 use embassy_stm32::flash::Error::Size;
 use embassy_stm32::gpio::{Input, Pull};
 use embassy_stm32::{can, Peripheral, Peripherals};
-use embassy_stm32::gpio::low_level::Pin;
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_time::{Duration, Instant, Timer};
-use crate::core::communication::can::{can_receiving_handler, can_transmitter, can_two_receiver_handler};
+use crate::core::communication::can::{can_receiving_handler, can_transmitter};
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::ethernet_controller::EthernetPins;
-
+use crate::Event;
 
 pub struct CanPins {
     pub fdcan1 : FDCAN1,
@@ -51,8 +50,23 @@ pub struct CanController {
 
 }
 
+#[embassy_executor::task]
+async fn your_mom(e: EventSender) -> ! {
+    let mut i = 0;
+    loop {
+        Timer::after_micros(6942000).await;
+        info!("[your mom] is now {}", i);
+        i += 1;
+        {
+            info!("[your mom] is sending love");
+            e.send(Event::DefaultEvent);
+            info!("[your mom] just did a nr 2");
+        }
+    }
+}
+
 impl CanController {
-    pub fn new(
+    pub async fn new(
         x: Spawner,
         event_sender: EventSender,
         data_sender: DataSender,
@@ -66,9 +80,9 @@ impl CanController {
         lv_controller: &mut BatteryController,
     ) -> Self {
 
-        let mut can1 = can::FdcanConfigurator::new(pins.fdcan1, pins.pd0_pin, pins.pd1_pin, CanOneInterrupts);
+        let mut can1 = can::CanConfigurator::new(pins.fdcan1, pins.pd0_pin, pins.pd1_pin, CanOneInterrupts);
 
-        let mut can2 = can::FdcanConfigurator::new(pins.fdcan2, pins.pb5_pin, pins.pb6_pin, CanTwoInterrupts); // <--- Im not really sure if this are the correct pins
+        let mut can2 = can::CanConfigurator::new(pins.fdcan2, pins.pb5_pin, pins.pb6_pin, CanTwoInterrupts); // <--- Im not really sure if this are the correct pins
 
         can1.set_bitrate(1_000_000);
         can2.set_bitrate(1_000_000);
@@ -76,14 +90,28 @@ impl CanController {
         let mut can1 = can1.into_normal_mode();
         let mut can2 = can2.into_normal_mode();
 
-        let (mut c1_tx, mut c1_rx) = can1.split();
-        let (mut c2_tx, mut c2_rx) = can2.split();
+        let (mut c1_tx, mut c1_rx, properties) = can1.split();
+        let (mut c2_tx, mut c2_rx, properties) = can2.split();
 
-        unwrap!(x.spawn(can_receiving_handler(x, event_sender.clone(), can_one_receiver.clone(), data_sender.clone(), c1_rx)));
-        unwrap!(x.spawn(can_receiving_handler(x, event_sender.clone(), can_two_receiver.clone(), data_sender.clone(), c2_rx)));
+        #[cfg(debug_assertions)]
+        info!("[CAN::new()] spawning can bus one transmitter");
+        try_spawn!(event_sender, x.spawn(can_transmitter(can_one_receiver.clone(), c1_tx)));
+        #[cfg(debug_assertions)]
+        info!("[CAN::new()] spawning can bus two transmitter");
+        try_spawn!(event_sender, x.spawn(can_transmitter(can_two_receiver.clone(), c2_tx)));
 
-        unwrap!(x.spawn(can_transmitter(can_one_receiver.clone(), c1_tx)));
-        unwrap!(x.spawn(can_transmitter(can_two_receiver.clone(), c2_tx)));
+
+
+        #[cfg(debug_assertions)]
+        info!("[CAN::new()] spawning can bus one receiver");
+        try_spawn!(event_sender, x.spawn(can_receiving_handler(event_sender.clone(), can_one_receiver.clone(), data_sender.clone(), c1_rx, 1)));
+        Timer::after_micros(1).await;
+        try_spawn!(event_sender, x.spawn(your_mom(event_sender.clone())));
+        info!("i just spawned your mom");
+        #[cfg(debug_assertions)]
+        info!("[CAN::new()] spawning can bus two receiver");
+        try_spawn!(event_sender, x.spawn(can_receiving_handler(event_sender.clone(), can_two_receiver.clone(), data_sender.clone(), c2_rx, 2)));
+
 
         Self {
 

@@ -60,7 +60,7 @@ pub const CONFIG_PATH: &str = "../config/config.toml";
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
-    let mut id_list  = Mutex::new(Vec::new());
+    let id_list  = Mutex::new(Vec::new());
     let dest_path = Path::new(&out_dir).join("config.rs");
 
     let ip_file = fs::read_to_string(CONFIG_PATH).unwrap();
