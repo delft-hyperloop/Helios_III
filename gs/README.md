@@ -1,38 +1,13 @@
-# create-svelte
+# Ground station
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+This folder includes the codebase for the front-end GUI and the ground station backend.
+The GUI uses [Tauri](https://tauri.app/): a Rust framework for creating native applications.
+Tauri is coupled with [SvelteKit](https://kit.svelte.dev/) here: a JavaScript framework for web applications.
+Tauri builds its application using the front-end from SvelteKit and creates a native executable.
 
-## Creating a project
+## Sub-folder structure:
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- `station/` - contains Tauri backend and ground station backend
+- `src/` - contains the SvelteKit front-end of the GUI. Check out its readme for more documentation.
+- `tests/` - contains software tests for the front-end/back-end
+- `static/` - contains static files like images, icons, fonts.
