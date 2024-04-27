@@ -33,7 +33,7 @@ struct Payload {
   * It works fine when visualising in the frontend in debug mode, so it should be good.
   */
 #[tauri::command]
-async fn north_bridge(window: Window) {
+async fn start_north_bridge(window: Window) {
     std::thread::spawn(move || {
         let mut values = Vec::new();
         for i in 0..500 { // Generate 500 values
@@ -61,7 +61,7 @@ async fn north_bridge(window: Window) {
 }
 
 #[tauri::command]
-async fn south_bridge(window: Window) {
+async fn start_south_bridge(window: Window) {
     std::thread::spawn(move || {
         let mut values = Vec::new();
         for i in 0..500 { // Generate 500 values
@@ -91,7 +91,7 @@ async fn south_bridge(window: Window) {
 fn main() {
   tauri::Builder::default()
       // register the commands in tauri.
-    .invoke_handler(tauri::generate_handler![my_custom_command, north_bridge, south_bridge])
+    .invoke_handler(tauri::generate_handler![my_custom_command, start_north_bridge, start_south_bridge])
       // init tauri
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
