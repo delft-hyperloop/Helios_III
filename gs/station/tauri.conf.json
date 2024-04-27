@@ -56,10 +56,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 1000,
         "resizable": true,
         "title": "Ground Station",
-        "width": 800
+        "width": 1500
       }
     ]
   }
