@@ -1,6 +1,9 @@
 import uPlot from 'uplot';
 import util from './util';
 
+// TODO:
+//  Possibly u can further optimize the class by buffering commands and using this._plot.batch() to update the graph.
+
 /**
  * This class is a wrapper around uPlot to make it easier to use.
  * It provides a simple interface to draw a graph and update it with new data.
@@ -15,13 +18,17 @@ export class GraphPlot {
     /**
      * Create a new GraphPlot object. The graph will have the specified number of data points.
      * @param count The number of data points to display in the graph.
+     * @param title The title of the graph.
      */
-    public constructor(count:number) {
+    public constructor(count:number, title:string) {
         this._data = [util.range(count), util.range(count, 0, 0)];
 
         this._opts = {
-            width: 700,
+            width: 500,
             height: 300,
+            legend: {
+                show: false,
+            },
             scales: {
                 "%": {
                     auto: false,
@@ -33,7 +40,35 @@ export class GraphPlot {
                     time: false,
                 }
             },
-            series: [{label: "timestamp"}, {label: "y", stroke: "red"}],
+            series: [
+                {
+                    label: "timestamp"
+                },
+                {
+                    fill: "rgba(159,227,205,0.1)",
+                    label: "y",
+                    spanGaps: false,
+                    stroke: "#0ea774",
+                },
+            ],
+            axes: [
+                {
+                    stroke: "#e4e6ee",
+                    grid: {
+                        stroke: "rgba(255, 255, 255, 0.05)",
+                        width: 0.5,
+                    },
+                },
+                {
+                    stroke: "#e4e6ee",
+                    scale: "y",
+                    grid: {
+                        show: true,
+                        width: 0.5,
+                        stroke: "rgba(255, 255, 255, 0.05)"
+                    },
+                }
+            ],
         };
     }
 
@@ -68,6 +103,19 @@ export class GraphPlot {
     public draw(plotContainer: HTMLDivElement, updateInterval:number = 100) {
         this._plot = new uPlot(this._opts, this._data, plotContainer);
         this._intervalId = window.setInterval(() => this.redraw(), updateInterval);
+    }
+
+
+
+    /**
+     * Set the size of the graph.
+     * @param width
+     * @param height
+     */
+    public setSize(width:number, height:number) {
+        if (this._plot) {
+            this._plot.setSize({width: width, height: height});
+        }
     }
 
     /**

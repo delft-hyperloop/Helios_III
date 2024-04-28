@@ -8,7 +8,17 @@
     // props
     export let dataPointsCount: number = 1000;
     export let refreshRate: number = 100;
-    export let title: string = "North Bridge Temperature";
+    export let title: string = "Offset Voltage";
+    export let shrink: boolean = true;
+
+    export const resize = (width:number) => {
+        if (chart) {
+            if (width < 750)
+                chart.setSize(width-25, 200);
+            else
+                shrink ? chart.setSize((width-50)/2, 200) : chart.setSize(width-42, 200);
+        }
+    }
 
     let unlisten: UnlistenFn;
     let plotContainer: HTMLDivElement;
@@ -33,13 +43,13 @@
     });
 </script>
 
-<div class="flex flex-col bg-surface-800 items-center">
-    <h4 class="text-md font-bold text-primary-100">{title}</h4>
-    <div class="flex flex-nowrap w-full">
+<div class="flex flex-col bg-surface-800 rounded-md pt-2">
+    <div class="flex gap-4 mx-4">
+        <h4 class="text-md text-primary-100">{title}</h4>
+        <b>Data</b>: {info.toFixed(2)}
+    </div>
+    <div class="flex flex-col justify-center items-center w-full">
         <div class="rounded-md" bind:this={plotContainer} />
-        <div>
-            Data: {info.toFixed(2)}
-        </div>
     </div>
 </div>
 
