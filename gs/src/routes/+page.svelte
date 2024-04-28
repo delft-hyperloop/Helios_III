@@ -6,14 +6,14 @@
 </script>
 
 
-<main class="w-full flex-grow border-t border-black">
-    <Splitpanes class="rounded-lg" theme="modern-theme" dblClickSplitter={false}>
+<main class="w-full flex-grow border-t border-black overflow-auto">
+    <Splitpanes theme="modern-theme" dblClickSplitter={false}>
         <Pane minSize={50} class="rounded-md bg-surface-900">
             <Splitpanes horizontal={true} theme="modern-theme-logs" dblClickSplitter={false}>
-                <Pane minSize={50} class="rounded-md bg-surface-800">
+                <Pane minSize={50} class="bg-surface-800 h-full">
                     <DetailsPanel />
                 </Pane>
-                <Pane size={20} minSize={2} class="rounded-md bg-surface-900">
+                <Pane size={20} snapSize={10} minSize={5} class="bg-surface-800">
                     <LogsPanel />
                 </Pane>
             </Splitpanes>
