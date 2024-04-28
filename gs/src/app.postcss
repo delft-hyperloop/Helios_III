@@ -2,3 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 @tailwind variants;
+
+
+
+.splitpanes.modern-theme {
+    .splitpanes__pane {
+        background-color: none;
+    }
+    .splitpanes__splitter {
+        background-color: black;
+        position: relative;
+        cursor: e-resize;
+
+        &:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            transition: opacity 0.3s;
+            background-color: #09704d;
+            opacity: 0;
+            width: 2px;
+            z-index: 1;
+        }
+        &:hover:before {
+            opacity: 1;
+        }
+        &.splitpanes__splitter__active {
+            z-index: 2;
+        }
+    }
+}
+.modern-theme {
+    &.splitpanes--vertical > .splitpanes__splitter:before {
+        left: -3px;
+        right: -3px;
+        height: 100%;
+        cursor: col-resize;
+    }
+    &.splitpanes--horizontal > .splitpanes__splitter:before {
+        top: -3px;
+        bottom: -3px;
+        width: 100%;
+        cursor: row-resize;
+    }
+}
+
+.splitpanes.modern-theme-logs {
+    .splitpanes__pane {
+        background-color: none;
+    }
+    .splitpanes__splitter {
+        background-color: black;
+        position: relative;
+        cursor: s-resize;
+
+        &:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            transition: opacity 0.3s;
+            background-color: #09704d;
+            opacity: 0;
+            width: 2px;
+            z-index: 1;
+        }
+        &:hover:before {
+            opacity: 1;
+        }
+        &.splitpanes__splitter__active {
+            z-index: 2;
+        }
+    }
+}
+.modern-theme {
+    &.splitpanes--vertical > .splitpanes__splitter:before {
+        left: -3px;
+        right: -3px;
+        height: 100%;
+        cursor: col-resize;
+    }
+    &.splitpanes--horizontal > .splitpanes__splitter:before {
+        top: -3px;
+        bottom: -3px;
+        width: 100%;
+        cursor: row-resize;
+    }
+}

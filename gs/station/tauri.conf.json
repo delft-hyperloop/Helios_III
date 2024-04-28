@@ -12,7 +12,18 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
+      }
     },
     "bundle": {
       "active": true,
@@ -58,6 +69,7 @@
         "fullscreen": false,
         "height": 1000,
         "resizable": true,
+        "decorations": false,
         "title": "Ground Station",
         "width": 1500
       }
