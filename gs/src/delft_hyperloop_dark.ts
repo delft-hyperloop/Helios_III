@@ -95,7 +95,7 @@ export const delft_hyperloop_dark: CustomThemeConfig = {
 		"--color-surface-500": "109 121 121", // #495a8f
 		"--color-surface-600": "82 91 91", // #425181
 		"--color-surface-700": "44 48 48", // #37446b
-		"--color-surface-800": "28 31 31", // #2c3656
-		"--color-surface-900": "15 16 16", // #242c46
+		"--color-surface-800": "34 36 36", // #2c3656
+		"--color-surface-900": "28 31 31", // #242c46
 	}
 }

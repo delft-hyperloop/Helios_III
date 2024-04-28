@@ -9,4 +9,4 @@
     };
 </script>
 
-<button class="btn" on:click={send}>{util.snakeToCamel(command)}</button>
+<button class="btn rounded-md bg-primary-500" on:click={send}>{util.snakeToCamel(command)}</button>
