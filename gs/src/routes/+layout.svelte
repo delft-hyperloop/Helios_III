@@ -1,10 +1,11 @@
 <script lang="ts">
 	import '../app.postcss';
-
     import {onDestroy, onMount} from "svelte";
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {north_bridge_payload, south_bridge_payload} from "$lib/stores/data";
     import BottomBar from "$lib/components/BottomBar.svelte";
+    import TitleBar from "$lib/components/TitleBar.svelte";
+
 
     // two main listeners - update north & south bridge stores
     let unlisten_north: UnlistenFn;
@@ -27,6 +28,7 @@
 </script>
 
 <div class="flex flex-col w-screen h-screen">
+    <TitleBar />
     <slot />
     <BottomBar />
 </div>
