@@ -57,7 +57,7 @@
         <div class="w-full p-4 pb-16 h-full flex flex-col gap-4 overflow-y-auto overflow-x-clip text-surface-50">
             <!--     OFFSET GRAPHS       -->
             <div class="flex flex-col gap-2">
-                <div class="flex flex-wrap items-center gap-x-8 font-mono">
+                <div class="flex flex-wrap items-center gap-x-8">
                     <h3 class="text-lg font-medium">Offset data:</h3>
                     <div class="flex gap-4">
                         <p>X1: {$south_bridge_payload.value}</p>
@@ -72,7 +72,7 @@
                         <p>Y4: {$south_bridge_payload.value}</p>
                     </div>
                 </div>
-                <div class="flex gap-2 flex-wrap items-start font-mono">
+                <div class="flex gap-2 flex-wrap items-start">
                     <Chart title="Offset left" bind:resize={updateSizes[0]} refreshRate={100} />
                     <Chart title="Offset right" bind:resize={updateSizes[1]} refreshRate={100} />
                     <Chart title="Offset top" bind:resize={updateSizes[2]} shrink={false} refreshRate={100} />
