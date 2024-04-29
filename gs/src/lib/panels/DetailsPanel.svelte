@@ -4,6 +4,10 @@
     import HomeTab from "$lib/panels/tabs/HomeTab.svelte";
     import ProceduresTab from "$lib/panels/tabs/ProceduresTab.svelte";
     import {detailTabSet} from "$lib/stores/state";
+    import RunInitTab from "$lib/panels/tabs/RunInitTab.svelte";
+    import LocationTab from "$lib/panels/tabs/LocationTab.svelte";
+    import IPPTab from "$lib/panels/tabs/IPPTab.svelte";
+    import CurrentTab from "$lib/panels/tabs/CurrentTab.svelte";
 
 
     let i = 0;
@@ -33,13 +37,13 @@
             {#if $detailTabSet === 0}
                 <HomeTab />
             {:else if $detailTabSet === 1}
-                <p>Run</p>
+                <RunInitTab />
             {:else if $detailTabSet === 2}
-                <p>Loc</p>
+                <LocationTab />
             {:else if $detailTabSet === 3}
-                <p>IMU, Pnemuatic, Im under</p>
+                <IPPTab />
             {:else if $detailTabSet === 4}
-                <p>Current</p>
+                <CurrentTab />
             {:else if $detailTabSet === 5}
                 <ProceduresTab />
             {:else if $detailTabSet === 6}
