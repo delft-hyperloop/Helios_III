@@ -6,16 +6,25 @@
     import type {Log} from "$lib/types";
 
     let unlisten: UnlistenFn;
-
+    let logContainer: HTMLElement;
+    let userHasScrolled = false;
     let logs: Log[] = [];
     let filters: Record<string, boolean> = { 'brake': true, 'fsm': true, 'levi': true, 'prop': true }; // filter variable
 
     $: filteredLogs = logs.filter(log => filters[log.log_type]);
 
+    function toggleFilter(type: string) {
+        filters[type] = !filters[type];
+    }
+
     onMount(async () => {
         unlisten = await listen('logs_bridge', (event) => {
             //@ts-ignore
             logs = [...logs, {message: event.payload.message, log_type: event.payload.log_type, timestamp: event.payload.timestamp}];
+        });
+
+        logContainer.addEventListener('scroll', () => {
+            userHasScrolled = logContainer.scrollTop < logContainer.scrollHeight - logContainer.clientHeight;
         });
     });
 
@@ -23,15 +32,12 @@
         unlisten();
     });
 
-    let logContainer: HTMLElement;
     afterUpdate(() => {
-        logContainer.scrollTop = logContainer.scrollHeight;
+        // Only scroll to the bottom if the user has not scrolled up
+        if (!userHasScrolled) {
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
     });
-
-
-    function toggleFilter(type: string) {
-        filters[type] = !filters[type];
-    }
 </script>
 
 <div class="h-full">
