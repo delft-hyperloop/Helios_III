@@ -12,7 +12,6 @@
     let width:number;
     let updateSizes:((w:number)=>void)[] = [];
     $: updateSizes.forEach(updateSize => updateSize(width));
-    $: width;
 
     let tableArr:TempTableEntry[];
     let tableArr2:TempTableEntry[];
@@ -58,7 +57,7 @@
         <div class="w-full p-4 pb-16 h-full flex flex-col gap-4 overflow-y-auto overflow-x-clip text-surface-50">
             <!--     FSM       -->
             <div>
-                {#if width > 500}
+                {#if width > 550}
                     <FSM size="sm" />
                 {:else}
                     <FSM size="lg" />
@@ -73,17 +72,19 @@
             <div class="flex flex-col gap-2">
                 <div class="flex flex-wrap items-center gap-x-4 {width < 550 ? 'text-sm' : ''}">
                     <h3 class="text-lg font-medium">Offset data:</h3>
-                    <div class="flex gap-4">
-                        <p class="font-mono">X1: {$south_bridge_payload.value}</p>
-                        <p class="font-mono">X2: {$south_bridge_payload.value}</p>
-                        <p class="font-mono">X3: {$south_bridge_payload.value}</p>
-                        <p class="font-mono">X4: {$south_bridge_payload.value}</p>
-                    </div>
-                    <div class="flex gap-4">
-                        <p class="font-mono">Y1: {$south_bridge_payload.value}</p>
-                        <p class="font-mono">Y2: {$south_bridge_payload.value}</p>
-                        <p class="font-mono">Y3: {$south_bridge_payload.value}</p>
-                        <p class="font-mono">Y4: {$south_bridge_payload.value}</p>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex gap-4">
+                            <p class="font-mono">X1: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">X2: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">X3: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">X4: {$south_bridge_payload.value}</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <p class="font-mono">Y1: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">Y2: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">Y3: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">Y4: {$south_bridge_payload.value}</p>
+                        </div>
                     </div>
                 </div>
                 <div class="grid gap-2 {width < 550 ? 'grid-cols-1' : 'grid-cols-2'}">

@@ -6,7 +6,7 @@
     import {detailTabSet} from "$lib/stores/state";
     import RunInitTab from "$lib/panels/tabs/RunInitTab.svelte";
     import LocationTab from "$lib/panels/tabs/LocationTab.svelte";
-    import IPPTab from "$lib/panels/tabs/IPPTab.svelte";
+    import IPPTab from "$lib/panels/tabs/Batteries.svelte";
     import CurrentTab from "$lib/panels/tabs/CurrentTab.svelte";
 
 

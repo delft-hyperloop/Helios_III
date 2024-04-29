@@ -18,8 +18,8 @@
     ]
 </script>
 
-<div class="p-4 flex flex-col w-full gap-y-8">
-    <h2 class="text-xl">Initialization</h2>
+<div class="p-4">
+    <h2 class="text-xl font-semibold mb-4">Initialization</h2>
     <div class="flex gap-16">
         <div class="">
             <InitialisationForm />
