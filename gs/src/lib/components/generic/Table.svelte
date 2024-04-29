@@ -1,16 +1,18 @@
 <script lang="ts">
     import type {TempTableEntry} from "$lib/types";
     export let tableArr: TempTableEntry[] = [];
+
+    export let titles = ["MODULE", "TEMPERATURE"];
 </script>
 
 <table class="text-sm w-full">
     <thead>
     <tr class="bg-surface-800 text-center p-4">
         <th class="p-2 px-8">
-            <span class="font-medium">MODULE</span>
+            <span class="font-medium">{titles[0]}</span>
         </th>
-        <th class="p-2 px-8">
-            <span class="font-medium text-center">TEMPERATURE</span>
+        <th class="p-2 px-8 w-1/2">
+            <span class="font-medium text-center">{titles[1]}</span>
         </th>
     </tr>
     </thead>
