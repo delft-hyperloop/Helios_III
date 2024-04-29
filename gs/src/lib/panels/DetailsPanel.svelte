@@ -14,8 +14,8 @@
     let tabs = [
         {name: "Home", value: i++},
         {name: "Run", value: i++},
-        {name: "Location", value: i++},
-        {name: "IMU, Pneumatics, Pressure", value: i++},
+        {name: "Location & IMU", value: i++},
+        {name: "Batteries", value: i++},
         {name: "Current", value: i++},
         {name: "Procedures", value: i++},
         {name: "Debug", value: i++}
