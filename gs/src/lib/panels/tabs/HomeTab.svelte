@@ -18,5 +18,6 @@
     <div>
         <Command command="start_south_bridge" />
         <Command command="start_north_bridge" />
+        <Command command="start_logs" />
     </div>
 </div>
