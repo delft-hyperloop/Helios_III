@@ -1,9 +1,5 @@
 import uPlot from 'uplot';
 import util from './util';
-
-// TODO:
-//  Possibly u can further optimize the class by buffering commands and using this._plot.batch() to update the graph.
-
 /**
  * This class is a wrapper around uPlot to make it easier to use.
  * It provides a simple interface to draw a graph and update it with new data.
@@ -20,7 +16,7 @@ export class GraphPlot {
      * @param count The number of data points to display in the graph.
      * @param title The title of the graph.
      */
-    public constructor(count:number, title:string) {
+    public constructor(count:number) {
         this._data = [util.range(count), util.range(count, 0, 0)];
 
         this._opts = {
