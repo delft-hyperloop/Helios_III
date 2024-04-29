@@ -3,6 +3,8 @@
 
 use tauri::{Manager, Window};
 use std::time::{SystemTime, UNIX_EPOCH};
+use tauri::http::header::DATE;
+use chrono::{Local, Timelike};
 
 /**
   * This is a generic tauri that does not invoke anything.
@@ -60,6 +62,38 @@ async fn start_north_bridge(window: Window) {
     });
 }
 
+#[derive(Clone, serde::Serialize)]
+struct Log {
+    log_type: String,
+    message: String,
+    timestamp: String
+}
+
+#[tauri::command]
+async fn start_logs(window: Window) {
+    let mut i = 0;
+    std::thread::spawn(move || {
+        loop {
+            let now = Local::now();
+            let current_time = format!("{:02}:{:02}:{:02}", now.hour(), now.minute(), now.second());
+            if (i < 3) {
+                window.emit("logs_bridge", Log {log_type: String::from("fsm"), message: String::from("whoop whoop "), timestamp: current_time }).unwrap();
+            } else if (i < 7) {
+                window.emit("logs_bridge", Log {log_type: String::from("brake"), message: String::from("dead"), timestamp: current_time }).unwrap();
+            } else if (i < 15) {
+                window.emit("logs_bridge", Log {log_type: String::from("levi"), message: String::from("levitation"), timestamp: current_time }).unwrap();
+            } else if (i < 30) {
+                window.emit("logs_bridge", Log {log_type: String::from("prop"), message: String::from("propelling"), timestamp: current_time }).unwrap();
+            } else {
+                i = 0;
+            }
+            i+=1;
+
+            std::thread::sleep(std::time::Duration::from_secs(1));
+        }
+    });
+}
+
 #[tauri::command]
 async fn start_south_bridge(window: Window) {
     std::thread::spawn(move || {
@@ -91,7 +125,7 @@ async fn start_south_bridge(window: Window) {
 fn main() {
   tauri::Builder::default()
       // register the commands in tauri.
-    .invoke_handler(tauri::generate_handler![my_custom_command, start_north_bridge, start_south_bridge])
+    .invoke_handler(tauri::generate_handler![my_custom_command, start_north_bridge, start_south_bridge, start_logs])
       // init tauri
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

@@ -10,7 +10,7 @@
     <Splitpanes theme="modern-theme" dblClickSplitter={false}>
         <Pane minSize={50} class="rounded-md bg-surface-900">
             <Splitpanes horizontal={true} theme="modern-theme-logs" dblClickSplitter={false}>
-                <Pane minSize={50} class="bg-surface-800 h-full">
+                <Pane minSize={50} class="bg-surface-800">
                     <DetailsPanel />
                 </Pane>
                 <Pane size={20} snapSize={10} minSize={5} class="bg-surface-800">
