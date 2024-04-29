@@ -57,19 +57,19 @@
         <div class="w-full p-4 pb-16 h-full flex flex-col gap-4 overflow-y-auto overflow-x-clip text-surface-50">
             <!--     OFFSET GRAPHS       -->
             <div class="flex flex-col gap-2">
-                <div class="flex flex-wrap items-center gap-x-8">
+                <div class="flex flex-wrap items-center gap-x-4">
                     <h3 class="text-lg font-medium">Offset data:</h3>
                     <div class="flex gap-4">
-                        <p>X1: {$south_bridge_payload.value}</p>
-                        <p>X2: {$south_bridge_payload.value}</p>
-                        <p>X3: {$south_bridge_payload.value}</p>
-                        <p>X4: {$south_bridge_payload.value}</p>
+                        <p class="font-mono">X1: {$south_bridge_payload.value}</p>
+                        <p class="font-mono">X2: {$south_bridge_payload.value}</p>
+                        <p class="font-mono">X3: {$south_bridge_payload.value}</p>
+                        <p class="font-mono">X4: {$south_bridge_payload.value}</p>
                     </div>
                     <div class="flex gap-4">
-                        <p>Y1: {$south_bridge_payload.value}</p>
-                        <p>Y2: {$south_bridge_payload.value}</p>
-                        <p>Y3: {$south_bridge_payload.value}</p>
-                        <p>Y4: {$south_bridge_payload.value}</p>
+                        <p class="font-mono">Y1: {$south_bridge_payload.value}</p>
+                        <p class="font-mono">Y2: {$south_bridge_payload.value}</p>
+                        <p class="font-mono">Y3: {$south_bridge_payload.value}</p>
+                        <p class="font-mono">Y4: {$south_bridge_payload.value}</p>
                     </div>
                 </div>
                 <div class="flex gap-2 flex-wrap items-start">
