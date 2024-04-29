@@ -1,6 +1,6 @@
 <script lang="ts">
     import Chart from "$lib/components/generic/Chart.svelte";
-    import {AppBar, TabAnchor} from "@skeletonlabs/skeleton";
+    import {AppBar} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {south_bridge_payload} from "$lib/stores/data";
     import Table from "$lib/components/generic/Table.svelte";
