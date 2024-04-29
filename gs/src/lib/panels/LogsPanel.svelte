@@ -51,10 +51,10 @@
         Logs
         <svelte:fragment slot="trail">
             <button class="line-through" class:active={filters['brake']} on:click={() => toggleFilter('brake')}>
-                FSM
+                BRAKE
             </button>
             <button class="line-through"  class:active={filters['fsm']} on:click={() => toggleFilter('fsm')}>
-                BRAKE
+                FSM
             </button>
             <button class="line-through"  class:active={filters['levi']} on:click={() => toggleFilter('levi')}>
                 LEVI
