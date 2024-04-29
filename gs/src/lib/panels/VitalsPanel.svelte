@@ -12,6 +12,7 @@
     let width:number;
     let updateSizes:((w:number)=>void)[] = [];
     $: updateSizes.forEach(updateSize => updateSize(width));
+    $: width;
 
     let tableArr:TempTableEntry[];
     let tableArr2:TempTableEntry[];
@@ -49,9 +50,9 @@
     {#if width < 200}
         <div class="flex flex-col gap-4 h-full justify-center items-center">
             <button on:click={() => {invoke('abort')}} class="btn border border-error-500 bg-error-500 rounded-sm">
-                <span style="writing-mode: vertical-lr"> ABORT</span>
+                <span style="writing-mode: vertical-lr">ABORT</span>
             </button>
-            <span style="writing-mode: vertical-lr">VITALS PANEL</span>
+            <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
         </div>
     {:else}
         <div class="w-full p-4 pb-16 h-full flex flex-col gap-4 overflow-y-auto overflow-x-clip text-surface-50">
@@ -64,13 +65,9 @@
                 {/if}
             </div>
             <!--     TEMPERATURE TABLE      -->
-            <div class="flex flex-wrap gap-2 ">
-                <div class="flex-grow">
-                    <Table {tableArr} />
-                </div>
-                <div class="flex-grow">
-                    <Table titles={["VARIABLE", "STATE"]} tableArr={tableArr2} />
-                </div>
+            <div class="grid {width < 550 ? 'grid-cols-1' : 'grid-cols-2'} gap-2">
+                <Table {tableArr} />
+                <Table titles={["Variable", "Status"]} tableArr={tableArr2} />
             </div>
             <!--     OFFSET GRAPHS       -->
             <div class="flex flex-col gap-2">
@@ -89,10 +86,12 @@
                         <p class="font-mono">Y4: {$south_bridge_payload.value}</p>
                     </div>
                 </div>
-                <div class="flex gap-2 flex-wrap items-start">
+                <div class="grid gap-2 {width < 550 ? 'grid-cols-1' : 'grid-cols-2'}">
                     <Chart parentWidth={width} title="Offset left" bind:resize={updateSizes[0]} refreshRate={100} />
                     <Chart parentWidth={width} title="Offset right" bind:resize={updateSizes[1]} refreshRate={100} />
-                    <Chart parentWidth={width} title="Offset top" bind:resize={updateSizes[2]} shrink={false} refreshRate={100} />
+                    <div class="{width < 550 ? 'col-span-1' : 'col-span-2'}">
+                        <Chart parentWidth={width} title="Offset top" bind:resize={updateSizes[2]} shrink={false} refreshRate={100} />
+                    </div>
                 </div>
             </div>
         </div>
