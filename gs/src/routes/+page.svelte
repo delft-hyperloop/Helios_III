@@ -29,6 +29,9 @@
 
 <main class="w-full flex-grow border-t border-black overflow-auto">
     <Splitpanes theme="modern-theme" dblClickSplitter={false}>
+        <Pane maxSize={50} snapSize={10} minSize={2} size={40} class="rounded-md bg-surface-700" >
+            <VitalsPanel />
+        </Pane>
         <Pane minSize={50} class="rounded-md bg-surface-900">
             <Splitpanes horizontal={true} theme="modern-theme-logs" dblClickSplitter={false}>
                 <Pane minSize={50} class="bg-surface-800">
@@ -38,9 +41,6 @@
                     <LogsPanel />
                 </Pane>
             </Splitpanes>
-        </Pane>
-        <Pane maxSize={50} snapSize={10} minSize={2} size={40} class="rounded-md bg-surface-700" >
-            <VitalsPanel />
         </Pane>
     </Splitpanes>
 </main>
