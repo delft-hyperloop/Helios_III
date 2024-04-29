@@ -78,8 +78,10 @@ export class GraphPlot {
      */
     private redraw() {
         if (this._plot) {
-            this._plot.setData(this._data, false);
-            this._plot.redraw(false, false)
+            this._plot.batch(() => {
+                this._plot!.setData(this._data, false);
+                this._plot!.redraw(false, false);
+            });
         }
     }
 
@@ -125,11 +127,12 @@ export class GraphPlot {
      */
     public addEntry(info:number) {
         if (this._plot) {
-            let yData = this._plot.data[1];
+            let yData = this._data[1];
 
             for (let i = 0; i < yData.length-1; i++) {
                 yData[i] = yData[i+1];
             }
+
             yData[yData.length-1] = info
         }
     }
