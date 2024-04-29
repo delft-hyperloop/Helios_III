@@ -1,3 +1,6 @@
+
+<!-- TODO: ADD IMPORTANCE TO LOGS, MAKE SUPER IMPORTANT LOG "UN-FILTERABLE"  -->
+
 <script lang="ts">
     import {AppBar} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
