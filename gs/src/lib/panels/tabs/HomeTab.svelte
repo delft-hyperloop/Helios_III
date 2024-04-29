@@ -13,11 +13,13 @@
             </div>
         </div>
     </div>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam sequi optio, vero ipsam tenetur sint praesentium sed a perferendis libero enim dolores error, dignissimos facilis, eius minima sunt asperiores vitae!</p>
     <div>
         <Command command="start_south_bridge" />
         <Command command="start_north_bridge" />
         <Command command="start_logs" />
         <Command command="start_errors" />
     </div>
+    <p><kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">Space</kbd> + <kbd class="kbd">Enter</kbd> to launch Abort operation.</p>
+    <p><kbd class="kbd">0</kbd> - <kbd class="kbd">7</kbd> to browse between the tabs of this panel</p>
+
 </div>
