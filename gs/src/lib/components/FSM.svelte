@@ -21,7 +21,11 @@
     let all_states: SVGGElement[];
 
     function turn_on(state:SVGGElement) {
-        state.style.fill = '#0ea774'
+        if (state === emerg_brake_state) {
+            state.style.fill = '#D61111'
+        } else {
+            state.style.fill = '#0EA774'
+        }
     }
 
     function turn_off_all(states:SVGGElement[]) {
