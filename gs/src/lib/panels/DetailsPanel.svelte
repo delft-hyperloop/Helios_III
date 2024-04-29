@@ -11,16 +11,13 @@
         {name: "Home", value: i++},
         {name: "Run", value: i++},
         {name: "Location", value: i++},
-        {name: "IMU", value: i++},
-        {name: "Pressure", value: i++},
+        {name: "IMU, Pneumatics, Pressure", value: i++},
         {name: "Current", value: i++},
         {name: "Procedures", value: i++},
         {name: "Debug", value: i++}
     ];
-    let combo:string ='';
 </script>
 
-<p>{combo}</p>
 <Keydown on:combo={({detail}) => {
     const num = parseInt(detail, 10);
     if (!isNaN(num) && num <= tabs.length) {
@@ -36,18 +33,16 @@
             {#if $detailTabSet === 0}
                 <HomeTab />
             {:else if $detailTabSet === 1}
-                <p>a</p>
+                <p>Run</p>
             {:else if $detailTabSet === 2}
-                <p>a</p>
+                <p>Loc</p>
             {:else if $detailTabSet === 3}
-                <p>a</p>
+                <p>IMU, Pnemuatic, Im under</p>
             {:else if $detailTabSet === 4}
-                <p>a</p>
+                <p>Current</p>
             {:else if $detailTabSet === 5}
-                <p>a</p>
-            {:else if $detailTabSet === 6}
                 <ProceduresTab />
-            {:else if $detailTabSet === 7}
+            {:else if $detailTabSet === 6}
                 <p>Andreas</p>
             {/if}
         </div>

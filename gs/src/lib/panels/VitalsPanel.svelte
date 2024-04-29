@@ -6,6 +6,8 @@
     import Table from "$lib/components/generic/Table.svelte";
     import type {TempTableEntry} from "$lib/types";
     import FSM from "$lib/components/FSM.svelte";
+    import {invoke} from "@tauri-apps/api/tauri";
+    import Keydown from "svelte-keydown";
 
     let width:number;
     let updateSizes:((w:number)=>void)[] = [];
@@ -29,14 +31,26 @@
     ]
 </script>
 
+<Keydown on:combo={({detail}) => {
+    if (detail === "Control- -Enter") {
+        invoke('abort')
+    }
+    }}/>
+
 <div bind:clientWidth={width} class="h-full bg-surface-700 text-surface-50">
     <AppBar padding="p-3" border="border-b border-b-surface-900" background="bg-surface-700">
         <svelte:fragment slot="lead"><Icon icon="codicon:graph-line" /></svelte:fragment>
         <span>Vitals</span>
+        <svelte:fragment slot="trail">
+            <button on:click={() => {invoke('abort')}} class="btn py-0 border border-error-500 bg-error-500 rounded-sm">ABORT</button>
+        </svelte:fragment>
     </AppBar>
 
     {#if width < 200}
-        <div class="flex h-full justify-center items-center">
+        <div class="flex flex-col gap-4 h-full justify-center items-center">
+            <button on:click={() => {invoke('abort')}} class="btn border border-error-500 bg-error-500 rounded-sm">
+                <span style="writing-mode: vertical-lr"> ABORT</span>
+            </button>
             <span style="writing-mode: vertical-lr">VITALS PANEL</span>
         </div>
     {:else}
