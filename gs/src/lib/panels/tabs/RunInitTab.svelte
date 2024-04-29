@@ -21,11 +21,9 @@
 <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Initialization</h2>
     <div class="flex gap-16">
-        <div class="">
-            <InitialisationForm />
-        </div>
-        <div class="flex-grow w-1/2">
-            <Table tableArr={tableArr2} titles={["important", "variable"]}/>
+        <InitialisationForm />
+        <div class="flex-grow pt-1 h-full w-1/2 bg-surface-900 rounded-lg">
+            <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
         </div>
     </div>
 </div>
