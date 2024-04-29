@@ -55,9 +55,26 @@
         </div>
     {:else}
         <div class="w-full p-4 pb-16 h-full flex flex-col gap-4 overflow-y-auto overflow-x-clip text-surface-50">
+            <!--     FSM       -->
+            <div>
+                {#if width > 500}
+                    <FSM size="sm" />
+                {:else}
+                    <FSM size="lg" />
+                {/if}
+            </div>
+            <!--     TEMPERATURE TABLE      -->
+            <div class="flex flex-wrap gap-2 ">
+                <div class="flex-grow">
+                    <Table {tableArr} />
+                </div>
+                <div class="flex-grow">
+                    <Table titles={["VARIABLE", "STATE"]} tableArr={tableArr2} />
+                </div>
+            </div>
             <!--     OFFSET GRAPHS       -->
             <div class="flex flex-col gap-2">
-                <div class="flex flex-wrap items-center gap-x-4">
+                <div class="flex flex-wrap items-center gap-x-4 {width < 550 ? 'text-sm' : ''}">
                     <h3 class="text-lg font-medium">Offset data:</h3>
                     <div class="flex gap-4">
                         <p class="font-mono">X1: {$south_bridge_payload.value}</p>
@@ -73,26 +90,10 @@
                     </div>
                 </div>
                 <div class="flex gap-2 flex-wrap items-start">
-                    <Chart title="Offset left" bind:resize={updateSizes[0]} refreshRate={100} />
-                    <Chart title="Offset right" bind:resize={updateSizes[1]} refreshRate={100} />
-                    <Chart title="Offset top" bind:resize={updateSizes[2]} shrink={false} refreshRate={100} />
+                    <Chart parentWidth={width} title="Offset left" bind:resize={updateSizes[0]} refreshRate={100} />
+                    <Chart parentWidth={width} title="Offset right" bind:resize={updateSizes[1]} refreshRate={100} />
+                    <Chart parentWidth={width} title="Offset top" bind:resize={updateSizes[2]} shrink={false} refreshRate={100} />
                 </div>
-            </div>
-            <!--     TEMPERATURE TABLE      -->
-            <div class="flex flex-wrap gap-2 ">
-                <div class="flex-grow">
-                    <Table {tableArr} />
-                </div>
-                <div class="flex-grow">
-                    <Table titles={["VARIABLE", "STATE"]} tableArr={tableArr2} />
-                </div>
-            </div>
-            <div>
-                {#if width > 650}
-                    <FSM size="sm" />
-                {:else}
-                    <FSM size="lg" />
-                {/if}
             </div>
         </div>
     {/if}
