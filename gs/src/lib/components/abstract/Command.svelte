@@ -9,6 +9,6 @@
     };
 </script>
 
-<button class="btn rounded-md {command === 'abort' ? 'bg-error-500' : `bg-primary-500`}" on:click={send}>
+<button class="btn rounded-md py-2 {command === 'abort' ? 'bg-error-500' : `bg-primary-500`}" on:click={send}>
     {util.snakeToCamel(command)}
 </button>
