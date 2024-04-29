@@ -3,8 +3,9 @@
 
     import {TabGroup, Tab, AppBar, TabAnchor} from "@skeletonlabs/skeleton";
     import HomeTab from "$lib/panels/tabs/HomeTab.svelte";
+    import ProceduresTab from "$lib/panels/tabs/ProceduresTab.svelte";
 
-    let selectedTab:number = 1;
+    let selectedTab:number = 7;
 
     let i = 0;
     let tabs = [
@@ -25,7 +26,7 @@
         <Tab bind:group={selectedTab} value={tab.value} name={tab.name}><span>{tab.name}</span></Tab>
     {/each}
     <svelte:fragment slot="panel">
-        <div class="p-4">
+        <div class="h-full" style="margin-top: -16px;">
             {#if selectedTab === 1}
                 <HomeTab />
             {:else if selectedTab === 2}
@@ -39,7 +40,7 @@
             {:else if selectedTab === 6}
                 <p>a</p>
             {:else if selectedTab === 7}
-                <p>a</p>
+                <ProceduresTab />
             {:else if selectedTab === 8}
                 <p>Andreas</p>
             {/if}

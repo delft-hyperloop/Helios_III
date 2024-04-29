@@ -22,7 +22,7 @@
 
     let unlisten: UnlistenFn;
     let plotContainer: HTMLDivElement;
-    const chart = new GraphPlot(dataPointsCount, title);
+    const chart = new GraphPlot(dataPointsCount);
     let info:number = 0;
 
     // On mount, draw the chart and start listening for events.
