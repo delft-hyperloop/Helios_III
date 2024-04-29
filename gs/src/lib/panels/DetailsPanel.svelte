@@ -20,9 +20,11 @@
         {name: "Procedures", value: i++},
         {name: "Debug", value: i++}
     ];
+
+
 </script>
 
-<Keydown on:combo={({detail}) => {
+<Keydown pauseOnInput on:combo={({detail}) => {
     const num = parseInt(detail, 10);
     if (!isNaN(num) && num <= tabs.length) {
         detailTabSet.set(num - 1); // subtract 1 because your tabs are 0-indexed
