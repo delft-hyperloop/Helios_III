@@ -20,7 +20,7 @@
     {#each tableArr as row, i}
         <tr class="{i % 2 === 0 ? `bg-surface-800` : `bg-surface-700`}">
             <td class="px-2 border-r border-r-primary-600">{row.name}</td>
-            <td class="px-2 py-1">{row.value.toFixed(2)}</td>
+            <td class="px-2 py-1 font-mono">{row.value.toFixed(2)}</td>
         </tr>
     {/each}
     </tbody>
