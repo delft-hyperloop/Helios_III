@@ -10,10 +10,11 @@
     export let refreshRate: number = 100;
     export let title: string = "Offset Voltage";
     export let shrink: boolean = true;
+    export let parentWidth: number;
 
     export const resize = (width:number) => {
         if (chart) {
-            if (width < 750)
+            if (width < 550)
                 chart.setSize(width-25, 200);
             else
                 shrink ? chart.setSize((width-50)/2, 200) : chart.setSize(width-42, 200);
@@ -43,7 +44,7 @@
     });
 </script>
 
-<div class="flex flex-col bg-surface-800 rounded-md pt-2">
+<div class="flex flex-col bg-surface-800 rounded-md pt-2 {parentWidth < 550 ? 'text-sm' : ''}">
     <div class="flex gap-4 mx-4">
         <h4 class="text-md text-primary-100">{title}</h4>
         <b>Data</b>: <span class="font-mono">{info.toFixed(2)}</span>
