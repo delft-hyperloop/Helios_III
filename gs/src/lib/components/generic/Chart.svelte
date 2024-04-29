@@ -46,7 +46,7 @@
 <div class="flex flex-col bg-surface-800 rounded-md pt-2">
     <div class="flex gap-4 mx-4">
         <h4 class="text-md text-primary-100">{title}</h4>
-        <b>Data</b>: {info.toFixed(2)}
+        <b>Data</b>: <span class="font-mono">{info.toFixed(2)}</span>
     </div>
     <div class="flex flex-col justify-center items-center w-full">
         <div class="rounded-md" bind:this={plotContainer} />
