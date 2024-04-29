@@ -6,6 +6,9 @@
     import BottomBar from "$lib/components/BottomBar.svelte";
     import TitleBar from "$lib/components/TitleBar.svelte";
 
+    import { initializeStores, Toast } from '@skeletonlabs/skeleton';
+    initializeStores();
+
 
     // two main listeners - update north & south bridge stores
     let unlisten_north: UnlistenFn;
@@ -28,6 +31,7 @@
 </script>
 
 <div class="flex flex-col w-screen h-screen max-h-screen overflow-hidden">
+    <Toast />
     <TitleBar />
     <slot />
     <BottomBar />

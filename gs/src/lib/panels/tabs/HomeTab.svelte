@@ -1,6 +1,5 @@
 <script>
     import Command from "$lib/components/abstract/Command.svelte";
-    import FSM from "$lib/components/FSM.svelte";
 </script>
 
 <div class="h-full w-full p-16 flex flex-col gap-8 text-surface-50">
@@ -19,5 +18,6 @@
         <Command command="start_south_bridge" />
         <Command command="start_north_bridge" />
         <Command command="start_logs" />
+        <Command command="start_errors" />
     </div>
 </div>

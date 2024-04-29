@@ -3,6 +3,27 @@
     import VitalsPanel from "$lib/panels/VitalsPanel.svelte";
     import DetailsPanel from "$lib/panels/DetailsPanel.svelte";
     import LogsPanel from "$lib/panels/LogsPanel.svelte";
+
+    import { getToastStore } from '@skeletonlabs/skeleton';
+    import {listen, type UnlistenFn} from "@tauri-apps/api/event";
+    import {onDestroy, onMount} from "svelte";
+
+    let unlisten_error: UnlistenFn;
+    const toastStore = getToastStore();
+
+    onMount(async () => {
+        unlisten_error = await listen("error_bridge", (event) => {
+            toastStore.trigger({
+                //@ts-ignore
+                message: event.payload.message,
+                background: 'variant-filled-error',
+            });
+        });
+    });
+
+    onDestroy(() => {
+        unlisten_error();
+    });
 </script>
 
 
