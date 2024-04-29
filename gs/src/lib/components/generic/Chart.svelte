@@ -1,3 +1,6 @@
+
+<!--  TODO: Formalize break point - 550 current give it a variable   -->
+
 <script lang="ts">
     import {onDestroy, onMount} from 'svelte';
     import 'uplot/dist/uPlot.min.css';
