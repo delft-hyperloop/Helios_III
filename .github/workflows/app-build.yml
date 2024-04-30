@@ -13,7 +13,7 @@ jobs:
       contents: write
     defaults:
       run:
-        working-directory: 'gs'
+        working-directory: ./gs
     strategy:
       fail-fast: false
       matrix:
