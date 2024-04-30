@@ -75,9 +75,3 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.settings.args }}
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: tauri-artifacts
-          path: ${{ steps.build_tauri.outputs.artifactPaths }}
