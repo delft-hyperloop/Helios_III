@@ -5,7 +5,7 @@
 
 <div data-tauri-drag-region class="bg-surface-900 flex justify-between items-center px-1">
     <div class="flex items-center gap-1">
-        <img src="./hyperloop_logo.png" class="h-4" alt="">
+        <enhanced:img src="/static/images/logo-green.png?w=16" alt="Delft logo" />
         <span class="text-primary-500 font-medium text-xs">DELFT HYPERLOOP</span>
     </div>
     <div class="text-white">
