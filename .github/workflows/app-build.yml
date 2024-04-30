@@ -44,6 +44,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+          cache-dependency-path: ./gs/
           cache: 'npm'
             
       - name: install Rust stable
