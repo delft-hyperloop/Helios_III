@@ -6,7 +6,7 @@
     import {detailTabSet} from "$lib/stores/state";
     import RunInitTab from "$lib/panels/tabs/RunInitTab.svelte";
     import LocationTab from "$lib/panels/tabs/LocationTab.svelte";
-    import IPPTab from "$lib/panels/tabs/IPPTab.svelte";
+    import IPPTab from "$lib/panels/tabs/Batteries.svelte";
     import CurrentTab from "$lib/panels/tabs/CurrentTab.svelte";
 
 
@@ -14,8 +14,8 @@
     let tabs = [
         {name: "Home", value: i++},
         {name: "Run", value: i++},
-        {name: "Location", value: i++},
-        {name: "IMU, Pneumatics, Pressure", value: i++},
+        {name: "Location & IMU", value: i++},
+        {name: "Batteries", value: i++},
         {name: "Current", value: i++},
         {name: "Procedures", value: i++},
         {name: "Debug", value: i++}

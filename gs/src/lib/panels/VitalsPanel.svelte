@@ -49,50 +49,51 @@
     {#if width < 200}
         <div class="flex flex-col gap-4 h-full justify-center items-center">
             <button on:click={() => {invoke('abort')}} class="btn border border-error-500 bg-error-500 rounded-sm">
-                <span style="writing-mode: vertical-lr"> ABORT</span>
+                <span style="writing-mode: vertical-lr">ABORT</span>
             </button>
-            <span style="writing-mode: vertical-lr">VITALS PANEL</span>
+            <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
         </div>
     {:else}
         <div class="w-full p-4 pb-16 h-full flex flex-col gap-4 overflow-y-auto overflow-x-clip text-surface-50">
-            <!--     OFFSET GRAPHS       -->
-            <div class="flex flex-col gap-2">
-                <div class="flex flex-wrap items-center gap-x-8 font-mono">
-                    <h3 class="text-lg font-medium">Offset data:</h3>
-                    <div class="flex gap-4">
-                        <p>X1: {$south_bridge_payload.value}</p>
-                        <p>X2: {$south_bridge_payload.value}</p>
-                        <p>X3: {$south_bridge_payload.value}</p>
-                        <p>X4: {$south_bridge_payload.value}</p>
-                    </div>
-                    <div class="flex gap-4">
-                        <p>Y1: {$south_bridge_payload.value}</p>
-                        <p>Y2: {$south_bridge_payload.value}</p>
-                        <p>Y3: {$south_bridge_payload.value}</p>
-                        <p>Y4: {$south_bridge_payload.value}</p>
-                    </div>
-                </div>
-                <div class="flex gap-2 flex-wrap items-start font-mono">
-                    <Chart title="Offset left" bind:resize={updateSizes[0]} refreshRate={100} />
-                    <Chart title="Offset right" bind:resize={updateSizes[1]} refreshRate={100} />
-                    <Chart title="Offset top" bind:resize={updateSizes[2]} shrink={false} refreshRate={100} />
-                </div>
-            </div>
-            <!--     TEMPERATURE TABLE      -->
-            <div class="flex flex-wrap gap-2 ">
-                <div class="flex-grow">
-                    <Table {tableArr} />
-                </div>
-                <div class="flex-grow">
-                    <Table titles={["VARIABLE", "STATE"]} tableArr={tableArr2} />
-                </div>
-            </div>
+            <!--     FSM       -->
             <div>
-                {#if width > 650}
+                {#if width > 550}
                     <FSM size="sm" />
                 {:else}
                     <FSM size="lg" />
                 {/if}
+            </div>
+            <!--     TEMPERATURE TABLE      -->
+            <div class="grid {width < 550 ? 'grid-cols-1' : 'grid-cols-2'} gap-2">
+                <Table {tableArr} />
+                <Table titles={["Variable", "Status"]} tableArr={tableArr2} />
+            </div>
+            <!--     OFFSET GRAPHS       -->
+            <div class="flex flex-col gap-2">
+                <div class="flex flex-wrap items-center gap-x-4 {width < 550 ? 'text-sm' : ''}">
+                    <h3 class="text-lg font-medium">Offset data:</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex gap-4">
+                            <p class="font-mono">X1: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">X2: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">X3: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">X4: {$south_bridge_payload.value}</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <p class="font-mono">Y1: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">Y2: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">Y3: {$south_bridge_payload.value}</p>
+                            <p class="font-mono">Y4: {$south_bridge_payload.value}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid gap-2 {width < 550 ? 'grid-cols-1' : 'grid-cols-2'}">
+                    <Chart parentWidth={width} title="Offset left" bind:resize={updateSizes[0]} refreshRate={100} />
+                    <Chart parentWidth={width} title="Offset right" bind:resize={updateSizes[1]} refreshRate={100} />
+                    <div class="{width < 550 ? 'col-span-1' : 'col-span-2'}">
+                        <Chart parentWidth={width} title="Offset top" bind:resize={updateSizes[2]} shrink={false} refreshRate={100} />
+                    </div>
+                </div>
             </div>
         </div>
     {/if}

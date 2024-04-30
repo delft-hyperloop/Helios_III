@@ -10,6 +10,6 @@
         await invoke(command);
     };
 </script>
-<button class="{classes === '' ? 'btn rounded-md py-2' : classes } {command === 'abort' ? 'bg-error-500' : background}" on:click={send}>
+<button class="{classes === '' ? 'btn rounded-md py-2 text-surface-900' : classes } font-number font-medium {command === 'abort' ? 'bg-error-500' : background}" on:click={send}>
     {util.snakeToCamel(command)}
 </button>

@@ -21,5 +21,4 @@
     </div>
     <p><kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">Space</kbd> + <kbd class="kbd">Enter</kbd> to launch Abort operation.</p>
     <p><kbd class="kbd">0</kbd> - <kbd class="kbd">7</kbd> to browse between the tabs of this panel</p>
-
 </div>

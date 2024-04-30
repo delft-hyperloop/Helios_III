@@ -18,8 +18,10 @@
 
 
 <footer class="text-zinc-100 text-sm bg-primary-600 w-full flex flex-row flex-nowrap
-               justify-end px-4 gap-4 border-t border-black">
-    <p>Current state: {$south_bridge_payload.value}</p>
-    <p>Sponsored by goose?</p>
-    <p class="">{time}</p>
+               justify-between px-4 gap-4 border-t border-black">
+    <p>Delft Hyperloop: Helios III</p>
+    <div class="flex gap-4">
+        <p>Current state: {$south_bridge_payload.value}</p>
+        <p class="">{time}</p>
+    </div>
 </footer>

@@ -65,10 +65,10 @@
         </svelte:fragment>
     </AppBar>
 
-    <div class="h-full p-1 pb-16 overflow-y-auto font-mono" bind:this={logContainer}>
+    <div class="h-full p-1 pb-16 overflow-y-auto" bind:this={logContainer}>
         {#each filteredLogs as log}
             <div class="flex items-center">
-                <p>[{log.timestamp}]  {log.log_type}: {log.message}</p>
+                <p><span class="font-mono font-light">[{log.timestamp}]</span>  {log.log_type}: {log.message}</p>
             </div>
         {/each}
     </div>
