@@ -6,6 +6,7 @@ on:
     tags:
       - 'app-v*'
   workflow_dispatch:
+    projectPath: './gs/'
 
 jobs:
   publish-tauri:
@@ -27,7 +28,7 @@ jobs:
     runs-on: ${{ matrix.settings.platform }}
     steps:
       - name: Checkout repository
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: install dependencies (ubuntu only)
         if: matrix.settings.platform == 'ubuntu-22.04' # This must match the platform value defined above.
