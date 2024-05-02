@@ -1,17 +1,12 @@
 <script lang="ts">
-    import Chart from "$lib/components/generic/Chart.svelte";
+    import {Chart, Battery, Table, FSM, south_bridge_payload} from "$lib";
     import {AppBar} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
-    import {south_bridge_payload} from "$lib/stores/data";
-    import Table from "$lib/components/generic/Table.svelte";
     import type {TempTableEntry} from "$lib/types";
-    import FSM from "$lib/components/FSM.svelte";
     import {invoke} from "@tauri-apps/api/tauri";
     import Keydown from "svelte-keydown";
 
     let width:number;
-    let updateSizes:((w:number)=>void)[] = [];
-    $: updateSizes.forEach(updateSize => updateSize(width));
 
     let tableArr:TempTableEntry[];
     let tableArr2:TempTableEntry[];
@@ -54,7 +49,7 @@
             <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
         </div>
     {:else}
-        <div class="w-full p-4 pb-16 h-full flex flex-col gap-4 overflow-y-auto overflow-x-clip text-surface-50">
+        <div class="w-full p-4 pb-16 h-full flex flex-col gap-2 overflow-y-auto overflow-x-clip text-surface-50">
             <!--     FSM       -->
             <div>
                 {#if width > 550}
@@ -63,6 +58,23 @@
                     <FSM size="lg" />
                 {/if}
             </div>
+            <!--      Under FSM      -->
+            <div class="flex flex-wrap justify-between">
+                <div class="flex gap-4">
+                    <p>Velocity: <span class="font-mono font-medium">{$south_bridge_payload.value}</span></p>
+                    <p>Position: <span class="font-mono font-medium">{$south_bridge_payload.value}</span></p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex gap-2">
+                        <span>LV: </span>
+                        <Battery orientation="horizontal" perc={$south_bridge_payload.value+80} />
+                    </div>
+                    <div class="flex gap-2">
+                        <span>HV: </span>
+                        <Battery orientation="horizontal" perc={$south_bridge_payload.value+80} />
+                    </div>
+                </div>
+            </div>
             <!--     TEMPERATURE TABLE      -->
             <div class="grid {width < 550 ? 'grid-cols-1' : 'grid-cols-2'} gap-2">
                 <Table {tableArr} />
@@ -70,6 +82,13 @@
             </div>
             <!--     OFFSET GRAPHS       -->
             <div class="flex flex-col gap-2">
+                <div class="grid gap-2 {width < 550 ? 'grid-cols-1' : 'grid-cols-2'}">
+                    <Chart title="Offset horizontal" refreshRate={100} />
+                    <Chart title="Offset top" refreshRate={100} />
+                    <div class="{width < 550 ? 'col-span-1' : 'col-span-2'}">
+                        <Chart title="Velocity" refreshRate={100} />
+                    </div>
+                </div>
                 <div class="flex flex-wrap items-center gap-x-4 {width < 550 ? 'text-sm' : ''}">
                     <h3 class="text-lg font-medium">Offset data:</h3>
                     <div class="flex flex-wrap gap-4">
@@ -85,13 +104,6 @@
                             <p class="font-mono">Y3: {$south_bridge_payload.value}</p>
                             <p class="font-mono">Y4: {$south_bridge_payload.value}</p>
                         </div>
-                    </div>
-                </div>
-                <div class="grid gap-2 {width < 550 ? 'grid-cols-1' : 'grid-cols-2'}">
-                    <Chart parentWidth={width} title="Offset left" bind:resize={updateSizes[0]} refreshRate={100} />
-                    <Chart parentWidth={width} title="Offset right" bind:resize={updateSizes[1]} refreshRate={100} />
-                    <div class="{width < 550 ? 'col-span-1' : 'col-span-2'}">
-                        <Chart parentWidth={width} title="Offset top" bind:resize={updateSizes[2]} shrink={false} refreshRate={100} />
                     </div>
                 </div>
             </div>

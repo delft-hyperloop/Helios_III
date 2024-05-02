@@ -11,20 +11,18 @@
     // props
     export let dataPointsCount: number = 1000;
     export let refreshRate: number = 100;
-    export let title: string = "Offset Voltage";
-    export let shrink: boolean = true;
-    export let parentWidth: number;
+    export let title: string;
     export let background: string = "bg-surface-800";
     export let height: number = 200;
 
-    export const resize = (width:number) => {
+    let width: number;
+    let resize = (width:number) => {
         if (chart) {
-            if (width < 550)
-                chart.setSize(width-25, height);
-            else
-                shrink ? chart.setSize((width-50)/2, height) : chart.setSize(width-42, height);
+            chart.setSize(width-25, height);
         }
     }
+
+    $: resize(width);
 
     let unlisten: UnlistenFn;
     let plotContainer: HTMLDivElement;
@@ -34,6 +32,7 @@
     // On mount, draw the chart and start listening for events.
     onMount(async () => {
         chart.draw(plotContainer, refreshRate);
+        resize(width)
 
         unlisten = await listen('north_bridge', (event) => {
             // @ts-ignore
@@ -49,7 +48,7 @@
     });
 </script>
 
-<div class="flex flex-col {background} rounded-md pt-2 {parentWidth < 550 ? 'text-sm' : ''}">
+<div bind:clientWidth={width} class="flex flex-col {background} rounded-md pt-2 {width < 550 ? 'text-sm' : ''}">
     <div class="flex gap-4 mx-4">
         <h4 class="text-md text-primary-100">{title}</h4>
         <b>Data</b>: <span class="font-mono">{info.toFixed(2)}</span>

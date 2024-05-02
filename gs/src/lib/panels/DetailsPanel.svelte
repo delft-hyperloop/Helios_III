@@ -1,13 +1,7 @@
 <script lang="ts">
     import Keydown from "svelte-keydown";
-    import {TabGroup, Tab} from "@skeletonlabs/skeleton";
-    import HomeTab from "$lib/panels/tabs/HomeTab.svelte";
-    import ProceduresTab from "$lib/panels/tabs/ProceduresTab.svelte";
-    import {detailTabSet} from "$lib/stores/state";
-    import RunInitTab from "$lib/panels/tabs/RunInitTab.svelte";
-    import LocationTab from "$lib/panels/tabs/LocationTab.svelte";
-    import IPPTab from "$lib/panels/tabs/Batteries.svelte";
-    import CurrentTab from "$lib/panels/tabs/CurrentTab.svelte";
+    import {Tab, TabGroup} from "@skeletonlabs/skeleton";
+    import { HomeTab, ProceduresTab, RunInitTab, detailTabSet, LocationTab, CurrentTab, BatteriesTab } from "$lib";
 
 
     let i = 0;
@@ -43,7 +37,7 @@
             {:else if $detailTabSet === 2}
                 <LocationTab />
             {:else if $detailTabSet === 3}
-                <IPPTab />
+                <BatteriesTab />
             {:else if $detailTabSet === 4}
                 <CurrentTab />
             {:else if $detailTabSet === 5}

@@ -1,6 +1,5 @@
 <script lang="ts">
-    import Chart from "$lib/components/generic/Chart.svelte";
-    import {south_bridge_payload} from "$lib/stores/data";
+    import {south_bridge_payload, Chart} from "$lib";
 
     let width:number;
     let updateSizes:((w:number)=>void)[] = [];
@@ -13,7 +12,7 @@
     <h2 class="text-xl font-semibold mb-4">Currents</h2>
     <div bind:clientWidth={width} class="grid grid-cols-2 gap-2">
         {#each charts as title, i}
-            <Chart parentWidth={width} {title} background="bg-surface-900" height={250} shrink={true} bind:resize={updateSizes[i]} refreshRate={100} />
+            <Chart {title} background="bg-surface-900" height={250} refreshRate={100} />
         {/each}
     </div>
     <div class="flex justify-center mt-4 gap-4">
