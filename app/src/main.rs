@@ -66,7 +66,6 @@ type EventSender = embassy_sync::priority_channel::Sender<'static,NoopRawMutex,E
 type EventReceiver = embassy_sync::priority_channel::Receiver<'static,NoopRawMutex,Event,Max, { EVENT_QUEUE_SIZE }>;
 type CanSender = embassy_sync::channel::Sender<'static,NoopRawMutex, can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>;
 type CanReceiver = embassy_sync::channel::Receiver<'static,NoopRawMutex, can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>;
-// ^^^^^^^^^^^^^^^^^^^----------------------
 
 
 /// Static Allocations - just the MPMC queues for now (?)

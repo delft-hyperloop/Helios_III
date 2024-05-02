@@ -77,7 +77,7 @@ This is still to be decided but we are sure they have to go to the ground statio
   BATTERY_VOLTAGE_OVERALL = 0x19D (+1)->  | MIN CELL VOLTAGE | MAX CELL VOLTAGE | AVERAGE CELL VOLTAGE | 3 | TOTAL VOLTAGE | 5 | 6 | 7 | <-  All Values of Battery Voltage are encoded in 0.01V and MIN,MAX and AVERAGE have basis 2.00V, meaning that they are calculated as (Value * 0.01V)  +  2.00V
                                               
   CELL_MODULE_TEMPERATURE_OVERALL_PARAMETERS = 0X19E (+2) -> | MIN CELL MODULE TEMPERATURE | MAX CELL MODULE TEMPERATURE | AVG CELL MODULE TEMPERATURE |3|4|5|6|7| <-  All have a basis of -100C and are encoded in 1C
-  
+  1
   Cell Temperature Overall Parameters = 0x1A4 (+8) -> | MIN CELL TEMPERATURE | MAX CELL TEMPERATURE | AVG CELL TEMPERATURE |3|4|5|6|7|
   
   Cell Balancing Rate Overall Parameters = 0x1A0 (+3) -> | MIN CELL BALANCING | MAX CELL BALANCING | AVG CELL BALANCING |3|4|5|6|7| <- 
@@ -87,6 +87,7 @@ This is still to be decided but we are sure they have to go to the ground statio
   INDIVIDUAL_CELL_VOLTAGES = 0X1BC + Group_ID -> CELL VOLTAGE OF 1-8 GOES FROM DATA[0-7] <-Same voltage basis as before
   
   INDIVIDUAL_CELL_MODULE_TEMPERATURE = 0x1DC + GROUP_ID -> CELL MODULE TEMPERATURE OF 1-8 GOES FROM DATA[0-7] <-Same temperature basis as before
+
 
   INDIVIDUAL_CELL_TEMPERATURE = 0x29A + GROUP_ID -> CELL MODULE TEMPERATURE OF 1-8 GOES FROM DATA[0-7] <-Same temperature basis as before
 

@@ -70,6 +70,7 @@ pub fn main(id_list: &Mutex<Vec<u16>>) -> String {
             }
         }
         to_str.push_str(&format!("\"{}\",", event.name));
+        i += 1;
     }
 
     format!("\n\npub static EVENTS_DISPLAY: [&str; {}] = [{}\"Unknown\"];\n", event_count+1, to_str)

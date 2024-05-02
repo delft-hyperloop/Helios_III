@@ -33,8 +33,8 @@ impl FSMPeripherals{
         // let (braking_controller, init) = BrakingController::new(init);
         let braking_controller = BrakingController::new(x, i.event_sender.clone(), p.PB8, p.PG1, p.PF12,p.TIM16);
 
-        let mut hv_controller = BatteryController::new(i.event_sender.clone(), 0,0,0,0,0); //TODO <------ This is just to make it build
-        let mut lv_controller = BatteryController::new(i.event_sender.clone(),0,0,0,0,0); //TODO <------ This is just to make it build
+        let mut hv_controller = BatteryController::new(i.event_sender.clone(), 0,0,0,0,0,i.data_sender.clone()); //TODO <------ This is just to make it build
+        let mut lv_controller = BatteryController::new(i.event_sender.clone(),0,0,0,0,0,i.data_sender.clone()); //TODO <------ This is just to make it build
 
         let mut eth_controller = EthernetController::new(*x, i.event_sender.clone(), i.data_receiver.clone(),EthernetPins{
             p_rng: p.RNG,
