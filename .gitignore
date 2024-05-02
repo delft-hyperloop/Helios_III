@@ -2,7 +2,7 @@
 .idea/
 */.DS_Store
 */target/*
-.cargo/config.toml
+app/.cargo/config.toml
 *.iml
 */.idea/*
 .DS_Store
