@@ -1,20 +1,17 @@
 <script lang="ts">
-    import type {TempTableEntry} from "$lib/types";
-    import {south_bridge_payload} from "$lib/stores/data";
-    import Table from "$lib/components/generic/Table.svelte";
-    import InitialisationForm from "$lib/components/InitialisationForm.svelte";
+    import {south_bridge_payload, Table, InitialisationForm} from "$lib";
 
-    let tableArr2:TempTableEntry[];
+    let tableArr2:any[][];
     $: tableArr2 = [
-        {name: "Some", value: $south_bridge_payload.value},
-        {name: "Important", value: $south_bridge_payload.value},
-        {name: "Value", value: $south_bridge_payload.value},
-        {name: "That", value: $south_bridge_payload.value},
-        {name: "Could", value: $south_bridge_payload.value},
-        {name: "stay", value: $south_bridge_payload.value},
-        {name: "as a", value: $south_bridge_payload.value},
-        {name: "table entry", value: $south_bridge_payload.value},
-        {name: "here", value: $south_bridge_payload.value},
+        ["Some", $south_bridge_payload.value],
+        ["Important", $south_bridge_payload.value],
+        ["Value", $south_bridge_payload.value],
+        ["That", $south_bridge_payload.value],
+        ["Could", $south_bridge_payload.value],
+        ["stay", $south_bridge_payload.value],
+        ["as a", $south_bridge_payload.value],
+        ["table entry", $south_bridge_payload.value],
+        ["here", $south_bridge_payload.value]
     ]
 </script>
 

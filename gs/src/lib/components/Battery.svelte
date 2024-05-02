@@ -27,7 +27,7 @@
                       d="M113.5 20.5L113.5 32.5C113.5 34.1569 112.157 35.5 110.5 35.5L108.5 35.5L108.5 17.5L110.5 17.5C112.157 17.5 113.5 18.8431 113.5 20.5Z"
                       fill="#EFF0F0" stroke="#EFF0F0" stroke-width="2"/>
                 <text id="battery-percentage" x="55" y="32" fill="white"
-                      class="font-number text-2xl" text-anchor="middle">{perc}%</text>
+                      class="font-number {height > 30 ? 'text-lg' : 'text-2xl'}" text-anchor="middle">{perc}%</text>
             </g>
         </svg>
     {/if}
