@@ -22,8 +22,8 @@ pub struct FSMPeripherals {
     pub braking_controller: BrakingController,
     pub eth_controller: EthernetController,
     pub can_controller: CanController,
-    pub hv_controller: BatteryController,
-    pub lv_controller: BatteryController,
+   //  pub hv_controller: BatteryController,
+   //  pub lv_controller: BatteryController,
 }
 
 impl FSMPeripherals{
@@ -31,10 +31,10 @@ impl FSMPeripherals{
     pub fn new(p : Peripherals, x: &Spawner, i : InternalMessaging) -> Self {
         // let mut init = PInit{p,x,q};
         // let (braking_controller, init) = BrakingController::new(init);
-        let braking_controller = BrakingController::new(x, i.event_sender.clone(), p.PB8, p.PG1, p.PF12);
+        let braking_controller = BrakingController::new(x, i.event_sender.clone(), p.PB8, p.PG1, p.PF12,p.TIM16);
 
-        let mut hv_controller = BatteryController::new(i.event_sender.clone(), 0,0,0,0,0); //TODO <------ This is just to make it build
-        let mut lv_controller = BatteryController::new(i.event_sender.clone(),0,0,0,0,0); //TODO <------ This is just to make it build
+        let mut hv_controller = BatteryController::new(i.event_sender.clone(), 0,0,0,0,0,i.data_sender.clone()); //TODO <------ This is just to make it build
+        let mut lv_controller = BatteryController::new(i.event_sender.clone(),0,0,0,0,0,i.data_sender.clone()); //TODO <------ This is just to make it build
 
         let mut eth_controller = EthernetController::new(*x, i.event_sender.clone(), i.data_receiver.clone(),EthernetPins{
             p_rng: p.RNG,
@@ -65,14 +65,12 @@ impl FSMPeripherals{
             pd1_pin: p.PD1,
             pb5_pin: p.PB5,
             pb6_pin: p.PB6,
-        },   &mut hv_controller,&mut lv_controller,);
+        },    hv_controller, lv_controller,);
 
         Self {
             braking_controller,
             eth_controller,
             can_controller,
-            hv_controller,
-            lv_controller
         }
     }
 

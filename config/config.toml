@@ -23,5 +23,8 @@ event_queue_size = 16
 data_queue_size = 32
 can_queue_size = 16
 
-
+[pod.bms]
+lv_ids = [69, 42]
+hv_ids = []
+gfd_ids = []
 

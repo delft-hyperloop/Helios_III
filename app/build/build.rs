@@ -38,6 +38,14 @@ struct GS {
 struct POD {
     net : NetConfig,
     internal: InternalConfig,
+    bms: BMS,
+}
+
+#[derive(Debug, Deserialize)]
+struct BMS {
+    lv_ids : Vec<u16>,
+    hv_ids : Vec<u16>,
+    gfd_ids : Vec<u16>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -60,7 +68,7 @@ pub const CONFIG_PATH: &str = "../config/config.toml";
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
-    let mut id_list  = Mutex::new(Vec::new());
+    let id_list  = Mutex::new(Vec::new());
     let dest_path = Path::new(&out_dir).join("config.rs");
 
     let ip_file = fs::read_to_string(CONFIG_PATH).unwrap();
@@ -104,4 +112,8 @@ fn configure_internal(config: &Config) -> String {
     format!("pub const EVENT_QUEUE_SIZE: usize = {};\n", config.pod.internal.event_queue_size)
     + &*format!("pub const DATA_QUEUE_SIZE: usize = {};\n", config.pod.internal.data_queue_size)
     + &*format!("pub const CAN_QUEUE_SIZE: usize = {};\n", config.pod.internal.can_queue_size)
+    + &*format!("pub const LV_IDS: [u16;{}] = [{}];\n", config.pod.bms.lv_ids.len(), config.pod.bms.lv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "))
+    + &*format!("pub const HV_IDS: [u16;{}] = [{}];\n", config.pod.bms.hv_ids.len(), config.pod.bms.hv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "))
+    + &*format!("pub const GFD_IDS: [u16;{}] = [{}];\n", config.pod.bms.gfd_ids.len(), config.pod.bms.gfd_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "))
+    + &*format!("pub const BATTERY_GFD_IDS: [u16;{}] = [{}{}{}];\n", config.pod.bms.lv_ids.len() + config.pod.bms.hv_ids.len() + config.pod.bms.gfd_ids.len(), config.pod.bms.lv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "), config.pod.bms.hv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "), config.pod.bms.gfd_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "))
 }

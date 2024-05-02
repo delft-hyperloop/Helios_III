@@ -66,7 +66,6 @@ type EventSender = embassy_sync::priority_channel::Sender<'static,NoopRawMutex,E
 type EventReceiver = embassy_sync::priority_channel::Receiver<'static,NoopRawMutex,Event,Max, { EVENT_QUEUE_SIZE }>;
 type CanSender = embassy_sync::channel::Sender<'static,NoopRawMutex, can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>;
 type CanReceiver = embassy_sync::channel::Receiver<'static,NoopRawMutex, can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>;
-// ^^^^^^^^^^^^^^^^^^^----------------------
 
 
 /// Static Allocations - just the MPMC queues for now (?)
@@ -164,7 +163,7 @@ async fn test_task(sender: Sender<'static,NoopRawMutex,Event,Max,16>) {
 
 	// let mut event_queue: PriorityChannel<NoopRawMutex,Event,Max,16>=PriorityChannel::new();
 
-		sender.send(Event::BootingCompleteEvent).await;
+	sender.send(Event::BootingCompleteEvent).await;
 	sender.send(Event::EmergencyBrakeCommand).await;
 
 
