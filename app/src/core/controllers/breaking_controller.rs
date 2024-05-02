@@ -11,7 +11,7 @@ use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::Sender;
 use embassy_time::{Duration, Instant, Timer};
 use heapless::binary_heap::Max;
-use crate::Event;
+use crate::{Event, EventSender};
 
 static mut BRAKE: bool = false;
 
@@ -22,7 +22,7 @@ pub struct BrakingController {
 }
 
 #[embassy_executor::task]
-pub async fn run(sender: Sender<'static,NoopRawMutex,Event,Max,16>, mut braking_heartbeat:SimplePwm<'static, TIM16>) {
+pub async fn run(sender: EventSender, mut braking_heartbeat:SimplePwm<'static, TIM16>) {
     info!("------------ Start Braking Heartbeat! ------------");
     let mut booting =  true;
     let mut time_stamp = Instant::now();
@@ -42,14 +42,11 @@ pub async fn run(sender: Sender<'static,NoopRawMutex,Event,Max,16>, mut braking_
         }
     }
 
-
-
-
     info!("------------ Braking ended; someone fucked up... ------------");
 }
 
 impl BrakingController {
-    pub fn new(x: &Spawner, braking_sender: Sender<'static,NoopRawMutex,Event,Max, { crate::EVENT_QUEUE_SIZE }>, pb8: peripherals::PB8, pg1: peripherals::PG1, pf12: peripherals::PF12, ptime : TIM16) -> Self {
+    pub fn new(x: &Spawner, braking_sender: EventSender, pb8: peripherals::PB8, pg1: peripherals::PG1, pf12: peripherals::PF12, ptime : TIM16) -> Self {
         // If we want to keep it alive we send a 10khz digital clock signal
         let mut braking_rearm : Output = Output::new(pg1, Level::High, Speed::Low); // <--- To keep the breaks not rearmed we send a 1, if we want to arm the breaks we send a 0
         let ch1 = PwmPin::new_ch1(pb8, OutputType::PushPull);
