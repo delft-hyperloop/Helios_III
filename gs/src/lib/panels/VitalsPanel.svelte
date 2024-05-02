@@ -8,21 +8,21 @@
 
     let width:number;
 
-    let tableArr:TempTableEntry[];
-    let tableArr2:TempTableEntry[];
+    let tableArr:any[][];
+    let tableArr2:any[][];
     $: tableArr = [
-        {name: "Upper drawer VB", value: $south_bridge_payload.value},
-        {name: "Bottom drawer VB", value: $south_bridge_payload.value},
-        {name: "outside of VB", value: $south_bridge_payload.value},
-        {name: "HEMS", value: $south_bridge_payload.value},
-        {name: "Motor core", value: $south_bridge_payload.value},
+        ["Upper drawer VB", $south_bridge_payload.value],
+        ["Bottom drawer VB", $south_bridge_payload.value],
+        ["outside of VB", $south_bridge_payload.value],
+        ["HEMS", $south_bridge_payload.value],
+        ["Motor core", $south_bridge_payload.value],
     ]
     $: tableArr2 = [
-        {name: "Current State", value: $south_bridge_payload.value},
-        {name: "Bottom drawer VB", value: $south_bridge_payload.value},
-        {name: "outside of VB", value: $south_bridge_payload.value},
-        {name: "HEMS", value: $south_bridge_payload.value},
-        {name: "Motor core", value: $south_bridge_payload.value},
+        ["Current State", $south_bridge_payload.value],
+        ["Bottom drawer VB", $south_bridge_payload.value],
+        ["outside of VB", $south_bridge_payload.value],
+        ["HEMS", $south_bridge_payload.value],
+        ["Motor core", $south_bridge_payload.value]
     ]
 </script>
 
@@ -42,11 +42,15 @@
     </AppBar>
 
     {#if width < 200}
-        <div class="flex flex-col gap-4 h-full justify-center items-center">
+        <div class="flex flex-col h-full pb-20 justify-between items-center">
             <button on:click={() => {invoke('abort')}} class="btn border border-error-500 bg-error-500 rounded-sm">
                 <span style="writing-mode: vertical-lr">ABORT</span>
             </button>
             <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
+            <div class="flex flex-col gap-4">
+                <Battery orientation="vertical" height={55} perc={$south_bridge_payload.value} />
+                <Battery orientation="vertical" height={55} perc={$south_bridge_payload.value} />
+            </div>
         </div>
     {:else}
         <div class="w-full p-4 pb-16 h-full flex flex-col gap-2 overflow-y-auto overflow-x-clip text-surface-50">
@@ -67,11 +71,11 @@
                 <div class="flex gap-4">
                     <div class="flex gap-2">
                         <span>LV: </span>
-                        <Battery orientation="horizontal" perc={$south_bridge_payload.value+80} />
+                        <Battery orientation="horizontal" perc={$south_bridge_payload.value} />
                     </div>
                     <div class="flex gap-2">
                         <span>HV: </span>
-                        <Battery orientation="horizontal" perc={$south_bridge_payload.value+80} />
+                        <Battery orientation="horizontal" perc={$south_bridge_payload.value} />
                     </div>
                 </div>
             </div>
