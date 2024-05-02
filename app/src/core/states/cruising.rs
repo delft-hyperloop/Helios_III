@@ -1,8 +1,8 @@
-use defmt::info;
-use crate::core::finite_state_machine::{FSM, State};
+use crate::core::finite_state_machine::{State, FSM};
 use crate::Event;
+use defmt::info;
 
-impl FSM{
+impl FSM {
     pub fn entry_cruising(&mut self) {
         todo!();
     }
@@ -10,13 +10,11 @@ impl FSM{
     pub fn react_cruising(&mut self, event: Event) {
         match event {
             Event::BrakingPointReachedEvent => {
-
                 todo!();
 
                 self.transit(State::Braking);
             }
             Event::LaneSwitchingPointReachedEvent => {
-
                 todo!();
 
                 self.transit(State::LaneSwitch);
@@ -30,7 +28,6 @@ impl FSM{
             // }
             _ => {
                 info!("The current state ignores {}", event.to_str());
-
             }
         }
     }

@@ -3,9 +3,9 @@
 extern crate regex;
 extern crate serde;
 
+use serde::Deserialize;
 use std::fs;
 use std::sync::Mutex;
-use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -17,7 +17,6 @@ pub struct Command {
     name: String,
     id: u16,
 }
-
 
 pub const COMMANDS_PATH: &str = "../config/commands.toml";
 
@@ -32,19 +31,29 @@ pub fn main(id_list: &Mutex<Vec<u16>>) -> String {
     let mut id_list = id_list.lock().unwrap();
     for command in config.Command {
         if command.id & 0b1111_1000_0000_0000 != 0 {
-            panic!("IDs need to be u11. Found {} > {}", command.id, 2^11);
+            panic!("IDs need to be u11. Found {} > {}", command.id, 2 ^ 11);
         } else {
             if id_list.contains(&command.id) {
-                panic!("ID {} already taken!! {}:{} : pick a different one.", command.id, command.name, command.id);
+                panic!(
+                    "ID {} already taken!! {}:{} : pick a different one.",
+                    command.id, command.name, command.id
+                );
             }
             id_list.push(command.id);
         }
         enum_definitions.push_str(&format!("\t{}(u64),\n", command.name));
-        match_to_id.push_str(&format!("\t\t\tCommand::{}(_) => {},\n", command.name, command.id));
-        match_from_id.push_str(&format!("\t\t\t{} => Command::{}(0u64),\n", command.id, command.name));
+        match_to_id.push_str(&format!(
+            "\t\t\tCommand::{}(_) => {},\n",
+            command.name, command.id
+        ));
+        match_from_id.push_str(&format!(
+            "\t\t\t{} => Command::{}(0u64),\n",
+            command.id, command.name
+        ));
     }
 
-    format!("\n
+    format!(
+        "\n
 pub enum Command {{
 {}
 }}
@@ -58,5 +67,7 @@ impl Command {{
             _ => Command::DefaultCommand(0)
         }}
     }}
-}}", enum_definitions, match_to_id, match_from_id)
+}}",
+        enum_definitions, match_to_id, match_from_id
+    )
 }
