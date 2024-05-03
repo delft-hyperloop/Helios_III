@@ -19,8 +19,9 @@ mac_addr = [0x00, 0x1e, 0x67, 0x4c, 0x5c, 0x3e]
 keep_alive = 1000 # keep alive interval, in milliseconds.
 
 [pod.internal]
-event_queue_size = 16
-data_queue_size = 32
+event_queue_size = 128
+data_queue_size = 256
+can_queue_size = 128
 
 [pod.bms]
 lv_ids = [69, 42]

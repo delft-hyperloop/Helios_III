@@ -48,11 +48,13 @@ pub async fn can_receiving_handler(
     mut bus: FdcanRx<'static, impl Instance>,
     mut utils: Option<CanTwoUtils>,
 ) -> ! {
+    info!("[CAN] Ready for bus {:?}", if utils.is_none() {1} else {2});
     loop {
-        info!("Can Ready");
         match bus.read().await {
             Ok((frame, timestamp)) => {
                 let id = id_as_value(frame.id());
+                #[cfg(debug_assertions)]
+                info!("[CAN] received frame: id={:?} data={:?}", id, frame.data());
                 if DATA_IDS.contains(&id) {
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
                         let ut = utils.as_mut().unwrap();
