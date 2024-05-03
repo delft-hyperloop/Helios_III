@@ -28,12 +28,13 @@ pub async fn run(sender: EventSender, mut braking_heartbeat: SimplePwm<'static, 
     let mut time_stamp = Instant::now();
     loop {
         Timer::after_micros(200).await;
-        if (unsafe { !BRAKE } && (Instant::now() - time_stamp) < Duration::from_secs(10)) {
-            braking_heartbeat.set_duty(Channel::Ch1, braking_heartbeat.get_max_duty() / 2);
-        } else {
+        if (unsafe {!BRAKE}) {
+            braking_heartbeat.set_duty(Channel::Ch1, braking_heartbeat.get_max_duty()/2);
+        }
+        else {
             braking_heartbeat.set_duty(Channel::Ch1, 0);
-            info!("-------------------------- BRAKE!! --------------------------");
-            time_stamp = Instant::now();
+            sender.send(Event::EmergencyBrakeCommand).await;
+            info!("------------ BRAKE !-----");
         }
         if booting {
             sender.send(Event::BootingCompleteEvent).await;
@@ -94,6 +95,7 @@ impl BrakingController {
     pub fn disarm_breaks(&mut self) {
         self.braking_rearm.set_low();
         self.brake_retraction = true;
+        unsafe{BRAKE = false};
     }
     pub fn brake(&mut self) {
         unsafe { BRAKE = true };

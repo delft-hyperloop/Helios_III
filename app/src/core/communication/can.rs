@@ -76,8 +76,12 @@ pub async fn can_receiving_handler(
                                 timestamp.as_ticks(),
                             );
                         } else if GFD_IDS.contains(&id) {
-                            // do something idk
-                            // neither do I : Kiko
+                            data_sender.send(Datapoint::new(
+                                Datatype::GFDIsolation,
+                                ground_fault_detection_isolation_details(frame.data()).await,
+                                timestamp.as_ticks(),
+                            )).await;
+
                         }
                     } else {
                         data_sender
