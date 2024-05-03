@@ -23,7 +23,7 @@ pub struct BrakingController {
 
 #[embassy_executor::task]
 pub async fn run(sender: EventSender, mut braking_heartbeat: SimplePwm<'static, TIM16>) {
-    info!("------------ Start Braking Heartbeat! ------------");
+    info!("----------------- Start Braking Heartbeat! -----------------");
     let mut booting = true;
     let mut time_stamp = Instant::now();
     loop {
@@ -32,7 +32,7 @@ pub async fn run(sender: EventSender, mut braking_heartbeat: SimplePwm<'static, 
             braking_heartbeat.set_duty(Channel::Ch1, braking_heartbeat.get_max_duty() / 2);
         } else {
             braking_heartbeat.set_duty(Channel::Ch1, 0);
-            info!("------------ BRAKE !-----");
+            info!("-------------------------- BRAKE!! --------------------------");
             time_stamp = Instant::now();
         }
         if booting {

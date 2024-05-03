@@ -2,7 +2,6 @@ use crate::Datatype;
 use core::cmp::Ordering;
 
 pub mod can;
-mod parse;
 pub mod tcp;
 pub mod udp;
 

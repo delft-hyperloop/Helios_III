@@ -93,7 +93,8 @@ type CanReceiver = embassy_sync::channel::Receiver<
 >;
 
 /// Static Allocations - just the MPMC queues for now (?)
-static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }>> = StaticCell::new();
+static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }>> =
+    StaticCell::new();
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
     StaticCell::new();
 static CAN_ONE_QUEUE: StaticCell<

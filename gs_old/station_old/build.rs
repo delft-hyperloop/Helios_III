@@ -54,7 +54,7 @@ struct GS {
 // }
 
 
-pub const CONFIG_PATH: &str = "../config/config.toml";
+pub const CONFIG_PATH: &str = "../../config/config.toml";
 
 
 fn main() {

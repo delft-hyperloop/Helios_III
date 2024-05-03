@@ -48,7 +48,10 @@ pub async fn can_receiving_handler(
     mut bus: FdcanRx<'static, impl Instance>,
     mut utils: Option<CanTwoUtils>,
 ) -> ! {
-    info!("[CAN] Ready for bus {:?}", if utils.is_none() {1} else {2});
+    info!(
+        "[CAN] Ready for bus {:?}",
+        if utils.is_none() { 1 } else { 2 }
+    );
     loop {
         match bus.read().await {
             Ok((frame, timestamp)) => {
@@ -88,7 +91,14 @@ pub async fn can_receiving_handler(
                 } else if EVENT_IDS.contains(&id) {
                     event_sender.send(Event::from_id(id)).await;
                 } else {
-                    info!("ID: {:?}", id);
+                    info!("[CAN] unknown ID: {:?}", id);
+                    data_sender
+                        .send(Datapoint::new(
+                            Datatype::UnknownCanId,
+                            bytes_to_u64(frame.data()),
+                            timestamp.as_ticks(),
+                        ))
+                        .await;
                 }
             }
             Err(e) => {

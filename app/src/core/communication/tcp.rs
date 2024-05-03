@@ -80,13 +80,13 @@ pub async fn tcp_connection_handler(
             // info!("in the ethernet loop---------------------------");
             // socket.write(b"in da tcp loop!").await;
 
-//            if cfg!(debug_assertions) {
-//                event_sender.send(Event::DefaultEvent).await;
-//                info!("[tcp] Sent default event");
-//                Timer::after_millis(1000).await;
-//            } else {
+            //            if cfg!(debug_assertions) {
+            //                event_sender.send(Event::DefaultEvent).await;
+            //                info!("[tcp] Sent default event");
+            //                Timer::after_millis(1000).await;
+            //            } else {
             Timer::after_micros(10).await;
-//            }
+            //            }
             if socket.can_recv() {
                 let n = socket.read(&mut buf).await.unwrap();
                 if n == 0 {
@@ -175,4 +175,3 @@ pub async fn tcp_connection_handler(
         info!("SOMETHING FUCKED UP! D:");
     }
 }
-
