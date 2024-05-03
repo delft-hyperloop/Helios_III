@@ -3,11 +3,11 @@ use crate::Event;
 use defmt::info;
 
 impl FSM {
-    pub fn entry_cruising(&mut self) {
+    pub async fn entry_cruising(&mut self) {
         todo!();
     }
 
-    pub fn react_cruising(&mut self, event: Event) {
+    pub async fn react_cruising(&mut self, event: Event) {
         match event {
             Event::BrakingPointReachedEvent => {
                 todo!();

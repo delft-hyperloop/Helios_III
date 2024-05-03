@@ -79,7 +79,7 @@ impl BrakingController {
         braking_controller
     }
 
-    pub fn rearm_breaks(&mut self) -> bool {
+    pub fn arm_breaks(&mut self) -> bool {
         self.braking_rearm.set_high();
         let time_stamp = Instant::now();
         while (Instant::now() - time_stamp) < Duration::from_millis(100) {

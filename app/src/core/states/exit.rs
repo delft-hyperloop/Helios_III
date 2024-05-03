@@ -3,11 +3,11 @@ use crate::Event;
 use defmt::info;
 
 impl FSM {
-    pub fn entry_exit(&mut self) {
+    pub async fn entry_exit(&mut self) {
         todo!();
     }
 
-    pub fn react_exit(&mut self, event: Event) {
+    pub async fn react_exit(&mut self, event: Event) {
         match event {
             Event::ArmBrakesCommand => {
                 todo!();
