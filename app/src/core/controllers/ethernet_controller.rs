@@ -1,36 +1,35 @@
-use embassy_net::Stack;
-use embassy_stm32::eth::{Ethernet, PacketQueue};
-use embassy_stm32::eth::generic_smi::GenericSMI;
-use embassy_stm32::gpio::Output;
-use embassy_stm32::peripherals;
-use embassy_stm32::peripherals::{ETH, RNG};
-use embassy_stm32::rng::Rng;
-use rand_core::RngCore;
-use static_cell::StaticCell;
-use crate::{DataReceiver, EventSender, Irqs, POD_MAC_ADDRESS};
-
+use crate::core::communication::tcp::tcp_connection_handler;
+use crate::core::communication::udp::udp_connection_handler;
+use crate::Event;
+use crate::{try_spawn, DataReceiver, EventSender, Irqs, POD_MAC_ADDRESS};
 use core::arch::asm;
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_net::tcp::client::{TcpClient, TcpClientState};
-use embassy_net::{StackResources};
-use embassy_stm32::eth::{PHY};
+use embassy_net::Stack;
+use embassy_net::StackResources;
+use embassy_net::{Ipv4Address, Ipv4Cidr};
+use embassy_stm32::eth::generic_smi::GenericSMI;
+use embassy_stm32::eth::PHY;
+use embassy_stm32::eth::{Ethernet, PacketQueue};
+use embassy_stm32::gpio::Output;
+use embassy_stm32::gpio::{Level, Speed};
+use embassy_stm32::peripherals;
+use embassy_stm32::peripherals::{ETH, RNG};
+use embassy_stm32::rng::Rng;
 use embassy_stm32::{bind_interrupts, eth, rng, Config};
+use embassy_sync::blocking_mutex::raw::NoopRawMutex;
+use embassy_sync::priority_channel::Sender;
 use embassy_time::Timer;
 use embedded_io_async::Write;
 use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
-use {defmt_rtt as _, panic_probe as _};
-use embassy_net::{Ipv4Cidr, Ipv4Address};
-use embassy_stm32::gpio::{Level, Speed};
-use embassy_sync::blocking_mutex::raw::NoopRawMutex;
-use embassy_sync::priority_channel::Sender;
 use heapless::binary_heap::Max;
 use heapless::Vec;
-use crate::core::communication::tcp::tcp_connection_handler;
-use crate::core::communication::udp::udp_connection_handler;
+use rand_core::RngCore;
+use static_cell::StaticCell;
+use {defmt_rtt as _, panic_probe as _};
 
 type Device = Ethernet<'static, ETH, GenericSMI>;
-
 
 pub struct EthernetPins {
     pub p_rng: peripherals::RNG,
@@ -46,19 +45,20 @@ pub struct EthernetPins {
     pub pg11_pin: peripherals::PG11,
 }
 
-pub struct EthernetController {
-
-}
+pub struct EthernetController {}
 
 #[embassy_executor::task]
 async fn net_task(stack: &'static Stack<Device>) -> ! {
     stack.run().await
 }
 
-
 impl EthernetController {
-
-    pub fn new(x: Spawner, sender: EventSender, receiver: DataReceiver, pins: EthernetPins) -> Self {
+    pub async fn new(
+        x: Spawner,
+        sender: EventSender,
+        receiver: DataReceiver,
+        pins: EthernetPins,
+    ) -> Self {
         let mut rng = Rng::new(pins.p_rng, Irqs);
         let mut seed = [0; 8];
         rng.fill_bytes(&mut seed);
@@ -97,17 +97,16 @@ impl EthernetController {
             seed,
         ));
 
-        let mut ethernet_controller = Self {
+        let mut ethernet_controller = Self {};
 
-        };
+        try_spawn!(sender, x.spawn(net_task(stack)));
 
-        unwrap!(x.spawn(net_task(stack)));
-
-        unwrap!(x.spawn(tcp_connection_handler(x, stack, sender, receiver)));
+        try_spawn!(
+            sender,
+            x.spawn(tcp_connection_handler(x, stack, sender, receiver))
+        );
         // unwrap!(x.spawn(udp_connection_handler(stack)));
 
         ethernet_controller
     }
-
-
 }

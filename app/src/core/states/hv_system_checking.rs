@@ -1,8 +1,8 @@
-use defmt::info;
 use crate::core::finite_state_machine::*;
 use crate::Event;
+use defmt::info;
 
-impl FSM{
+impl FSM {
     pub fn entry_hv_system_checking(&mut self) {
         todo!();
     }
@@ -10,28 +10,16 @@ impl FSM{
     pub fn react_hv_system_checking(&mut self, event: Event) {
         match event {
             Event::HVLevitationReadyEvent => {
-
                 self.status.check_levitation();
-
-
             }
             Event::HVPowertrainReadyEvent => {
-
                 self.status.check_powertrain();
-
-
             }
             Event::HVPropulsionReadyEvent => {
-
                 self.status.check_propulsion();
-
-
             }
             Event::StartLevitatingCommand => {
-
                 if (self.status.check_all()) {
-
-
                     self.transit(State::Levitating);
                 }
                 todo!();
@@ -48,7 +36,6 @@ impl FSM{
             // }
             _ => {
                 info!("The current state ignores {}", event.to_str());
-
             }
         }
     }

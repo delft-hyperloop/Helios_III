@@ -1,25 +1,18 @@
-use defmt::info;
-use crate::core::finite_state_machine::{FSM, State};
+use crate::core::finite_state_machine::{State, FSM};
 use crate::Event;
+use defmt::info;
 
-
-impl FSM{
-
+impl FSM {
     pub fn entry_braking(&mut self) {
-
         todo!();
-
     }
 
     pub fn react_braking(&mut self, event: Event) {
         match event {
             Event::DirectionChangedEvent => {
-
                 todo!();
-
             }
             Event::RunFinishedEvent => {
-
                 todo!();
 
                 self.transit(State::Exit);
