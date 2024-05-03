@@ -17,36 +17,67 @@ name = "LevitationTemperature"
 id = 0x0b
 
 [[Datatype]]
-name = "BatteryVoltage"
+name = "BatteryVoltageLow"
 id = 0x19D
+[[Datatype]]
+name = "BatteryVoltageHigh"
+id = 0x400
 
 [[Datatype]]
-name = "TotalBatteryVoltage"
+name = "TotalBatteryVoltageLow"
 id = 0x1A2
 
 [[Datatype]]
-name = "BatteryTemperature"
-id = 0x1A4
+name = "TotalBatteryVoltageHigh"
+id = 0x401
+
 
 [[Datatype]]
-name = "BatteryBalance"
+name = "BatteryTemperatureLow"
+id = 0x1A4
+[[Datatype]]
+name = "BatteryTemperatureHigh"
+id = 0x402
+
+[[Datatype]]
+name = "BatteryBalanceLow"
 id = 0x1A0
 
 [[Datatype]]
-name = "SingleCellVoltage"
+name = "BatteryBalanceHigh"
+id = 0x403
+
+[[Datatype]]
+name = "SingleCellVoltageLow"
 id = 0x1BC
 
 [[Datatype]]
-name = "SingleCellTemperature"
+name = "SingleCellTemperatureLow"
 id = 0x1DC
 
 [[Datatype]]
-name = "ChargeState"
+name = "ChargeStateLow"
 id = 0x1A1
 
 [[Datatype]]
-name = "BatteryCurrent"
+name = "SingleCellVoltageHigh"
+id = 0x405
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh"
+id = 0x406
+
+[[Datatype]]
+name = "ChargeStateHigh"
+id = 0x407
+
+[[Datatype]]
+name = "BatteryCurrentLow"
 id = 0x1A3
+
+[[Datatype]]
+name = "BatteryCurrentHigh"
+id = 0x404
 
 [[Datatype]]
 name = "BrakeTemperature"
@@ -89,9 +120,17 @@ name = "GFDIsolation"
 id = 0x38
 
 [[Datatype]]
-name = "DefaultBMS"
+name = "DefaultBMSLow"
 id = 0x19C
-
+[[Datatype]]
+name = "DiagonosticBMSLow"
+id = 0x1A7
+[[Datatype]]
+name = "DefaultBMSHigh"
+id = 0x3FF
+[[Datatype]]
+name = "DiagonosticBMSHigh"
+id = 0x408
 [[Datatype]]
 name = "UnknownCanId"
 id = 0x7F0
