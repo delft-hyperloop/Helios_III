@@ -93,7 +93,7 @@ type CanReceiver = embassy_sync::channel::Receiver<
 >;
 
 /// Static Allocations - just the MPMC queues for now (?)
-static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, 16>> = StaticCell::new();
+static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }>> = StaticCell::new();
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
     StaticCell::new();
 static CAN_ONE_QUEUE: StaticCell<
@@ -199,8 +199,5 @@ async fn main(spawner: Spawner) -> ! {
         let curr_event = fsm.event_queue.receive().await;
         info!("[main] received event: {:?}", curr_event.to_id());
         fsm.react(curr_event).await;
-        fsm.data_queue
-            .send(Datapoint::new(Datatype::BatteryVoltage, 42, 42069))
-            .await;
     }
 }
