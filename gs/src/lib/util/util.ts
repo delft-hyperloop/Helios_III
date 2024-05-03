@@ -9,4 +9,8 @@ function snakeToCamel(s:string):string {
         .trim();
 }
 
-export default {range, snakeToCamel};
+function normalize(value: number, max: number): number {
+    return (value / max) * 100;
+}
+
+export default {range, snakeToCamel, normalize};
