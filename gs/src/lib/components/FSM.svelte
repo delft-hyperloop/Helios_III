@@ -1,6 +1,6 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import {south_bridge_payload} from "$lib/stores/data";
+    import {south_bridge_payload} from "$lib";
 
     export let size:'sm'|'lg' = 'sm'
 

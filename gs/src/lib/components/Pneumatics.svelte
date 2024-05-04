@@ -1,6 +1,5 @@
 <script lang="ts">
-
-    import util from "$lib/util/util";
+    import {util} from "$lib";
 
     export let pressure_left:number;
     export let pressure_right:number;

@@ -1,6 +1,5 @@
 <script lang="ts">
-    import Command from "$lib/components/abstract/Command.svelte";
-    import {inputSpeed} from "$lib/stores/state";
+    import {inputSpeed, Command} from "$lib";
 
     let selectedButton = 1;
 
