@@ -1,5 +1,5 @@
 <script>
-    import Command from "$lib/components/abstract/Command.svelte";
+    import {Command} from "$lib";
 </script>
 
 <div class="h-full w-full p-4 flex flex-col gap-8 text-surface-50">

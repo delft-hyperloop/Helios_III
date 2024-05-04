@@ -2,7 +2,6 @@
     import {Chart, Battery, Table, FSM, south_bridge_payload} from "$lib";
     import {AppBar} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
-    import type {TempTableEntry} from "$lib/types";
     import {invoke} from "@tauri-apps/api/tauri";
     import Keydown from "svelte-keydown";
 

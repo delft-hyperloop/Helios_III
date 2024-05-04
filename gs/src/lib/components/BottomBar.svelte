@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import {south_bridge_payload} from "$lib/stores/data";
+    import {south_bridge_payload} from "$lib";
 
     let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
 
