@@ -9,4 +9,14 @@ function snakeToCamel(s:string):string {
         .trim();
 }
 
-export default {range, snakeToCamel};
+function normalize(value: number, max: number): number {
+    return (value / max) * 100;
+}
+
+function colourCode(value: number, max: number, saturation:number = 50): string {
+    const normalized = normalize(value, max);
+    const hue = 120 - (normalized * 1.2);
+    return `hsl(${hue}, ${saturation}%, 50%)`;
+}
+
+export default {range, snakeToCamel, normalize, colourCode};
