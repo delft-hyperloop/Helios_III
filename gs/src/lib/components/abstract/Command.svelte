@@ -1,7 +1,6 @@
 <script lang="ts">
     import { invoke } from '@tauri-apps/api/tauri';
-    import util from "$lib/util/util";
-    import type {NamedCommand} from "$lib/types";
+    import {type NamedCommand, util} from "$lib";
 
     export let background: string = `bg-primary-500`;
     export let classes: string = '';

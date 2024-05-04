@@ -1,6 +1,5 @@
 <script lang="ts">
-    import Localiser from "$lib/components/Localiser.svelte";
-    import {south_bridge_payload, Table} from "$lib";
+    import {south_bridge_payload, Table, Localiser} from "$lib";
 
     let tableArr2:any[][];
     $: tableArr2 = [

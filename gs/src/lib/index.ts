@@ -16,14 +16,16 @@ import Battery from "$lib/components/Battery.svelte";
 import BottomBar from "$lib/components/BottomBar.svelte";
 import FSM from "$lib/components/FSM.svelte";
 import InitialisationForm from "$lib/components/InitialisationForm.svelte";
+import Localiser from "$lib/components/Localiser.svelte";
+import Pneumatics from "$lib/components/Pneumatics.svelte";
 import TitleBar from "$lib/components/TitleBar.svelte";
 import Chart from "$lib/components/generic/Chart.svelte";
 import Table from "$lib/components/generic/Table.svelte";
 import Command from "$lib/components/abstract/Command.svelte";
-import EventListener from "$lib/components/abstract/EventListener.svelte";
 
 // Utils
 import {GraphPlot} from "$lib/util/GraphPlot";
+import util from "$lib/util/util";
 
 import type {Payload, NamedCommand, EventChannel, TempTableEntry, Log} from "$lib/types";
 
@@ -31,5 +33,5 @@ import type {Payload, NamedCommand, EventChannel, TempTableEntry, Log} from "$li
 import {south_bridge_payload, north_bridge_payload} from "$lib/stores/data";
 import {detailTabSet, inputSpeed} from "$lib/stores/state";
 
-export {VitalsPanel, LogsPanel, DetailsPanel, BatteriesTab, CurrentTab, HomeTab, LocationTab, ProceduresTab, RunInitTab, Battery, BottomBar, FSM, InitialisationForm, TitleBar, Chart, Table, Command, EventListener, GraphPlot, south_bridge_payload, north_bridge_payload, detailTabSet, inputSpeed}
+export {util, VitalsPanel, LogsPanel, DetailsPanel, BatteriesTab, CurrentTab, HomeTab, LocationTab, ProceduresTab, RunInitTab, Battery, BottomBar, FSM, InitialisationForm, TitleBar, Chart, Table, Command, GraphPlot, south_bridge_payload, north_bridge_payload, detailTabSet, inputSpeed, Pneumatics, Localiser}
 export type {Payload, NamedCommand, EventChannel, TempTableEntry, Log}
