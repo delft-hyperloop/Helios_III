@@ -7,7 +7,6 @@
     onMount(() => {
         const interval = setInterval(() => {
             time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-            console.log($south_bridge_payload.timestamp)
         }, 1000);
 
         return () => {
