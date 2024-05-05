@@ -25,7 +25,7 @@ import TheoreticalRun from "$lib/components/TheoreticalRun.svelte";
 import Status from "$lib/components/generic/Status.svelte";
 
 // Utils
-import {GraphPlot} from "$lib/util/GraphPlot";
+import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
 import util from "$lib/util/util";
 
 import type {Payload, NamedCommand, EventChannel, TempTableEntry, Log} from "$lib/types";
@@ -35,5 +35,5 @@ import {south_bridge_payload, north_bridge_payload} from "$lib/stores/data";
 import {detailTabSet, inputSpeed} from "$lib/stores/state";
 
 // Export all
-export {util, Status,  VitalsPanel, LogsPanel, DetailsPanel, BatteriesTab, CurrentTab, HomeTab, LocationTab, ProceduresTab, RunInitTab, Battery, BottomBar, FSM, TitleBar, Chart, Table, Command, GraphPlot, south_bridge_payload, north_bridge_payload, detailTabSet, inputSpeed, Pneumatics, Localiser, TheoreticalRun}
+export {StrokePresets, util, Status,  VitalsPanel, LogsPanel, DetailsPanel, BatteriesTab, CurrentTab, HomeTab, LocationTab, ProceduresTab, RunInitTab, Battery, BottomBar, FSM, TitleBar, Chart, Table, Command, PlotBuffer, south_bridge_payload, north_bridge_payload, detailTabSet, inputSpeed, Pneumatics, Localiser, TheoreticalRun}
 export type {Payload, NamedCommand, EventChannel, TempTableEntry, Log}

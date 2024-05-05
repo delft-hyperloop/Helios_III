@@ -1,38 +1,29 @@
-
-<!--  TODO: Formalize break point - 550 current give it a variable   -->
-
 <script lang="ts">
-    /**
-     * @param dataPointsCount The number of data points to display on the chart
-     * @param refreshRate The rate at which the chart should refresh
-     * @param title The title of the chart
-     * @param background The background color of the chart.
-     * Use tailwind classes.
-     * @param height The height of the chart
-     */
-
     import {onDestroy, onMount} from 'svelte';
     import 'uplot/dist/uPlot.min.css';
-    import { listen, type UnlistenFn } from '@tauri-apps/api/event';
+    import {type EventCallback, listen, type UnlistenFn} from '@tauri-apps/api/event';
     import {z} from "zod";
-    import {GraphPlot} from "$lib";
-    import type {IntervalFunction} from "$lib/types";
+    import {PlotBuffer, StrokePresets} from "$lib";
 
+    export let title: string;
+    export let eventChannel = "south_bridge";
+    export let eventCallback: EventCallback<unknown> = (event) => {
+        // @ts-ignore
+        info = z.number().parse(event.payload.value);
+        chart.addEntry(1, info);
+    };
     export let dataPointsCount: number = 1000;
     export let refreshRate: number = 100;
-    export let title: string;
     export let background: string = "bg-surface-800";
     export let height: number = 200;
     export let yRange: [number, number] = [0, 100];
     export let showLegend: boolean = false;
-    export let intervalFunction: IntervalFunction = () => {chart.redraw()};
-    export const chart = new GraphPlot(dataPointsCount, yRange, showLegend);
+
+    export const chart = new PlotBuffer(dataPointsCount, yRange, showLegend);
 
     let width: number;
     let resize = (width:number) => {
-        if (chart) {
-            chart.setSize(width-25, height);
-        }
+        chart?.setSize(width-25, height);
     }
 
     $: resize(width);
@@ -41,19 +32,15 @@
     let plotContainer: HTMLDivElement;
     let info:number = 0;
 
-    // On mount, draw the chart and start listening for events.
     onMount(async () => {
+        chart.addSeries(StrokePresets.hyperLoopGreen());
+
         chart.draw(plotContainer, refreshRate);
         resize(width)
 
-        unlisten = await listen('north_bridge', (event) => {
-            // @ts-ignore
-            info = z.number().parse(event.payload.value);
-            chart.addEntry(info);
-        });
+        unlisten = await listen(eventChannel, eventCallback);
     })
 
-    // Free up resources when the component is destroyed
     onDestroy(() => {
         unlisten();
         chart.destroy();
@@ -61,9 +48,8 @@
 </script>
 
 <div bind:clientWidth={width} class="flex flex-col {background} rounded-md pt-2 {width < 550 ? 'text-sm' : ''}">
-    <div class="flex gap-4 mx-4">
-        <h4 class="text-md text-primary-100">{title}</h4>
-        <b>Data</b>: <span class="font-mono">{info.toFixed(2)}</span>
+    <div class="flex gap-2 ml-6">
+        <h4 class="text-md text-primary-100">{title}</h4> <span class="font-mono">{info.toFixed(2)}</span>
     </div>
     <div class="flex flex-col justify-center items-center w-full">
         <div class="rounded-md" bind:this={plotContainer} />

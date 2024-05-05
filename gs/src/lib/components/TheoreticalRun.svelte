@@ -1,38 +1,41 @@
 <script lang="ts">
-    import {Chart, GraphPlot} from "$lib";
+    import {Chart, PlotBuffer, StrokePresets} from "$lib";
     import {onMount} from "svelte";
     import {type TypedArray} from "uplot";
+    import {z} from "zod";
 
-    let chart:GraphPlot;
-    let data:TypedArray = new Int32Array(100);
+    export let xDataCount = 100;
+
+    let chart:PlotBuffer;
+    let data:TypedArray = new Int32Array(xDataCount);
 
     onMount(() => {
-        chart?.addSeries({
-            label: "Theoretical run",
-            stroke: "red",
-            width: 2
-        }, data);
+        chart?.addSeries(StrokePresets.theoretical());
+        chart?.updateSeries(2, data);
     })
 
     export function calculateTheoretical() {
-        // TODO: Implement the theoretical calculation
-        let data = new Int32Array(100);
-        for (let i = 0; i < 100; i++) {
+        let data = new Int32Array(xDataCount);
+        for (let i = 0; i < xDataCount; i++) {
             data[i] = Math.random() * 50;
         }
         chart?.updateSeries(2, data);
         chart?.redraw();
     }
 
-    function DEBUG_populate_non_theoretical() {
-        let data = new Int32Array(100);
-        for (let i = 0; i < 100; i++) {
-            data[i] = Math.random() * 50;
-        }
-        chart?.updateSeries(1, data);
+    export function clearRuns() {
+        chart?.updateSeries(2, new Int32Array(xDataCount));
+        chart?.updateSeries(1, new Int32Array(xDataCount));
         chart?.redraw();
     }
 
 </script>
 
-<Chart height={300} background="bg-surface-900" yRange={[0, 50]} dataPointsCount={100} title="Theoretical vs Real run" bind:chart={chart} refreshRate={0} />
+<Chart eventCallback={(event) => {
+    // @ts-ignore
+    let speed = z.number().parse(event.payload.speed);
+    // @ts-ignore
+    let timestamp = z.number().parse(event.payload.timestamp);
+
+    chart.setEntry(1, timestamp, speed)
+}} eventChannel="start_run" height={300} background="bg-surface-900" yRange={[0, 50]} dataPointsCount={xDataCount} title="Theoretical vs Real run" bind:chart={chart} refreshRate={100} />
