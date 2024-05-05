@@ -4,7 +4,7 @@
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
     "devPath": "http://localhost:5173",
-    "distDir": "../public"
+    "distDir": "../build"
   },
   "package": {
     "productName": "station",
@@ -12,7 +12,18 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
+      }
     },
     "bundle": {
       "active": true,
@@ -29,7 +40,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "nl.hyperloop.gs",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -56,10 +67,11 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 1000,
         "resizable": true,
+        "decorations": false,
         "title": "Ground Station",
-        "width": 800
+        "width": 1500
       }
     ]
   }
