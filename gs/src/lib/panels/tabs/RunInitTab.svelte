@@ -1,5 +1,16 @@
 <script lang="ts">
-    import {south_bridge_payload, Table, InitialisationForm} from "$lib";
+    import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, Command} from "$lib";
+    import type {MouseEventHandler} from "svelte/elements";
+    import type {IntervalFunction} from "$lib/types";
+
+    enum Mode {
+        ShortRun = 1,
+        LeftSwitch = 2,
+        RightSwitch = 3
+    }
+
+    let selectedMode:Mode = Mode.ShortRun;
+    let calculateTheoretical:IntervalFunction;
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -15,12 +26,76 @@
     ]
 </script>
 
-<div class="p-4">
+<div class="p-4 h-full">
     <h2 class="text-xl font-semibold mb-4">Initialization</h2>
-    <div class="flex gap-16">
-        <InitialisationForm />
-        <div class="flex-grow pt-1 h-full w-1/2 bg-surface-900 rounded-lg">
+    <div class="grid gap-2" style="grid-template-columns: 1fr 1fr 1.5fr; grid-template-rows: auto 2fr">
+        <div class="row-span-2 flex flex-col gap-2 bg-surface-900 p-4 rounded-lg">
+            <h3 class="col-span-2 font-medium text-lg">Run initialisation</h3>
+            <hr class="col-span-2">
+            <p>Mode: </p>
+            <div class="flex justify-between col-span-2">
+                <button class="btn flex-grow bg-surface-700 rounded-none rounded-l-lg p-2" type="button" class:active={selectedMode === 1} on:click={() => selectedMode = Mode.ShortRun}>
+                    Short run
+                </button>
+                <button class="btn flex-grow bg-surface-700 rounded-none p-2" type="button" class:active={selectedMode === 2} on:click={() => selectedMode = Mode.LeftSwitch}>
+                    Left switch
+                </button>
+                <button class="btn flex-grow bg-surface-700 rounded-none rounded-r-lg p-2" type="button" class:active={selectedMode === 3} on:click={() => selectedMode = Mode.RightSwitch}>
+                    Right switch
+                </button>
+            </div>
+            <div>
+                <label for="speed_input">Speed: </label>
+                <input name="speed_input" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="100" step="1">
+                <label for="pos_input">Position: </label>
+                <input name="pos_input" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="100" step="1">
+                <label for="accel_input">Acceleration: </label>
+                <input name="accel_input" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="100" step="1">
+            </div>
+            <div class="flex-grow"></div>
+            <div class="grid grid-cols-2 gap-2">
+                <Command command="establish_connection" classes="btn rounded-md bg-surface-700  col-span-2" />
+                <Command command="start_hv" classes="btn flex-grow rounded-md bg-surface-700 " />
+                <Command command="stop_hv" classes="btn flex-grow rounded-md bg-surface-700 " />
+                <Command command="levitate" classes="btn flex-grow rounded-md bg-surface-700 " />
+                <Command command="stop_levitating" classes="btn flex-grow rounded-md bg-surface-700 " />
+                <Command command="start_run" classes="btn rounded-md bg-primary-500 col-span-2" />
+                <button class="btn rounded-md col-span-2 bg-surface-700 " type="button" on:click={calculateTheoretical}>
+                    Calculate theoretical run
+                </button>
+            </div>
+        </div>
+        <div class="row-span-1 grid grid-cols-2 gap-y-2 auto-rows-min bg-surface-900 p-4 rounded-lg" style="grid-template-columns: 1fr 1fr;">
+            <h3 class="text-lg font-normal col-span-2">Statuses</h3>
+            <hr class="col-span-2">
+            <p>Helios III</p>
+            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <p>Propulsion:</p>
+            <Status status={$south_bridge_payload.value % 2 === 1} />
+            <p>Levitation:</p>
+            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <p>PTC:</p>
+            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <p>Localization:</p>
+            <Status status={$south_bridge_payload.value % 2 === 1} />
+            <p>Prop Thermal:</p>
+            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <p>Levi Thermal:</p>
+            <Status status={$south_bridge_payload.value % 2 === 1} />
+        </div>
+        <div class="bg-surface-900 p-4 rounded-lg">
+            <h3 class="text-lg mb-2 font-normal">Data:</h3>
+            <hr>
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
+        </div>
+        <div class="col-span-2">
+            <TheoreticalRun bind:calculateTheoretical={calculateTheoretical}/>
         </div>
     </div>
 </div>
+
+<style lang="scss">
+  .active {
+    background-color: rgb(77, 156, 137);
+  }
+</style>
