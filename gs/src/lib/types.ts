@@ -9,11 +9,9 @@ export type Payload = {
     timestamp: number,
 }
 export type EventChannel = 'north_bridge' | 'south_bridge'
-
 export type TempTableEntry = {name:string, value: number}
-
 export type Log = {
     log_type:string, message:string, timestamp:number
 }
-
+export type IntervalFunction = () => void;
 export type Segment = 'L1' | 'L2' | 'L3' | 'L4' | 'L5' | 'L6';
