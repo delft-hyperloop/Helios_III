@@ -1,6 +1,5 @@
 <script lang="ts">
     import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, Command} from "$lib";
-    import type {MouseEventHandler} from "svelte/elements";
     import type {IntervalFunction} from "$lib/types";
 
     enum Mode {
@@ -11,6 +10,7 @@
 
     let selectedMode:Mode = Mode.ShortRun;
     let calculateTheoretical:IntervalFunction;
+    let clearRuns: () => void;
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -63,6 +63,9 @@
                 <button class="btn rounded-md col-span-2 bg-surface-700 " type="button" on:click={calculateTheoretical}>
                     Calculate theoretical run
                 </button>
+                <button class="btn rounded-md col-span-2 bg-surface-700 " type="button" on:click={clearRuns} >
+                    Clear runs
+                </button>
             </div>
         </div>
         <div class="row-span-1 grid grid-cols-2 gap-y-2 auto-rows-min bg-surface-900 p-4 rounded-lg" style="grid-template-columns: 1fr 1fr;">
@@ -89,7 +92,7 @@
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
         </div>
         <div class="col-span-2">
-            <TheoreticalRun bind:calculateTheoretical={calculateTheoretical}/>
+            <TheoreticalRun bind:clearRuns={clearRuns} bind:calculateTheoretical={calculateTheoretical}/>
         </div>
     </div>
 </div>
