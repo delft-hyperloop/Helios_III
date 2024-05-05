@@ -2,18 +2,31 @@
 <!--  TODO: Formalize break point - 550 current give it a variable   -->
 
 <script lang="ts">
+    /**
+     * @param dataPointsCount The number of data points to display on the chart
+     * @param refreshRate The rate at which the chart should refresh
+     * @param title The title of the chart
+     * @param background The background color of the chart.
+     * Use tailwind classes.
+     * @param height The height of the chart
+     */
+
     import {onDestroy, onMount} from 'svelte';
     import 'uplot/dist/uPlot.min.css';
     import { listen, type UnlistenFn } from '@tauri-apps/api/event';
     import {z} from "zod";
-    import {GraphPlot} from "$lib/util/GraphPlot";
+    import {GraphPlot} from "$lib";
+    import type {IntervalFunction} from "$lib/types";
 
-    // props
     export let dataPointsCount: number = 1000;
     export let refreshRate: number = 100;
     export let title: string;
     export let background: string = "bg-surface-800";
     export let height: number = 200;
+    export let yRange: [number, number] = [0, 100];
+    export let showLegend: boolean = false;
+    export let intervalFunction: IntervalFunction = () => {chart.redraw()};
+    export const chart = new GraphPlot(dataPointsCount, yRange, showLegend);
 
     let width: number;
     let resize = (width:number) => {
@@ -26,7 +39,6 @@
 
     let unlisten: UnlistenFn;
     let plotContainer: HTMLDivElement;
-    const chart = new GraphPlot(dataPointsCount);
     let info:number = 0;
 
     // On mount, draw the chart and start listening for events.

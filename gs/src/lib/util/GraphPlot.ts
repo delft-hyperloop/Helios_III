@@ -1,5 +1,6 @@
 import uPlot from 'uplot';
 import util from './util';
+import type {IntervalFunction} from "$lib/types";
 /**
  * This class is a wrapper around uPlot to make it easier to use.
  * It provides a simple interface to draw a graph and update it with new data.
@@ -14,23 +15,24 @@ export class GraphPlot {
     /**
      * Create a new GraphPlot object. The graph will have the specified number of data points.
      * @param count The number of data points to display in the graph.
-     * @param title The title of the graph.
+     * @param yRange The range of the y-axis.
+     * @param showLegend Whether to show the legend on the graph.
      */
-    public constructor(count:number) {
+    public constructor(count:number, yRange:[number, number], showLegend:boolean = false) {
         this._data = [util.range(count), util.range(count, 0, 0)];
 
         this._opts = {
             width: 500,
             height: 300,
             legend: {
-                show: false,
+                show: showLegend,
             },
             scales: {
                 "%": {
                     auto: false,
                 },
                 y: {
-                    range: [0, 100]
+                    range: yRange
                 },
                 x: {
                     time: false,
@@ -70,9 +72,8 @@ export class GraphPlot {
 
     /**
      * Redraw the graph with the current data.
-     * @private This method is for internal use only.
      */
-    private redraw() {
+    public redraw() {
         if (this._plot) {
             this._plot.batch(() => {
                 this._plot!.setData(this._data, false);
@@ -81,13 +82,13 @@ export class GraphPlot {
         }
     }
 
-    /**
-     * Force the graph to redraw itself.
-     */
-    public forceRedraw() {
-        if (this._plot) {
-            this._plot.redraw();
-        }
+    public addSeries(series:uPlot.Series, data:uPlot.TypedArray) {
+        this._plot?.addSeries(series)
+        this._data.push(data);
+    }
+
+    public updateSeries(seriesIndex:number, data:uPlot.TypedArray) {
+        this._data[seriesIndex] = data;
     }
 
     /**
@@ -95,20 +96,32 @@ export class GraphPlot {
      * The graph will be updated every 100ms.
      * @param plotContainer The HTML element in which the graph should be drawn.
      * @param updateInterval The interval in milliseconds at which the graph should be updated.
+     * If 0 is passed, the graph will not be updated automatically!
+     * @param intervalCallback A callback function that will be called at the specified interval.
+     * This function should not take any arguments and return void.
+     * By default, the function will call the redraw method.
      * @see [uPlot library](https://leeoniya.github.io/uPlot/) for more information on uPlot.
      * Documentation is severely lacking, but the examples should be helpful.
      */
-    public draw(plotContainer: HTMLDivElement, updateInterval:number = 100) {
+    public draw(plotContainer: HTMLDivElement,
+                updateInterval:number = 100,
+                intervalCallback: IntervalFunction = () => {this.redraw()}) {
         this._plot = new uPlot(this._opts, this._data, plotContainer);
-        this._intervalId = window.setInterval(() => this.redraw(), updateInterval);
+
+        if (updateInterval === 0) {
+            intervalCallback();
+            return;
+        }
+
+        this._intervalId = window.setInterval(intervalCallback, updateInterval);
     }
 
 
 
     /**
      * Set the size of the graph.
-     * @param width
-     * @param height
+     * @param width width in pixels
+     * @param height height in pixels
      */
     public setSize(width:number, height:number) {
         if (this._plot) {
@@ -130,6 +143,13 @@ export class GraphPlot {
             }
 
             yData[yData.length-1] = info
+        }
+    }
+
+    public setEntry(index:number, info:number) {
+        if (this._plot) {
+            let yData = this._data[1];
+            yData[index] = info;
         }
     }
 
