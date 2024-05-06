@@ -28,6 +28,7 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
     let mut match_from_id = String::new();
     let mut to_bytes = String::new();
     let mut id_list = id_list.lock().unwrap();
+    let mut ids = Vec::new();
     for command in config.Command {
         if command.id & 0b1111_1000_0000_0000 != 0 {
             panic!("IDs need to be u11. Found {} > {}", command.id, 2 ^ 11);
@@ -46,13 +47,14 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
             command.name, command.id
         ));
         match_from_id.push_str(&format!(
-            "\t\t\t{} => Command::{}(0u64),\n",
+            "\t\t\t{} => Command::{}(val),\n",
             command.id, command.name
         ));
         to_bytes.push_str(&format!(
-            "\t\t\tCommand::{}(val) => buf[2..10].copy_from_slice(&val.to_be_bytes()),\n",
+            "\t\t\tCommand::{}(val) => {{ buf[3..11].copy_from_slice(&val.to_be_bytes()); }}\n",
             command.name
         ));
+        ids.push(command.id.to_string());
     }
 
     format!(
@@ -62,11 +64,13 @@ pub enum Command {{
 }}
 impl Command {{
     pub fn to_id(&self)->u16 {{
+        #[allow(unreachable_patterns)]
         match *self {{\n
 {}
         }}
     }}
-    pub fn from_id(id:u16) -> Self {{
+    pub fn from_id(id:u16, val: u64) -> Self {{
+        #[allow(unreachable_patterns)]
         match id {{
 {}
             _ => Command::DefaultCommand(0)
@@ -74,13 +78,21 @@ impl Command {{
     }}
     pub fn as_bytes(&self) -> [u8; 20] {{
         let mut buf = [0u8; 20];
-        buf[0..2] = self.to_id().to_be_bytes();
+        buf[0] = 0xff;
+        buf[1..3].copy_from_slice(&self.to_id().to_be_bytes());
+        #[allow(unreachable_patterns)]
         match *self {{
 {}
         }}
+        buf[19] = 0xff;
         buf
     }}
-}}",
-        enum_definitions, match_to_id, match_from_id
+    pub fn from_bytes(buf: &[u8; 20]) -> Self {{
+        Command::from_id(u16::from_be_bytes([buf[1], buf[2]]), u64::from_be_bytes([buf[3], buf[4], buf[5], buf[6], buf[7], buf[8], buf[9], buf[10]]))
+    }}
+}}
+pub const COMMAND_IDS: [u16; {}] = [{}];
+",
+        enum_definitions, match_to_id, match_from_id, to_bytes, ids.len(), ids.join(", ")
     )
 }

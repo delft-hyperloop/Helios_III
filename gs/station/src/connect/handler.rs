@@ -1,4 +1,4 @@
-use std::io::{BufRead, Read, Write};
+use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::sync::mpsc::{Receiver, Sender};
 use crate::api::{Message, Status};
@@ -14,8 +14,8 @@ pub struct Handler {
 }
 
 impl Handler {
-    pub fn handle(stream: TcpStream, tx: Sender<Message>, rx: Receiver<Command>) -> (Sender<Message>, Receiver<Command>) {
-        let mut read_stream;
+    pub fn handle(&self, stream: TcpStream, tx: Sender<Message>, rx: Receiver<Command>) -> (Sender<Message>, Receiver<Command>) {
+        let read_stream;
         match stream.try_clone() {
             Ok(rs) => {
                 read_stream = rs;
@@ -25,7 +25,7 @@ impl Handler {
                 return (tx, rx);
             }
         }
-        let mut write_stream = stream;
+        let write_stream = stream;
         let tx_handle = std::thread::spawn(|| {Self::pod_incoming_handler(read_stream, tx)});
         let rx_handle = std::thread::spawn(|| {Self::pod_outgoing_handler(write_stream, rx)});
 
@@ -59,10 +59,9 @@ impl Handler {
     }
 
     fn pod_outgoing_handler(mut write_stream: TcpStream, rx: Receiver<Command>) -> Receiver<Command> {
-
         'tcp_writing: loop {
             let command = rx.recv().expect("[Handler] Failed to receive on command rx");
-            match write_stream.write_all(&command.to_bytes()) {
+            match write_stream.write_all(&command.as_bytes()) {
                 Ok(_) => {}
                 Err(e) => {
                     println!("Failed to write to connection: {}", e);

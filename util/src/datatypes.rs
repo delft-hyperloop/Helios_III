@@ -62,11 +62,13 @@ pub enum Datatype {{
 }}\n
 impl Datatype {{
     pub fn to_id(&self)->u16 {{
+        #[allow(unreachable_patterns)]
         match *self {{
 {}
         }}
     }}
     pub fn from_id(id:u16) -> Self {{
+        #[allow(unreachable_patterns)]
         match id {{
 {}
             _ => Datatype::DefaultDatatype,

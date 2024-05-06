@@ -8,6 +8,7 @@ use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::Path;
+use std::sync::Mutex;
 
 #[derive(Debug, Deserialize)]
 struct Config {
@@ -29,7 +30,7 @@ struct NetConfig {
 struct GS {
     ip: [u8; 4],
     port: u16,
-    udp_port: u16,
+    // udp_port: u16,
     buffer_size: usize,
     timeout: u64,
 }
@@ -51,9 +52,9 @@ fn main() {
     let mut content = String::new();
 
     content.push_str(&*configure_ip(&config));
-    content.push_str(&*generate_datatypes(id_list, DATATYPES_PATH));
-    content.push_str(&*generate_commands(id_list, COMMANDS_PATH));
-    content.push_str(&*generate_events(id_list, EVENTS_PATH));
+    content.push_str(&*generate_datatypes(&id_list, DATATYPES_PATH));
+    content.push_str(&*generate_commands(&id_list, COMMANDS_PATH));
+    content.push_str(&*generate_events(&id_list, EVENTS_PATH));
 
     fs::write(dest_path.clone(), content).expect(&*format!(
         "Couldn't write to {}! Build failed.",
@@ -66,7 +67,7 @@ fn main() {
 }
 
 fn configure_ip(config: &Config) -> String {
-    format!("pub fn GS_SOCKET() -> std::net::SocketAddr {{ std::net::SocketAddr::new(std::net::IpAddr::from([{},{},{},{}]),{}) }}\n", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port)
+    format!("#[allow(non_snake_case)]\npub fn GS_SOCKET() -> std::net::SocketAddr {{ std::net::SocketAddr::new(std::net::IpAddr::from([{},{},{},{}]),{}) }}\n", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port)
   + &*format!(
     "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
     config.pod.net.ip[0],

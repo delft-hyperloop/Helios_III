@@ -1,7 +1,7 @@
 mod handler;
 mod parser;
 
-use std::net::{IpAddr, SocketAddr, TcpListener};
+use std::net::{IpAddr, TcpListener};
 use std::sync::mpsc::{Receiver, Sender};
 use std::sync::Mutex;
 use crate::api::{Message, Status};
@@ -12,6 +12,16 @@ pub struct Datapoint {
     pub datatype: Datatype,
     pub value: u64,
     pub timestamp: u64,
+}
+
+impl Datapoint {
+    pub fn new(datatype: Datatype, value: u64, timestamp: u64) -> Self {
+        Self {
+            datatype,
+            value,
+            timestamp,
+        }
+    }
 }
 
 pub struct Station {
@@ -33,22 +43,21 @@ impl Station {
         }
 
         let listener = server.unwrap();
-        match listener.accept() {
+        return match listener.accept() {
             Ok((stream, client_socket)) => {
                 if client_socket.ip().ne(&IpAddr::from(POD_IP_ADDRESS.0)) {
                     tx.send(Message::Status(Status::UnknownClient)).expect("[Station] Failed to send on msg tx");
                     tx.send(Message::Error(format!("Unknown client tried to connect: {:?}", client_socket))).expect("[Station] Failed to send on msg tx");
-                    return (tx, rx);
+                    (tx, rx)
                 } else {
                     let handler = Handler {};
-                    return handler.handle(stream, tx, rx);
+                    handler.handle(stream, tx, rx)
                 }
             }
             Err(e) => {
-
+                tx.send(Message::Error(format!("Failed to accept connection: {}", e))).expect("[Station] Failed to send on msg tx");
+                (tx, rx)
             }
         }
-
-        return (tx, rx);
     }
 }

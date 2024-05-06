@@ -1,5 +1,3 @@
-use std::io::Bytes;
-use crate::Command;
 use crate::connect::Datapoint;
 
 pub enum Status {

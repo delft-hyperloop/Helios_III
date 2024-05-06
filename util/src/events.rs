@@ -98,23 +98,27 @@ pub enum Event {{
 }}
 impl Event {{
     pub fn to_id(&self)->u16 {{
+        #[allow(unreachable_patterns)]
         match *self {{
 {}
         }}
     }}
     pub fn from_id(id:u16) -> Self {{
+        #[allow(unreachable_patterns)]
         match id {{
 {}
             _ => Event::DefaultEvent,
         }}
     }}
     pub fn priority(&self) -> usize {{
+        #[allow(unreachable_patterns)]
         match self {{
 {}
             _ => 0,
         }}
     }}
     fn to_idx(&self) -> usize {{
+        #[allow(unreachable_patterns)]
         match self {{
 {}
             _ => {},
