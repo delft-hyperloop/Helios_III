@@ -8,6 +8,10 @@
 
 */
 
+use crate::api::config::Event;
+
+mod config;
+
 /// In order for the GUI to display any sort of graphs, it needs to get the data from the backend.
 /// this is done through the mpsc channel, where the backend sends one of the enum variants to the
 /// frontend, depending on the last received data from the pod.
@@ -35,6 +39,7 @@ pub enum Command {
     StartRun,
     EmergencyBrake,
     Shutdown,
+    EmitEvent(Event),
 }
 
 /// It's best to explicitly state these types, even though they are trivial.

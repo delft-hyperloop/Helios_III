@@ -1,9 +1,4 @@
-## Every time this file is changed, you also need to update:
-## pod:
-## - communication/mod.rs
-## gs:
-## - api/mod.rs
-## -
+
 [[Datatype]]
 name = "DefaultDatatype"
 id = 0x00
@@ -99,4 +94,3 @@ id = 0x7F0
 [[Datatype]]
 name = "Info"
 id = 0x7FA
-

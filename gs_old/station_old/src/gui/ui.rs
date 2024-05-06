@@ -83,6 +83,9 @@ impl App {
     }
 
     fn handle_key_event(&mut self, key_event: KeyEvent) {
+        match self.selected {
+
+        }
         match key_event.code {
             KeyCode::Char('q') => self.exit(),
             KeyCode::Esc => self.send_command(EmergencyBrake),
@@ -156,28 +159,28 @@ impl Widget for &App {
             .direction(Direction::Horizontal)
             .constraints(
                 [
-                    Constraint::Percentage(50), // Left side for text stream
-                    Constraint::Percentage(50), // Right side for the plots
+                    Constraint::Percentage(70), // Left side for text stream
+                    Constraint::Percentage(30), // Right side for the table
                 ]
                     .as_ref(),
             )
             .split(main_chunks[0]);
 
-        let right_chunks = Layout::default()
-            .direction(Direction::Vertical)
-            .constraints(
-                [
-                    Constraint::Percentage(50), // Top half for the scatter plot
-                    Constraint::Percentage(50), // Bottom half for the line graph
-                ]
-                    .as_ref(),
-            )
-            .split(top_chunks[1]);
-
-        let right_pair = Layout::default()
-            .direction(Direction::Horizontal)
-            .constraints([Constraint::Percentage(30),Constraint::Percentage(70), ].as_ref(),)
-            .split(right_chunks[1]);
+        // let right_chunks = Layout::default()
+        //     .direction(Direction::Vertical)
+        //     .constraints(
+        //         [
+        //             Constraint::Percentage(50), // Top half for the scatter plot
+        //             Constraint::Percentage(50), // Bottom half for the line graph
+        //         ]
+        //             .as_ref(),
+        //     )
+        //     .split(top_chunks[1]);
+        //
+        // let right_pair = Layout::default()
+        //     .direction(Direction::Horizontal)
+        //     .constraints([Constraint::Percentage(30),Constraint::Percentage(70), ].as_ref(),)
+        //     .split(right_chunks[1]);
 
         let text_block = Block::default().title("Text Stream")
             .title_style(Style::default().fg(Color::LightBlue).bold()) // Styling the title
@@ -206,61 +209,62 @@ impl Widget for &App {
 
         // Create the scatter plot
         // 1. data set
-        let datasets = vec![
-            Dataset::default()
-                .name("safety score")
-                .marker(Marker::Dot)
-                .style(Style::default().cyan())
-                .data(&self.safety_score),
-            Dataset::default()
-                .name("unsafety score")
-                .marker(Marker::Dot)
-                .style(Style::default().light_yellow())
-                .data(&self.unsafety_score)
-        ];
-        // 2. Create the X axis and define its properties
-        let x_axis = Axis::default()
-            .title("time".light_magenta())
-            .style(Style::default().light_magenta())
-            .bounds([0.0, 10.0])
-            .labels(vec!["0.0".into(), "5.0".into(), "10.0".into()]);
+        // let datasets = vec![
+        //     Dataset::default()
+        //         .name("safety score")
+        //         .marker(Marker::Dot)
+        //         .style(Style::default().cyan())
+        //         .data(&self.safety_score),
+        //     Dataset::default()
+        //         .name("unsafety score")
+        //         .marker(Marker::Dot)
+        //         .style(Style::default().light_yellow())
+        //         .data(&self.unsafety_score)
+        // ];
+        // // 2. Create the X axis and define its properties
+        // let x_axis = Axis::default()
+        //     .title("time".light_magenta())
+        //     .style(Style::default().light_magenta())
+        //     .bounds([0.0, 10.0])
+        //     .labels(vec!["0.0".into(), "5.0".into(), "10.0".into()]);
+        //
+        // // 3. Create the Y axis and define its properties
+        // let y_axis = Axis::default()
+        //     .title("daan".light_magenta())
+        //     .style(Style::default().light_magenta())
+        //     .bounds([0.0, 10.0])
+        //     .labels(vec!["0.0".into(), "5.0".into(), "10.0".into()]);
 
-        // 3. Create the Y axis and define its properties
-        let y_axis = Axis::default()
-            .title("daan".light_magenta())
-            .style(Style::default().light_magenta())
-            .bounds([0.0, 10.0])
-            .labels(vec!["0.0".into(), "5.0".into(), "10.0".into()]);
-
-        // 4. Create the chart and link all the parts together
-        let chart = Chart::new(datasets)
-            .block(Block::default()
-                .title("Safety Officer".light_blue().bold())
-                .borders(Borders::ALL).border_style(Style::default().fg(border_select(self, 1))
-            ))
-            .x_axis(x_axis)
-            .y_axis(y_axis);
-        chart.render(right_chunks[0], buf);
+        // // 4. Create the chart and link all the parts together
+        // let chart = Chart::new(datasets)
+        //     .block(Block::default()
+        //         .title("Safety Officer".light_blue().bold())
+        //         .borders(Borders::ALL).border_style(Style::default().fg(border_select(self, 1))
+        //     ))
+        //     .x_axis(x_axis)
+        //     .y_axis(y_axis);
+        // chart.render(right_chunks[0], buf);
 
 
         // second graph on the right side
 
-        // calendar (left)
-        let mut ds = CalendarEventStore::default();
-        ds.add(Date::from_calendar_date(2024, time::Month::April, 1).unwrap(), Style::default().bg(Color::Red));
-        ds.add(Date::from_calendar_date(2024, time::Month::April, 4).unwrap(), Style::default().fg(Color::LightBlue));
-        (15..=19).for_each(|i| ds.add(Date::from_calendar_date(2024, time::Month::April, i).unwrap(), Style::default().fg(Color::LightRed)));
-        let calendar = Monthly::new(Date::from_calendar_date(2024, time::Month::April, 1).unwrap(), ds)
-            .default_style(Style::default().fg(Color::White).bg(Color::Black))
-            .show_weekdays_header(Style::default().bg(Color::Black).fg(Color::LightBlue))
-            .show_month_header(Style::default().bg(Color::Blue).fg(Color::White))
-            .block(Block::default().title("SenseCon Plan".light_blue()).borders(Borders::ALL).border_style(Style::default().fg(border_select(self, 2))));
+        // // calendar (left)
+        // let mut ds = CalendarEventStore::default();
+        // ds.add(Date::from_calendar_date(2024, time::Month::April, 1).unwrap(), Style::default().bg(Color::Red));
+        // ds.add(Date::from_calendar_date(2024, time::Month::April, 4).unwrap(), Style::default().fg(Color::LightBlue));
+        // (15..=19).for_each(|i| ds.add(Date::from_calendar_date(2024, time::Month::April, i).unwrap(), Style::default().fg(Color::LightRed)));
+        // let calendar = Monthly::new(Date::from_calendar_date(2024, time::Month::April, 1).unwrap(), ds)
+        //     .default_style(Style::default().fg(Color::White).bg(Color::Black))
+        //     .show_weekdays_header(Style::default().bg(Color::Black).fg(Color::LightBlue))
+        //     .show_month_header(Style::default().bg(Color::Blue).fg(Color::White))
+        //     .block(Block::default().title("SenseCon Plan".light_blue()).borders(Borders::ALL).border_style(Style::default().fg(border_select(self, 2))));
+        //
+        // calendar.render(right_pair[0], buf);
+        //
 
-        calendar.render(right_pair[0], buf);
-
-
-        // Make a table
-
+        // Make a table on the right side.
+        let mut columns = vec![Constraint::Percentage(15), Constraint::Percentage(85)];
+        let table = Table::new();
 
 
 

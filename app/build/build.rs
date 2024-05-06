@@ -1,12 +1,11 @@
 #![allow(non_snake_case)]
 
-mod commands;
-mod datatypes;
-mod events;
-
 extern crate regex;
 extern crate serde;
 
+use goose_utils::commands::generate_commands;
+use goose_utils::datatypes::generate_datatypes;
+use goose_utils::events::generate_events;
 use serde::Deserialize;
 use std::env;
 use std::fs;
@@ -65,6 +64,9 @@ struct InternalConfig {
 }
 
 pub const CONFIG_PATH: &str = "../config/config.toml";
+pub const DATATYPES_PATH: &str = "../config/datatypes.toml";
+pub const COMMANDS_PATH: &str = "../config/commands.toml";
+pub const EVENTS_PATH: &str = "../config/events.toml";
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
@@ -79,9 +81,9 @@ fn main() {
     content.push_str(&*configure_ip(&config));
     content.push_str(&*configure_pod(&config));
     content.push_str(&*configure_internal(&config));
-    content.push_str(&*commands::main(&id_list));
-    content.push_str(&*datatypes::main(&id_list));
-    content.push_str(&*events::main(&id_list));
+    content.push_str(&*generate_commands(&id_list, COMMANDS_PATH));
+    content.push_str(&*generate_datatypes(&id_list, DATATYPES_PATH));
+    content.push_str(&*generate_events(&id_list, EVENTS_PATH));
     // content.push_str(&*can::main(&id_list));
 
     fs::write(dest_path.clone(), content).expect(&*format!(
@@ -89,6 +91,9 @@ fn main() {
         dest_path.to_str().unwrap()
     ));
     println!("cargo:rerun-if-changed={}", CONFIG_PATH);
+    println!("cargo:rerun-if-changed={}", COMMANDS_PATH);
+    println!("cargo:rerun-if-changed={}", DATATYPES_PATH);
+    println!("cargo:rerun-if-changed={}", EVENTS_PATH);
 
     // linking
     println!("cargo:rustc-link-arg-bins=--nmagic");

@@ -153,6 +153,11 @@ pub async fn tcp_connection_handler(
                         info!("[tcp] StopHV command received");
                         // event_sender.send(Event::TurnOffHVCommand).await; // TODO: no turn off HV exists??
                     }
+                    Command::EmitEvent(_) => {
+                        #[cfg(debug_assertions)]
+                        info!("[tcp] EmitEvent command received");
+                        event_sender.send(Event::from_id()).await;
+                    }
                 }
             }
             // socket.write_all(b"trying to receive on data mpmc").await;

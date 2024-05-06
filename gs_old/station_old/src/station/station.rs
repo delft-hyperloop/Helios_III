@@ -134,6 +134,18 @@ impl Station {
                             break;
                         }
                     }
+
+                    Command::EmitEvent(e) => {
+                        let mut data = [0u8; 4];
+
+                        data[2..4] = *e.to_id().to_be_bytes();
+
+                        log!(self.tx.clone(), LogType::Info, format!("Sending command: {}", data));
+                        if let Err(e) = write_stream.write_all(data.as_bytes()) {
+                            log!(self.tx.clone(), LogType::Error, format!("Failed to send data: {}", e));
+                            break;
+                        }
+                    }
                 }
                 Err(std::sync::mpsc::TryRecvError::Empty) => {
                     // No command received
