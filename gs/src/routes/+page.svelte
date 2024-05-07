@@ -25,9 +25,6 @@
     onDestroy(() => {
         unlisten_error();
     });
-
-    let style: string;
-    $: style = `height: ${$details_pane-5}vh`;
 </script>
 
 <main class="w-full flex-grow border-t border-black overflow-auto">
@@ -38,9 +35,7 @@
         <Pane minSize={50} class="rounded-md bg-surface-900">
             <Splitpanes horizontal={true} theme="modern-theme-logs" dblClickSplitter={false} on:resize={(event) => details_pane.set(event.detail[0].size)}>
                 <Pane minSize={50} class="bg-surface-800">
-                    <div style={style} class="snap-x scroll-px-4 snap-mandatory scroll-smooth overflow-x-auto">
-                        <DetailsPanel />
-                    </div>
+                    <DetailsPanel />
                 </Pane>
                 <Pane size={20} snapSize={10} minSize={5} class="bg-surface-800">
                     <LogsPanel />

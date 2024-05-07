@@ -86,8 +86,8 @@
             <!--     OFFSET GRAPHS       -->
             <div class="flex flex-col gap-2">
                 <div class="grid gap-2 {width < 550 ? 'grid-cols-1' : 'grid-cols-2'}">
-                    <Chart title="Offset horizontal" refreshRate={100} />
-                    <Chart title="Offset top" refreshRate={100} />
+                    <Chart eventChannel="north_bridge" title="Offset horizontal" refreshRate={5} />
+                    <Chart eventChannel="north_bridge" title="Offset top" refreshRate={100} />
                     <div class="{width < 550 ? 'col-span-1' : 'col-span-2'}">
                         <Chart title="Velocity" refreshRate={100} />
                     </div>
