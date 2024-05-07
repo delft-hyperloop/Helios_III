@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {south_bridge_payload, Table, Localiser} from "$lib";
+    import {south_bridge_payload, Table, Localiser, TileGrid, Tile} from "$lib";
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -17,11 +17,15 @@
 
 <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Location & IMU</h2>
-    <div class="flex flex-col gap-4">
-        <Localiser loc={$south_bridge_payload.value} max={50} turning={true}/>
-        <div class="grid grid-cols-2 gap-4">
+    <TileGrid columns="1fr 1fr" rows="">
+        <Tile col_span={2}>
+            <Localiser loc={$south_bridge_payload.value} max={50} turning={true}/>
+        </Tile>
+        <Tile col_span={1}>
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
+        </Tile>
+        <Tile col_span={1} col_start={2}>
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
-        </div>
-    </div>
+        </Tile>
+    </TileGrid>
 </div>
