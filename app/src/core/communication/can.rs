@@ -16,9 +16,7 @@ use static_cell::StaticCell;
 use {defmt_rtt as _, panic_probe as _};
 // use embedded_hal::can::Id;
 use crate::core::communication::Datapoint;
-use crate::core::controllers::battery_controller::{
-    ground_fault_detection_isolation_details, BatteryController, GroundFaultDetection,
-};
+use crate::core::controllers::battery_controller::{ground_fault_detection_isolation_details, BatteryController, GroundFaultDetection, ground_fault_detection_voltage_details};
 use crate::core::controllers::can_controller::CanTwoUtils;
 use crate::pconfig::{bytes_to_u64, id_as_value};
 use crate::{
@@ -59,9 +57,13 @@ pub async fn can_receiving_handler(
                 #[cfg(debug_assertions)]
                 info!("[CAN] received frame: id={:?} data={:?}", id, frame.data());
                 if DATA_IDS.contains(&id) {
+                debug!("first if");
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
+                        debug!("second if");
+
                         let ut = utils.as_mut().unwrap();
                         if HV_IDS.contains(&id) {
+                            debug!("hv if");
                             ut.hv_controller.bms_can_handle(
                                 id,
                                 frame.data(),
@@ -69,18 +71,29 @@ pub async fn can_receiving_handler(
                                 timestamp.as_ticks(),
                             );
                         } else if LV_IDS.contains(&id) {
+                            debug!("lv if");
                             ut.lv_controller.bms_can_handle(
                                 id,
                                 frame.data(),
                                 data_sender,
                                 timestamp.as_ticks(),
                             );
+                            event_sender.send(Event::ConnectionEstablishedEvent).await;
                         } else if GFD_IDS.contains(&id) {
+                            if id == Datatype::IMDVoltageDetails.to_id() {
+                                data_sender.send(Datapoint::new(
+                                    Datatype::IMDVoltageDetails,
+                                    ground_fault_detection_voltage_details(frame.data()).await,
+                                    timestamp.as_ticks(),
+                                )).await;
+                            }
+                            else {
                             data_sender.send(Datapoint::new(
-                                Datatype::GFDIsolation,
+                                Datatype::IMDIsolationDetails,
                                 ground_fault_detection_isolation_details(frame.data()).await,
                                 timestamp.as_ticks(),
                             )).await;
+                            }
 
                         }
                     } else {

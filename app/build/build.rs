@@ -182,7 +182,7 @@ fn configure_internal(config: &Config) -> String {
             .collect::<Vec<String>>()
             .join(", ")
     ) + &*format!(
-        "pub const BATTERY_GFD_IDS: [u16;{}] = [{}{}{}];\n",
+        "pub const BATTERY_GFD_IDS: [u16;{}] = [{},{},{}];\n",
         config.pod.bms.lv_ids.len() + config.pod.bms.hv_ids.len() + config.pod.bms.gfd_ids.len(),
         config
             .pod
