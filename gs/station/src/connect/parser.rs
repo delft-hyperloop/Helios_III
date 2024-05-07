@@ -6,14 +6,14 @@ use crate::DATA_IDS;
 use crate::Datatype;
 
 impl Handler {
-    pub(crate) fn parse(buf: &mut Vec<u8>, tx: Sender<Message>) -> Sender<Message> {
+    pub(crate) fn parse(buf: &mut Vec<u8>, tx: Sender<Message>) {
         if buf.len() < 20 {
-            return tx;
+            return;
         }
         while buf[0] != 0xFF {
             buf.remove(0);
             if buf.len() < 20 {
-                return tx;
+                return;
             }
         }
         // buf values:
@@ -30,6 +30,5 @@ impl Handler {
         } else {
             tx.send(Message::Error(format!("Unknown data ID: {}. value={}, timestamp={}", id, value, timestamp))).expect("[Parser] Failed to send on msg tx");
         }
-        tx
     }
 }

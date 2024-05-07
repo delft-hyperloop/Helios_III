@@ -57,6 +57,7 @@ pub fn generate_datatypes(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
 
     format!(
         "\n
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Datatype {{
 {}
 }}\n
