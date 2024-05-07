@@ -71,6 +71,7 @@
                 <p><span class="font-mono font-light">[{log.timestamp}]</span>  {log.log_type}: {log.message}</p>
             </div>
         {/each}
+        <hr>
     </div>
 </div>
 
