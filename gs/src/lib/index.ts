@@ -35,8 +35,8 @@ import type {Payload, NamedCommand, EventChannel, TempTableEntry, Log} from "$li
 
 // Stores
 import {south_bridge_payload, north_bridge_payload} from "$lib/stores/data";
-import {detailTabSet, inputSpeed} from "$lib/stores/state";
+import {detailTabSet, inputSpeed, details_pane, vitals_pane} from "$lib/stores/state";
 
 // Export all
-export {StrokePresets, TileGrid, Tile, DebugTab, util, Status,  VitalsPanel, LogsPanel, DetailsPanel, BatteriesTab, CurrentTab, HomeTab, LocationTab, ProceduresTab, RunInitTab, Battery, BottomBar, FSM, TitleBar, Chart, Table, Command, PlotBuffer, south_bridge_payload, north_bridge_payload, detailTabSet, inputSpeed, Pneumatics, Localiser, TheoreticalRun}
+export {StrokePresets, TileGrid, details_pane, vitals_pane, Tile, DebugTab, util, Status,  VitalsPanel, LogsPanel, DetailsPanel, BatteriesTab, CurrentTab, HomeTab, LocationTab, ProceduresTab, RunInitTab, Battery, BottomBar, FSM, TitleBar, Chart, Table, Command, PlotBuffer, south_bridge_payload, north_bridge_payload, detailTabSet, inputSpeed, Pneumatics, Localiser, TheoreticalRun}
 export type {Payload, NamedCommand, EventChannel, TempTableEntry, Log}

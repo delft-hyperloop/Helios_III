@@ -38,4 +38,4 @@
     let timestamp = z.number().parse(event.payload.timestamp);
 
     chart.setEntry(1, timestamp, speed)
-}} eventChannel="start_run" height={300} background="bg-surface-900" yRange={[0, 50]} dataPointsCount={xDataCount} title="Theoretical vs Real run" bind:chart={chart} refreshRate={100} />
+}} eventChannel="start_run" height={250} background="bg-surface-900" yRange={[0, 50]} dataPointsCount={xDataCount} title="Theoretical vs Real run" bind:chart={chart} refreshRate={100} />
