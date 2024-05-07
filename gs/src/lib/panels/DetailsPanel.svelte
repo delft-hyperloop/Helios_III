@@ -10,7 +10,7 @@
         MotorsTab,
         PneumaticsTab,
         BatteriesTab,
-        DebugTab
+        DebugTab, details_pane
     } from "$lib";
 
     let i = 0;
@@ -24,6 +24,9 @@
         {name: "Procedures", value: i++},
         {name: "Debug", value: i++}
     ];
+
+    let style: string;
+    $: style = `height: ${$details_pane-9}vh`;
 </script>
 
 <Keydown pauseOnInput on:combo={({detail}) => {
@@ -37,24 +40,26 @@
         <Tab bind:group={$detailTabSet} value={tab.value} name={tab.name}><span>{tab.name}</span></Tab>
     {/each}
     <svelte:fragment slot="panel">
-        <div class="h-full" style="margin-top: -16px;">
-            {#if $detailTabSet === 0}
-                <HomeTab />
-            {:else if $detailTabSet === 1}
-                <RunInitTab />
-            {:else if $detailTabSet === 2}
-                <LocationTab />
-            {:else if $detailTabSet === 3}
-                <BatteriesTab />
-            {:else if $detailTabSet === 4}
-                <MotorsTab />
-            {:else if $detailTabSet === 5}
-                <PneumaticsTab />
-            {:else if $detailTabSet === 6}
-                <ProceduresTab />
-            {:else if $detailTabSet === 7}
-                <DebugTab />
-            {/if}
+        <div style={style} class="snap-x scroll-px-4 snap-mandatory scroll-smooth overflow-x-auto">
+            <div class="h-full" style="margin-top: -16px;">
+                {#if $detailTabSet === 0}
+                    <HomeTab />
+                {:else if $detailTabSet === 1}
+                    <RunInitTab />
+                {:else if $detailTabSet === 2}
+                    <LocationTab />
+                {:else if $detailTabSet === 3}
+                    <BatteriesTab />
+                {:else if $detailTabSet === 4}
+                    <MotorsTab />
+                {:else if $detailTabSet === 5}
+                    <PneumaticsTab />
+                {:else if $detailTabSet === 6}
+                    <ProceduresTab />
+                {:else if $detailTabSet === 7}
+                    <DebugTab />
+                {/if}
+            </div>
         </div>
     </svelte:fragment>
 </TabGroup>
