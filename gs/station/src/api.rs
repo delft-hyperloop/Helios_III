@@ -3,7 +3,7 @@ use ratatui::prelude::Color;
 use crate::Command;
 use crate::connect::Datapoint;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum Status {
     ServerStarted,
     ServerFailedToStart,
@@ -15,7 +15,7 @@ pub enum Status {
     FailedToReadFromConnection,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum Message {
     Data(Datapoint),
     Status(Status),
