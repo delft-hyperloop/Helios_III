@@ -44,10 +44,10 @@
             <Table background="bg-surface-900" {tableArr} {titles} />
         </Tile>
         <Tile col_span={2} heading="LV Current">
-            <Chart title="LVI" />
+            <Chart title="LVI" background="bg-surface-900" />
         </Tile>
         <Tile col_span={2} heading="HV Current">
-            <Chart title="LVI" />
+            <Chart title="LVI" background="bg-surface-900" />
         </Tile>
     </TileGrid>
 </div>
