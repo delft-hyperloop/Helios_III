@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Battery, details_pane, south_bridge_payload, Status, Table, Tile, TileGrid} from "$lib";
+    import {Battery, south_bridge_payload, Status, Table, Tile, TileGrid} from "$lib";
 
     let titles = ["Battery", "Avg cell V", "Max cell V", "Min cell V"
         , "Avg cell °C", "Max cell °C", "Min cell °C"];
@@ -40,18 +40,6 @@
         </Tile>
         <Tile row_start={2} col_span={2} heading="Battery stats">
             <Table background="bg-surface-900" {tableArr} {titles} />
-        </Tile>
-        <Tile row_start={2} col_span={2} heading="Battery stats">
-            <Table background="bg-surface-900" {tableArr} {titles} />
-        </Tile>
-        <Tile row_start={2} col_span={2} heading="Battery stats">
-            <Table background="bg-surface-900" {tableArr} {titles} />
-        </Tile>
-        <Tile row_start={2} col_span={2} heading="Battery stats">
-            <Table background="bg-surface-900" {tableArr} {titles} />
-        </Tile>
-        <Tile heading="HV Battery">
-
         </Tile>
     </TileGrid>
 </div>

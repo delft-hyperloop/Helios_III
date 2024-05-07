@@ -1,6 +1,4 @@
 <script lang="ts">
-    import {Tile} from "$lib";
-
     export let bgToken:number = 900;
     export let col_start:number = -1;
     export let col_span:number = -1;
