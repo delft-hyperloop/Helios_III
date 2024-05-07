@@ -29,7 +29,7 @@
 <div class="p-4 h-full">
     <h2 class="text-xl font-semibold mb-4">Initialization</h2>
     <TileGrid columns="1fr 1fr 1.5fr" rows="auto 1fr">
-        <Tile row_span={2} col_span={1} className="flex flex-col gap-2" heading="Run Initialisation">
+        <Tile containerClass="row-span-2" insideClass="flex flex-col gap-2" heading="Run Initialisation">
             <div class="flex justify-between col-span-2">
                 <button class="btn flex-grow bg-surface-700 rounded-none rounded-l-lg p-2" type="button" class:active={selectedMode === 1} on:click={() => selectedMode = Mode.ShortRun}>
                     Short run
@@ -67,7 +67,7 @@
                 </button>
             </div>
         </Tile>
-        <Tile col_span={1} row_span={1} className="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
+        <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
             <p>Helios III</p>
             <Status status={$south_bridge_payload.value % 2 === 0} />
             <p>Propulsion:</p>
@@ -83,10 +83,10 @@
             <p>Levi Thermal:</p>
             <Status status={$south_bridge_payload.value % 2 === 1} />
         </Tile>
-        <Tile col_span={1} row_span={1} heading="Data">
+        <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
         </Tile>
-        <Tile col_start={2} col_span={2}>
+        <Tile containerClass="col-span-2">
             <TheoreticalRun xDataCount={100} bind:clearRuns={clearRuns} bind:calculateTheoretical={calculateTheoretical}/>
         </Tile>
     </TileGrid>
