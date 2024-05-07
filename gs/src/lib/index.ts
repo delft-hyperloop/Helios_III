@@ -10,6 +10,7 @@ import HomeTab from "$lib/panels/tabs/HomeTab.svelte";
 import LocationTab from "$lib/panels/tabs/LocationTab.svelte";
 import ProceduresTab from "$lib/panels/tabs/ProceduresTab.svelte";
 import RunInitTab from "$lib/panels/tabs/RunInitTab.svelte";
+import DebugTab from "$lib/panels/tabs/DebugTab.svelte";
 
 // Components
 import Battery from "$lib/components/Battery.svelte";
@@ -23,6 +24,8 @@ import Table from "$lib/components/generic/Table.svelte";
 import Command from "$lib/components/abstract/Command.svelte";
 import TheoreticalRun from "$lib/components/TheoreticalRun.svelte";
 import Status from "$lib/components/generic/Status.svelte";
+import Tile from "$lib/components/generic/Tile.svelte";
+import TileGrid from "$lib/components/generic/TileGrid.svelte";
 
 // Utils
 import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
@@ -35,5 +38,5 @@ import {south_bridge_payload, north_bridge_payload} from "$lib/stores/data";
 import {detailTabSet, inputSpeed} from "$lib/stores/state";
 
 // Export all
-export {StrokePresets, util, Status,  VitalsPanel, LogsPanel, DetailsPanel, BatteriesTab, CurrentTab, HomeTab, LocationTab, ProceduresTab, RunInitTab, Battery, BottomBar, FSM, TitleBar, Chart, Table, Command, PlotBuffer, south_bridge_payload, north_bridge_payload, detailTabSet, inputSpeed, Pneumatics, Localiser, TheoreticalRun}
+export {StrokePresets, TileGrid, Tile, DebugTab, util, Status,  VitalsPanel, LogsPanel, DetailsPanel, BatteriesTab, CurrentTab, HomeTab, LocationTab, ProceduresTab, RunInitTab, Battery, BottomBar, FSM, TitleBar, Chart, Table, Command, PlotBuffer, south_bridge_payload, north_bridge_payload, detailTabSet, inputSpeed, Pneumatics, Localiser, TheoreticalRun}
 export type {Payload, NamedCommand, EventChannel, TempTableEntry, Log}
