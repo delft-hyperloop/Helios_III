@@ -1,8 +1,16 @@
 <script lang="ts">
     import Keydown from "svelte-keydown";
     import {Tab, TabGroup} from "@skeletonlabs/skeleton";
-    import { HomeTab, ProceduresTab, RunInitTab, detailTabSet, LocationTab, CurrentTab, BatteriesTab } from "$lib";
-
+    import {
+        HomeTab,
+        ProceduresTab,
+        RunInitTab,
+        detailTabSet,
+        LocationTab,
+        CurrentTab,
+        BatteriesTab,
+        DebugTab
+    } from "$lib";
 
     let i = 0;
     let tabs = [
@@ -14,8 +22,6 @@
         {name: "Procedures", value: i++},
         {name: "Debug", value: i++}
     ];
-
-
 </script>
 
 <Keydown pauseOnInput on:combo={({detail}) => {
@@ -43,7 +49,7 @@
             {:else if $detailTabSet === 5}
                 <ProceduresTab />
             {:else if $detailTabSet === 6}
-                <p>Andreas</p>
+                <DebugTab />
             {/if}
         </div>
     </svelte:fragment>
