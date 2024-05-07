@@ -19,7 +19,7 @@
     <h2 class="text-xl font-semibold mb-4">Location & IMU</h2>
     <TileGrid columns="1fr 1fr" rows="">
         <Tile col_span={2}>
-            <Localiser loc={$south_bridge_payload.value} max={50} turning={true}/>
+            <Localiser loc={$south_bridge_payload.value} max={50} turning={false}/>
         </Tile>
         <Tile col_span={1}>
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
