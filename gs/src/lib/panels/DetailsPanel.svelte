@@ -7,7 +7,8 @@
         RunInitTab,
         detailTabSet,
         LocationTab,
-        CurrentTab,
+        MotorsTab,
+        PneumaticsTab,
         BatteriesTab,
         DebugTab
     } from "$lib";
@@ -18,7 +19,8 @@
         {name: "Run", value: i++},
         {name: "Location & IMU", value: i++},
         {name: "Batteries", value: i++},
-        {name: "Current", value: i++},
+        {name: "Motors", value: i++},
+        {name: "Pneumatics", value: i++},
         {name: "Procedures", value: i++},
         {name: "Debug", value: i++}
     ];
@@ -45,10 +47,12 @@
             {:else if $detailTabSet === 3}
                 <BatteriesTab />
             {:else if $detailTabSet === 4}
-                <CurrentTab />
+                <MotorsTab />
             {:else if $detailTabSet === 5}
-                <ProceduresTab />
+                <PneumaticsTab />
             {:else if $detailTabSet === 6}
+                <ProceduresTab />
+            {:else if $detailTabSet === 7}
                 <DebugTab />
             {/if}
         </div>
