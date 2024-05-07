@@ -2,7 +2,7 @@ use crate::core::communication::Datapoint;
 use crate::core::controllers::ethernet_controller::EthernetPins;
 use crate::{DataReceiver, DataSender, Datatype, EventSender};
 use defmt::export::u64;
-use defmt::info;
+use defmt::{debug, info};
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Temperature;
 use embassy_stm32::can::Timestamp;
@@ -94,26 +94,32 @@ impl BatteryController {
         sender: DataSender,
         timestamp: u64,
     ) {
-
+        debug!("Here BMS");
         match Datatype::from_id(id) {
             Datatype::DefaultBMSLow | Datatype::DefaultBMSHigh  => {
                 self.default_bms_startup_info(data, timestamp).await;
+                info!("Default BMS");
             }
             Datatype::BatteryVoltageLow | Datatype::BatteryVoltageHigh => {
                 self.battery_voltage_overall_bms(data, timestamp).await;
+                info!("Battery Voltage")
             }
             Datatype::DiagonosticBMSLow | Datatype::DiagonosticBMSHigh => {
                 self.diagnostic_bms(data, timestamp).await;
+                info!("Diagnostic BMS")
 
             }
             Datatype::BatteryTemperatureLow | Datatype::BatteryTemperatureHigh => {
                 self.overall_temperature_bms(data, timestamp).await;
+                info!("Battery Temperature")
             }
             Datatype::BatteryBalanceLow | Datatype::BatteryBalanceHigh => {
                 self.overall_balancing_status_bms(data, timestamp).await;
+                info!("Battery Balancing")
             }
             Datatype::ChargeStateLow | Datatype::ChargeStateHigh => {
                 self.state_of_charge_bms(data, timestamp).await;
+                info!("Charge State")
             }
             x if  Datatype::SingleCellTemperatureLow.to_id() == id || Datatype::SingleCellTemperatureHigh.to_id() == id => {
                 if (self.receive_single_cell_id) {
@@ -125,6 +131,7 @@ impl BatteryController {
                         .await;
                     self.receive_single_cell_id = true;
                 }
+                info!("Individual Temperature")
             }
             x if Datatype::SingleCellVoltageLow.to_id() == id || Datatype::SingleCellVoltageHigh.to_id() == id => {
                 if (self.receive_single_cell_id) {
@@ -136,6 +143,7 @@ impl BatteryController {
                         .await;
                     self.receive_single_cell_id = true;
                 }
+                info!("Individual Voltage")
             }
             x =>{
                 info!("Ignored BMS id: {:?}", x.to_id());
@@ -143,11 +151,11 @@ impl BatteryController {
         }
     }
     pub async fn battery_voltage_overall_bms(&mut self,data: &[u8],timestamp: u64){
-        let min_cell_voltage = (data[0] +  200) as u16; //VOLTAGE scaled by 100
+        let min_cell_voltage = (data[0] as u16 +  200) ; //VOLTAGE scaled by 100
         //Should be a decimal number so multiplying it by 100 is not such a bad idea
-        let max_cell_voltage = (data[1] +  200) as u16; //VOLTAGE
-        let avg_cell_voltage = (data[0] +  200) as u16; //VOLTAGE
-        let total_pack_voltage = (((data[5] << 24) | (data[6] << 16) | (data[3] << 8) | data[4])+ 200) as u32; //VOLTAGE
+        let max_cell_voltage = (data[1] as u16  +  200); //VOLTAGE
+        let avg_cell_voltage = (data[0] as u16  +  200); //VOLTAGE
+        let total_pack_voltage = ((((data[5]as u32) << 24) | ((data[6] as u32) << 16) | ((data[3] as u32) << 8) | (data[4] as u32) )+ 200); //VOLTAGE
         let battery_voltage_dt = if (self.high_voltage) {Datatype::BatteryVoltageHigh} else {Datatype::BatteryVoltageLow};
         let total_battery_voltage_dt = if (self.high_voltage) {Datatype::TotalBatteryVoltageHigh} else {Datatype::TotalBatteryVoltageLow};
         self.data_sender.send(Datapoint::new(battery_voltage_dt,(min_cell_voltage as u64) <<32 | (max_cell_voltage as u64) <<16 | avg_cell_voltage as u64,timestamp)).await;
@@ -172,8 +180,8 @@ impl BatteryController {
         self.data_sender.send(Datapoint::new(dt,msg,timestamp)).await;
     }
     pub async fn state_of_charge_bms(&mut self, data: &[u8], timestamp: u64) {
-        let current = (data[1] << 8 | data[0]) as u16; //AMPERES scaled by 10
-        let estimated_charge = (data[2] << 8 | data[3]) as u16; //AMPERES
+        let current = ((data[1] as u16) << 8 | data[0] as u16); //AMPERES scaled by 10
+        let estimated_charge = ((data[2] as u16) << 8 | data[3] as u16);//AMPERES
         let state_of_charge = data[6]; //PERCENTAGE
         let battery_current_dt = if (self.high_voltage) {Datatype::BatteryCurrentHigh} else {Datatype::BatteryCurrentLow};
         let charge_state_dt = if (self.high_voltage) {Datatype::ChargeStateHigh} else {Datatype::ChargeStateLow};
@@ -188,16 +196,17 @@ impl BatteryController {
         self.data_sender
             .send(Datapoint::new(
                 charge_state_dt,
-                (estimated_charge << 8) as u64 | state_of_charge as u64,
+                ((estimated_charge  as u64) << 8) | state_of_charge as u64,
                 timestamp,
             ))
             .await;
     }
 
     pub async fn overall_temperature_bms(&mut self, data: &[u8], timestamp: u64) {
-        let min_temp = data[0] - 100; //CELSIUS
-        let max_temp = data[1] - 100; //CELSIUS
-        let avg_temp = data[2] - 100; //CELSIUS
+        let min_temp = data[0]; //CELSIUS
+        let max_temp = data[1]; //CELSIUS
+        let avg_temp = data[2]; //CELSIUS
+    //Take 100 out as it is base -100 so basically 115 means 15 degrees
         let battery_temp_dt = if (self.high_voltage) {Datatype::BatteryTemperatureHigh} else {Datatype::BatteryTemperatureLow};
         info!("test");
         self.data_sender
@@ -214,8 +223,9 @@ impl BatteryController {
         data: &[u8],
         timestamp: u64,
     ) {
+
         let d = data.iter().for_each(|&x| {
-            x - 100;
+            (x as u64);
         }); //CELSIUS base -100 C
         let mut n: u64 = 0;
         for (i, &x) in data.iter().enumerate() {
@@ -247,16 +257,16 @@ impl BatteryController {
     }
 
     pub async fn overall_balancing_status_bms(&mut self, data: &[u8], timestamp: u64) {
-        let min_cell_balancing = data[0] / 255 * 100; //PERCENTAGE
-        let max_cell_balancing = data[1] / 255 * 100; //PERCENTAGE
-        let avg_cell_balancing = data[2] / 255 * 100; //PERCENTAGE
+        let min_cell_balancing = data[0] as u64 / 255 * 100; //PERCENTAGE
+        let max_cell_balancing = data[1] as u64 / 255 * 100; //PERCENTAGE
+        let avg_cell_balancing = data[2] as u64 / 255 * 100; //PERCENTAGE
         let balancing_dt = if (self.high_voltage) {Datatype::BatteryBalanceHigh} else {Datatype::BatteryBalanceLow};
         self.data_sender
             .send(Datapoint::new(
                 balancing_dt,
-                (min_cell_balancing as u64) << 16
-                    | (max_cell_balancing as u64) << 8
-                    | avg_cell_balancing as u64,
+                (min_cell_balancing) << 16
+                    | (max_cell_balancing) << 8
+                    | avg_cell_balancing ,
                 timestamp,
             ))
             .await;
