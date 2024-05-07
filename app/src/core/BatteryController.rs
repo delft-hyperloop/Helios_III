@@ -2,6 +2,7 @@ use crate::core::communication::Datapoint;
 use crate::core::controllers::ethernet_controller::EthernetPins;
 use crate::{DataReceiver, DataSender, Datatype, EventSender};
 use defmt::export::u64;
+use defmt::info;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Temperature;
 use embassy_stm32::can::Timestamp;
@@ -51,14 +52,6 @@ impl BatteryController {
         }
     }
 }
-
-// pub struct BatteryPack {
-//     //TODO Add whatever we should add also once powertrain do their job
-//     //IMHO idk if it makes sense to keep all values here or if we should simply send all of them to the ground station as we have updates
-//     //Its something that can be debated but I dont see where changing keeping all of this makes sense, The only plausible reason would be to constantly add all new values to an
-//     //ETH packet to send them all at once which now that I think about it its quite smart to do
-//     id: u16,
-// }
 pub struct GroundFaultDetection{
 
 }
@@ -77,6 +70,20 @@ pub async fn ground_fault_detection_isolation_details(data: &[u8]) -> u64 {
 
 }
 
+pub async fn ground_fault_detection_voltage_details(data: &[u8]) -> u64 {
+    let hv_voltage = ((data[0] as u16) << 8) | (data[1] as u16);
+    let hv_voltage_negative_to_earth = ((data[2] as u16) << 8) | (data[3] as u16);
+    let hv_voltage_positive_to_earth = ((data[4] as u16) << 8) | (data[5] as u16);
+    let measurement_counter = data[6];
+    let nothing = data[7];
+    let mut msg:u64 = 0;
+    for (i, &x) in data.iter().enumerate() {
+        msg |= (x as u64) << (i*8);
+    }
+    msg
+
+}
+
 //===============BMS===============//
 
 impl BatteryController {
@@ -87,41 +94,30 @@ impl BatteryController {
         sender: DataSender,
         timestamp: u64,
     ) {
-        let own_id = self.id;
-        match id {
-            x if x == own_id => {
+
+        match Datatype::from_id(id) {
+            Datatype::DefaultBMSLow | Datatype::DefaultBMSHigh  => {
                 self.default_bms_startup_info(data, timestamp).await;
             }
-            x if x == own_id + 1 => {
+            Datatype::BatteryVoltageLow | Datatype::BatteryVoltageHigh => {
                 self.battery_voltage_overall_bms(data, timestamp).await;
             }
-            x if x == own_id + 7 => {
+            Datatype::DiagonosticBMSLow | Datatype::DiagonosticBMSHigh => {
                 self.diagnostic_bms(data, timestamp).await;
 
             }
-            x if x == own_id + 8 => {
+            Datatype::BatteryTemperatureLow | Datatype::BatteryTemperatureHigh => {
                 self.overall_temperature_bms(data, timestamp).await;
             }
-            x if x == own_id + 3 => {
+            Datatype::BatteryBalanceLow | Datatype::BatteryBalanceHigh => {
                 self.overall_balancing_status_bms(data, timestamp).await;
             }
-            x if x == own_id + 5 => {
+            Datatype::ChargeStateLow | Datatype::ChargeStateHigh => {
                 self.state_of_charge_bms(data, timestamp).await;
             }
-            x if x <= own_id + 11 => {
+            x if  Datatype::SingleCellTemperatureLow.to_id() == id || Datatype::SingleCellTemperatureHigh.to_id() == id => {
                 if (self.receive_single_cell_id) {
-                    self.single_cell_id = x;
-                    self.receive_single_cell_id = false;
-                }
-                else {
-                    self.individual_voltages_bms(data, timestamp)
-                        .await;
-                    self.receive_single_cell_id = true;
-                }
-            }
-            x => {
-                if (self.receive_single_cell_id) {
-                    self.single_cell_id = x;
+                    self.single_cell_id = if x.to_id() == Datatype::SingleCellTemperatureHigh.to_id() { id- Datatype::SingleCellTemperatureHigh.to_id()} else {id- Datatype::SingleCellTemperatureLow.to_id()};
                     self.receive_single_cell_id = false;
                 }
                 else {
@@ -129,6 +125,20 @@ impl BatteryController {
                         .await;
                     self.receive_single_cell_id = true;
                 }
+            }
+            x if Datatype::SingleCellVoltageLow.to_id() == id || Datatype::SingleCellVoltageHigh.to_id() == id => {
+                if (self.receive_single_cell_id) {
+                    self.single_cell_id = if x .to_id() == Datatype::SingleCellVoltageHigh.to_id() { id- Datatype::SingleCellVoltageHigh.to_id()} else {id- Datatype::SingleCellVoltageLow.to_id()};
+                    self.receive_single_cell_id = false;
+                }
+                else {
+                    self.individual_temperature_bms(data, timestamp)
+                        .await;
+                    self.receive_single_cell_id = true;
+                }
+            }
+            x =>{
+                info!("Ignored BMS id: {:?}", x.to_id());
             }
         }
     }
@@ -189,6 +199,7 @@ impl BatteryController {
         let max_temp = data[1] - 100; //CELSIUS
         let avg_temp = data[2] - 100; //CELSIUS
         let battery_temp_dt = if (self.high_voltage) {Datatype::BatteryTemperatureHigh} else {Datatype::BatteryTemperatureLow};
+        info!("test");
         self.data_sender
             .send(Datapoint::new(
                 battery_temp_dt,
