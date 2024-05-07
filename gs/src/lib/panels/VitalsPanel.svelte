@@ -55,7 +55,7 @@
         <div class="snap-x scroll-px-0.5 snap-mandatory overflow-x-auto h-[90vh]">
             <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="" >
                 <!--     FSM       -->
-                <Tile bgToken={800} col_span={2} >
+                <Tile bgToken={800} containerClass="col-span-2" >
                     {#if width > 550}
                         <FSM size="sm" />
                     {:else}
@@ -63,7 +63,7 @@
                     {/if}
                 </Tile>
                 <!--      Under FSM      -->
-                <Tile bgToken={700} col_span={2}>
+                <Tile bgToken={700} containerClass="col-span-2" >
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4">
                             <p>Velocity: <span class="font-mono font-medium">{$south_bridge_payload.value}</span></p>
@@ -82,38 +82,38 @@
                     </div>
                 </Tile>
                 <!--     TEMPERATURE TABLE      -->
-                <Tile padding="pt-2 pb-1" bgToken={800} col_span={width < 550 ? 2 : 1}>
+                <Tile containerClass="pt-2 pb-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
                     <Table {tableArr} />
                 </Tile>
-                <Tile padding="pt-2 pb-1" bgToken={800} col_span={width < 550 ? 2 : 1}>
+                <Tile containerClass="pt-2 pb-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
                     <Table titles={["Variable", "Status"]} tableArr={tableArr2} />
                 </Tile>
                 <!--     OFFSET GRAPHS       -->
-                <Tile padding="py-1" bgToken={800} col_span={width < 550 ? 2 : 1}>
+                <Tile containerClass="py-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
                     <Chart title="Offset horizontal" refreshRate={100} />
                 </Tile>
-                <Tile padding="py-1" bgToken={800} col_span={width < 550 ? 2 : 1} className="h-full w-full">
+                <Tile containerClass="py-1 h-full w-full col-span-{width < 550 ? 2 : 1}" bgToken={800}>
                     <Chart title="Offset horizontal" refreshRate={100} />
                 </Tile>
-                <Tile padding="py-2" bgToken={800} col_span={2}>
+                <Tile containerClass="py-2 col-span-2" bgToken={800}>
                     <Chart title="Velocity" refreshRate={100} />
                 </Tile>
-<!--                <Tile padding="py-1" bgToken={700} heading="Offset data" col_span={2}>-->
-<!--                    <div class="flex flex-wrap gap-4">-->
-<!--                        <div class="flex gap-4">-->
-<!--                            <p class="font-mono">X1: {$south_bridge_payload.value}</p>-->
-<!--                            <p class="font-mono">X2: {$south_bridge_payload.value}</p>-->
-<!--                            <p class="font-mono">X3: {$south_bridge_payload.value}</p>-->
-<!--                            <p class="font-mono">X4: {$south_bridge_payload.value}</p>-->
-<!--                        </div>-->
-<!--                        <div class="flex gap-4">-->
-<!--                            <p class="font-mono">Y1: {$south_bridge_payload.value}</p>-->
-<!--                            <p class="font-mono">Y2: {$south_bridge_payload.value}</p>-->
-<!--                            <p class="font-mono">Y3: {$south_bridge_payload.value}</p>-->
-<!--                            <p class="font-mono">Y4: {$south_bridge_payload.value}</p>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </Tile>-->
+                <!--                <Tile containerClass="py-1" bgToken={700} heading="Offset data" col_span={2}>-->
+                <!--                    <div class="flex flex-wrap gap-4">-->
+                <!--                        <div class="flex gap-4">-->
+                <!--                            <p class="font-mono">X1: {$south_bridge_payload.value}</p>-->
+                <!--                            <p class="font-mono">X2: {$south_bridge_payload.value}</p>-->
+                <!--                            <p class="font-mono">X3: {$south_bridge_payload.value}</p>-->
+                <!--                            <p class="font-mono">X4: {$south_bridge_payload.value}</p>-->
+                <!--                        </div>-->
+                <!--                        <div class="flex gap-4">-->
+                <!--                            <p class="font-mono">Y1: {$south_bridge_payload.value}</p>-->
+                <!--                            <p class="font-mono">Y2: {$south_bridge_payload.value}</p>-->
+                <!--                            <p class="font-mono">Y3: {$south_bridge_payload.value}</p>-->
+                <!--                            <p class="font-mono">Y4: {$south_bridge_payload.value}</p>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </Tile>-->
             </TileGrid>
         </div>
     {/if}

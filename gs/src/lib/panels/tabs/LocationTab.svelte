@@ -18,13 +18,13 @@
 <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Location & IMU</h2>
     <TileGrid columns="1fr 1fr" rows="">
-        <Tile col_span={2}>
+        <Tile containerClass="col-span-2">
             <Localiser loc={$south_bridge_payload.value} max={50} turning={false}/>
         </Tile>
-        <Tile col_span={1}>
+        <Tile>
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
         </Tile>
-        <Tile col_span={1} col_start={2}>
+        <Tile containerClass="col-start-2">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
         </Tile>
     </TileGrid>
