@@ -104,9 +104,18 @@ id = 0x3A5
 name = "BatteryCurrentLow"
 id = 0x1A6
 
+
 [[Datatype]]
 name = "BatteryCurrentHigh"
 id = 0x3AA
+
+[[Datatype]]
+name = "BatteryEnergyParamsLow"
+id = 0x1A2
+
+[[Datatype]]
+name = "BatteryEnergyParamsHigh"
+id = 0x3A6
 
 [[Datatype]]
 name = "BrakeTemperature"

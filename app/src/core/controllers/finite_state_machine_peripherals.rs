@@ -7,7 +7,6 @@ use crate::{DataReceiver, EventSender, InternalMessaging};
 use defmt::{info, unwrap};
 use embassy_executor::Spawner;
 use embassy_stm32::flash::Error::Size;
-use embassy_stm32::gpio::low_level::Pin;
 use embassy_stm32::gpio::{Input, Level, Output, Pull, Speed};
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_stm32::{bind_interrupts, can, eth, peripherals, rng, Peripheral, Peripherals};

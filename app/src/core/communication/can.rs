@@ -1,8 +1,8 @@
 use core::any::Any;
 use defmt::*;
 use embassy_executor::Spawner;
-use embassy_stm32::can::frame::{ClassicFrame, Header};
-use embassy_stm32::can::{Fdcan, FdcanRx, FdcanTx, Instance};
+use embassy_stm32::can::frame::{Frame, Header};
+use embassy_stm32::can::{CanRx, CanTx,  Instance};
 use embassy_stm32::gpio::{Level, Output, Speed};
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_stm32::{bind_interrupts, can, peripherals, rng, Config};
@@ -29,7 +29,7 @@ use heapless::Vec;
 #[embassy_executor::task(pool_size = 2)]
 pub async fn can_transmitter(
     can_receiver: CanReceiver,
-    mut bus: FdcanTx<'static, impl Instance>,
+    mut bus: CanTx<'static, impl Instance>,
 ) -> ! {
     loop {
         let frame = can_receiver.receive().await;
@@ -43,7 +43,7 @@ pub async fn can_receiving_handler(
     event_sender: EventSender,
     can_receiver: CanReceiver,
     data_sender: DataSender,
-    mut bus: FdcanRx<'static, impl Instance>,
+    mut bus: CanRx<'static, impl Instance>,
     mut utils: Option<CanTwoUtils>,
 ) -> ! {
     info!(
@@ -52,7 +52,8 @@ pub async fn can_receiving_handler(
     );
     loop {
         match bus.read().await {
-            Ok((frame, timestamp)) => {
+            Ok(envelope) => {
+                let (frame,timestamp) = envelope.parts();
                 let id = id_as_value(frame.id());
                 #[cfg(debug_assertions)]
                 info!("[CAN] received frame: id={:?} data={:?}", id, frame.data());
