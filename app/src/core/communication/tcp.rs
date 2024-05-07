@@ -168,8 +168,8 @@ pub async fn tcp_connection_handler(
                 }
                 Err(e) => {
                     // socket.write(b"took an L on data mpmc").await;
-                    #[cfg(debug_assertions)]
-                    info!("[tcp:mpmc] try receive error: {:?}", e);
+                    // #[cfg(debug_assertions)]
+                    // info!("[tcp:mpmc] try receive error: {:?}", e);
                 }
             }
         }

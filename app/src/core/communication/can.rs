@@ -55,13 +55,13 @@ pub async fn can_receiving_handler(
             Ok(envelope) => {
                 let (frame,timestamp) = envelope.parts();
                 let id = id_as_value(frame.id());
+                info!("received frame: id={:?}" ,id);
                 #[cfg(debug_assertions)]
                 info!("[CAN] received frame: id={:?} data={:?}", id, frame.data());
                 if DATA_IDS.contains(&id) {
                 debug!("first if");
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
                         debug!("second if");
-
                         let ut = utils.as_mut().unwrap();
                         if HV_IDS.contains(&id) {
                             debug!("hv if");
@@ -78,8 +78,8 @@ pub async fn can_receiving_handler(
                                 frame.data(),
                                 data_sender,
                                 timestamp.as_ticks(),
-                            );
-                            event_sender.send(Event::ConnectionEstablishedEvent).await;
+                            ).await;
+                           // event_sender.send(Event::ConnectionEstablishedEvent).await;
                         } else if GFD_IDS.contains(&id) {
                             if id == Datatype::IMDVoltageDetails.to_id() {
                                 data_sender.send(Datapoint::new(
