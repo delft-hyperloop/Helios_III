@@ -77,6 +77,8 @@ impl CanController {
 
         let mut can2 =
             can::FdcanConfigurator::new(pins.fdcan2, pins.pb5_pin, pins.pb6_pin, CanTwoInterrupts); // <--- Im not really sure if this are the correct pins
+        can1.config().protocol_exception_handling = false;
+        can2.config().protocol_exception_handling = false;
 
         can1.set_bitrate(1_000_000);
         can2.set_bitrate(1_000_000);
@@ -86,7 +88,8 @@ impl CanController {
 
         let (mut c1_tx, mut c1_rx) = can1.split();
         let (mut c2_tx, mut c2_rx) = can2.split();
-        c1_tx.write(&can::frame::ClassicFrame::new_standard(0x123, &[1, 2, 3, 4]).unwrap());
+        c2_tx.write(&can::frame::ClassicFrame::new_standard(0x123, &[1, 2, 3, 4]).unwrap()).await;
+
 
         try_spawn!(
             event_sender,
