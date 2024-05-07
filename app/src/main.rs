@@ -74,13 +74,13 @@ type EventReceiver = embassy_sync::priority_channel::Receiver<
 type CanSender = embassy_sync::channel::Sender<
     'static,
     NoopRawMutex,
-    can::frame::ClassicFrame,
+    can::frame::Frame,
     { CAN_QUEUE_SIZE },
 >;
 type CanReceiver = embassy_sync::channel::Receiver<
     'static,
     NoopRawMutex,
-    can::frame::ClassicFrame,
+    can::frame::Frame,
     { CAN_QUEUE_SIZE },
 >;
 
@@ -90,10 +90,10 @@ static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, { EVENT
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
     StaticCell::new();
 static CAN_ONE_QUEUE: StaticCell<
-    Channel<NoopRawMutex, can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>,
+    Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>,
 > = StaticCell::new();
 static CAN_TWO_QUEUE: StaticCell<
-    Channel<NoopRawMutex, can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>,
+    Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>,
 > = StaticCell::new();
 
 pub struct InternalMessaging {
@@ -146,7 +146,7 @@ async fn main(spawner: Spawner) -> ! {
 
     let can_one_queue: &'static mut Channel<
         NoopRawMutex,
-        can::frame::ClassicFrame,
+        can::frame::Frame,
         { CAN_QUEUE_SIZE },
     > = CAN_ONE_QUEUE.init(Channel::new());
     let can_one_sender: CanSender = can_one_queue.sender();
@@ -154,7 +154,7 @@ async fn main(spawner: Spawner) -> ! {
 
     let can_two_queue: &'static mut Channel<
         NoopRawMutex,
-        can::frame::ClassicFrame,
+        can::frame::Frame,
         { CAN_QUEUE_SIZE },
     > = CAN_TWO_QUEUE.init(Channel::new());
     let can_two_sender: CanSender = can_two_queue.sender();
