@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, Command} from "$lib";
+    import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, Command, Tile, TileGrid} from "$lib";
     import type {IntervalFunction} from "$lib/types";
 
     enum Mode {
@@ -28,8 +28,8 @@
 
 <div class="p-4 h-full">
     <h2 class="text-xl font-semibold mb-4">Initialization</h2>
-    <div class="grid gap-2" style="grid-template-columns: 1fr 1fr 1.5fr; grid-template-rows: auto 2fr">
-        <div class="row-span-2 flex flex-col gap-2 bg-surface-900 p-4 rounded-lg">
+    <TileGrid columns="1fr 1fr 1.5fr" rows="auto 2fr">
+        <Tile row_span={2} className="flex flex-col gap-2">
             <h3 class="col-span-2 font-medium text-lg">Run initialisation</h3>
             <hr class="col-span-2">
             <p>Mode: </p>
@@ -67,8 +67,8 @@
                     Clear runs
                 </button>
             </div>
-        </div>
-        <div class="row-span-1 grid grid-cols-2 gap-y-2 auto-rows-min bg-surface-900 p-4 rounded-lg" style="grid-template-columns: 1fr 1fr;">
+        </Tile>
+        <Tile row_span={1} className="grid grid-cols-2 gap-y-2 auto-rows-min">
             <h3 class="text-lg font-normal col-span-2">Statuses</h3>
             <hr class="col-span-2">
             <p>Helios III</p>
@@ -85,16 +85,16 @@
             <Status status={$south_bridge_payload.value % 2 === 0} />
             <p>Levi Thermal:</p>
             <Status status={$south_bridge_payload.value % 2 === 1} />
-        </div>
-        <div class="bg-surface-900 p-4 rounded-lg">
+        </Tile>
+        <Tile>
             <h3 class="text-lg mb-2 font-normal">Data:</h3>
             <hr>
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
-        </div>
-        <div class="col-span-2">
+        </Tile>
+        <Tile col_span={2}>
             <TheoreticalRun bind:clearRuns={clearRuns} bind:calculateTheoretical={calculateTheoretical}/>
-        </div>
-    </div>
+        </Tile>
+    </TileGrid>
 </div>
 
 <style lang="scss">
