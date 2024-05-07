@@ -55,6 +55,7 @@ features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"]
 [dependencies.embassy-usb]
 git = "https://github.com/embassy-rs/embassy.git"
 branch = "main"
+version = "0.2.0"
 features = ["defmt"]
 
 

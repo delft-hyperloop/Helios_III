@@ -17,7 +17,7 @@ pub fn default_configuration() -> Config {
 
     config.rcc.hse = Some(rcc::Hse {
         freq: embassy_stm32::time::Hertz(8_000_000),
-        mode: rcc::HseMode::Oscillator,
+        mode: rcc::HseMode::Bypass,
     });
     config.rcc.pll1 = Some(Pll {
         source: PllSource::HSE,
@@ -47,7 +47,7 @@ pub fn default_configuration() -> Config {
     config.rcc.apb3_pre = APBPrescaler::DIV2; // 100 Mhz
     config.rcc.apb4_pre = APBPrescaler::DIV2; // 100 Mhz
     config.rcc.voltage_scale = VoltageScale::Scale1;
-
+    config.rcc.mux.fdcansel = rcc::mux::Fdcansel::PLL1_Q;
     config
 }
 
