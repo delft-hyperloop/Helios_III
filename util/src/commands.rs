@@ -9,13 +9,13 @@ use std::sync::Mutex;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
-    Command: Vec<Command>,
+    pub(crate) Command: Vec<Command>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Command {
-    name: String,
-    id: u16,
+    pub name: String,
+    pub id: u16,
 }
 
 pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
@@ -29,6 +29,7 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
     let mut to_bytes = String::new();
     let mut id_list = id_list.lock().unwrap();
     let mut ids = Vec::new();
+    let mut names = String::new();
     for command in config.Command {
         if command.id & 0b1111_1000_0000_0000 != 0 {
             panic!("IDs need to be u11. Found {} > {}", command.id, 2 ^ 11);
@@ -55,6 +56,7 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
             command.name
         ));
         ids.push(command.id.to_string());
+        names.push_str(&*format!("\t\t\t\"{}\" => Command::{}(p),", command.name, command.name));
     }
 
     format!(
@@ -90,9 +92,16 @@ impl Command {{
     pub fn from_bytes(buf: &[u8; 20]) -> Self {{
         Command::from_id(u16::from_be_bytes([buf[1], buf[2]]), u64::from_be_bytes([buf[3], buf[4], buf[5], buf[6], buf[7], buf[8], buf[9], buf[10]]))
     }}
+    pub fn from_string(s: String, p: u64) -> Self {{
+        #[allow(unreachable_patterns)]
+        match s.as_str() {{
+{}
+            _ => Command::DefaultCommand(p)
+        }}
+    }}
 }}
 pub const COMMAND_IDS: [u16; {}] = [{}];
 ",
-        enum_definitions, match_to_id, match_from_id, to_bytes, ids.len(), ids.join(", ")
+        enum_definitions, match_to_id, match_from_id, to_bytes, names, ids.len(), ids.join(", ")
     )
 }

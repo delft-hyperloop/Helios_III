@@ -3,13 +3,9 @@ mod render;
 mod interactions;
 
 use std::io::{self, stdout, Stdout};
-use std::sync::mpsc::{Receiver, Sender};
 
 use crossterm::{execute, terminal::*};
 use ratatui::prelude::*;
-use crate::api::{ApiStruct, Message};
-use crate::{Command};
-use crate::connect::Datapoint;
 use crate::tui::app::App;
 
 /// A type alias for the terminal type used in this application

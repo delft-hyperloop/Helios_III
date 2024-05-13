@@ -65,7 +65,7 @@ pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
                 to_idx.push_str(&format!("\t\t\tEvent::{} => {},\n", event.name, i));
             }
             Some(x) => {
-                enum_definitions.push_str(&format!("{}({}),\n", event.name, x));
+                enum_definitions.push_str(&format!("\t{}({}),\n", event.name, x));
                 match_to_id.push_str(&format!(
                     "\t\t\tEvent::{}(_) => {},\n",
                     event.name, event.id
@@ -76,7 +76,7 @@ pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
                     event.name, event.priority
                 ));
                 match_from_id.push_str(&format!(
-                    "\t\t\t{} => Event::{}(0),\n",
+                    "\t\t\t{} => Event::{}(v.unwrap_or(0)),\n",
                     event.id, event.name
                 ));
                 to_idx.push_str(&format!("\t\t\tEvent::{}(_) => {},\n", event.name, i));
@@ -103,7 +103,7 @@ impl Event {{
 {}
         }}
     }}
-    pub fn from_id(id:u16) -> Self {{
+    pub fn from_id(id:u16, v: Option<u64>) -> Self {{
         #[allow(unreachable_patterns)]
         match id {{
 {}

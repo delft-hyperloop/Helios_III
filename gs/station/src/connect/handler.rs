@@ -34,21 +34,21 @@ impl<'h> Handler {
         return;
     }
 
-    fn pod_incoming_handler(mut read_stream: TcpStream, mut tx: Sender<Message>) {
+    fn pod_incoming_handler(mut read_stream: TcpStream, tx: Sender<Message>) {
         let mut buf = [0u8; { NETWORK_BUFFER_SIZE }];
         let mut byte_queue : Vec<u8> = vec![];
         'tcp_reading: loop {
             match read_stream.read(&mut buf) {
                 Ok(0) => {
-                    &tx.send(Message::Status(Status::ConnectionClosedByClient)).expect("[Handler] Failed to send on msg tx");
-                    &tx.send(Message::Error("Connection closed by Main PCB!!".to_string())).expect("[Handler] Failed to send on msg tx");
+                    let _ = &tx.send(Message::Status(Status::ConnectionClosedByClient)).expect("[Handler] Failed to send on msg tx");
+                    let _ = &tx.send(Message::Error("Connection closed by Main PCB!!".to_string())).expect("[Handler] Failed to send on msg tx");
                     break 'tcp_reading;
                 }
                 Ok(n) => {
                     byte_queue.append(&mut buf[..n].to_vec());
                 }
                 Err(e) => {
-                    &tx.send(Message::Error(format!("Failed to read from connection: {}", e))).expect("[Handler] Failed to send on msg tx");
+                    let _ = &tx.send(Message::Error(format!("Failed to read from connection: {}", e))).expect("[Handler] Failed to send on msg tx");
                     break 'tcp_reading;
                 }
             }

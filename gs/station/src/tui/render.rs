@@ -1,12 +1,9 @@
-use ratatui::Frame;
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use ratatui::{
     prelude::*,
     symbols::border,
     widgets::{block::*, *},
 };
 use crate::api::Message;
-use crate::main;
 use crate::tui::app::App;
 use crate::tui::timestamp;
 
@@ -70,16 +67,16 @@ impl Widget for &App {
             .split(inner_area);
 
         // Split the top half horizontally for text stream and plots
-        let right_chunks = Layout::default()
-            .direction(Direction::Vertical)
-            .constraints(
-                [
-                    Constraint::Percentage(50), // top side for text stream
-                    Constraint::Percentage(50), // bottom side for the table
-                ]
-                    .as_ref(),
-            )
-            .split(main_chunks[1]);
+        // let right_chunks = Layout::default()
+        //     .direction(Direction::Vertical)
+        //     .constraints(
+        //         [
+        //             Constraint::Percentage(50), // top side for text stream
+        //             Constraint::Percentage(50), // bottom side for the table
+        //         ]
+        //             .as_ref(),
+        //     )
+        //     .split(main_chunks[1]);
 
         let text_block = Block::default().title("Text Stream")
             .title_style(Style::default().fg(Color::LightBlue).bold()) // Styling the title

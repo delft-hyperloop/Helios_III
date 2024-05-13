@@ -3,7 +3,6 @@ mod parser;
 
 use std::net::{IpAddr, TcpListener};
 use std::sync::mpsc::{Receiver, Sender};
-use std::sync::Mutex;
 use crate::api::{Message, Status};
 use crate::connect::handler::Handler;
 use crate::{Command, Datatype, GS_SOCKET, POD_IP_ADDRESS};
@@ -39,7 +38,7 @@ impl Station {
             listener: None,
         }
     }
-    pub fn launch(&self, mut tx: Sender<Message>, mut rx: Receiver<Command>) {
+    pub fn launch(&self, tx: Sender<Message>, rx: Receiver<Command>) {
         let server = TcpListener::bind(GS_SOCKET());
 
         if server.is_err() {

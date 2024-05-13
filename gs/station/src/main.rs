@@ -1,12 +1,6 @@
 // Prevents an additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{Manager, Window};
-use std::time::{SystemTime, UNIX_EPOCH};
-use tauri::http::header::DATE;
-use chrono::{Local, Timelike};
-use std::thread;
-use crate::api::ApiStruct;
 use crate::frontend::tauri_main;
 use crate::tui::gui_main;
 
@@ -194,3 +188,4 @@ fn main() {
     .expect("error while running tauri application");
 >>>>>>> b15285f6edb2701a3008e8e56b597ebd80fe4f25
 }
+*/

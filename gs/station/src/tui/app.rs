@@ -1,11 +1,13 @@
 use std::io;
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
 use ratatui::Frame;
-use crate::api::{ApiStruct, Message};
+use crate::api::{Message};
 use crate::Command;
 use crate::connect::{Datapoint, Station};
 use crate::tui::{timestamp, Tui};
 
+
+#[allow(dead_code)]
 pub struct App {
     pub logs: Vec<(Message, String)>,
     pub data: Vec<Datapoint>,

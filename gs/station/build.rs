@@ -33,6 +33,10 @@ struct GS {
     // udp_port: u16,
     buffer_size: usize,
     timeout: u64,
+    status_channel: String,
+    warning_channel: String,
+    info_channel: String,
+    error_channel: String,
 }
 
 pub const CONFIG_PATH: &str = "../../config/config.toml";
@@ -44,7 +48,6 @@ fn main() {
     tauri_build::build();
     let out_dir = env::var("OUT_DIR").unwrap();
     let dest_path = Path::new(&out_dir).join("config.rs");
-    let forwarder_path = Path::new(&out_dir).join("forwarder.rs");
     let gs_file = fs::read_to_string(CONFIG_PATH).unwrap();
     let id_list = Mutex::new(Vec::new());
 
@@ -56,6 +59,7 @@ fn main() {
     content.push_str(&*generate_datatypes(&id_list, DATATYPES_PATH));
     content.push_str(&*generate_commands(&id_list, COMMANDS_PATH));
     content.push_str(&*generate_events(&id_list, EVENTS_PATH));
+    content.push_str(&*configure_channels(&config));
 
     fs::write(dest_path.clone(), content).expect(&*format!(
         "Couldn't write to {}! Build failed.",
@@ -80,4 +84,11 @@ fn configure_ip(config: &Config) -> String {
     "pub const NETWORK_BUFFER_SIZE: usize = {};\n",
     config.gs.buffer_size
   ) + &*format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
+}
+
+fn configure_channels(config: &Config) -> String {
+    format!("\npub const STATUS_CHANNEL: &str = \"{}\";\n", config.gs.status_channel)
+    + &*format!("pub const WARNING_CHANNEL: &str = \"{}\";\n", config.gs.warning_channel)
+    + &*format!("pub const INFO_CHANNEL: &str = \"{}\";\n", config.gs.info_channel)
+    + &*format!("pub const ERROR_CHANNEL: &str = \"{}\";\n", config.gs.error_channel)
 }
