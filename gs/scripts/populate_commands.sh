@@ -8,8 +8,8 @@ echo 'Populating commands...'
 # Get the commands from the commands.toml file
 commands=$(grep -oP '(?<=name = ").*(?=")' ../config/commands.toml)
 
-# Convert to snake case
-commands=$(echo "$commands" | sed -r 's/([a-z0-9])([A-Z])/\1_\L\2/g' | tr '[:upper:]' '[:lower:]')
+# # Convert to snake case
+# commands=$(echo "$commands" | sed -r 's/([a-z0-9])([A-Z])/\1_\L\2/g' | tr '[:upper:]' '[:lower:]')
 
 # Add quotes around each command name
 commands=$(echo "$commands" | sed -r 's/(.*)/"\1"/')
