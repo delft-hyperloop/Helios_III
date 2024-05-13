@@ -8,7 +8,7 @@ use crate::api::{Message, Status};
 use crate::connect::handler::Handler;
 use crate::{Command, Datatype, GS_SOCKET, POD_IP_ADDRESS};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Datapoint {
     pub datatype: Datatype,
     pub value: u64,
