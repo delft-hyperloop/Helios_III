@@ -9,7 +9,7 @@ use std::sync::Mutex;
 
 #[derive(Deserialize)]
 pub struct Config {
-    Datatype: Vec<Datatype>,
+    pub(crate) Datatype: Vec<Datatype>,
 }
 
 #[derive(Deserialize)]

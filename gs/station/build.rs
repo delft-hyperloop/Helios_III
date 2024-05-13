@@ -44,6 +44,7 @@ fn main() {
     tauri_build::build();
     let out_dir = env::var("OUT_DIR").unwrap();
     let dest_path = Path::new(&out_dir).join("config.rs");
+    let forwarder_path = Path::new(&out_dir).join("forwarder.rs");
     let gs_file = fs::read_to_string(CONFIG_PATH).unwrap();
     let id_list = Mutex::new(Vec::new());
 
