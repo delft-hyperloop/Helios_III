@@ -2,7 +2,7 @@
 name = "app"
 version = "0.1.0"
 edition = "2021"
-build = "build/build.rs"
+build = "build.rs"
 
 [dependencies]
 defmt = "0.3"
