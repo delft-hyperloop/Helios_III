@@ -19,7 +19,6 @@ use embassy_stm32::eth::generic_smi::GenericSMI;
 use embassy_stm32::eth::PHY;
 use embassy_stm32::eth::{Ethernet, PacketQueue};
 use embassy_stm32::flash::Error::Size;
-use embassy_stm32::gpio::low_level::Pin;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::{Input, Pull};
 use embassy_stm32::gpio::{Level, Speed};
@@ -73,10 +72,12 @@ impl CanController {
         lv_controller: BatteryController,
     ) -> Self {
         let mut can1 =
-            can::FdcanConfigurator::new(pins.fdcan1, pins.pd0_pin, pins.pd1_pin, CanOneInterrupts);
+            can::CanConfigurator::new(pins.fdcan1, pins.pd0_pin, pins.pd1_pin, CanOneInterrupts);
 
         let mut can2 =
-            can::FdcanConfigurator::new(pins.fdcan2, pins.pb5_pin, pins.pb6_pin, CanTwoInterrupts); // <--- Im not really sure if this are the correct pins
+            can::CanConfigurator::new(pins.fdcan2, pins.pb5_pin, pins.pb6_pin, CanTwoInterrupts); // <--- Im not really sure if this are the correct pins
+        can1.config().protocol_exception_handling = false;
+        can2.config().protocol_exception_handling = false;
 
         can1.set_bitrate(1_000_000);
         can2.set_bitrate(1_000_000);
@@ -84,9 +85,9 @@ impl CanController {
         let mut can1 = can1.into_normal_mode();
         let mut can2 = can2.into_normal_mode();
 
-        let (mut c1_tx, mut c1_rx) = can1.split();
-        let (mut c2_tx, mut c2_rx) = can2.split();
-        c1_tx.write(&can::frame::ClassicFrame::new_standard(0x123, &[1, 2, 3, 4]).unwrap());
+        let (mut c1_tx, mut c1_rx,p1) = can1.split();
+        let (mut c2_tx, mut c2_rx,p2) = can2.split();
+        c2_tx.write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap()).await;
 
         try_spawn!(
             event_sender,

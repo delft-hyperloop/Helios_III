@@ -16,37 +16,106 @@ id = 0x0a
 name = "LevitationTemperature"
 id = 0x0b
 
+
 [[Datatype]]
-name = "BatteryVoltage"
+name = "IMDGeneralInfo"
+id = 0x37
+
+[[Datatype]]
+name = "IMDIsolationDetails"
+id = 0x38
+
+[[Datatype]]
+name = "IMDVoltageDetails"
+id = 0x39
+
+
+
+[[Datatype]]
+name = "DefaultBMSLow"
+id = 0x19C
+[[Datatype]]
+name = "DiagonosticBMSLow"
+id = 0x1A3
+[[Datatype]]
+name = "DefaultBMSHigh"
+id = 0x3A0
+[[Datatype]]
+name = "DiagonosticBMSHigh"
+id = 0x3A7
+
+
+[[Datatype]]
+name = "BatteryVoltageLow"
 id = 0x19D
+[[Datatype]]
+name = "BatteryVoltageHigh"
+id = 0x3A1
 
 [[Datatype]]
-name = "TotalBatteryVoltage"
-id = 0x1A2
+name = "TotalBatteryVoltageLow"
+id = 0x1A5
 
 [[Datatype]]
-name = "BatteryTemperature"
+name = "TotalBatteryVoltageHigh"
+id = 0x3A9
+
+
+[[Datatype]]
+name = "BatteryTemperatureLow"
 id = 0x1A4
+[[Datatype]]
+name = "BatteryTemperatureHigh"
+id = 0x3A8
 
 [[Datatype]]
-name = "BatteryBalance"
-id = 0x1A0
+name = "BatteryBalanceLow"
+id = 0x19F
 
 [[Datatype]]
-name = "SingleCellVoltage"
+name = "BatteryBalanceHigh"
+id = 0x3A3
+
+[[Datatype]]
+name = "SingleCellVoltageLow"
 id = 0x1BC
 
 [[Datatype]]
-name = "SingleCellTemperature"
+name = "SingleCellTemperatureLow"
 id = 0x1DC
 
 [[Datatype]]
-name = "ChargeState"
+name = "ChargeStateLow"
 id = 0x1A1
 
 [[Datatype]]
-name = "BatteryCurrent"
-id = 0x1A3
+name = "SingleCellVoltageHigh"
+id = 0x3C0
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh"
+id = 0x4A0
+
+[[Datatype]]
+name = "ChargeStateHigh"
+id = 0x3A5
+
+[[Datatype]]
+name = "BatteryCurrentLow"
+id = 0x1A6
+
+
+[[Datatype]]
+name = "BatteryCurrentHigh"
+id = 0x3AA
+
+[[Datatype]]
+name = "BatteryEnergyParamsLow"
+id = 0x1A2
+
+[[Datatype]]
+name = "BatteryEnergyParamsHigh"
+id = 0x3A6
 
 [[Datatype]]
 name = "BrakeTemperature"
@@ -59,14 +128,6 @@ id = 0x14
 [[Datatype]]
 name = "BrakePressure"
 id = 0x15
-
-[[Datatype]]
-name = "HighVoltage"
-id = 0x16
-
-[[Datatype]]
-name = "HighVoltageInsulation"
-id = 0x17
 
 [[Datatype]]
 name = "FSMState"
@@ -85,9 +146,9 @@ name = "Localisation"
 id = 0x1b
 
 [[Datatype]]
-name = "GFDIsolation"
-id = 0x38
-
+name = "UnknownCanId"
+id = 0x7F0
 [[Datatype]]
-name = "DefaultBMS"
-id = 0x19C
+name = "Info"
+id = 0x7FA
+

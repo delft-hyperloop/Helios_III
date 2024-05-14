@@ -3,11 +3,11 @@ use crate::Event;
 use defmt::info;
 
 impl FSM {
-    pub fn entry_hv_system_checking(&mut self) {
+    pub async fn entry_hv_system_checking(&mut self) {
         todo!();
     }
 
-    pub fn react_hv_system_checking(&mut self, event: Event) {
+    pub async fn react_hv_system_checking(&mut self, event: Event) {
         match event {
             Event::HVLevitationReadyEvent => {
                 self.status.check_levitation();

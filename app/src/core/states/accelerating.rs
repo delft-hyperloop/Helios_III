@@ -3,11 +3,11 @@ use crate::Event;
 use defmt::info;
 
 impl FSM {
-    pub fn entry_accelerating(&mut self) {
+    pub async fn entry_accelerating(&mut self) {
         todo!();
     }
 
-    pub fn react_accelerating(&mut self, event: Event) {
+    pub async fn react_accelerating(&mut self, event: Event) {
         match event {
             Event::DesiredSpeedReachedEvent => {
                 todo!();
