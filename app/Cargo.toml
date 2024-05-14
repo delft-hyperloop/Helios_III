@@ -29,32 +29,32 @@ log = "0.4.21"
 
 [dependencies.embassy-executor]
 git = "https://github.com/embassy-rs/embassy.git"
-branch = "main"
+rev = "dc30bcfa"
 features = ["task-arena-size-32768", "arch-cortex-m", "executor-thread", "defmt", "integrated-timers"]
 
 [dependencies.embassy-net]
 git = "https://github.com/embassy-rs/embassy.git"
-branch = "main"
+rev = "dc30bcfa"
 features = ["defmt", "tcp", "dhcpv4", "medium-ethernet", "proto-ipv6", "dns"]
 
 [dependencies.embassy-stm32]
 git = "https://github.com/embassy-rs/embassy.git"
-branch = "main"
+rev = "dc30bcfa"
 features = ["defmt", "stm32h743zi", "time-driver-any", "exti", "memory-x", "unstable-pac", "chrono"]
 
 [dependencies.embassy-sync]
 git = "https://github.com/embassy-rs/embassy.git"
-branch = "main"
+rev = "dc30bcfa"
 features = ["defmt"]
 
 [dependencies.embassy-time]
 git = "https://github.com/embassy-rs/embassy.git"
-branch = "main"
+rev = "dc30bcfa"
 features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"]
 
 [dependencies.embassy-usb]
 git = "https://github.com/embassy-rs/embassy.git"
-branch = "main"
+rev = "dc30bcfa"
 version = "0.2.0"
 features = ["defmt"]
 
