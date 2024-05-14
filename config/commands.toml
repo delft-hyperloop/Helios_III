@@ -33,3 +33,7 @@ id = 0x60
 [[Command]]
 name = "StopHV"
 id = 0x61
+
+[[Command]]
+name = "EmitEvent"
+id = 0x7A0

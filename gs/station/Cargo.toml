@@ -1,18 +1,23 @@
 [package]
-name = "app"
+name = "station"
 version = "0.2.0"
 description = "Helios III Ground Station"
 authors = ["Andreas Tsatsanis", " Francisco Amaro", "Kiril Panayotov"]
 license = "MIT"
-repository = ""
-default-run = "app"
+repository = "https://github.com/delft-hyperloop/Helios_III.git"
+default-run = "station"
 edition = "2021"
 rust-version = "1.60"
+build = "build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
 tauri-build = { version = "1.5.1", features = [] }
+serde = { version = "1.0.197", features = ["derive"] }
+regex = "1.10.3"
+toml = "0.8.11"
+goose_utils = { path = "../../util" }
 
 [dependencies]
 rand = "0.8.4"
@@ -20,6 +25,13 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.6.2", features = [ "window-start-dragging", "window-unminimize", "window-unmaximize", "window-minimize", "window-hide", "window-show", "window-close", "window-maximize"] }
 chrono = "0.4.38"
+toml = "0.8.12"
+crossterm = "0.27.0"
+ratatui = { version = "0.26.1", features = ["widget-calendar"] }
+regex = "1.10.3"
+rayon = "1.9.0"
+colored = "2.1.0"
+time = "0.3.34"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
