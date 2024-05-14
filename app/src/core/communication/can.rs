@@ -1,8 +1,8 @@
 use core::any::Any;
 use defmt::*;
 use embassy_executor::Spawner;
-use embassy_stm32::can::frame::{ClassicFrame, Header};
-use embassy_stm32::can::{Fdcan, FdcanRx, FdcanTx, Instance};
+use embassy_stm32::can::frame::{Frame, Header};
+use embassy_stm32::can::{CanRx, CanTx,  Instance};
 use embassy_stm32::gpio::{Level, Output, Speed};
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_stm32::{bind_interrupts, can, peripherals, rng, Config};
@@ -16,9 +16,7 @@ use static_cell::StaticCell;
 use {defmt_rtt as _, panic_probe as _};
 // use embedded_hal::can::Id;
 use crate::core::communication::Datapoint;
-use crate::core::controllers::battery_controller::{
-    ground_fault_detection_isolation_details, BatteryController, GroundFaultDetection,
-};
+use crate::core::controllers::battery_controller::{ground_fault_detection_isolation_details, BatteryController, GroundFaultDetection, ground_fault_detection_voltage_details};
 use crate::core::controllers::can_controller::CanTwoUtils;
 use crate::pconfig::{bytes_to_u64, id_as_value};
 use crate::{
@@ -31,7 +29,7 @@ use heapless::Vec;
 #[embassy_executor::task(pool_size = 2)]
 pub async fn can_transmitter(
     can_receiver: CanReceiver,
-    mut bus: FdcanTx<'static, impl Instance>,
+    mut bus: CanTx<'static, impl Instance>,
 ) -> ! {
     loop {
         let frame = can_receiver.receive().await;
@@ -45,7 +43,7 @@ pub async fn can_receiving_handler(
     event_sender: EventSender,
     can_receiver: CanReceiver,
     data_sender: DataSender,
-    mut bus: FdcanRx<'static, impl Instance>,
+    mut bus: CanRx<'static, impl Instance>,
     mut utils: Option<CanTwoUtils>,
 ) -> ! {
     info!(
@@ -54,14 +52,19 @@ pub async fn can_receiving_handler(
     );
     loop {
         match bus.read().await {
-            Ok((frame, timestamp)) => {
+            Ok(envelope) => {
+                let (frame,timestamp) = envelope.parts();
                 let id = id_as_value(frame.id());
+                info!("received frame: id={:?}" ,id);
                 #[cfg(debug_assertions)]
                 info!("[CAN] received frame: id={:?} data={:?}", id, frame.data());
                 if DATA_IDS.contains(&id) {
+                debug!("first if");
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
+                        debug!("second if");
                         let ut = utils.as_mut().unwrap();
                         if HV_IDS.contains(&id) {
+                            debug!("hv if");
                             ut.hv_controller.bms_can_handle(
                                 id,
                                 frame.data(),
@@ -69,15 +72,30 @@ pub async fn can_receiving_handler(
                                 timestamp.as_ticks(),
                             );
                         } else if LV_IDS.contains(&id) {
+                            debug!("lv if");
                             ut.lv_controller.bms_can_handle(
                                 id,
                                 frame.data(),
                                 data_sender,
                                 timestamp.as_ticks(),
-                            );
+                            ).await;
+                           // event_sender.send(Event::ConnectionEstablishedEvent).await;
                         } else if GFD_IDS.contains(&id) {
-                            // do something idk
-                            // neither do I : Kiko
+                            if id == Datatype::IMDVoltageDetails.to_id() {
+                                data_sender.send(Datapoint::new(
+                                    Datatype::IMDVoltageDetails,
+                                    ground_fault_detection_voltage_details(frame.data()).await,
+                                    timestamp.as_ticks(),
+                                )).await;
+                            }
+                            else {
+                            data_sender.send(Datapoint::new(
+                                Datatype::IMDIsolationDetails,
+                                ground_fault_detection_isolation_details(frame.data()).await,
+                                timestamp.as_ticks(),
+                            )).await;
+                            }
+
                         }
                     } else {
                         data_sender

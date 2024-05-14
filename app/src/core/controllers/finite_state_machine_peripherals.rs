@@ -7,7 +7,6 @@ use crate::{DataReceiver, EventSender, InternalMessaging};
 use defmt::{info, unwrap};
 use embassy_executor::Spawner;
 use embassy_stm32::flash::Error::Size;
-use embassy_stm32::gpio::low_level::Pin;
 use embassy_stm32::gpio::{Input, Level, Output, Pull, Speed};
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_stm32::{bind_interrupts, can, eth, peripherals, rng, Peripheral, Peripherals};
@@ -34,9 +33,9 @@ impl FSMPeripherals {
             BrakingController::new(x, i.event_sender.clone(), p.PB8, p.PG1, p.PF12, p.TIM16).await;
 
         let mut hv_controller =
-            BatteryController::new(i.event_sender.clone(), 0, 0, 0, 0, 0, i.data_sender.clone()); //TODO <------ This is just to make it build
+            BatteryController::new(i.event_sender.clone(), 0, 0, 0, 0, 0, i.data_sender.clone(),true); //TODO <------ This is just to make it build
         let mut lv_controller =
-            BatteryController::new(i.event_sender.clone(), 0, 0, 0, 0, 0, i.data_sender.clone()); //TODO <------ This is just to make it build
+            BatteryController::new(i.event_sender.clone(), 0, 0, 0, 0, 0, i.data_sender.clone(),false); //TODO <------ This is just to make it build
 
         let mut eth_controller = EthernetController::new(
             *x,

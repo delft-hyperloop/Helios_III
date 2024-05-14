@@ -4,7 +4,6 @@
 **/target/**
 *.iml
 **/.idea/*
-app/.cargo/
 
 node_modules
 **/build
