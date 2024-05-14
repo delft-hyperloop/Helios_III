@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This script is used to populate the commands type using the /config/commands.toml file
 # The result of this will be put in /gs/src/lib/types.ts in the beginning of the file
@@ -7,9 +7,6 @@ echo 'Populating commands...'
 
 # Get the commands from the commands.toml file
 commands=$(grep -oP '(?<=name = ").*(?=")' ../config/commands.toml)
-
-# Convert to snake case
-commands=$(echo "$commands" | sed -r 's/([a-z0-9])([A-Z])/\1_\L\2/g' | tr '[:upper:]' '[:lower:]')
 
 # Add quotes around each command name
 commands=$(echo "$commands" | sed -r 's/(.*)/"\1"/')
