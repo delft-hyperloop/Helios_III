@@ -17,7 +17,6 @@ embedded-hal = "0.2.7"
 embedded-can = "0.4.1"
 embedded-hal-async = { version = "1.0" }
 embedded-nal-async = { version = "0.7.1" }
-embedded-io-async = { version = "0.6.1" }
 panic-probe = { version = "0.3", features = ["print-defmt"] }
 futures = { version = "0.3.17", default-features = false, features = [
     "async-await",
@@ -77,6 +76,13 @@ branch = "main"
 version = "0.2.0"
 features = ["defmt"]
 
+[dependencies.embedded-io]
+version = "0.6.1"
+features = ["defmt-03"]
+
+[dependencies.embedded-io-async]
+version = "0.6.1"
+features = ["defmt-03"]
 
 # Only for build.rs
 [build-dependencies]
