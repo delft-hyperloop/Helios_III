@@ -99,7 +99,6 @@ id = 0x3A5
 name = "BatteryCurrentLow"
 id = 0x1A6
 
-
 [[Datatype]]
 name = "BatteryCurrentHigh"
 id = 0x3AA
@@ -111,6 +110,66 @@ id = 0x1A2
 [[Datatype]]
 name = "BatteryEnergyParamsHigh"
 id = 0x3A6
+
+[[Datatype]]
+name = "BatteryMinVoltageLow"
+id = 0x1A7
+
+[[Datatype]]
+name = "BatteryMaxVoltageLow"
+id = 0x1A8
+
+[[Datatype]]
+name = "BatteryEstimatedChargeLow"
+id = 0x1A9
+
+[[Datatype]]
+name = "BatteryMinTemperatureLow"
+id = 0x1AA
+
+[[Datatype]]
+name = "BatteryMaxTemperatureLow"
+id = 0x1AB
+
+[[Datatype]]
+name = "BatteryMinBalancingLow"
+id = 0x1AC
+
+[[Datatype]]
+name = "BatteryMaxBalancingLow"
+id = 0x1AD
+
+[[Datatype]]
+name = "BatteryMinVoltageLow"
+id = 0x1A7
+
+[[Datatype]]
+name = "BatteryMinVoltageHigh"
+id = 0x3AB
+
+[[Datatype]]
+name = "BatteryMaxVoltageHigh"
+id = 0x3AC
+
+[[Datatype]]
+name = "BatteryEstimatedChargeHigh"
+id = 0x3AD
+
+[[Datatype]]
+name = "BatteryMinTemperatureHigh"
+id = 0x3AE
+
+[[Datatype]]
+name = "BatteryMaxTemperatureHigh"
+id = 0x3AF
+
+[[Datatype]]
+name = "BatteryMinBalancingHigh"
+
+id = 0x3B0
+[[Datatype]]
+name = "BatteryMaxBalancingHigh"
+id = 0x3B1
 
 [[Datatype]]
 name = "BrakeTemperature"
