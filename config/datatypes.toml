@@ -112,10 +112,6 @@ name = "BatteryEnergyParamsHigh"
 id = 0x3A6
 
 [[Datatype]]
-name = "BatteryMinVoltageLow"
-id = 0x1A7
-
-[[Datatype]]
 name = "BatteryMaxVoltageLow"
 id = 0x1A8
 

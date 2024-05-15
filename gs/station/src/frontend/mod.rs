@@ -1,7 +1,7 @@
 use std::fmt::{Debug};
 use std::sync::mpsc::Sender;
 use crate::api::{Message};
-use crate::{Command, ERROR_CHANNEL, INFO_CHANNEL, STATUS_CHANNEL, WARNING_CHANNEL};
+use crate::{Command, ERROR_CHANNEL, INFO_CHANNEL, STATUS_CHANNEL, WARNING_CHANNEL, Datatype};
 use crate::connect::{Datapoint, Station};
 use tauri::{State};
 use std::sync::Mutex;
@@ -30,7 +30,7 @@ impl Default for BackendState {
 pub fn tauri_main() {
     tauri::Builder::default()
         .manage(BackendState::default())
-        .invoke_handler(tauri::generate_handler![])
+        .invoke_handler(tauri::generate_handler![unload_buffer, send_command, generate_test_data])
         .setup(|app| {
             let (data_sender, message_receiver) = std::sync::mpsc::channel();
             let (command_sender, command_receiver) = std::sync::mpsc::channel();
@@ -83,6 +83,33 @@ pub fn unload_buffer(state: State<BackendState>) -> Vec<Datapoint> {
         }
     }
     data_buffer.clear();
+    datapoints
+}
+
+use rand::Rng;
+
+#[allow(unused)]
+#[tauri::command]
+pub fn generate_test_data() -> Vec<Datapoint> {
+    let mut rng = rand::thread_rng();
+    let mut datapoints = Vec::new();
+
+    let value: u64 = rng.gen_range(0..101);
+    let value2: u64 = rng.gen_range(0..101);
+    let value3: u64 = rng.gen_range(0..101);
+
+    let datapoint = Datapoint { value, datatype:Datatype::from_id(0x3A3), timestamp:0 };
+    let datapoint2 = Datapoint { value:value2, datatype:Datatype::from_id(0x19F), timestamp:0 };
+    let datapoint3 = Datapoint { value:1, datatype:Datatype::from_id(0x3AA), timestamp:0 };
+    let datapoint4 = Datapoint { value:2, datatype:Datatype::from_id(0x3AA), timestamp:0 };
+    let datapoint5 = Datapoint { value:3, datatype:Datatype::from_id(0x3AA), timestamp:0 };
+
+    datapoints.push(datapoint);
+    datapoints.push(datapoint2);
+    datapoints.push(datapoint3);
+    datapoints.push(datapoint4);
+    datapoints.push(datapoint5);
+
     datapoints
 }
 
