@@ -11,7 +11,6 @@ mod frontend;
 
 include!(concat!(env!("OUT_DIR"), "/config.rs"));
 
-
 fn main() {
     // parse command line arguments to see if we should run the TUI or just the backend
     let args: Vec<String> = std::env::args().collect();

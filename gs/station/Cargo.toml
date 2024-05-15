@@ -1,6 +1,6 @@
 [package]
 name = "station"
-version = "0.2.0"
+version = "0.3.0"
 description = "Helios III Ground Station"
 authors = ["Andreas Tsatsanis", " Francisco Amaro", "Kiril Panayotov"]
 license = "MIT"
