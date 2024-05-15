@@ -5,13 +5,21 @@ export type NamedCommand = "DefaultCommand" | "Levitate" | "StopLevitating" | "C
 /*AUTO GENERATED USING npm run generate:datatypes */
 export type NamedDatatype = "DefaultDatatype" | "PropulsionTemperature" | "LevitationTemperature" | "BatteryVoltage" | "TotalBatteryVoltage" | "BatteryTemperature" | "BatteryBalance" | "SingleCellVoltage" | "SingleCellTemperature" | "ChargeState" | "BatteryCurrent" | "BrakeTemperature" | "PropulsionSpeed" | "BrakePressure" | "HighVoltage" | "HighVoltageInsulation" | "FSMState" | "FSMEvent" | "PodDropTriggered" | "Localisation" | "GFDIsolation" | "DefaultBMS"
 
+export type TauriInvoker = "send_command" | "unload_buffer";
+
 // Not touched by auto-gen
 export type Payload = {
     value: number,
     values: number[],
     timestamp: number,
 }
-export type EventChannel = 'north_bridge' | 'south_bridge'
+
+/**
+ * Event to listen on.
+ */
+export type EventChannel = 'status_channel' | 'info_channel' | 'warning_channel' | 'error_channel'
+    | 'north_bridge' | 'south_bridge';
+
 export type TempTableEntry = {name:string, value: number}
 export type Log = {
     log_type:string, message:string, timestamp:number

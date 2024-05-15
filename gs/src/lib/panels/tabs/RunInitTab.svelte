@@ -54,11 +54,11 @@
             <div class="flex-grow"></div>
             <div class="grid grid-cols-2 gap-2">
                 <Command command="establish_connection" classes="btn rounded-md bg-surface-700  col-span-2" />
-                <Command command="start_hv" classes="btn flex-grow rounded-md bg-surface-700 " />
-                <Command command="stop_hv" classes="btn flex-grow rounded-md bg-surface-700 " />
-                <Command command="levitate" classes="btn flex-grow rounded-md bg-surface-700 " />
-                <Command command="stop_levitating" classes="btn flex-grow rounded-md bg-surface-700 " />
-                <Command command="start_run" classes="btn rounded-md bg-primary-500 col-span-2" />
+                <Command command="StartHV" classes="btn flex-grow rounded-md bg-surface-700 " />
+                <Command command="StopHV" classes="btn flex-grow rounded-md bg-surface-700 " />
+                <Command command="Levitate" classes="btn flex-grow rounded-md bg-surface-700 " />
+                <Command command="StopLevitating" classes="btn flex-grow rounded-md bg-surface-700 " />
+                <Command command="StartRun" classes="btn rounded-md bg-primary-500 col-span-2" />
                 <button class="btn rounded-md col-span-2 bg-surface-700 " type="button" on:click={calculateTheoretical}>
                     Calculate theoretical run
                 </button>
