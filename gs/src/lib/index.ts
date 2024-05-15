@@ -30,14 +30,50 @@ import TileGrid from "$lib/components/generic/TileGrid.svelte";
 
 // Utils
 import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
+import {GrandDataDistributor} from "$lib/util/GrandDataDistributor";
 import util from "$lib/util/util";
 
 import type {Payload, NamedCommand, EventChannel, TempTableEntry, Log} from "$lib/types";
 
 // Stores
-import {south_bridge_payload, north_bridge_payload} from "$lib/stores/data";
+import {south_bridge_payload, hvBattery} from "$lib/stores/data";
 import {detailTabSet, inputSpeed, details_pane, vitals_pane} from "$lib/stores/state";
 
 // Export all
-export {StrokePresets, PneumaticsTab, TileGrid, details_pane, vitals_pane, Tile, DebugTab, util, Status,  VitalsPanel, LogsPanel, DetailsPanel, BatteriesTab, MotorsTab, HomeTab, LocationTab, ProceduresTab, RunInitTab, Battery, BottomBar, FSM, TitleBar, Chart, Table, Command, PlotBuffer, south_bridge_payload, north_bridge_payload, detailTabSet, inputSpeed, Pneumatics, Localiser, TheoreticalRun}
+export {
+    StrokePresets,
+    GrandDataDistributor,
+    hvBattery,
+    PneumaticsTab,
+    TileGrid,
+    details_pane,
+    vitals_pane,
+    Tile,
+    DebugTab,
+    util,
+    Status,
+    VitalsPanel,
+    LogsPanel,
+    DetailsPanel,
+    BatteriesTab,
+    MotorsTab,
+    HomeTab,
+    LocationTab,
+    ProceduresTab,
+    RunInitTab,
+    Battery,
+    BottomBar,
+    FSM,
+    TitleBar,
+    Chart,
+    Table,
+    Command,
+    PlotBuffer,
+    south_bridge_payload,
+    detailTabSet,
+    inputSpeed,
+    Pneumatics,
+    Localiser,
+    TheoreticalRun
+}
 export type {Payload, NamedCommand, EventChannel, TempTableEntry, Log}
