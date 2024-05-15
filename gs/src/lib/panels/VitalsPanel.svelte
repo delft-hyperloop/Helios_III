@@ -1,14 +1,14 @@
 <script lang="ts">
-    import {Chart, Battery, Table, FSM, south_bridge_payload, TileGrid, Tile} from "$lib";
-    import {AppBar} from "@skeletonlabs/skeleton";
+    import {Chart, Battery, Table, FSM, south_bridge_payload, TileGrid, Tile, Command, hvBattery} from "$lib";
+    import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
     import Keydown from "svelte-keydown";
 
-    let width:number;
+    let width: number;
 
-    let tableArr:any[][];
-    let tableArr2:any[][];
+    let tableArr: any[][];
+    let tableArr2: any[][];
     $: tableArr = [
         ["Upper drawer VB", $south_bridge_payload.value],
         ["Bottom drawer VB", $south_bridge_payload.value],
@@ -23,6 +23,8 @@
         ["HEMS", $south_bridge_payload.value],
         ["Motor core", $south_bridge_payload.value]
     ]
+
+    const toastStore = getToastStore();
 </script>
 
 <Keydown on:combo={({detail}) => {
@@ -33,10 +35,18 @@
 
 <div bind:clientWidth={width} class="h-full bg-surface-700 text-surface-50">
     <AppBar padding="p-3" border="border-b border-b-surface-900" background="bg-surface-700">
-        <svelte:fragment slot="lead"><Icon icon="codicon:graph-line" /></svelte:fragment>
+        <svelte:fragment slot="lead">
+            <Icon icon="codicon:graph-line"/>
+        </svelte:fragment>
         <span>Vitals</span>
         <svelte:fragment slot="trail">
-            <button on:click={() => {invoke('abort')}} class="btn py-0 border border-error-500 bg-error-500 rounded-sm">ABORT</button>
+            <Command callback={() => {
+                toastStore.trigger({
+                    //@ts-ignore
+                    message: "Abort operation triggered",
+                    background: 'variant-filled-error',
+                });
+            }} className="bg-error-500 text-surface-100 btn py-0 border border-error-500 rounded-sm" cmd="abort"/>
         </svelte:fragment>
     </AppBar>
 
@@ -47,23 +57,23 @@
             </button>
             <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
             <div class="flex flex-col gap-4">
-                <Battery orientation="vertical" height={55} perc={$south_bridge_payload.value} />
-                <Battery orientation="vertical" height={55} perc={$south_bridge_payload.value} />
+                <Battery orientation="vertical" height={55} perc={$hvBattery}/>
+                <Battery orientation="vertical" height={55} perc={$hvBattery}/>
             </div>
         </div>
     {:else}
         <div class="snap-x scroll-px-0.5 snap-mandatory overflow-x-auto h-[90vh]">
-            <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="" >
+            <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="">
                 <!--     FSM       -->
-                <Tile bgToken={800} containerClass="col-span-2" >
+                <Tile bgToken={800} containerClass="col-span-2">
                     {#if width > 550}
-                        <FSM size="sm" />
+                        <FSM size="sm"/>
                     {:else}
-                        <FSM size="lg" />
+                        <FSM size="lg"/>
                     {/if}
                 </Tile>
                 <!--      Under FSM      -->
-                <Tile bgToken={700} containerClass="col-span-2" >
+                <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4">
                             <p>Velocity: <span class="font-mono font-medium">{$south_bridge_payload.value}</span></p>
@@ -72,48 +82,32 @@
                         <div class="flex gap-4">
                             <div class="flex gap-2">
                                 <span>LV: </span>
-                                <Battery orientation="horizontal" perc={$south_bridge_payload.value} />
+                                <Battery orientation="horizontal" perc={$hvBattery}/>
                             </div>
                             <div class="flex gap-2">
                                 <span>HV: </span>
-                                <Battery orientation="horizontal" perc={$south_bridge_payload.value} />
+                                <Battery orientation="horizontal" perc={$hvBattery}/>
                             </div>
                         </div>
                     </div>
                 </Tile>
                 <!--     TEMPERATURE TABLE      -->
                 <Tile containerClass="pt-2 pb-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Table {tableArr} />
+                    <Table {tableArr}/>
                 </Tile>
                 <Tile containerClass="pt-2 pb-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Table titles={["Variable", "Status"]} tableArr={tableArr2} />
+                    <Table titles={["Variable", "Status"]} tableArr={tableArr2}/>
                 </Tile>
                 <!--     OFFSET GRAPHS       -->
                 <Tile containerClass="py-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Chart title="Offset horizontal" refreshRate={100} />
+                    <Chart title="Offset horizontal" refreshRate={100}/>
                 </Tile>
                 <Tile containerClass="py-1 h-full w-full col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Chart title="Offset horizontal" refreshRate={100} />
+                    <Chart title="Offset horizontal" refreshRate={100}/>
                 </Tile>
                 <Tile containerClass="py-2 col-span-2" bgToken={800}>
-                    <Chart title="Velocity" refreshRate={100} />
+                    <Chart title="Velocity" refreshRate={100}/>
                 </Tile>
-                <!--                <Tile containerClass="py-1" bgToken={700} heading="Offset data" col_span={2}>-->
-                <!--                    <div class="flex flex-wrap gap-4">-->
-                <!--                        <div class="flex gap-4">-->
-                <!--                            <p class="font-mono">X1: {$south_bridge_payload.value}</p>-->
-                <!--                            <p class="font-mono">X2: {$south_bridge_payload.value}</p>-->
-                <!--                            <p class="font-mono">X3: {$south_bridge_payload.value}</p>-->
-                <!--                            <p class="font-mono">X4: {$south_bridge_payload.value}</p>-->
-                <!--                        </div>-->
-                <!--                        <div class="flex gap-4">-->
-                <!--                            <p class="font-mono">Y1: {$south_bridge_payload.value}</p>-->
-                <!--                            <p class="font-mono">Y2: {$south_bridge_payload.value}</p>-->
-                <!--                            <p class="font-mono">Y3: {$south_bridge_payload.value}</p>-->
-                <!--                            <p class="font-mono">Y4: {$south_bridge_payload.value}</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </Tile>-->
             </TileGrid>
         </div>
     {/if}

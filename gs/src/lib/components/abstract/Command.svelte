@@ -1,14 +1,19 @@
 <script lang="ts">
-    import { invoke } from '@tauri-apps/api/tauri';
+    import {invoke} from '@tauri-apps/api/tauri';
     import {type NamedCommand, util} from "$lib";
 
-    export let background: string = `bg-primary-500`;
-    export let classes: string = '';
-    export let command: NamedCommand;
-    export const send = async () => {
-        await invoke(command);
+    export let className: string = '';
+    export let cmd: NamedCommand;
+    export let val: number = 0;
+    export let callback: () => void = () => {};
+
+    const send = async () => {
+        await invoke('send_command', {cmd, val});
+        callback();
     };
 </script>
-<button class="{classes === '' ? 'btn rounded-md py-2 text-surface-900' : classes } font-number font-medium {command === 'abort' ? 'bg-error-500' : background}" on:click={send}>
-    {util.snakeToCamel(command)}
+
+<button class="btn rounded-md font-number font-medium {className ? className : 'py-2 bg-primary-500 text-surface-900'}"
+        on:click={send}>
+    {util.snakeToCamel(cmd)}
 </button>

@@ -13,7 +13,7 @@
     const toastStore = getToastStore();
 
     onMount(async () => {
-        unlisten_error = await listen("error_bridge", (event) => {
+        unlisten_error = await listen("error_channel", (event) => {
             toastStore.trigger({
                 //@ts-ignore
                 message: event.payload.message,
