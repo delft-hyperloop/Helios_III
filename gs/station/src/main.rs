@@ -95,41 +95,6 @@ async fn start_logs(window: Window) {
     });
 }
 
-#[derive(Clone, serde::Serialize)]
-struct Error {
-    message: String
-}
-
-#[tauri::command]
-async fn start_errors(window: Window) {
-    std::thread::spawn(move || {
-        loop {
-            window.emit("error_bridge", Error {message: String::from("aaaa gg died")}).unwrap();
-            std::thread::sleep(std::time::Duration::from_secs(10));
-        }
-    });
-}
-
-#[derive(Clone, serde::Serialize)]
-struct Run {
-    timestamp: u32,
-    speed: u32
-}
-
-#[tauri::command]
-async fn start_run(window: Window) {
-    let mut i = 0;
-    std::thread::spawn(move || {
-        for _ in 0..100 {
-            let mut rng = rand::thread_rng();
-            let speed = rng.gen_range(0..51);
-            i+=1;
-            window.emit("start_run", Run {timestamp: i, speed}).unwrap();
-            std::thread::sleep(std::time::Duration::from_millis(10));
-        }
-    });
-}
-
 #[tauri::command]
 async fn start_south_bridge(window: Window) {
     std::thread::spawn(move || {
@@ -161,7 +126,7 @@ async fn start_south_bridge(window: Window) {
 fn main() {
   tauri::Builder::default()
       // register the commands in tauri.
-    .invoke_handler(tauri::generate_handler![my_custom_command, start_north_bridge, start_south_bridge, start_logs, start_errors, start_run])
+    .invoke_handler(tauri::generate_handler![my_custom_command, start_north_bridge, start_south_bridge, start_logs])
       // init tauri
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
