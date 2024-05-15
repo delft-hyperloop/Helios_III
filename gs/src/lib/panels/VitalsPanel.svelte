@@ -9,12 +9,14 @@
         Tile,
         Command,
         hvBattery,
-        lvBattery
+        lvBattery, PlotBuffer, StrokePresets
     } from "$lib";
     import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
     import Keydown from "svelte-keydown";
+    import {onMount} from "svelte";
+    import {z} from "zod";
 
     let width: number;
 
@@ -36,6 +38,12 @@
     ]
 
     const toastStore = getToastStore();
+
+    let offsetXChart:PlotBuffer;
+
+    onMount(() => {
+        offsetXChart.addSeries(StrokePresets.theoretical())
+    })
 </script>
 
 <Keydown on:combo={({detail}) => {
@@ -111,10 +119,19 @@
                 </Tile>
                 <!--     OFFSET GRAPHS       -->
                 <Tile containerClass="py-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Chart title="Offset horizontal" eventChannel="current_hv" refreshRate={100}/>
+                    <Chart bind:chart={offsetXChart}
+                           eventCallback={(event) => {
+                                // @ts-ignore
+                                offsetXChart.addEntry(1, z.number().parse(event.payload.x));
+
+                                // @ts-ignore
+                                offsetXChart.addEntry(2, z.number().parse(event.payload.y));
+                           }}
+                           title="Offset horizontal"
+                           eventChannel="current_hv" refreshRate={100}/>
                 </Tile>
                 <Tile containerClass="py-1 h-full w-full col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Chart title="Offset horizontal" refreshRate={100}/>
+                    <Chart title="Offset Vertical" refreshRate={100}/>
                 </Tile>
                 <Tile containerClass="py-2 col-span-2" bgToken={800}>
                     <Chart title="Velocity" refreshRate={100}/>

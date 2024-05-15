@@ -9,8 +9,7 @@
     export let eventChannel = "south_bridge";
     export let eventCallback: EventCallback<unknown> = (event) => {
         // @ts-ignore
-        info = z.number().parse(event.payload.data);
-        chart.addEntry(1, info);
+        chart.addEntry(1, z.number().parse(event.payload.data));
     };
     export let dataPointsCount: number = 1000;
     export let refreshRate: number = 100;
@@ -30,7 +29,6 @@
 
     let unlisten: UnlistenFn;
     let plotContainer: HTMLDivElement;
-    let info:number = 0;
 
     onMount(async () => {
         chart.addSeries(StrokePresets.hyperLoopGreen());
@@ -49,7 +47,7 @@
 
 <div bind:clientWidth={width} class="flex flex-col {background} rounded-md pt-2 {width < 550 ? 'text-sm' : ''}">
     <div class="flex gap-2 ml-6">
-        <h4 class="text-md text-primary-100">{title}</h4> <span class="font-mono">{info.toFixed(2)}</span>
+        <h4 class="text-md text-primary-100">{title}</h4> <span class="font-mono"></span>
     </div>
     <div class="flex flex-col justify-center items-center w-full">
         <div class="rounded-md" bind:this={plotContainer} />
