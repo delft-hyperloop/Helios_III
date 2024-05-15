@@ -1,5 +1,16 @@
 <script lang="ts">
-    import {Chart, Battery, Table, FSM, south_bridge_payload, TileGrid, Tile, Command, hvBattery} from "$lib";
+    import {
+        Chart,
+        Battery,
+        Table,
+        FSM,
+        south_bridge_payload,
+        TileGrid,
+        Tile,
+        Command,
+        hvBattery,
+        lvBattery
+    } from "$lib";
     import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
@@ -57,7 +68,7 @@
             </button>
             <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
             <div class="flex flex-col gap-4">
-                <Battery orientation="vertical" height={55} perc={$hvBattery}/>
+                <Battery orientation="vertical" height={55} perc={$lvBattery}/>
                 <Battery orientation="vertical" height={55} perc={$hvBattery}/>
             </div>
         </div>
@@ -82,7 +93,7 @@
                         <div class="flex gap-4">
                             <div class="flex gap-2">
                                 <span>LV: </span>
-                                <Battery orientation="horizontal" perc={$hvBattery}/>
+                                <Battery orientation="horizontal" perc={$lvBattery}/>
                             </div>
                             <div class="flex gap-2">
                                 <span>HV: </span>
@@ -100,7 +111,7 @@
                 </Tile>
                 <!--     OFFSET GRAPHS       -->
                 <Tile containerClass="py-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Chart title="Offset horizontal" refreshRate={100}/>
+                    <Chart title="Offset horizontal" eventChannel="current_hv" refreshRate={100}/>
                 </Tile>
                 <Tile containerClass="py-1 h-full w-full col-span-{width < 550 ? 2 : 1}" bgToken={800}>
                     <Chart title="Offset horizontal" refreshRate={100}/>

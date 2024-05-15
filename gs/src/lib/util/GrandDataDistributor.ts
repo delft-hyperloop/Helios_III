@@ -19,7 +19,7 @@ import type {Datapoint, NamedDatatype} from "$lib/types";
  */
 export class GrandDataDistributor {
     private intervalId: NodeJS.Timeout | null = null;
-    private StoreManager:StoreManager;
+    private readonly StoreManager:StoreManager;
     private static instance: GrandDataDistributor;
 
     static getInstance() {
@@ -62,7 +62,7 @@ export class GrandDataDistributor {
      * @private
      */
     private async fetchData() {
-        const data:Datapoint[] = await invoke('unload_buffer');
+        const data:Datapoint[] = await invoke('generate_test_data');
         this.processData(data);
     }
 
