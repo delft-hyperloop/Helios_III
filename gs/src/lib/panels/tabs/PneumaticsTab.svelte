@@ -5,7 +5,7 @@
 
 
 <div class="p-4">
-    <h2 class="text-xl font-semibold mb-4">Currents</h2>
+    <h2 class="text-xl font-semibold mb-4">Pneumatics</h2>
     <TileGrid columns="3fr 1fr" rows="">
         <Tile>
             <Pneumatics pressure_left={$south_bridge_payload.value} pressure_right={9-$south_bridge_payload.value} max_pressure={9} />
