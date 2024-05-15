@@ -3,11 +3,11 @@ use crate::Event;
 use defmt::info;
 
 impl FSM {
-    pub fn entry_lane_switch(&mut self) {
+    pub async fn entry_lane_switch(&mut self) {
         todo!();
     }
 
-    pub fn react_lane_switch(&mut self, event: Event) {
+    pub async fn react_lane_switch(&mut self, event: Event) {
         match event {
             Event::LaneSwitchingCompleteEvent => {
                 todo!();

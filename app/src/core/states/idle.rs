@@ -3,11 +3,11 @@ use crate::Event;
 use defmt::info;
 
 impl FSM {
-    pub fn entry_idle(&mut self) {
+    pub async fn entry_idle(&mut self) {
         info!("Entering Idle State")
     }
 
-    pub fn react_idle(&mut self, event: Event) {
+    pub async fn react_idle(&mut self, event: Event) {
         match event {
             // Event::LVLevitationReadyEvent => {
             //

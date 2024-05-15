@@ -22,6 +22,7 @@ use embedded_io_async::{Read, Write};
 use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
 use heapless::binary_heap::Max;
 use heapless::Vec;
+use heapless::Deque;
 use rand_core::RngCore;
 use static_cell::StaticCell;
 use {defmt_rtt as _, panic_probe as _};
@@ -51,10 +52,11 @@ pub async fn tcp_connection_handler(
     let mut socket: TcpSocket =
         TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
 
-    let mut buf = [0; 1024];
-    loop {
+    let mut buf = [0; { NETWORK_BUFFER_SIZE }];
+    'netstack: loop {
         // info!("====================================================Connecting to ground station______________________________");
         socket.connect(gs_addr).await;
+        event_sender.send(Event::ConnectionEstablishedEvent).await;
         // let mut connection = client.connect(gs_addr).await.unwrap();
         // info!("----------------------------------------------------------------Connected to ground station==========================");
 
@@ -75,83 +77,119 @@ pub async fn tcp_connection_handler(
                 e
             ),
         }
+        let mut parsing_buffer = Deque::<u8, { NETWORK_BUFFER_SIZE }>::new();
+
         // loop to receive data from the TCP connection
-        loop {
+        'connection: loop {
             // info!("in the ethernet loop---------------------------");
             // socket.write(b"in da tcp loop!").await;
 
-            if cfg!(debug_assertions) {
-                event_sender.send(Event::DefaultEvent).await;
-                info!("[tcp] Sent default event");
-                Timer::after_millis(1000).await;
-            } else {
-                Timer::after_micros(1).await;
-            }
+            //            if cfg!(debug_assertions) {
+            //                event_sender.send(Event::DefaultEvent).await;
+            //                info!("[tcp] Sent default event");
+            //                Timer::after_millis(1000).await;
+            //            } else {
+            Timer::after_micros(100).await;
+            //            }
             if socket.can_recv() {
                 let n = socket.read(&mut buf).await.unwrap();
                 if n == 0 {
                     info!("[tcp] Connection closed by ground station..");
-                    break;
+                    event_sender.send(Event::ConnectionLossEvent).await;
+                    break 'connection;
                 }
                 #[cfg(debug_assertions)]
                 info!("[tcp] !!!!!!!!!!!!!!! Received::  {:?}", &buf[..n]);
 
-                let id = (buf[0] as u16) << 8 | (buf[1] as u16);
-                let cmd = Command::from_id(id);
-                match cmd {
-                    Command::EmergencyBrake(_) => {
-                        event_sender.send(Event::EmergencyBrakeCommand).await;
-                        #[cfg(debug_assertions)]
-                        info!("[tcp] EmergencyBrake command received!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        socket.flush().await;
-                        socket.write_all(b"").await;
-                    }
-                    Command::DefaultCommand(_) => {
-                        #[cfg(debug_assertions)]
-                        info!("[tcp] DefaultCommand received, unsure what to do with it...");
-                        socket.flush().await;
-                        socket
-                            .write_all(b"DefaultCommand received, unsure what to do with it...")
-                            .await;
-                        socket.flush().await;
-                    }
-                    Command::Levitate(_) => {
-                        #[cfg(debug_assertions)]
-                        info!("[tcp] Levitate command received");
-                        event_sender.send(Event::StartLevitatingCommand).await;
-                    }
-                    Command::StopLevitating(_) => {
-                        #[cfg(debug_assertions)]
-                        info!("[tcp] StopLevitating command received");
-                        // event_sender.send(Event::).await; // TODO: theres no stop levitating event??
-                    }
-                    Command::Configure(x) => {
-                        #[cfg(debug_assertions)]
-                        info!("[tcp] Configure command received");
-                        event_sender.send(Event::SetRunConfig(x)).await;
-                    }
-                    Command::StartRun(_) => {
-                        #[cfg(debug_assertions)]
-                        info!("[tcp] Start Run command received");
-                        event_sender.send(Event::StartLevitatingCommand).await;
-                        event_sender.send(Event::StartAcceleratingCommand).await;
-                    }
-                    Command::Shutdown(_) => {
-                        #[cfg(debug_assertions)]
-                        info!("[tcp] Shutdown command received");
-                        event_sender.send(Event::ExitEvent).await;
-                    }
-                    Command::StartHV(_) => {
-                        #[cfg(debug_assertions)]
-                        info!("[tcp] StartHV command received");
-                        event_sender.send(Event::TurnOnHVCommand).await;
-                    }
-                    Command::StopHV(_) => {
-                        #[cfg(debug_assertions)]
-                        info!("[tcp] StopHV command received");
-                        // event_sender.send(Event::TurnOffHVCommand).await; // TODO: no turn off HV exists??
+                &buf[0..n].iter().for_each(|x| {
+                    parsing_buffer.push_back(*x).unwrap();
+                });
+                while let Some(p) = parsing_buffer.front() {
+                    if *p == 0xFF {
+                        if parsing_buffer.len() < 20 {
+                            break;
+                        } else {
+                            // we actually have 20 bytes in the buffer, we can create a command from them
+                            let mut x = [0u8; 20];
+                            parsing_buffer.iter().take(0).enumerate().for_each(|(i, y)| { x[i] = *y });
+                            match Command::from_bytes(&x) {
+                                Command::EmergencyBrake(_) => {
+                                    event_sender.send(Event::EmergencyBrakeCommand).await;
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] EmergencyBrake command received!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                                    socket.flush().await;
+                                    socket.write_all(b"").await;
+                                }
+                                Command::DefaultCommand(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] DefaultCommand received, unsure what to do with it...");
+                                    socket.flush().await;
+                                    socket
+                                        .write_all(b"DefaultCommand received, unsure what to do with it...")
+                                        .await;
+                                    socket.flush().await;
+                                }
+                                Command::Levitate(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] Levitate command received");
+                                    event_sender.send(Event::StartLevitatingCommand).await;
+                                }
+                                Command::StopLevitating(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] StopLevitating command received");
+                                    // event_sender.send(Event::).await; // TODO: theres no stop levitating event??
+                                }
+                                Command::Configure(x) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] Configure command received");
+                                    event_sender.send(Event::SetRunConfig(x)).await;
+                                }
+                                Command::StartRun(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] Start Run command received");
+                                    event_sender.send(Event::StartLevitatingCommand).await;
+                                    event_sender.send(Event::StartAcceleratingCommand).await;
+                                }
+                                Command::Shutdown(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] Shutdown command received");
+                                    event_sender.send(Event::ExitEvent).await;
+                                }
+                                Command::StartHV(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] StartHV command received");
+                                    event_sender.send(Event::TurnOnHVCommand).await;
+                                }
+                                Command::StopHV(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] StopHV command received");
+                                    // event_sender.send(Event::TurnOffHVCommand).await; // TODO: no turn off HV exists??
+                                }
+                                Command::EmitEvent(e) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] EmitEvent command received");
+                                    event_sender.send(Event::from_id((e & 0xFFFF) as u16, Some(69420))).await;
+                                }
+                            }
+                        }
+                    } else {
+                        parsing_buffer.pop_front();
                     }
                 }
+                // parsing_buffer.extend(buf[..n].iter().cloned());
+                // if let Some(p) = parsing_buffer.first() {
+                //     if p != 0xFF {
+                //
+                //     }
+                // }
+                // if parsing_buffer.len() < 20 {
+                //     continue 'connection;
+                // }
+
+                
+                // let id = (buf[0] as u16) << 8 | (buf[1] as u16);
+                // let cmd = Command::from_id(id);
+
             }
             // socket.write_all(b"trying to receive on data mpmc").await;
             socket.flush().await;
@@ -161,13 +199,22 @@ pub async fn tcp_connection_handler(
                     let mut data = data.as_bytes();
                     #[cfg(debug_assertions)]
                     info!("[tcp:mpmc] Sending data: {:?}", data);
-                    socket.write_all(&mut data).await.unwrap();
+                    match socket.write_all(&mut data).await {
+                        Ok(_) => {
+                            #[cfg(debug_assertions)]
+                            info!("[tcp:socket] Data written successfully");
+                        }
+                        Err(e) => {
+                            #[cfg(debug_assertions)]
+                            error!("[tcp:socket] Failed to write data: {:?}", e);
+                        }
+                    }
                     // socket.
                 }
-                Err(_) => {
+                Err(e) => {
                     // socket.write(b"took an L on data mpmc").await;
-                    #[cfg(debug_assertions)]
-                    info!("[tcp:mpmc] No data on mpmc channel to send");
+                    // #[cfg(debug_assertions)]
+                    // info!("[tcp:mpmc] try receive error: {:?}", e);
                 }
             }
         }
