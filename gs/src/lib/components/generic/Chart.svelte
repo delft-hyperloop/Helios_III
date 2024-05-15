@@ -9,7 +9,7 @@
     export let eventChannel = "south_bridge";
     export let eventCallback: EventCallback<unknown> = (event) => {
         // @ts-ignore
-        info = z.number().parse(event.payload.value);
+        info = z.number().parse(event.payload.data);
         chart.addEntry(1, info);
     };
     export let dataPointsCount: number = 1000;

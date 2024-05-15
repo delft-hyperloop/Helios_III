@@ -1,8 +1,16 @@
 <script lang="ts">
     import '../app.postcss';
     import {onDestroy, onMount} from "svelte";
-    import {listen, type UnlistenFn} from "@tauri-apps/api/event";
-    import {south_bridge_payload, BottomBar, TitleBar, GrandDataDistributor, hvBattery} from "$lib";
+    import {emit, listen, type UnlistenFn} from "@tauri-apps/api/event";
+    import {
+        south_bridge_payload,
+        BottomBar,
+        TitleBar,
+        GrandDataDistributor,
+        hvBattery,
+        lvBattery,
+        hvBatCurrent
+    } from "$lib";
     import {initializeStores, Toast} from '@skeletonlabs/skeleton';
 
     initializeStores();
@@ -17,9 +25,15 @@
             south_bridge_payload.set(event.payload);
         });
 
-
         let gdd = GrandDataDistributor.getInstance();
-        gdd.stores.registerStore<number>("HighVoltage", hvBattery);
+        gdd.stores.registerStore<number>("BatteryBalanceHigh", hvBattery);
+        gdd.stores.registerStore<number>("BatteryBalanceLow", lvBattery);
+        gdd.stores.registerStore<number>("BatteryCurrentHigh", hvBatCurrent, data => {
+            emit('current_hv', {
+                data
+            })
+            return data;
+        });
         gdd.start(100);
     });
 

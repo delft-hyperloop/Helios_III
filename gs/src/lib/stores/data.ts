@@ -10,3 +10,5 @@ export const south_bridge_payload: Writable<Payload> = writable({
 
 
 export const hvBattery: Writable<number> = writable(-1);
+export const lvBattery: Writable<number> = writable(-1);
+export const hvBatCurrent: Writable<number> = writable(-1);
