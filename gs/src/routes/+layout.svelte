@@ -2,10 +2,7 @@
 	import '../app.postcss';
     import {onDestroy, onMount} from "svelte";
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
-    import {north_bridge_payload, south_bridge_payload} from "$lib/stores/data";
-    import BottomBar from "$lib/components/BottomBar.svelte";
-    import TitleBar from "$lib/components/TitleBar.svelte";
-
+    import {north_bridge_payload, south_bridge_payload, BottomBar, TitleBar} from "$lib";
     import { initializeStores, Toast } from '@skeletonlabs/skeleton';
     initializeStores();
 
