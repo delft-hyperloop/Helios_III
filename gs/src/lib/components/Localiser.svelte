@@ -2,6 +2,7 @@
     import {onMount} from "svelte";
     import util from "$lib/util/util";
     import {south_bridge_payload} from "$lib";
+    import {inputEmerg} from "$lib/stores/state";
 
     export let max:number = 16000;
     export let loc:number = 1000; /* should be < 16000 */
@@ -67,8 +68,9 @@
             progress_container.insertBefore(path_turn, path_straight);
             pathLength = setupProgressPathing(progress_straight);
         }
-
     });
+
+    $: emergPosition = (pathLength * (util.normalize($inputEmerg, max) / 100))
 
     $: if(progress_straight || progress_turn) {
         let normalized_loc = util.normalize(loc, max)
@@ -113,6 +115,7 @@
                     <circle bind:this={point_end_straight} cx="909" cy="26" r="10" fill="#525B5B"/>
                     <circle bind:this={point_choice_turn} cx="638" cy="78" r="10" fill="#525B5B"/>
                     <circle bind:this={point_end_turn} cx="860" cy="138" r="10" fill="#525B5B"/>
+                    <circle cx={emergPosition} cy="26" r="5" fill="red"/>
                 </g>
             </g>
             <g id="labels">

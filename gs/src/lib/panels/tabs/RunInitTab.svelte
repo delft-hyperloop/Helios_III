@@ -1,6 +1,7 @@
 <script lang="ts">
     import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, Command, Tile, TileGrid} from "$lib";
     import type {IntervalFunction} from "$lib/types";
+    import {inputEmerg, inputPosit} from "$lib/stores/state";
 
     enum Mode {
         ShortRun = 1,
@@ -45,11 +46,11 @@
                 <label for="speed_input">Speed: </label>
                 <input name="speed_input" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="100" step="1">
                 <label for="pos_input">Position: </label>
-                <input name="pos_input" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="100" step="1">
+                <input name="pos_input" bind:value={$inputPosit} class="input rounded-md px-2 col-span-2" type="number" min="0" max="60000" step="1">
                 <label for="accel_input">Acceleration: </label>
                 <input name="accel_input" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="100" step="1">
                 <label for="emerg_point">Emergency Braking Location: </label>
-                <input name="emerg_point" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="60000" step="1">
+                <input name="emerg_point" bind:value={$inputEmerg} class="input rounded-md px-2 col-span-2" type="number" min="0" max="60000" step="1">
             </div>
             <div class="flex-grow"></div>
             <div class="grid grid-cols-2 gap-2">
