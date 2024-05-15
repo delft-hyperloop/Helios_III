@@ -29,9 +29,7 @@
         gdd.stores.registerStore<number>("BatteryBalanceHigh", hvBattery);
         gdd.stores.registerStore<number>("BatteryBalanceLow", lvBattery);
         gdd.stores.registerStore<number>("BatteryCurrentHigh", hvBatCurrent, data => {
-            emit('current_hv', {
-                data
-            })
+            emit('current_hv', {x: 50, y: data})
             return data;
         });
         gdd.start(100);
