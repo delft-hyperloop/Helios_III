@@ -58,7 +58,7 @@ impl App {
         while !self.exit {
             terminal.draw(|frame| self.render_frame(frame))?;
             self.handle_events();
-            self.receive_data()?;
+            self.receive_data();
             self.time_elapsed = self.time_elapsed.wrapping_add(1);
         }
         Ok(())
@@ -68,9 +68,9 @@ impl App {
         frame.render_widget(self, frame.size());
     }
 
-    pub fn receive_data(&mut self) -> io::Result<()> {
+    pub fn receive_data(&mut self) {
         if self.message_receiver.is_none() {
-            return Ok(());
+            return;
         }
         let x = std::mem::replace(&mut self.message_receiver, None).unwrap();
         match x.try_recv() {
@@ -78,20 +78,18 @@ impl App {
                 self.message_receiver = Some(x);
                 match msg {
                     Message::Data(datapoint) => {
-                        Ok(self.data.push(datapoint))
+                        self.data.push(datapoint)
                     }
                     _ => {
-                        Ok(self.logs.push((msg, timestamp())))
+                        self.logs.push((msg, timestamp()))
                     }
                 }
             }
             Err(TryRecvError::Empty) => {
                 self.message_receiver = Some(x);
-                Ok(())
             }
             Err(TryRecvError::Disconnected) => {
                 self.exit = true;
-                Err(io::Error::new(io::ErrorKind::Other, "Disconnected"))
             }
         }
     }

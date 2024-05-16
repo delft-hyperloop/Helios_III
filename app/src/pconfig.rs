@@ -1,5 +1,5 @@
 use embassy_net::IpAddress::Ipv4;
-use embassy_net::IpEndpoint;
+use embassy_net::{IpEndpoint, Ipv4Cidr};
 use embassy_net::Ipv4Address;
 use embassy_stm32::can::config;
 use embassy_stm32::rcc::Pll;
@@ -54,6 +54,21 @@ pub fn default_configuration() -> Config {
 #[inline]
 pub fn embassy_socket_from_config(t: ([u8; 4], u16)) -> IpEndpoint {
     IpEndpoint::new(Ipv4(Ipv4Address::new(t.0[0], t.0[1], t.0[2], t.0[3])), t.1)
+}
+
+/// Classless Inter-Domain Routing
+///
+/// a method used to allocate IP addresses and route IP packets more efficiently.
+/// It's designed to slow the exhaustion of IPv4 addresses and simplify routing.
+///
+/// basically:
+/// - a (cidr) IP address is now a.b.c.d/p where
+/// - a,b,c,d are the address
+/// - p is the prefix length, which is the number of bits in the address that are fixed per network.
+/// - tl;dr you need ip address+prefix length to define a network
+#[inline]
+pub fn ip_cidr_from_config(t: ([u8; 4], u16)) -> Ipv4Cidr {
+    Ipv4Cidr::new(Ipv4Address::new(t.0[0], t.0[1], t.0[2], t.0[3]), 24)
 }
 
 #[inline]
