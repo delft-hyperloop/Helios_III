@@ -101,11 +101,11 @@
                         <div class="flex gap-4">
                             <div class="flex gap-2">
                                 <span>LV: </span>
-                                <Battery orientation="horizontal" perc={$lvBattery}/>
+                                <Battery orientation="horizontal" perc={Number($lvBattery)}/>
                             </div>
                             <div class="flex gap-2">
                                 <span>HV: </span>
-                                <Battery orientation="horizontal" perc={$hvBattery}/>
+                                <Battery orientation="horizontal" perc={Number($hvBattery)}/>
                             </div>
                         </div>
                     </div>

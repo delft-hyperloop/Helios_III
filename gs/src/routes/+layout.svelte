@@ -53,7 +53,7 @@
             return updatedArray;
         });
 
-        await gdd.start(100);
+        gdd.start(100);
     });
 
     onDestroy(() => {

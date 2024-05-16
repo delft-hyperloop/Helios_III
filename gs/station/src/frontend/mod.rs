@@ -45,8 +45,8 @@ pub fn tauri_main() {
                     if let Ok(msg) = message_receiver.recv() {
                         match msg {
                             Message::Data(dp) => {
-//                                 app_handle.state::<BackendState>().data_buffer.lock().unwrap().push(Message::Data(dp));
-                                app_handle.emit_all("data", dp.clone()).unwrap();
+                                println!("Received datapoint: {:?}", dp);
+                                app_handle.state::<BackendState>().data_buffer.lock().unwrap().push(Message::Data(dp));
                             }
                             Message::Status(s) => {
                                 app_handle.emit_all(STATUS_CHANNEL, &*format!("{:?}", s)).unwrap()
@@ -72,7 +72,7 @@ pub fn tauri_main() {
 
 #[allow(unused)]
 #[tauri::command]
-pub fn unload_buffer(state: tauri::State<BackendState>) -> Vec<Datapoint> {
+pub fn unload_buffer(state: State<BackendState>) -> Vec<Datapoint> {
     let mut data_buffer = state.data_buffer.lock().unwrap();
     let mut datapoints = Vec::new();
     for msg in data_buffer.iter() {
