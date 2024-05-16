@@ -5,11 +5,11 @@ import type {dataConvFun, BMSDiagnostic, BMSEvent, BmsModuleVoltage} from "$lib/
  * @param data - the data to be converted received at the DATAPOINT.value
  */
 export const moduleVoltage: dataConvFun<BmsModuleVoltage> = (data: bigint) => {
-    let id = data >> BigInt(48);
-    let voltage = data & BigInt(0x0000FFFFFFFFFFFF);
-    let max = ((voltage & BigInt(0x000000000000FFFF)) + BigInt(200)) * BigInt(0.1);
-    let min = (((voltage & BigInt(0x00000000FFFF0000)) >> BigInt(16)) + BigInt(200)) * BigInt(0.1);
-    let avg = (((voltage & BigInt(0x0000FFFF00000000)) >> BigInt(32)) + BigInt(200)) * BigInt(0.1);
+    let id = BigInt(data) >> BigInt(48);
+    let voltage = BigInt(data) & BigInt(0x0000FFFFFFFFFFFF);
+    let max = ((BigInt(voltage) & BigInt(0x000000000000FFFF)) + BigInt(200)) * BigInt(0.1);
+    let min = (((BigInt(voltage) & BigInt(0x00000000FFFF0000)) >> BigInt(16)) + BigInt(200)) * BigInt(0.1);
+    let avg = (((BigInt(voltage) & BigInt(0x0000FFFF00000000)) >> BigInt(32)) + BigInt(200)) * BigInt(0.1);
     return {id, max, min, avg};
 }
 
@@ -19,11 +19,11 @@ export const moduleVoltage: dataConvFun<BmsModuleVoltage> = (data: bigint) => {
  * @param data - the data to be converted received at the DATAPOINT.value
  */
 export const moduleTemperature = (data: bigint): BmsModuleVoltage => {
-    let id = data >> BigInt(48);
-    let temperature = data & BigInt(0x0000FFFFFFFFFFFF);
-    let max = temperature & BigInt(0x000000000000FFFF) - BigInt(100);
-    let min = ((temperature & BigInt(0x00000000FFFF0000)) >> BigInt(16)) - BigInt(100);
-    let avg = ((temperature & BigInt(0x0000FFFF00000000)) >> BigInt(32)) - BigInt(100);
+    let id = BigInt(data) >> BigInt(48);
+    let temperature = BigInt(data) & BigInt(0x0000FFFFFFFFFFFF);
+    let max = BigInt(temperature) & BigInt(0x000000000000FFFF) - BigInt(100);
+    let min = ((BigInt(temperature) & BigInt(0x00000000FFFF0000)) >> BigInt(16)) - BigInt(100);
+    let avg = ((BigInt(temperature) & BigInt(0x0000FFFF00000000)) >> BigInt(32)) - BigInt(100);
     return {id, max, min, avg};
 }
 

@@ -62,7 +62,7 @@ export class GrandDataDistributor {
      * @private
      */
     private async fetchData() {
-        const data:Datapoint[] = await invoke('generate_test_data');
+        const data:Datapoint[] = await invoke('unload_buffer');
         this.processData(data);
     }
 
@@ -119,8 +119,8 @@ class StoreManager {
  * @version 1.0
  */
 class Store<T> {
-    private writable: Writable<T>;
-    private readonly processFunction: (data: bigint) => T;
+    private readonly writable: Writable<T>;
+    private readonly processFunction: dataConvFun<T>;
 
     constructor(writable:Writable<T>, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
         this.writable = writable;
