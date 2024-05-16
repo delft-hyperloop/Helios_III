@@ -8,6 +8,7 @@ use embassy_stm32::adc::Temperature;
 use embassy_stm32::can::Timestamp;
 use embassy_time::Instant;
 use embedded_hal::can::{Id, StandardId};
+use crate::pconfig::bytes_to_u64;
 
 pub struct BatteryController {
     sender: EventSender,
@@ -55,29 +56,29 @@ impl BatteryController {
 pub struct GroundFaultDetection {}
 
 pub async fn ground_fault_detection_isolation_details(data: &[u8]) -> u64 {
-    let negative_insulation_resistance = ((data[0] as u16) << 8) | (data[1] as u16);
-    let positive_insulation_resistance = ((data[2] as u16) << 8) | (data[3] as u16);
-    let original_insulation_resistance = ((data[4] as u16) << 8) | (data[5] as u16);
-    let measurement_counter = data[6];
-    let isolation_quality = data[7];
-    let mut msg: u64 = 0;
-    for (i, &x) in data.iter().enumerate() {
-        msg |= (x as u64) << (i * 8);
-    }
-    msg
+    let negative_insulation_resistance = ((data[0] as u64) << 8) | (data[1] as u64);
+    let positive_insulation_resistance = ((data[2] as u64) << 8) | (data[3] as u64);
+    let original_insulation_resistance = ((data[4] as u64) << 8) | (data[5] as u64);
+    let measurement_counter = data[6] as u64;
+    let isolation_quality = data[7] as u64;
+    negative_insulation_resistance << 48
+        | positive_insulation_resistance << 32
+        | original_insulation_resistance << 16
+        | measurement_counter << 8
+        | isolation_quality
 }
 
 pub async fn ground_fault_detection_voltage_details(data: &[u8]) -> u64 {
-    let hv_voltage = ((data[0] as u16) << 8) | (data[1] as u16);
-    let hv_voltage_negative_to_earth = ((data[2] as u16) << 8) | (data[3] as u16);
-    let hv_voltage_positive_to_earth = ((data[4] as u16) << 8) | (data[5] as u16);
-    let measurement_counter = data[6];
-    let nothing = data[7];
-    let mut msg: u64 = 0;
-    for (i, &x) in data.iter().enumerate() {
-        msg |= (x as u64) << (i * 8);
-    }
-    msg
+    let hv_voltage = ((data[0] as u64) << 8) | (data[1] as u64);
+    let hv_voltage_negative_to_earth = ((data[2] as u64) << 8) | (data[3] as u64);
+    let hv_voltage_positive_to_earth = ((data[4] as u64) << 8) | (data[5] as u64);
+    let measurement_counter = data[6] as u64;
+    let nothing = data[7] as u64;
+    hv_voltage << 48
+        | hv_voltage_negative_to_earth << 32
+        | hv_voltage_positive_to_earth << 16
+        | measurement_counter << 8
+        | nothing
 }
 
 //===============BMS===============//
@@ -149,10 +150,25 @@ impl BatteryController {
                 }
                 info!("Individual Voltage")
             }
+            Datatype::BatteryEventLow | Datatype::BatteryEventHigh => {
+                self.event_bms(data, timestamp).await;
+                info!("Battery Event")
+            }
             x => {
                 info!("Ignored BMS id: {:?}", x.to_id());
             }
         }
+    }
+    pub async fn event_bms(&mut self, data: &[u8], timestamp: u64) {
+        // let mut msg: u64 = 0;
+        let dt = if (self.high_voltage) {
+            Datatype::BatteryEventHigh
+        } else {
+            Datatype::BatteryEventLow
+        };
+        self.data_sender
+            .send(Datapoint::new(dt, bytes_to_u64(data), timestamp))
+            .await;
     }
     pub async fn battery_voltage_overall_bms(&mut self, data: &[u8], timestamp: u64) {
         let min_cell_voltage = (data[0] as u64 + 200); //VOLTAGE scaled by 100
@@ -321,40 +337,61 @@ impl BatteryController {
             (x as u64);
         }); //CELSIUS base -100 C
         let mut n: u64 = 0;
+        let mut min_temp:u64 = 200;
+        let mut max_temp:u64 = 0;
+        let mut avg_temp:u64 = 0;
+        let individual_tempe_dt = if (self.high_voltage) {
+            Datatype::SingleCellTemperatureHigh
+        } else {
+            Datatype::SingleCellTemperatureLow
+        };
         for (i, &x) in data.iter().enumerate() {
-            let individual_temp_dt = if (self.high_voltage) {
-                Datatype::SingleCellTemperatureHigh
-            } else {
-                Datatype::SingleCellTemperatureLow
-            };
-            self.data_sender
-                .send(Datapoint::new(
-                    individual_temp_dt,
-                    (self.single_cell_id as u64) << 16 | (n << 8) | x as u64,
-                    timestamp,
-                ))
-                .await;
-            n += 1;
+            if (x as u64)< min_temp {
+                min_temp = x as u64;
+            }
+            if (x as u64) > max_temp {
+                max_temp = x as u64;
+            }
+            avg_temp += x as u64;
         }
+        avg_temp = avg_temp / n;
+        self.data_sender
+            .send(Datapoint::new(
+                individual_tempe_dt,
+                (self.single_cell_id as u64) << 48 | avg_temp << 32 | min_temp<<16| max_temp  as u64,
+                timestamp,
+            ))
+            .await;
     }
 
     pub async fn individual_voltages_bms(&mut self, data: &[u8], timestamp: u64) {
         let mut n: u64 = 0;
+        let mut min_voltage:u64 = 2000;
+        let mut max_voltage:u64 = 0;
+        let mut avg_voltage:u64 = 0;
+        let individual_voltage_dt = if (self.high_voltage) {
+            Datatype::SingleCellVoltageHigh
+        } else {
+            Datatype::SingleCellVoltageLow
+        };
         for (i, &x) in data.iter().enumerate() {
-            let individual_voltage_dt = if (self.high_voltage) {
-                Datatype::SingleCellTemperatureHigh
-            } else {
-                Datatype::SingleCellTemperatureLow
-            };
-            self.data_sender
-                .send(Datapoint::new(
-                    individual_voltage_dt,
-                    (self.single_cell_id as u64) << 16 | (n << 8) | x as u64,
-                    timestamp,
-                ))
-                .await;
-            n += 1;
+
+            if (x as u64)< min_voltage {
+                min_voltage = x as u64;
+            }
+            if (x as u64) > max_voltage {
+                max_voltage = x as u64;
+            }
+            avg_voltage += x as u64;
         }
+        avg_voltage = avg_voltage / n;
+        self.data_sender
+            .send(Datapoint::new(
+                individual_voltage_dt,
+                (self.single_cell_id as u64) << 48 | avg_voltage << 32 | min_voltage<<16| max_voltage  as u64,
+                timestamp,
+            ))
+            .await;
     }
 
     pub async fn overall_balancing_status_bms(&mut self, data: &[u8], timestamp: u64) {
@@ -367,7 +404,7 @@ impl BatteryController {
             Datatype::BatteryBalanceLow
         };
         let balancing_min = if (self.high_voltage) {
-            Datatype::BatteryMinBalanceHigh
+            Datatype::BatteryMinBalancingHigh
         } else {
             Datatype::BatteryMinBalancingLow
         };
@@ -386,4 +423,6 @@ impl BatteryController {
             .send(Datapoint::new(balancing_max, max_cell_balancing, timestamp))
             .await;
     }
+
+
 }
