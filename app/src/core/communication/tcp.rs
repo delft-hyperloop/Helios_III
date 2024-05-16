@@ -92,7 +92,11 @@ pub async fn tcp_connection_handler(
             Timer::after_micros(100).await;
             //            }
             if socket.can_recv() {
-                let n = socket.read(&mut buf).await.unwrap();
+                let n = socket.read(&mut buf).await.unwrap_or_else(|_| 420000);
+                if n == 42000 {
+                    error!("[tcp] Failed to read from socket");
+                    continue 'connection;
+                }
                 if n == 0 {
                     info!("[tcp] Connection closed by ground station..");
                     event_sender.send(Event::ConnectionLossEvent).await;
@@ -111,7 +115,7 @@ pub async fn tcp_connection_handler(
                         } else {
                             // we actually have 20 bytes in the buffer, we can create a command from them
                             let mut x = [0u8; 20];
-                            parsing_buffer.iter().take(0).enumerate().for_each(|(i, y)| { x[i] = *y });
+                            parsing_buffer.iter().take(20).enumerate().for_each(|(i, y)| { x[i] = *y });
                             match Command::from_bytes(&x) {
                                 Command::EmergencyBrake(_) => {
                                     event_sender.send(Event::EmergencyBrakeCommand).await;

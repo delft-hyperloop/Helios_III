@@ -15,14 +15,14 @@ use embedded_nal_async::AddrType::IPv4;
 pub fn default_configuration() -> Config {
     let mut config = Config::default();
 
-    config.rcc.hse = Some(rcc::Hse { // THESE ARE THE CONFIGURATIONS FOR TIRTH's MAIN PCB
-        freq: embassy_stm32::time::Hertz(24_000_000),
-        mode: rcc::HseMode::Oscillator
-    });
-    // config.rcc.hse = Some(rcc::Hse { // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
-    //     freq: embassy_stm32::time::Hertz(8_000_000),
-    //     mode: rcc::HseMode::Bypass
+    // config.rcc.hse = Some(rcc::Hse { // THESE ARE THE CONFIGURATIONS FOR TIRTH's MAIN PCB
+    //     freq: embassy_stm32::time::Hertz(24_000_000),
+    //     mode: rcc::HseMode::Oscillator
     // });
+    config.rcc.hse = Some(rcc::Hse { // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
+        freq: embassy_stm32::time::Hertz(8_000_000),
+        mode: rcc::HseMode::Bypass
+    });
     config.rcc.pll1 = Some(Pll {
         source: PllSource::HSE,
         prediv: PllPreDiv::DIV2,

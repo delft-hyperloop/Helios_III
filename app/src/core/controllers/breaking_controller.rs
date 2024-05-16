@@ -13,7 +13,7 @@ use embassy_sync::priority_channel::Sender;
 use embassy_time::{Duration, Instant, Timer};
 use heapless::binary_heap::Max;
 
-static mut BRAKE: bool = false;
+pub static mut BRAKE: bool = false;
 
 pub struct BrakingController {
     pub braking_rearm: Output<'static>,
