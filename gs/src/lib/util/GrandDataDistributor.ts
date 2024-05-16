@@ -1,7 +1,6 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import {type Writable} from "svelte/store";
 import type {dataConvFun, Datapoint, NamedDatatype} from "$lib/types";
-import {listen} from "@tauri-apps/api/event";
 
 /**
  * The GrandDataDistributor class is responsible for fetching data from the backend
@@ -48,8 +47,7 @@ export class GrandDataDistributor {
      * at the specified interval
      */
     public start(interval:number) {
-
-        // if (!this.intervalId) this.intervalId = setInterval(() => this.fetchData(), interval);
+        if (!this.intervalId) this.intervalId = setInterval(() => this.fetchData(), interval);
     }
 
     /**
@@ -64,8 +62,8 @@ export class GrandDataDistributor {
      * @private
      */
     private async fetchData() {
-        // const data:Datapoint[] = await invoke('generate_test_data');
-        // this.processData(data);
+        const data:Datapoint[] = await invoke('unload_buffer');
+        this.processData(data);
     }
 
     /**
@@ -74,6 +72,7 @@ export class GrandDataDistributor {
      */
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
+            console.log(datapoint)
             this.StoreManager.updateStore(datapoint.datatype, datapoint.value);
         });
     }
