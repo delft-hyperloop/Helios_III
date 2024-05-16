@@ -36,12 +36,13 @@ impl Datapoint {
         }
     }
 
-    pub fn as_bytes(&self) -> [u8; 18] {
-        let mut bytes = [0; 18];
-        bytes[0] = (self.datatype.to_id() & 0x00FF) as u8;
-        bytes[1] = (self.datatype.to_id() & 0xFF00) as u8;
-        bytes[2..10].copy_from_slice(&self.value.to_le_bytes());
-        bytes[10..18].copy_from_slice(&self.timestamp.to_le_bytes());
+    pub fn as_bytes(&self) -> [u8; 20] {
+        let mut bytes = [0; 20];
+        bytes[0] = 0xFF;
+        bytes[1..3].copy_from_slice(&self.datatype.to_id().to_be_bytes());
+        bytes[3..11].copy_from_slice(&self.value.to_le_bytes());
+        bytes[11..19].copy_from_slice(&self.timestamp.to_le_bytes());
+        bytes[19] = 0xFF;
         bytes
     }
 }

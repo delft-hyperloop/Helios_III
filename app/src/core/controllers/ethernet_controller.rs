@@ -86,14 +86,14 @@ impl EthernetController {
             mac_addr,
         );
 
-        let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
-        // let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
-        //     StaticConfigV4 {
-        //         address: ip_cidr_from_config(POD_IP_ADDRESS),
-        //         gateway: None,
-        //         dns_servers: Default::default(),
-        //     }
-        // );
+        // let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
+        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
+            StaticConfigV4 {
+                address: ip_cidr_from_config(POD_IP_ADDRESS),
+                gateway: None,
+                dns_servers: Default::default(),
+            }
+        );
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();
 

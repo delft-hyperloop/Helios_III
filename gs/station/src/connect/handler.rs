@@ -1,3 +1,4 @@
+use std::collections::VecDeque;
 use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::sync::mpsc::{Receiver, Sender};
@@ -36,7 +37,7 @@ impl<'h> Handler {
 
     fn pod_incoming_handler(mut read_stream: TcpStream, tx: Sender<Message>) {
         let mut buf = [0u8; { NETWORK_BUFFER_SIZE }];
-        let mut byte_queue : Vec<u8> = vec![];
+        let mut byte_queue : VecDeque<u8> = VecDeque::new();
         'tcp_reading: loop {
             match read_stream.read(&mut buf) {
                 Ok(0) => {
@@ -45,15 +46,19 @@ impl<'h> Handler {
                     break 'tcp_reading;
                 }
                 Ok(n) => {
-                    byte_queue.append(&mut buf[..n].to_vec());
+                    tx.send(Message::Info(format!("Received: {:?}", &buf[..n]))).expect("[Handler] Failed to send on msg tx");
+                    &buf[..n].iter().for_each(|x| {
+                        byte_queue.push_back(*x);
+                    });
+                    Handler::parse(&mut byte_queue, tx.clone());
                 }
                 Err(e) => {
                     let _ = &tx.send(Message::Error(format!("Failed to read from connection: {}", e))).expect("[Handler] Failed to send on msg tx");
                     break 'tcp_reading;
                 }
             }
-            Handler::parse(&mut byte_queue, tx.clone());
         }
+        tx.send(Message::Status(Status::ConnectionDropped)).expect("[Handler] Failed to send on msg tx");
     }
 
     fn pod_outgoing_handler(mut write_stream: TcpStream, rx: Receiver<Command>) {

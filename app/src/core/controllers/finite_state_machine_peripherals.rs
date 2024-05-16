@@ -84,7 +84,7 @@ impl FSMPeripherals {
             braking_controller,
             eth_controller,
             can_controller,
-            hv_peripherals: HVPeripherals { pb4_pin: p.PB4 },
+            hv_peripherals: HVPeripherals::new(p.PB4).await,
         }
     }
 }
