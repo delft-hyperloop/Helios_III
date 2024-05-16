@@ -5,8 +5,6 @@ export type NamedCommand = "DefaultCommand" | "Levitate" | "StopLevitating" | "C
 /*AUTO GENERATED USING npm run generate:datatypes */
 export type NamedDatatype = "DefaultDatatype" | "PropulsionTemperature" | "LevitationTemperature" | "IMDGeneralInfo" | "IMDIsolationDetails" | "IMDVoltageDetails" | "DefaultBMSLow" | "DiagonosticBMSLow" | "DefaultBMSHigh" | "DiagonosticBMSHigh" | "BatteryVoltageLow" | "BatteryVoltageHigh" | "TotalBatteryVoltageLow" | "TotalBatteryVoltageHigh" | "BatteryTemperatureLow" | "BatteryTemperatureHigh" | "BatteryBalanceLow" | "BatteryBalanceHigh" | "SingleCellVoltageLow" | "SingleCellTemperatureLow" | "ChargeStateLow" | "SingleCellVoltageHigh" | "SingleCellTemperatureHigh" | "ChargeStateHigh" | "BatteryCurrentLow" | "BatteryCurrentHigh" | "BatteryEnergyParamsLow" | "BatteryEnergyParamsHigh" | "BatteryMaxVoltageLow" | "BatteryEstimatedChargeLow" | "BatteryMinTemperatureLow" | "BatteryMaxTemperatureLow" | "BatteryMinBalancingLow" | "BatteryMaxBalancingLow" | "BatteryMinVoltageLow" | "BatteryMinVoltageHigh" | "BatteryMaxVoltageHigh" | "BatteryEstimatedChargeHigh" | "BatteryMinTemperatureHigh" | "BatteryMaxTemperatureHigh" | "BatteryMinBalancingHigh" | "BatteryMaxBalancingHigh" | "BrakeTemperature" | "PropulsionSpeed" | "BrakePressure" | "FSMState" | "FSMEvent" | "PodDropTriggered" | "Localisation" | "UnknownCanId" | "Info"
 
-export type TauriInvoker = "send_command" | "unload_buffer";
-
 // Not touched by auto-gen
 
 /**
@@ -24,7 +22,7 @@ export type Payload = {
  */
 export type Datapoint = {
     datatype: NamedDatatype,
-    value: number,
+    value: bigint,
     timestamp: number,
 }
 
@@ -36,7 +34,6 @@ export const EventChannels = {
     INFO: 'info_channel',
     WARNING: 'warning_channel',
     ERROR: 'error_channel',
-
 }
 
 /**
@@ -44,6 +41,46 @@ export const EventChannels = {
  */
 export type EventChannel = 'north_bridge' | 'south_bridge';
 
+/**
+ * Function to convert data received at DATAPOINT.value to a given type
+ */
+export type dataConvFun<T> = (data: bigint) => T;
+
+/**
+ * BMS Module Voltage
+ * This type is to be used for store type on receiving the
+ */
+export type BmsModuleVoltage = {
+    id: bigint;
+    max: bigint;
+    min: bigint;
+    avg: bigint;
+}
+
+/**
+ * BMS Diagnostic
+ * This interface is to be used as a store type when receiving
+ */
+export type BMSDiagnostic = {
+    errors: string[]
+}
+
+/**
+ * BMS Module Temperature
+ * This type is to be used for store type on receiving bigint with the datatype
+ */
+export type BmsModuleTemperature = {
+    id: bigint;
+    max: bigint;
+    min: bigint;
+    avg: bigint;
+}
+
+export type BMSEvent = {
+    event: string
+}
+
+// OLD TYPES
 export type TempTableEntry = {name:string, value: number}
 export type Log = {
     log_type:string, message:string, timestamp:number
