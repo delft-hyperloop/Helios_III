@@ -1,6 +1,6 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import {type Writable} from "svelte/store";
-import type {Datapoint, NamedDatatype} from "$lib/types";
+import type {dataConvFun, Datapoint, NamedDatatype} from "$lib/types";
 
 /**
  * The GrandDataDistributor class is responsible for fetching data from the backend
@@ -97,7 +97,7 @@ class StoreManager {
      * @param store - the store
      * @param processFunction - the function to process the data
      */
-    public registerStore<T>(name: NamedDatatype, store: Writable<T>, processFunction?: (data: T) => T) {
+    public registerStore<T>(name: NamedDatatype, store: Writable<T>, processFunction?: dataConvFun<T>) {
         this.stores.set(name, new Store(store, processFunction));
     }
 
@@ -106,7 +106,7 @@ class StoreManager {
      * @param name - the name of the store
      * @param data - the data to update the store with
      */
-    public updateStore<T>(name: NamedDatatype, data: T) {
+    public updateStore(name: NamedDatatype, data: bigint) {
         const store = this.stores.get(name);
         if (store) store.set(data);
     }
@@ -119,15 +119,15 @@ class StoreManager {
  * @version 1.0
  */
 class Store<T> {
-    private writable: Writable<T>;
-    private readonly processFunction: (data: T) => T;
+    private readonly writable: Writable<T>;
+    private readonly processFunction: dataConvFun<T>;
 
-    constructor(writable:Writable<T>, processFunction: (data: T) => T = (data) => data) {
+    constructor(writable:Writable<T>, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
         this.writable = writable;
         this.processFunction = processFunction;
     }
 
-    public set(data: T) {
+    public set(data: bigint) {
         this.writable.set(this.processFunction(data));
     }
 }

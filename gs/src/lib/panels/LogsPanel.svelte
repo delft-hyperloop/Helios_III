@@ -1,6 +1,4 @@
 
-<!-- TODO: ADD IMPORTANCE TO LOGS, MAKE SUPER IMPORTANT LOG "UN-FILTERABLE"  -->
-
 <!-- TODO 2: SOME KIND OF LOG FLUSHING? AT ONE POINT IT WILL RUN OUT OF SPACE!  -->
 
 <script lang="ts">
@@ -8,13 +6,16 @@
     import Icon from "@iconify/svelte";
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import type {Log} from "$lib/types";
+    import {EventChannels, type Log} from "$lib/types";
 
-    let unlisten: UnlistenFn;
+    let unlistens: UnlistenFn[];
     let logContainer: HTMLElement;
     let userHasScrolled = false;
     let logs: Log[] = [];
-    let filters: Record<string, boolean> = { 'brake': true, 'fsm': true, 'levi': true, 'prop': true }; // filter variable
+
+    let groups = ['STATUS', 'INFO', 'WARNING', 'ERROR'];
+
+    let filters: Record<string, boolean> = { 'STATUS': true, 'WARNING': true, 'INFO': true, 'ERROR': true }; // filter variable
 
     $: filteredLogs = logs.filter(log => filters[log.log_type]);
 
@@ -22,26 +23,31 @@
         filters[type] = !filters[type];
     }
 
-    onMount(async () => {
-        unlisten = await listen('logs_bridge', (event) => {
+    function registerChannel(channel: string, log_type: string) {
+        return listen(channel, (event) => {
             //@ts-ignore
-            logs = [...logs, {message: event.payload.message, log_type: event.payload.log_type, timestamp: event.payload.timestamp}];
+            logs.push({message: event.payload, log_type, timestamp: Date.now().valueOf()})
         });
+    }
+
+    onMount(async () => {
+        unlistens[0] = await registerChannel(EventChannels.STATUS, "STATUS");
+        unlistens[1] = await registerChannel(EventChannels.INFO, "INFO");
+        unlistens[2] = await registerChannel(EventChannels.WARNING, "WARNING");
+        unlistens[3] = await registerChannel(EventChannels.ERROR, "ERROR");
 
         logContainer.addEventListener('scroll', () => {
             userHasScrolled = logContainer.scrollTop < logContainer.scrollHeight - logContainer.clientHeight;
         });
     });
 
-    onDestroy(() => {
-        unlisten();
-    });
+    onDestroy(() =>
+        unlistens.forEach(u => u())
+);
 
     afterUpdate(() => {
         // Only scroll to the bottom if the user has not scrolled up
-        if (!userHasScrolled) {
-            logContainer.scrollTop = logContainer.scrollHeight;
-        }
+        if (!userHasScrolled) logContainer.scrollTop = logContainer.scrollHeight;
     });
 </script>
 
@@ -50,17 +56,17 @@
         <svelte:fragment slot="lead"><Icon icon="codicon:terminal-bash" /></svelte:fragment>
         Logs
         <svelte:fragment slot="trail">
-            <button class="line-through" class:active={filters['brake']} on:click={() => toggleFilter('brake')}>
-                BRAKE
+            <button class="line-through" class:active={filters['STATUS']} on:click={() => toggleFilter('STATUS')}>
+                STATUS
             </button>
-            <button class="line-through"  class:active={filters['fsm']} on:click={() => toggleFilter('fsm')}>
-                FSM
+            <button class="line-through"  class:active={filters['INFO']} on:click={() => toggleFilter('INFO')}>
+                INFO
             </button>
-            <button class="line-through"  class:active={filters['levi']} on:click={() => toggleFilter('levi')}>
-                LEVI
+            <button class="line-through"  class:active={filters['WARNING']} on:click={() => toggleFilter('WARNING')}>
+                WARNING
             </button>
-            <button class="line-through"  class:active={filters['prop']} on:click={() => toggleFilter('prop')}>
-                PROP
+            <button class="line-through"  class:active={filters['ERROR']} on:click={() => toggleFilter('ERROR')}>
+                ERROR
             </button>
         </svelte:fragment>
     </AppBar>
@@ -68,7 +74,7 @@
     <div class="h-full p-1 pb-16 overflow-y-auto" bind:this={logContainer}>
         {#each filteredLogs as log}
             <div class="flex items-center">
-                <p><span class="font-mono font-light">[{log.timestamp}]</span>  {log.log_type}: {log.message}</p>
+                <p><span class="font-mono font-light">[{log.timestamp}]</span>{log.log_type}: {log.message}</p>
             </div>
         {/each}
         <hr>
