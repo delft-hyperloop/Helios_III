@@ -161,11 +161,20 @@ id = 0x3AF
 
 [[Datatype]]
 name = "BatteryMinBalancingHigh"
-
 id = 0x3B0
+
+
 [[Datatype]]
 name = "BatteryMaxBalancingHigh"
 id = 0x3B1
+
+[[Datatype]]
+name = "BatteryEventLow"
+id = 0x221
+
+[[Datatype]]
+name = "BatteryEventHigh"
+id = 0x425
 
 [[Datatype]]
 name = "BrakeTemperature"
@@ -175,9 +184,6 @@ id = 0x13
 name = "PropulsionSpeed"
 id = 0x14
 
-[[Datatype]]
-name = "BrakePressure"
-id = 0x15
 
 [[Datatype]]
 name = "FSMState"
@@ -188,12 +194,24 @@ name = "FSMEvent"
 id = 0x19
 
 [[Datatype]]
-name = "PodDropTriggered"
+name = "EndOfTrackTriggered"
 id = 0x1a
 
 [[Datatype]]
 name = "Localisation"
 id = 0x1b
+
+[[Datatype]]
+name = "Velocity"
+id = 0x1c
+
+[[Datatype]]
+name = "Direction"
+id = 0x1d
+
+[[Datatype]]
+name = "BrakePressure"
+id = 0x15
 
 [[Datatype]]
 name = "UnknownCanId"
