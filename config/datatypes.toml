@@ -1,8 +1,3 @@
-## Every time this file is changed, you also need to update:
-## pod:
-## - communication/mod.rs
-## gs:
-## - api/mod.rs
 ## -
 [[Datatype]]
 name = "DefaultDatatype"
@@ -104,7 +99,6 @@ id = 0x3A5
 name = "BatteryCurrentLow"
 id = 0x1A6
 
-
 [[Datatype]]
 name = "BatteryCurrentHigh"
 id = 0x3AA
@@ -118,6 +112,71 @@ name = "BatteryEnergyParamsHigh"
 id = 0x3A6
 
 [[Datatype]]
+name = "BatteryMaxVoltageLow"
+id = 0x1A8
+
+[[Datatype]]
+name = "BatteryEstimatedChargeLow"
+id = 0x1A9
+
+[[Datatype]]
+name = "BatteryMinTemperatureLow"
+id = 0x1AA
+
+[[Datatype]]
+name = "BatteryMaxTemperatureLow"
+id = 0x1AB
+
+[[Datatype]]
+name = "BatteryMinBalancingLow"
+id = 0x1AC
+
+[[Datatype]]
+name = "BatteryMaxBalancingLow"
+id = 0x1AD
+
+[[Datatype]]
+name = "BatteryMinVoltageLow"
+id = 0x1A7
+
+[[Datatype]]
+name = "BatteryMinVoltageHigh"
+id = 0x3AB
+
+[[Datatype]]
+name = "BatteryMaxVoltageHigh"
+id = 0x3AC
+
+[[Datatype]]
+name = "BatteryEstimatedChargeHigh"
+id = 0x3AD
+
+[[Datatype]]
+name = "BatteryMinTemperatureHigh"
+id = 0x3AE
+
+[[Datatype]]
+name = "BatteryMaxTemperatureHigh"
+id = 0x3AF
+
+[[Datatype]]
+name = "BatteryMinBalancingHigh"
+id = 0x3B0
+
+
+[[Datatype]]
+name = "BatteryMaxBalancingHigh"
+id = 0x3B1
+
+[[Datatype]]
+name = "BatteryEventLow"
+id = 0x221
+
+[[Datatype]]
+name = "BatteryEventHigh"
+id = 0x425
+
+[[Datatype]]
 name = "BrakeTemperature"
 id = 0x13
 
@@ -125,9 +184,6 @@ id = 0x13
 name = "PropulsionSpeed"
 id = 0x14
 
-[[Datatype]]
-name = "BrakePressure"
-id = 0x15
 
 [[Datatype]]
 name = "FSMState"
@@ -138,12 +194,24 @@ name = "FSMEvent"
 id = 0x19
 
 [[Datatype]]
-name = "PodDropTriggered"
+name = "EndOfTrackTriggered"
 id = 0x1a
 
 [[Datatype]]
 name = "Localisation"
 id = 0x1b
+
+[[Datatype]]
+name = "Velocity"
+id = 0x1c
+
+[[Datatype]]
+name = "Direction"
+id = 0x1d
+
+[[Datatype]]
+name = "BrakePressure"
+id = 0x15
 
 [[Datatype]]
 name = "UnknownCanId"

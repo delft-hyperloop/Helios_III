@@ -1,10 +1,5 @@
 #![allow(non_snake_case)]
 
-mod commands;
-mod datatypes;
-mod events;
-
-extern crate regex;
 extern crate serde;
 
 use serde::Deserialize;
@@ -12,6 +7,7 @@ use std::env;
 use std::fs;
 use std::path::Path;
 use std::sync::Mutex;
+use goose_utils;
 
 /*
    BUILD CONFIGURATION
@@ -65,6 +61,9 @@ struct InternalConfig {
 }
 
 pub const CONFIG_PATH: &str = "../config/config.toml";
+pub const DATATYPES_PATH: &str = "../config/datatypes.toml";
+pub const COMMANDS_PATH: &str = "../config/commands.toml";
+pub const EVENTS_PATH: &str = "../config/events.toml";
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
@@ -79,9 +78,9 @@ fn main() {
     content.push_str(&*configure_ip(&config));
     content.push_str(&*configure_pod(&config));
     content.push_str(&*configure_internal(&config));
-    content.push_str(&*commands::main(&id_list));
-    content.push_str(&*datatypes::main(&id_list));
-    content.push_str(&*events::main(&id_list));
+    content.push_str(&*goose_utils::commands::generate_commands(&id_list, COMMANDS_PATH));
+    content.push_str(&*goose_utils::datatypes::generate_datatypes(&id_list, DATATYPES_PATH, false));
+    content.push_str(&*goose_utils::events::generate_events(&id_list, EVENTS_PATH));
     // content.push_str(&*can::main(&id_list));
 
     fs::write(dest_path.clone(), content).expect(&*format!(

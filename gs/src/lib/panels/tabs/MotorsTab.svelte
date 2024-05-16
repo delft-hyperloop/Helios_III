@@ -9,7 +9,7 @@
 </script>
 
 <div class="p-4">
-    <h2 class="text-xl font-semibold mb-4">Currents</h2>
+    <h2 class="text-xl font-semibold mb-4">Motors</h2>
     <div bind:clientWidth={width} class="grid grid-cols-2 gap-2">
         {#each charts as title, i}
             <Chart {title} background="bg-surface-900" height={250} refreshRate={100} />
