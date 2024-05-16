@@ -161,11 +161,20 @@ id = 0x3AF
 
 [[Datatype]]
 name = "BatteryMinBalancingHigh"
-
 id = 0x3B0
+
+
 [[Datatype]]
 name = "BatteryMaxBalancingHigh"
 id = 0x3B1
+
+[[Datatype]]
+name = "BatteryEventLow"
+id = 0x221
+
+[[Datatype]]
+name = "BatteryEventHigh"
+id = 0x425
 
 [[Datatype]]
 name = "BrakeTemperature"
