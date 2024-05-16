@@ -48,16 +48,16 @@ pub fn tauri_main() {
                                 app_handle.state::<BackendState>().data_buffer.lock().unwrap().push(Message::Data(dp));
                             }
                             Message::Status(s) => {
-                                app_handle.emit_to(STATUS_CHANNEL, &*format!("{:?}", s), format!("{}",s.colour())).unwrap()
+                                app_handle.emit_all(STATUS_CHANNEL, &*format!("{:?}", s)).unwrap()
                             }
                             Message::Info(i) => {
-                                app_handle.emit_to(INFO_CHANNEL, &*format!("{}", i), "your mom".to_string()).unwrap()
+                                app_handle.emit_all(INFO_CHANNEL, &*format!("{}", i)).unwrap()
                             }
                             Message::Warning(w) => {
-                                app_handle.emit_to(WARNING_CHANNEL, &*format!("{}", w), "your mom".to_string()).unwrap()
+                                app_handle.emit_all(WARNING_CHANNEL, &*format!("{}", w)).unwrap()
                             }
                             Message::Error(e) => {
-                                app_handle.emit_to(ERROR_CHANNEL, &*format!("{}", e), "your mom".to_string()).unwrap()
+                                app_handle.emit_all(ERROR_CHANNEL, &*format!("{}", e)).unwrap()
                             }
                         }
                     }
