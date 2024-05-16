@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Battery, Chart, south_bridge_payload, Status, Table, Tile, TileGrid} from "$lib";
+    import {Battery, Chart, hvBattery, lvBattery, south_bridge_payload, Status, Table, Tile, TileGrid} from "$lib";
     import {hvModulesTemp, hvModulesVol} from "$lib/stores/data";
 
     let titles = ["Battery", "Avg cell V", "Max cell V", "Min cell V"
@@ -16,16 +16,15 @@
 </script>
 
 <div class="p-4">
-    <p>{$hvModulesTemp[0].avg}</p>
     <h2 class="text-xl font-semibold mb-4">Batteries</h2>
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="auto 1fr auto">
         <Tile insideClass="flex h-full items-center gap-4">
             <div class="flex flex-col items-center">
-                <Battery orientation="horizontal" height={40} perc={$south_bridge_payload.value} />
+                <Battery orientation="horizontal" height={40} perc={Number($lvBattery)} />
                 <p>Low voltage</p>
             </div>
             <div class="flex flex-col items-center">
-                <Battery orientation="horizontal" height={40} perc={$south_bridge_payload.value} />
+                <Battery orientation="horizontal" height={40} perc={Number($hvBattery)} />
                 <p>High voltage</p>
             </div>
         </Tile>
