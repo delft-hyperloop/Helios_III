@@ -184,9 +184,6 @@ id = 0x13
 name = "PropulsionSpeed"
 id = 0x14
 
-[[Datatype]]
-name = "BrakePressure"
-id = 0x15
 
 [[Datatype]]
 name = "FSMState"
@@ -197,12 +194,24 @@ name = "FSMEvent"
 id = 0x19
 
 [[Datatype]]
-name = "PodDropTriggered"
+name = "EndOfTrackTriggered"
 id = 0x1a
 
 [[Datatype]]
 name = "Localisation"
 id = 0x1b
+
+[[Datatype]]
+name = "Velocity"
+id = 0x1c
+
+[[Datatype]]
+name = "Direction"
+id = 0x1d
+
+[[Datatype]]
+name = "BrakePressure"
+id = 0x15
 
 [[Datatype]]
 name = "UnknownCanId"
