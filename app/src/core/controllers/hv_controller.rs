@@ -1,8 +1,14 @@
 use crate::Event;
 use embassy_executor::Spawner;
+use embassy_stm32::peripherals;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::Sender;
 use heapless::binary_heap::Max;
+
+pub struct HVPeripherals {
+    pub(crate) pb4_pin: peripherals::PB4,
+}
+
 pub struct Status {
     pub propulsion_ready: bool,
     pub levitation_ready: bool,

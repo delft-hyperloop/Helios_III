@@ -13,7 +13,8 @@ impl FSM {
                 todo!();
             }
             Event::RunFinishedEvent => {
-                todo!();
+                #[cfg(debug_assertions)]
+                info!("Run finished");
 
                 self.transit(State::Exit);
             }
