@@ -367,7 +367,7 @@ impl BatteryController {
             Datatype::BatteryBalanceLow
         };
         let balancing_min = if (self.high_voltage) {
-            Datatype::BatteryMinBalanceHigh
+            Datatype::BatteryMinBalancingHigh
         } else {
             Datatype::BatteryMinBalancingLow
         };
