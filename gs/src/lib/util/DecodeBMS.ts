@@ -1,3 +1,7 @@
+/**
+ * BMS Module Voltage
+ * This type is to be used for store type on receiving the
+ */
 interface BmsModuleVoltage {
     id: number;
     max: number;
@@ -5,11 +9,14 @@ interface BmsModuleVoltage {
     avg: number;
 }
 
-interface BMSDiagnostic{
-    // error_id : number
-    error : string[]
-
+/**
+ * BMS Diagnostic
+ * This interface is to be used as a store type when receiving
+ */
+interface BMSDiagnostic {
+    errors: string[]
 }
+
 interface BmsModuleTemperature {
     id: number;
     max: number;
@@ -17,23 +24,25 @@ interface BmsModuleTemperature {
     avg: number;
 }
 
-interface BMSEvent{
-    event:string
+interface BMSEvent {
+    event: string
 }
-export function moduleVoltage (data: number): BmsModuleVoltage {
+
+export function moduleVoltage(data: number): BmsModuleVoltage {
     let id = data >> 48;
     let voltage = data & 0x0000FFFFFFFFFFFF;
-    let max = ((voltage & 0x000000000000FFFF)+200)*0.1;
-    let min = (((voltage & 0x00000000FFFF0000) >> 16)+200)*0.1;
-    let avg = (((voltage & 0x0000FFFF00000000) >> 32)+200)*0.1;
+    let max = ((voltage & 0x000000000000FFFF) + 200) * 0.1;
+    let min = (((voltage & 0x00000000FFFF0000) >> 16) + 200) * 0.1;
+    let avg = (((voltage & 0x0000FFFF00000000) >> 32) + 200) * 0.1;
     return {id, max, min, avg};
 }
-export function moduleTemperature (data: number): BmsModuleVoltage {
+
+export function moduleTemperature(data: number): BmsModuleVoltage {
     let id = data >> 48;
     let temperature = data & 0x0000FFFFFFFFFFFF;
-    let max = temperature & 0x000000000000FFFF-100;
-    let min = ((temperature & 0x00000000FFFF0000) >> 16)-100;
-    let avg = ((temperature & 0x0000FFFF00000000) >> 32)-100;
+    let max = temperature & 0x000000000000FFFF - 100;
+    let min = ((temperature & 0x00000000FFFF0000) >> 16) - 100;
+    let avg = ((temperature & 0x0000FFFF00000000) >> 32) - 100;
     return {id, max, min, avg};
 }
 
@@ -68,7 +77,13 @@ Bit 4: Battery charging finished (1 if active, 0 if inactive). This flag is used
 Bit 5: Cell temperatures validity;
 Bits 6-7 are reserved.
 */
-export function BMSDiagonosticTranslation (data : number): BMSDiagnostic{
+
+/**
+ * DATATYPE DIAGNOSTIC
+ * @param data
+ * @constructor
+ */
+export function BMSDiagnosticTranslation(data: number): BMSDiagnostic {
     let possibleErrors = ["Under-voltage – some cell is below critical minimum voltage",
         "Over-voltage – some cell is above critical maximum volta",
         "Discharge Over-current -  discharge current (negative current) exceeds the critical discharge current setting",
@@ -76,7 +91,7 @@ export function BMSDiagonosticTranslation (data : number): BMSDiagnostic{
         "Cell Module Overheat – cell module temperature exceeds maximum critical temperature setting.",
         "Leakage – leakage signal was detected on leakage input pin.",
         "No Cell Communication – loss of communication to cells.",
-    "Low voltage – some cell is below low voltage warning setting",
+        "Low voltage – some cell is below low voltage warning setting",
         "High current – discharge current (negative current) exceeds the current warning setting.",
         "High temperature – cell module temperature exceeds warning temperature setting.",
         "Cell Overheat – cell temperature exceeds maximum cell temperature threshold",
@@ -88,14 +103,14 @@ export function BMSDiagonosticTranslation (data : number): BMSDiagnostic{
         "Number of live cells validity",
         "Battery charging finished",
         "Cell temperatures validity"];
-    let erros = [];
-    let important = [0,1,2,3,4,5,6,8,9,10,19,20,21,24,25,26,27,28,29]
-    for (let i in important){
-        if (data & 1<<i){
-            erros.push(possibleErrors[i]);
+    let errors = [];
+    let important = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 19, 20, 21, 24, 25, 26, 27, 28, 29]
+    for (let i of important) {
+        if (data & 1 << i) {
+            errors.push(possibleErrors[i]);
         }
     }
-    return {error: erros};
+    return {errors};
 }
 
 //DATA[MSB]
@@ -136,7 +151,14 @@ export function BMSDiagonosticTranslation (data : number): BMSDiagnostic{
 // 43 – Critically high cell temperature recovered;
 // 44 – Warning: High cell temperature – reducing power;
 // 45 – Power reduction due to high cell temperature recovered.
-export function BMSEvent (data : number): BMSEvent {
+
+
+/**
+ * DATATYPE BMS EVENT
+ * @param data
+ * @constructor
+ */
+export function BMSEvent(data: number): BMSEvent {
     data = data & 0x0000FFFFFFFF0000;
 
     let possibleEvents = ["No event",
@@ -175,5 +197,5 @@ export function BMSEvent (data : number): BMSEvent {
         "Critically high cell temperature recovered",
         "Warning: High cell temperature – reducing power",
         "Power reduction due to high cell temperature recovered"];
-    return {event: possibleEvents[(data>>16) & 0xFFFF]};
+    return {event: possibleEvents[(data >> 16) & 0xFFFF]};
 }

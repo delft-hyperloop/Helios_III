@@ -29,10 +29,20 @@ export type Datapoint = {
 }
 
 /**
+ * Event channels to listen on
+ */
+export const EventChannels = {
+    STATUS: 'status_channel',
+    INFO: 'info_channel',
+    WARNING: 'warning_channel',
+    ERROR: 'error_channel',
+
+}
+
+/**
  * Event to listen on.
  */
-export type EventChannel = 'status_channel' | 'info_channel' | 'warning_channel' | 'error_channel'
-    | 'north_bridge' | 'south_bridge';
+export type EventChannel = 'north_bridge' | 'south_bridge';
 
 export type TempTableEntry = {name:string, value: number}
 export type Log = {

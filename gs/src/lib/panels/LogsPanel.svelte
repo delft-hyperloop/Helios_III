@@ -1,6 +1,4 @@
 
-<!-- TODO: ADD IMPORTANCE TO LOGS, MAKE SUPER IMPORTANT LOG "UN-FILTERABLE"  -->
-
 <!-- TODO 2: SOME KIND OF LOG FLUSHING? AT ONE POINT IT WILL RUN OUT OF SPACE!  -->
 
 <script lang="ts">
@@ -8,7 +6,7 @@
     import Icon from "@iconify/svelte";
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import type {Log} from "$lib/types";
+    import {EventChannels, type Log} from "$lib/types";
 
     let unlisten: UnlistenFn;
     let logContainer: HTMLElement;
@@ -22,10 +20,12 @@
         filters[type] = !filters[type];
     }
 
+
+
     onMount(async () => {
-        unlisten = await listen('logs_bridge', (event) => {
+        unlisten = await listen(EventChannels.STATUS, (event) => {
             //@ts-ignore
-            logs = [...logs, {message: event.payload.message, log_type: event.payload.log_type, timestamp: event.payload.timestamp}];
+            logs.push({message: event.payload})
         });
 
         logContainer.addEventListener('scroll', () => {
