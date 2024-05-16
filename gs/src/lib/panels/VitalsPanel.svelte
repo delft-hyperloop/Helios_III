@@ -76,8 +76,8 @@
             </button>
             <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
             <div class="flex flex-col gap-4">
-                <Battery orientation="vertical" height={55} perc={$lvBattery}/>
-                <Battery orientation="vertical" height={55} perc={$hvBattery}/>
+                <Battery orientation="vertical" height={55} perc={Number($lvBattery)}/>
+                <Battery orientation="vertical" height={55} perc={Number($hvBattery)}/>
             </div>
         </div>
     {:else}

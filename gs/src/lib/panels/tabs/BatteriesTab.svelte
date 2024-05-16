@@ -1,23 +1,22 @@
 <script lang="ts">
     import {Battery, Chart, south_bridge_payload, Status, Table, Tile, TileGrid} from "$lib";
+    import {hvModulesTemp, hvModulesVol} from "$lib/stores/data";
 
     let titles = ["Battery", "Avg cell V", "Max cell V", "Min cell V"
         , "Avg cell °C", "Max cell °C", "Min cell °C"];
     let tableArr:any[][] = [
         ["LV", "12.5V", "13.5V", "10.5V", "30°C", "50°C", "20°C"],
-        ["HV mod 1", "12.5V", "13.5V", "10.5V", "30°C", "50°C", "20°C"],
-        ["HV mod 2", "12.5V", "13.5V", "10.5V", "30°C", "50°C", "20°C"],
-        ["HV mod 3", "12.5V", "13.5V", "10.5V", "30°C", "50°C", "20°C"],
-        ["HV mod 4", "12.5V", "13.5V", "10.5V", "30°C", "50°C", "20°C"],
-        ["HV mod 5", "12.5V", "13.5V", "10.5V", "30°C", "50°C", "20°C"],
-        ["HV mod 6", "12.5V", "13.5V", "10.5V", "30°C", "50°C", "20°C"],
-        ["HV mod 7", "12.5V", "13.5V", "10.5V", "30°C", "50°C", "20°C"],
-        ["HV mod 8", "12.5V", "13.5V", "10.5V", "30°C", "50°C", "20°C"],
     ]
+
+    $: {
+        for (let i = 0; i < 8; i++) {
+            tableArr[i+1] = [`HV mod ${i}`, $hvModulesVol[i].avg, $hvModulesVol[i].max, $hvModulesVol[i].min, $hvModulesTemp[i].avg, $hvModulesTemp[i].max, $hvModulesTemp[i].min];
+        }
+    }
 </script>
 
-
 <div class="p-4">
+    <p>{$hvModulesTemp[0].avg}</p>
     <h2 class="text-xl font-semibold mb-4">Batteries</h2>
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="auto 1fr auto">
         <Tile insideClass="flex h-full items-center gap-4">
