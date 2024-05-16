@@ -1,6 +1,8 @@
 use crate::core::finite_state_machine::*;
 use crate::{Datatype, Event};
-use defmt::info;
+use defmt::{info, warn};
+use embassy_stm32::gpio::Level::High;
+use embassy_stm32::gpio::Output;
 use crate::core::communication::Datapoint;
 
 impl FSM {
@@ -8,7 +10,10 @@ impl FSM {
         #[cfg(debug_assertions)]
         info!("Entering HV System Checking");
         self.status.reset();
-
+        self.peripherals.hv_peripherals.enable_pin.set_high();
+        warn!("HV SYSTEM IS ON!");
+        warn!("HV SYSTEM IS ON!");
+        warn!("HV SYSTEM IS ON!");
     }
 
     pub async fn react_hv_system_checking(&mut self, event: Event) {

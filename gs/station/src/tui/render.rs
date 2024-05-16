@@ -86,7 +86,7 @@ impl Widget for &App {
         // Create the text stream
         let styled_logs: Vec<Line> = self.logs.iter().map(|(msg, t)| {
             match msg {
-                Message::Data(d) => Line::styled(format!("[{}] {:?}={} at {}", timestamp(), d.datatype, d.value, d.timestamp), Style::default().fg(Color::White)),
+                Message::Data(d) => Line::styled(format!("[{}] {:?}={} at {}", timestamp(), d.datatype, d.value, d.timestamp), Style::default().bg(Color::Cyan)),
                 Message::Status(s) => Line::styled(format!("[{}] {:?}", t, s), Style::default().fg(s.colour())),
                 Message::Info(x) => Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::White)),
                 Message::Warning(x) => Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Yellow)),

@@ -1,24 +1,24 @@
 #![allow(non_snake_case)]
 
-extern crate regex;
 extern crate serde;
+
+use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::Path;
-use serde::Deserialize;
+use std::sync::Mutex;
+use goose_utils;
 
 /*
-    BUILD CONFIGURATION
-    POD MAIN APPLICATION
+   BUILD CONFIGURATION
+   POD MAIN APPLICATION
 
- */
+*/
 
 #[derive(Debug, Deserialize)]
 struct Config {
     gs: GS,
     pod: POD,
-    command: Command,
-    datapoints: Datapoints,
 }
 
 #[derive(Debug, Deserialize)]
@@ -32,8 +32,16 @@ struct GS {
 
 #[derive(Debug, Deserialize)]
 struct POD {
-    net : NetConfig,
+    net: NetConfig,
     internal: InternalConfig,
+    bms: BMS,
+}
+
+#[derive(Debug, Deserialize)]
+struct BMS {
+    lv_ids: Vec<u16>,
+    hv_ids: Vec<u16>,
+    gfd_ids: Vec<u16>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -49,47 +57,20 @@ struct NetConfig {
 struct InternalConfig {
     event_queue_size: usize,
     data_queue_size: usize,
+    can_queue_size: usize,
 }
 
-#[derive(Debug, Deserialize)]
-struct Command {
-    Levitate: [u8; 2],
-    StopLevitating: [u8; 2],
-    Configure: [u8; 2],
-    StartRun: [u8; 2],
-    EmergencyBrake: [u8; 2],
-    Shutdown: [u8; 2],
-}
-
-#[derive(Debug, Deserialize)]
-struct Datapoints {
-    PropulsionTemperature: u8,
-    LevitationTemperature: u8,
-    BatteryVoltage: u8,
-    BatteryCurrent: u8,
-    BatteryTemperature: u8,
-    BatteryBalance: u8,
-    SingleCellVoltage: u8,
-    SingleCellTemperature: u8,
-    BrakeTemperature: u8,
-    PropulsionSpeed: u8,
-    BrakePressure: u8,
-    HighVoltage: u8,
-    HighVoltageInsulation: u8,
-    FSMState: u8,
-    FSMEvent: u8,
-    //BMS INFO
-
-}
-
-
-pub const NETCONFIG_PATH: &str = "../config/config.toml";
+pub const CONFIG_PATH: &str = "../config/config.toml";
+pub const DATATYPES_PATH: &str = "../config/datatypes.toml";
+pub const COMMANDS_PATH: &str = "../config/commands.toml";
+pub const EVENTS_PATH: &str = "../config/events.toml";
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
+    let id_list = Mutex::new(Vec::new());
     let dest_path = Path::new(&out_dir).join("config.rs");
 
-    let ip_file = fs::read_to_string(NETCONFIG_PATH).unwrap();
+    let ip_file = fs::read_to_string(CONFIG_PATH).unwrap();
     let config: Config = toml::from_str(&ip_file).unwrap();
 
     let mut content = String::new();
@@ -97,11 +78,16 @@ fn main() {
     content.push_str(&*configure_ip(&config));
     content.push_str(&*configure_pod(&config));
     content.push_str(&*configure_internal(&config));
-    content.push_str(&*configure_commands(&config));
-    content.push_str(&*configure_datatype_encoding(&config));
+    content.push_str(&*goose_utils::commands::generate_commands(&id_list, COMMANDS_PATH));
+    content.push_str(&*goose_utils::datatypes::generate_datatypes(&id_list, DATATYPES_PATH, false));
+    content.push_str(&*goose_utils::events::generate_events(&id_list, EVENTS_PATH));
+    // content.push_str(&*can::main(&id_list));
 
-    fs::write(dest_path.clone(), content).expect(&*format!("Couldn't write to {}! Build failed.", dest_path.to_str().unwrap()));
-    println!("cargo:rerun-if-changed={}", NETCONFIG_PATH);
+    fs::write(dest_path.clone(), content).expect(&*format!(
+        "Couldn't write to {}! Build failed.",
+        dest_path.to_str().unwrap()
+    ));
+    println!("cargo:rerun-if-changed={}", CONFIG_PATH);
 
     // linking
     println!("cargo:rustc-link-arg-bins=--nmagic");
@@ -109,69 +95,117 @@ fn main() {
     println!("cargo:rustc-link-arg-bins=-Tdefmt.x");
 }
 
-fn configure_datatype_encoding(config: &Config) -> String {
-    format!("pub enum Datatype {{\
-        PropulsionTemperature,\
-        LevitationTemperature,\
-        BatteryVoltage,\
-        BatteryCurrent,\
-        BatteryTemperature,\
-        SingleCellVoltage,\
-        SingleCellTemperature,\
-        BrakeTemperature,\
-        PropulsionSpeed,\
-        BrakePressure,\
-        HighVoltage,\
-        HighVoltageInsulation,\
-        FSMState,\
-        FSMEvent,\
-    }}")
-    + &*format!("pub fn encode_datatype(datatype: &Datatype) -> u8 {{\
-        match datatype {{\
-            Datatype::PropulsionTemperature => {},\
-            Datatype::LevitationTemperature => {},\
-            Datatype::BatteryVoltage => {},\
-            Datatype::BatteryCurrent => {},\
-            Datatype::BatteryTemperature => {},\
-            Datatype::SingleCellVoltage => {},\
-            Datatype::SingleCellTemperature => {},\
-            Datatype::BrakeTemperature => {},\
-            Datatype::PropulsionSpeed => {},\
-            Datatype::BrakePressure => {},\
-            Datatype::HighVoltage => {},\
-            Datatype::HighVoltageInsulation => {},\
-            Datatype::FSMState => {},\
-            Datatype::FSMEvent => {},\
-        }}\
-    }}", config.datapoints.PropulsionTemperature, config.datapoints.LevitationTemperature, config.datapoints.BatteryVoltage, config.datapoints.BatteryCurrent, config.datapoints.BatteryTemperature,config.datapoints.SingleCellVoltage,config.datapoints.SingleCellTemperature ,config.datapoints.BrakeTemperature, config.datapoints.PropulsionSpeed, config.datapoints.BrakePressure, config.datapoints.HighVoltage,config.datapoints.HighVoltageInsulation, config.datapoints.FSMState, config.datapoints.FSMEvent)
-}
-
-fn configure_commands(config: &Config) -> String {
-    format!("pub struct Commands;impl Commands{}\
-    pub const LEVITATE: [u8; 2] = [{},{}];\
-    pub const STOP_LEVITATING: [u8; 2] = [{},{}];\
-    pub const CONFIGURE: [u8; 2] = [{},{}];\
-    pub const START_RUN: [u8; 2] = [{},{}];\
-    pub const EMERGENCY_BRAKE: [u8; 2] = [{},{}];\
-    pub const SHUTDOWN: [u8; 2] = [{},{}];\
-    {}\n", "{", config.command.Levitate[0], config.command.Levitate[1], config.command.StopLevitating[0], config.command.StopLevitating[1], config.command.Configure[0], config.command.Configure[1], config.command.StartRun[0], config.command.StartRun[1], config.command.EmergencyBrake[0], config.command.EmergencyBrake[1], config.command.Shutdown[0], config.command.Shutdown[1], "}")
-}
-
 fn configure_ip(config: &Config) -> String {
-    format!("pub static GS_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port)
-        + &*format!("pub static GS_UPD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.udp_port)
-        + &*format!("pub const NETWORK_BUFFER_SIZE: usize = {};", config.gs.buffer_size)
-        + &*format!("pub const IP_TIMEOUT: u64 = {};", config.gs.timeout)
+    format!(
+        "pub static GS_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+        config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port
+    ) + &*format!(
+        "pub static GS_UPD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+        config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.udp_port
+    ) + &*format!(
+        "pub const NETWORK_BUFFER_SIZE: usize = {};\n",
+        config.gs.buffer_size
+    ) + &*format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
 }
 
 fn configure_pod(config: &Config) -> String {
-    format!("pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});", config.pod.net.ip[0], config.pod.net.ip[1], config.pod.net.ip[2], config.pod.net.ip[3], config.pod.net.port)
-        + &*format!("pub static POD_UDP_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});", config.pod.net.ip[0], config.pod.net.ip[1], config.pod.net.ip[2], config.pod.net.ip[3], config.pod.net.udp_port)
-        + &*format!("pub static POD_MAC_ADDRESS: [u8;6] = [{},{},{},{},{},{}];", config.pod.net.mac_addr[0], config.pod.net.mac_addr[1], config.pod.net.mac_addr[2], config.pod.net.mac_addr[3], config.pod.net.mac_addr[4], config.pod.net.mac_addr[5])
-        + &*format!("pub const KEEP_ALIVE: u64 = {};", config.pod.net.keep_alive)
+    format!(
+        "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+        config.pod.net.ip[0],
+        config.pod.net.ip[1],
+        config.pod.net.ip[2],
+        config.pod.net.ip[3],
+        config.pod.net.port
+    ) + &*format!(
+        "pub static POD_UDP_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+        config.pod.net.ip[0],
+        config.pod.net.ip[1],
+        config.pod.net.ip[2],
+        config.pod.net.ip[3],
+        config.pod.net.udp_port
+    ) + &*format!(
+        "pub static POD_MAC_ADDRESS: [u8;6] = [{},{},{},{},{},{}];\n",
+        config.pod.net.mac_addr[0],
+        config.pod.net.mac_addr[1],
+        config.pod.net.mac_addr[2],
+        config.pod.net.mac_addr[3],
+        config.pod.net.mac_addr[4],
+        config.pod.net.mac_addr[5]
+    ) + &*format!(
+        "pub const KEEP_ALIVE: u64 = {};\n",
+        config.pod.net.keep_alive
+    )
 }
 
 fn configure_internal(config: &Config) -> String {
-    format!("pub const EVENT_QUEUE_SIZE: usize = {};", config.pod.internal.event_queue_size)
-    + &*format!("pub const DATA_QUEUE_SIZE: usize = {};", config.pod.internal.data_queue_size)
+    format!(
+        "pub const EVENT_QUEUE_SIZE: usize = {};\n",
+        config.pod.internal.event_queue_size
+    ) + &*format!(
+        "pub const DATA_QUEUE_SIZE: usize = {};\n",
+        config.pod.internal.data_queue_size
+    ) + &*format!(
+        "pub const CAN_QUEUE_SIZE: usize = {};\n",
+        config.pod.internal.can_queue_size
+    ) + &*format!(
+        "pub const LV_IDS: [u16;{}] = [{}];\n",
+        config.pod.bms.lv_ids.len(),
+        config
+            .pod
+            .bms
+            .lv_ids
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(", ")
+    ) + &*format!(
+        "pub const HV_IDS: [u16;{}] = [{}];\n",
+        config.pod.bms.hv_ids.len(),
+        config
+            .pod
+            .bms
+            .hv_ids
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(", ")
+    ) + &*format!(
+        "pub const GFD_IDS: [u16;{}] = [{}];\n",
+        config.pod.bms.gfd_ids.len(),
+        config
+            .pod
+            .bms
+            .gfd_ids
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(", ")
+    ) + &*format!(
+        "pub const BATTERY_GFD_IDS: [u16;{}] = [{},{},{}];\n",
+        config.pod.bms.lv_ids.len() + config.pod.bms.hv_ids.len() + config.pod.bms.gfd_ids.len(),
+        config
+            .pod
+            .bms
+            .lv_ids
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(", "),
+        config
+            .pod
+            .bms
+            .hv_ids
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(", "),
+        config
+            .pod
+            .bms
+            .gfd_ids
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(", ")
+    )
 }
