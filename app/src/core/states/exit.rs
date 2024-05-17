@@ -15,7 +15,7 @@ impl FSM {
             Event::SystemResetCommand => {
                 todo!();
 
-                self.transit(State::RunConfig);
+                self.transit(State::RunConfig).await;
             }
 
             _ => {

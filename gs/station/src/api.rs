@@ -45,3 +45,38 @@ pub struct ApiStruct {
     pub message_sender: Sender<Message>,
     pub message_receiver: Receiver<Message>,
 }
+
+///
+/// pub enum State {
+/// 00    Boot,
+/// 01    EstablishConnection,
+/// 02    RunConfig,
+/// 03    Idle,
+/// 04    HVSystemChecking,
+/// 05    Levitating,
+/// 06    Accelerating,
+/// 07    Cruising,
+/// 08    LaneSwitch,
+/// 09    Braking,
+/// 10    EmergencyBraking,
+/// 11    Exit,
+/// 12    Crashing,
+/// }
+pub fn state_to_string(state: u64) -> String {
+    match state {
+        0 => "Boot".to_string(),
+        1 => "EstablishConnection".to_string(),
+        2 => "RunConfig".to_string(),
+        3 => "Idle".to_string(),
+        4 => "HVSystemChecking".to_string(),
+        5 => "Levitating".to_string(),
+        6 => "Accelerating".to_string(),
+        7 => "Cruising".to_string(),
+        8 => "LaneSwitch".to_string(),
+        9 => "Braking".to_string(),
+        10 => "EmergencyBraking".to_string(),
+        11 => "Exit".to_string(),
+        12 => "Crashing".to_string(),
+        _ => "Unknown!!".to_string(),
+    }
+}

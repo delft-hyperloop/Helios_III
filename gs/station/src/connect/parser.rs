@@ -17,11 +17,11 @@ impl Handler {
                     // tx.send(Message::Error(format!("Buffer too short: {}, {:?}", parsing_buffer.len(), parsing_buffer))).expect("[Parser] Failed to send on msg tx");
                     break;
                 } else {
-                    tx.send(Message::Info(format!("parsing: {:?}", parsing_buffer.take(20).bytes()))).expect("[Parser] Failed to send on msg tx");
+                    // tx.send(Message::Info(format!("parsing: {:?}", parsing_buffer.take(20).bytes()))).expect("[Parser] Failed to send on msg tx");
                     // we actually have 20 bytes in the buffer, we can create a command from them
                     let mut x = [0u8; 20];
                     parsing_buffer.drain(..20).enumerate().for_each(|(i, y)| { x[i] = y });
-                    tx.send(Message::Info(format!("Parsed: {:?}", &x))).expect("[Parser] Failed to send on msg tx");
+                    // tx.send(Message::Info(format!("Parsed: {:?}", &x))).expect("[Parser] Failed to send on msg tx");
                     tx.send(Message::Data(Datapoint::from_bytes(&x))).expect("[Parser] Failed to send on msg tx");
                     // let id = (x[1] as u16) << 8 | x[2] as u16;
                     // let value = u64::from_be_bytes(x[3..11].to_vec().try_into().unwrap());

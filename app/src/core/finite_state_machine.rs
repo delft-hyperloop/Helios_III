@@ -140,11 +140,11 @@ impl FSM {
 
     /// Function used to transit states of Megalo --> Comes from Megahni and Gonzalo
     ///
-    pub fn transit(&mut self, next_state: State) {
+    pub async fn transit(&mut self, next_state: State) {
         info!("Exiting state: {:?}", self.state);
         info!("Entering state: {:?}", next_state);
         self.state = next_state;
-        self.data_queue.send(Datapoint::new(Datatype::FSMState, next_state as u64, Instant::now().as_ticks()));
+        self.data_queue.send(Datapoint::new(Datatype::FSMState, next_state as u64, Instant::now().as_ticks())).await;
         self.entry();
     }
     pub async fn entry(&mut self) {
@@ -177,7 +177,7 @@ impl FSM {
             | Event::PowertrainErrorEvent
             | Event::ConnectionLossEvent
             | Event::EmergencyBrakeCommand => {
-                self.transit(State::EmergencyBraking);
+                self.transit(State::EmergencyBraking).await;
                 return;
             }
             _ => {}

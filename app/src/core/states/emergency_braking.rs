@@ -14,6 +14,6 @@ impl FSM {
         warn!("Emergency Braking!!!");
         error!("Emergency Braking!!");
 
-        self.transit(State::Exit)
+        self.transit(State::Exit).await
     }
 }

@@ -46,7 +46,7 @@ impl<'h> Handler {
                     break 'tcp_reading;
                 }
                 Ok(n) => {
-                    tx.send(Message::Info(format!("Received: {:?}", &buf[..n]))).expect("[Handler] Failed to send on msg tx");
+                    // tx.send(Message::Info(format!("Received: {:?}", &buf[..n]))).expect("[Handler] Failed to send on msg tx");
                     &buf[..n].iter().for_each(|x| {
                         byte_queue.push_back(*x);
                     });

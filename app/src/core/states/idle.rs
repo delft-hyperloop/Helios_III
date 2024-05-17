@@ -27,7 +27,7 @@ impl FSM {
             Event::TurnOnHVCommand => {
                 #[cfg(debug_assertions)]
                 info!("Starting HV System");
-                self.transit(State::HVSystemChecking);
+                self.transit(State::HVSystemChecking).await;
             }
             Event::ArmBrakesCommand => {
                 todo!();
