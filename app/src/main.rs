@@ -191,7 +191,7 @@ async fn main(spawner: Spawner) -> ! {
     ///
 
     // Begin Spawn Tasks
-    try_spawn!(event_sender, spawner.spawn(your_mom(data_sender.clone())));
+//    try_spawn!(event_sender, spawner.spawn(your_mom(data_sender.clone())));
     // End Spawn Tasks
 
     /// # Main Loop
@@ -207,9 +207,14 @@ async fn main(spawner: Spawner) -> ! {
 /// she fixes everything
 #[embassy_executor::task]
 pub async fn your_mom(ds: DataSender) {
+    let mut idx = 10;
     loop {
         info!("Your mom");
         Timer::after_secs(1).await;
-        ds.send(Datapoint::new(Datatype::BatteryVoltageLow, 6543, Instant::now().as_ticks())).await;
+        ds.send(Datapoint::new(Datatype::BatteryVoltageHigh, 42, Instant::now().as_ticks())).await;
+        ds.send(Datapoint::new(Datatype::BatteryBalanceHigh, 69, Instant::now().as_ticks())).await;
+        ds.send(Datapoint::new(Datatype::BatteryCurrentHigh, idx, Instant::now().as_ticks())).await;
+        // ds.send(Datapoint::new(Datatype::BatteryVoltageHigh, 6543, Instant::now().as_ticks())).await;
+        idx = (idx + 9)%50;
     }
 }
