@@ -83,18 +83,10 @@ pub async fn can_receiving_handler(
                            // event_sender.send(Event::ConnectionEstablishedEvent).await;
                         } else if GFD_IDS.contains(&id) {
                             if id == Datatype::IMDVoltageDetails.to_id() {
-                                data_sender.send(Datapoint::new(
-                                    Datatype::IMDVoltageDetails,
-                                    ground_fault_detection_voltage_details(frame.data()).await,
-                                    timestamp.as_ticks(),
-                                )).await;
+                                ground_fault_detection_isolation_details(frame.data(),data_sender,timestamp.as_ticks()).await;
                             }
-                            else {
-                            data_sender.send(Datapoint::new(
-                                Datatype::IMDIsolationDetails,
-                                ground_fault_detection_isolation_details(frame.data()).await,
-                                timestamp.as_ticks(),
-                            )).await;
+                            else if id == Datatype::IMDVoltageDetails.to_id(){
+                                ground_fault_detection_voltage_details(frame.data(),data_sender,timestamp.as_ticks()).await;
                             }
 
                         }
@@ -123,7 +115,7 @@ pub async fn can_receiving_handler(
             }
             Err(e) => {
                 if error_counter < 10 || error_counter % 2500 == 0 {
-                    error!("[CAN] Error reading from CAN bus (#{}): {:?}", error_counter, e);
+                    error!("[CAN] Error reading from CAN bus (bus nr {}) (#{}): {:?}", if utils.is_none() { 1 } else { 2 }, error_counter, e);
                 }
                 Timer::after_millis(500);
                 error_counter += 1;
