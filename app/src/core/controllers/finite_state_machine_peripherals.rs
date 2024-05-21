@@ -15,12 +15,13 @@ use embassy_sync::mutex::Mutex;
 use embassy_sync::priority_channel::{PriorityChannel, Sender};
 use embassy_time::{Duration, Instant, Timer};
 use heapless::binary_heap::Max;
+use crate::core::controllers::hv_controller::HVPeripherals;
 
 pub struct FSMPeripherals {
     pub braking_controller: BrakingController,
     pub eth_controller: EthernetController,
     pub can_controller: CanController,
-    //  pub hv_controller: BatteryController,
+    pub hv_peripherals: HVPeripherals,
     //  pub lv_controller: BatteryController,
 }
 
@@ -83,6 +84,7 @@ impl FSMPeripherals {
             braking_controller,
             eth_controller,
             can_controller,
+            hv_peripherals: HVPeripherals::new(p.PB4).await,
         }
     }
 }

@@ -28,6 +28,10 @@ impl Default for BackendState {
 
 
 pub fn tauri_main() {
+    println!("Starting tauri application");
+    println!("Starting tauri application");
+    println!("Starting tauri application");
+    println!("Starting tauri application");
     tauri::Builder::default()
         .manage(BackendState::default())
         .invoke_handler(tauri::generate_handler![unload_buffer, send_command, generate_test_data])
@@ -36,28 +40,30 @@ pub fn tauri_main() {
             let (command_sender, command_receiver) = std::sync::mpsc::channel();
             data_sender.send(Message::Info("Station started".to_string())).unwrap();
             unsafe { COMMAND_SENDER.replace(command_sender); }
-            std::thread::spawn(move ||
-                Station::new().launch(data_sender, command_receiver)
-            );
+            std::thread::spawn(move || {
+                println!("Starting station");
+                Station::new().launch(data_sender, command_receiver);
+            });
             let app_handle = app.handle();
             tauri::async_runtime::spawn(async move {
                 loop {
                     if let Ok(msg) = message_receiver.recv() {
                         match msg {
                             Message::Data(dp) => {
+                                println!("Received datapoint: {:?}", dp);
                                 app_handle.state::<BackendState>().data_buffer.lock().unwrap().push(Message::Data(dp));
                             }
                             Message::Status(s) => {
-                                app_handle.emit_to(STATUS_CHANNEL, &*format!("{:?}", s), format!("{}",s.colour())).unwrap()
+                                app_handle.emit_all(STATUS_CHANNEL, &*format!("{:?}", s)).unwrap()
                             }
                             Message::Info(i) => {
-                                app_handle.emit_to(INFO_CHANNEL, &*format!("{}", i), "your mom".to_string()).unwrap()
+                                app_handle.emit_all(INFO_CHANNEL, &*format!("{}", i)).unwrap()
                             }
                             Message::Warning(w) => {
-                                app_handle.emit_to(WARNING_CHANNEL, &*format!("{}", w), "your mom".to_string()).unwrap()
+                                app_handle.emit_all(WARNING_CHANNEL, &*format!("{}", w)).unwrap()
                             }
                             Message::Error(e) => {
-                                app_handle.emit_to(ERROR_CHANNEL, &*format!("{}", e), "your mom".to_string()).unwrap()
+                                app_handle.emit_all(ERROR_CHANNEL, &*format!("{}", e)).unwrap()
                             }
                         }
                     }
@@ -97,18 +103,23 @@ pub fn generate_test_data() -> Vec<Datapoint> {
     let value: u64 = rng.gen_range(0..101);
     let value2: u64 = rng.gen_range(0..101);
     let value3: u64 = rng.gen_range(0..101);
+    let value4: u64 = rng.gen_range(0..900000000000000);
 
     let datapoint = Datapoint { value, datatype:Datatype::from_id(0x3A3), timestamp:0 };
     let datapoint2 = Datapoint { value:value2, datatype:Datatype::from_id(0x19F), timestamp:0 };
     let datapoint3 = Datapoint { value:1, datatype:Datatype::from_id(0x3AA), timestamp:0 };
     let datapoint4 = Datapoint { value:2, datatype:Datatype::from_id(0x3AA), timestamp:0 };
     let datapoint5 = Datapoint { value:3, datatype:Datatype::from_id(0x3AA), timestamp:0 };
+    let datapoint6 = Datapoint { value:value4, datatype:Datatype::BatteryVoltageHigh, timestamp:0 };
+    let datapoint7 = Datapoint { value:value4, datatype:Datatype::BatteryTemperatureHigh, timestamp:0 };
 
     datapoints.push(datapoint);
     datapoints.push(datapoint2);
     datapoints.push(datapoint3);
     datapoints.push(datapoint4);
     datapoints.push(datapoint5);
+    datapoints.push(datapoint6);
+    datapoints.push(datapoint7);
 
     datapoints
 }

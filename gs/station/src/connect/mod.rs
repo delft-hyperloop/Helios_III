@@ -22,6 +22,12 @@ impl Datapoint {
             timestamp,
         }
     }
+    pub fn from_bytes(buf: &[u8; 20]) -> Self {
+        Datapoint::new(
+            Datatype::from_id(u16::from_be_bytes([buf[1], buf[2]])),
+            u64::from_le_bytes([buf[3], buf[4], buf[5], buf[6], buf[7], buf[8], buf[9], buf[10]]),
+            u64::from_le_bytes([buf[11], buf[12], buf[13], buf[14], buf[15], buf[16], buf[17], buf[18]]))
+    }
 }
 
 pub struct Station {
@@ -49,16 +55,18 @@ impl Station {
 
         let listener = server.unwrap();
         tx.send(Message::Status(Status::ServerStarted)).expect("[Station] Failed to send on msg tx");
+        tx.send(Message::Info(format!("Listening on {}", GS_SOCKET()))).expect("[Station] Failed to send on msg tx");
         match listener.accept() {
             Ok((stream, client_socket)) => {
-                if client_socket.ip().ne(&IpAddr::from(POD_IP_ADDRESS.0)) {
-                    tx.send(Message::Status(Status::UnknownClient)).expect("[Station] Failed to send on msg tx");
-                    tx.send(Message::Error(format!("Unknown client tried to connect: {:?}", client_socket))).expect("[Station] Failed to send on msg tx");
-                } else {
+                // if client_socket.ip().ne(&IpAddr::from(POD_IP_ADDRESS.0)) {
+                //     tx.send(Message::Status(Status::UnknownClient)).expect("[Station] Failed to send on msg tx");
+                //     tx.send(Message::Error(format!("Unknown client tried to connect: {:?}", client_socket))).expect("[Station] Failed to send on msg tx");
+                // } else {
                     tx.send(Message::Status(Status::ConnectionEstablished)).expect("[Station] Failed to send on msg tx");
+                    tx.send(Message::Info(format!("Client connected: {:?}", client_socket))).expect("[Station] Failed to send on msg tx");
                     let handler = Handler {};
                     handler.handle(stream, tx.clone(), rx);
-                }
+                // }
             }
             Err(e) => {
                 tx.send(Message::Error(format!("Failed to accept connection: {}", e))).expect("[Station] Failed to send on msg tx");

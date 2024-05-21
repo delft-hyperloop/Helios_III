@@ -1,10 +1,19 @@
 use crate::core::finite_state_machine::*;
-use crate::Event;
-use defmt::info;
+use crate::{Datatype, Event};
+use defmt::{info, warn};
+use embassy_stm32::gpio::Level::High;
+use embassy_stm32::gpio::Output;
+use crate::core::communication::Datapoint;
 
 impl FSM {
     pub async fn entry_hv_system_checking(&mut self) {
-        todo!();
+        #[cfg(debug_assertions)]
+        info!("Entering HV System Checking");
+        self.status.reset();
+        self.peripherals.hv_peripherals.enable_pin.set_high();
+        warn!("HV SYSTEM IS ON!");
+        warn!("HV SYSTEM IS ON!");
+        warn!("HV SYSTEM IS ON!");
     }
 
     pub async fn react_hv_system_checking(&mut self, event: Event) {
@@ -20,11 +29,11 @@ impl FSM {
             }
             Event::StartLevitatingCommand => {
                 if (self.status.check_all()) {
-                    self.transit(State::Levitating);
+                    self.transit(State::Levitating).await;
                 }
                 todo!();
 
-                self.transit(State::Levitating)
+                self.transit(State::Levitating).await
             }
             /// This is commented out because it was refactored to be handled by the default react ///
             // /// Error Events that are core from all states that HV is on

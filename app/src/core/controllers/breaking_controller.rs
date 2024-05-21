@@ -13,7 +13,7 @@ use embassy_sync::priority_channel::Sender;
 use embassy_time::{Duration, Instant, Timer};
 use heapless::binary_heap::Max;
 
-static mut BRAKE: bool = false;
+pub static mut BRAKE: bool = false;
 
 pub struct BrakingController {
     pub braking_rearm: Output<'static>,
@@ -34,7 +34,7 @@ pub async fn run(sender: EventSender, mut braking_heartbeat: SimplePwm<'static, 
         else {
             braking_heartbeat.set_duty(Channel::Ch1, 0);
             sender.send(Event::EmergencyBrakeCommand).await;
-            info!("------------ BRAKE !-----");
+            info!("------------ BRAKE ! ------------");
         }
         if booting {
             sender.send(Event::BootingCompleteEvent).await;

@@ -8,7 +8,7 @@
 <div class="pt-2 rounded-lg1 {background}">
     <table class="text-sm w-full">
         <thead>
-        <tr class="{background} text-center p-4 border-b border-b-surface-700">
+        <tr style="grid-template-columns: repeat({titles.length}, 1fr);" class="{background} grid text-center border-b border-b-surface-700">
             {#each titles as title}
                 <th class="font-medium">{title}</th>
             {/each}
@@ -16,7 +16,7 @@
         </thead>
         <tbody>
         {#each tableArr as row}
-            <tr class="{background} border-b border-b-surface-700">
+            <tr style="grid-template-columns: repeat({row.length}, 1fr);" class="grid {background} border-b border-b-surface-700">
                 {#each row as cell, i}
                     <td class="{i === 0 ? 'px-2' : 'px-4'}
                            {i === row.length-1 ? '' : 'border-r border-r-primary-700'}">
@@ -32,4 +32,3 @@
         </tbody>
     </table>
 </div>
-

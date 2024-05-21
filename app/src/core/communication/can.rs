@@ -50,9 +50,11 @@ pub async fn can_receiving_handler(
         "[CAN] Ready for bus {:?}",
         if utils.is_none() { 1 } else { 2 }
     );
+    let mut error_counter = 0u64;
     loop {
         match bus.read().await {
             Ok(envelope) => {
+                error_counter = 0;
                 let (frame,timestamp) = envelope.parts();
                 let id = id_as_value(frame.id());
                 #[cfg(debug_assertions)]
@@ -120,12 +122,16 @@ pub async fn can_receiving_handler(
                 }
             }
             Err(e) => {
-                error!("[CAN] Error reading from CAN bus: {:?}", e);
+                if error_counter < 10 || error_counter % 2500 == 0 {
+                    error!("[CAN] Error reading from CAN bus (#{}): {:?}", error_counter, e);
+                }
+                Timer::after_millis(500);
+                error_counter += 1;
             }
         }
         /// # VERY IMPORTANT
         /// without this, our main pcb is magically converted to an adhd CAN pcb
         /// with no mind for anything else. Tread carefully around it
-        Timer::after_micros(100).await;
+        Timer::after_micros(1000).await;
     }
 }

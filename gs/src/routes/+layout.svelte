@@ -12,6 +12,10 @@
         hvBatCurrent
     } from "$lib";
     import {initializeStores, Toast} from '@skeletonlabs/skeleton';
+    import type {BmsModuleTemperature, BmsModuleVoltage} from "$lib/types";
+    import {hvModulesTemp, hvModulesVol} from "$lib/stores/data";
+    import {moduleTemperature} from "$lib/util/DecodeBMS";
+    import {get} from "svelte/store";
 
     initializeStores();
 
@@ -26,12 +30,29 @@
         });
 
         let gdd = GrandDataDistributor.getInstance();
-        gdd.stores.registerStore<number>("BatteryBalanceHigh", hvBattery);
-        gdd.stores.registerStore<number>("BatteryBalanceLow", lvBattery);
-        gdd.stores.registerStore<number>("BatteryCurrentHigh", hvBatCurrent, data => {
+        gdd.stores.registerStore<bigint>("BatteryBalanceHigh", hvBattery);
+        gdd.stores.registerStore<bigint>("BatteryBalanceLow", lvBattery);
+        gdd.stores.registerStore<bigint>("BatteryCurrentHigh", hvBatCurrent, data => {
             emit('current_hv', {x: 50, y: data})
             return data;
         });
+
+        gdd.stores.registerStore<BmsModuleTemperature[]>("BatteryTemperatureHigh", hvModulesTemp, data => {
+            let {id, max, min, avg} = moduleTemperature(data);
+
+            let updatedArray = [...get(hvModulesTemp)]
+            updatedArray[Number(id)] = {id, max, min, avg};
+            return updatedArray;
+        });
+
+        gdd.stores.registerStore<BmsModuleVoltage[]>("BatteryVoltageHigh", hvModulesVol, data => {
+            let {id, max, min, avg} = moduleTemperature(data);
+
+            let updatedArray = [...get(hvModulesVol)];
+            updatedArray[Number(id)] = {id, max, min, avg};
+            return updatedArray;
+        });
+
         gdd.start(100);
     });
 

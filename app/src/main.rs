@@ -29,7 +29,7 @@ use embassy_stm32::{bind_interrupts, can, eth, peripherals, rcc, rng, Config};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
 use embassy_sync::priority_channel::*;
-use embassy_time::Timer;
+use embassy_time::{Instant, Timer};
 use embedded_io_async::Write;
 use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
 use futures::task::SpawnExt;
@@ -191,7 +191,7 @@ async fn main(spawner: Spawner) -> ! {
     ///
 
     // Begin Spawn Tasks
-
+//    try_spawn!(event_sender, spawner.spawn(your_mom(data_sender.clone())));
     // End Spawn Tasks
 
     /// # Main Loop
@@ -200,5 +200,21 @@ async fn main(spawner: Spawner) -> ! {
         let curr_event = fsm.event_queue.receive().await;
         info!("[main] received event: {:?}", curr_event.to_id());
         fsm.react(curr_event).await;
+    }
+}
+
+/// # Your Mom
+/// she fixes everything
+#[embassy_executor::task]
+pub async fn your_mom(ds: DataSender) {
+    let mut idx = 10;
+    loop {
+        info!("Your mom");
+        Timer::after_secs(1).await;
+        ds.send(Datapoint::new(Datatype::BatteryVoltageHigh, 42, Instant::now().as_ticks())).await;
+        ds.send(Datapoint::new(Datatype::BatteryBalanceHigh, 69, Instant::now().as_ticks())).await;
+        ds.send(Datapoint::new(Datatype::BatteryCurrentHigh, idx, Instant::now().as_ticks())).await;
+        // ds.send(Datapoint::new(Datatype::BatteryVoltageHigh, 6543, Instant::now().as_ticks())).await;
+        idx = (idx + 9)%50;
     }
 }

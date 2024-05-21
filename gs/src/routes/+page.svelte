@@ -44,6 +44,3 @@
         </Pane>
     </Splitpanes>
 </main>
-
-<style global lang="scss">
-</style>

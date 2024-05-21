@@ -8,10 +8,13 @@ use embassy_stm32;
 use embassy_stm32::Peripherals;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::{PriorityChannel, Receiver};
+use embassy_time::Instant;
 use heapless::binary_heap::Max;
 use heapless::Deque;
 
 //Enum holding different states that the FSM can be in
+#[derive(Clone, Copy, Debug, Format)]
+#[repr(u64)]
 pub enum State {
     Boot,
     EstablishConnection,
@@ -31,23 +34,7 @@ pub enum State {
 /// All the functionalities states can have like converting to id's or format print statements should go here
 /// The actual implementation of each state should just be attached to the state machine in separate files
 impl State {
-    pub fn fmt(&self) {
-        match self {
-            State::Boot => info!("Boot"),
-            State::EstablishConnection => info!("EstablishConnection"),
-            State::Idle => info!("Idle"),
-            State::HVSystemChecking => info!("HVSystemChecking"),
-            State::Levitating => info!("Levitating"),
-            State::Accelerating => info!("Accelerating"),
-            State::Cruising => info!("Cruising"),
-            State::LaneSwitch => info!("LaneSwitching"),
-            State::Braking => info!("Braking"),
-            State::EmergencyBraking => info!("EmergencyBraking"),
-            State::Exit => info!("Quit"),
-            State::Crashing => info!("Crashing"),
-            _ => info! { "Unknown"},
-        }
-    }
+
 }
 
 // [!!!!!] [April 3 2024] -> This is here as a reference only, if you want to add or edit events go to ../config/events.toml
@@ -153,12 +140,11 @@ impl FSM {
 
     /// Function used to transit states of Megalo --> Comes from Megahni and Gonzalo
     ///
-    pub fn transit(&mut self, next_state: State) {
-        info!("Exiting state: ");
-        self.state.fmt();
-        info!("Entering state: ");
-        next_state.fmt();
+    pub async fn transit(&mut self, next_state: State) {
+        info!("Exiting state: {:?}", self.state);
+        info!("Entering state: {:?}", next_state);
         self.state = next_state;
+        self.data_queue.send(Datapoint::new(Datatype::FSMState, next_state as u64, Instant::now().as_ticks())).await;
         self.entry();
     }
     pub async fn entry(&mut self) {
@@ -191,7 +177,7 @@ impl FSM {
             | Event::PowertrainErrorEvent
             | Event::ConnectionLossEvent
             | Event::EmergencyBrakeCommand => {
-                self.transit(State::EmergencyBraking);
+                self.transit(State::EmergencyBraking).await;
                 return;
             }
             _ => {}

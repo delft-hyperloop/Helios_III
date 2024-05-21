@@ -2,6 +2,7 @@ use std::cmp::min;
 use crate::tui::app::App;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use crate::Command::EmergencyBrake;
+use crate::COMMAND_IDS;
 
 impl App {
     /// updates the application's state based on user input
@@ -33,7 +34,7 @@ impl App {
     fn handle_key_event(&mut self, key_event: KeyEvent) {
         match key_event.code {
             KeyCode::Char('q') => self.exit(),
-            KeyCode::Esc => self.send_command(EmergencyBrake(0)),
+            KeyCode::Esc => self.send_command(crate::Command::EmergencyBrake(0)),
             KeyCode::Up => self.scroll_up(1),
             KeyCode::Down => self.scroll_down(1),
             KeyCode::Char('k') | KeyCode::Char('j') => self.scroll_down(10),
@@ -42,12 +43,48 @@ impl App {
             KeyCode::Char('i') => self.scroll_up(10),
             KeyCode::Char('s') => self.launch_station(),
             // KeyCode::Char('t') => self.logs.push((LogType::Warning, format!("{}:  this is a testing goose",Util::Now()).parse().unwrap())),
-            // KeyCode::Tab => {
-            //     self.selected = (self.selected + 1) % 4;
-            // }
-            // KeyCode::BackTab => {
-            //     self.selected = (self.selected + 3) % 4;
-            // }
+            KeyCode::Tab => {
+                self.selected_row = (self.selected_row + 1) % 10;
+            }
+            KeyCode::BackTab => {
+                self.selected_row = (self.selected_row + 9) % 10;
+            }
+            KeyCode::Enter => {
+                self.send_command(crate::Command::from_id(COMMAND_IDS[self.selected_row], self.cmd_values[self.selected_row]));
+            }
+            KeyCode::Char('1') => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 1;
+            }
+            KeyCode::Char('2') => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 2;
+            }
+            KeyCode::Char('3') => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 3;
+            }
+            KeyCode::Char('4') => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 4;
+            }
+            KeyCode::Char('5') => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 5;
+            }
+            KeyCode::Char('6') => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 6;
+            }
+            KeyCode::Char('7') => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 7;
+            }
+            KeyCode::Char('8') => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 8;
+            }
+            KeyCode::Char('9') => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 9;
+            }
+            KeyCode::Char('0') => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10;
+            }
+            KeyCode::Backspace => {
+                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] / 10;
+            }
             _ => {}
         }
     }
