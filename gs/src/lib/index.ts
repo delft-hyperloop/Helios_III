@@ -36,16 +36,13 @@ import util from "$lib/util/util";
 import type {Payload, NamedCommand, EventChannel, TempTableEntry, Log} from "$lib/types";
 
 // Stores
-import {south_bridge_payload, hvBattery, lvBattery, hvBatCurrent} from "$lib/stores/data";
+import {south_bridge_payload} from "$lib/stores/data";
 import {detailTabSet, inputSpeed, details_pane, vitals_pane} from "$lib/stores/state";
 
 // Export all
 export {
-    hvBatCurrent,
-    lvBattery,
     StrokePresets,
     GrandDataDistributor,
-    hvBattery,
     PneumaticsTab,
     TileGrid,
     details_pane,

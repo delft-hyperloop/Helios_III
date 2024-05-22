@@ -3,7 +3,7 @@
 </script>
 
 {#if status}
-    <p class="text-primary-400">Connected</p>
+    <p class="text-primary-400">armed</p>
 {:else}
-    <p class="text-error-400">Disconnected</p>
+    <p class="text-error-400">unarmed</p>
 {/if}

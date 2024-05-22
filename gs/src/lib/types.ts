@@ -44,7 +44,7 @@ export type EventChannel = 'north_bridge' | 'south_bridge';
 /**
  * Function to convert data received at DATAPOINT.value to a given type
  */
-export type dataConvFun<T> = (data: bigint) => T;
+export type dataConvFun<T> = (data: bigint, old:T) => T;
 
 /**
  * BMS Module Voltage
