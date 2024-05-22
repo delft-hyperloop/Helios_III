@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {south_bridge_payload, Table, Localiser, TileGrid, Tile} from "$lib";
+    import {south_bridge_payload, Table, Localiser, TileGrid, Tile, Chart} from "$lib";
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -22,7 +22,7 @@
             <Localiser loc={$south_bridge_payload.value} max={50} turning={false}/>
         </Tile>
         <Tile>
-            <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
+            <Chart eventChannel="speed" title="Speed" background="bg-surface-900" />
         </Tile>
         <Tile containerClass="col-start-2">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>

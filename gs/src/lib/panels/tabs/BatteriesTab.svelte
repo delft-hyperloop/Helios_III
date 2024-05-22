@@ -1,6 +1,20 @@
 <script lang="ts">
-    import {Battery, Chart, hvBattery, lvBattery, south_bridge_payload, Status, Table, Tile, TileGrid} from "$lib";
-    import {hvModulesTemp, hvModulesVol} from "$lib/stores/data";
+    import {
+        Battery,
+        Chart,
+        GrandDataDistributor,
+        south_bridge_payload,
+        Status,
+        Table,
+        Tile,
+        TileGrid
+    } from "$lib";
+
+    const storeManager = GrandDataDistributor.getInstance().stores;
+    const hvModulesTemp = storeManager.getStore("BatteryTemperatureHigh")
+    const hvModulesVol = storeManager.getStore("BatteryVoltageHigh")
+    const lvBattery = storeManager.getStore("BatteryBalanceLow");
+    const hvBattery = storeManager.getStore("BatteryBalanceHigh");
 
     let titles = ["Battery", "Avg cell V", "Max cell V", "Min cell V"
         , "Avg cell °C", "Max cell °C", "Min cell °C"];

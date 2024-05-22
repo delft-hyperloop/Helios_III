@@ -1,5 +1,5 @@
 import {invoke} from "@tauri-apps/api/tauri";
-import {type Writable} from "svelte/store";
+import {get, type Writable, writable} from "svelte/store";
 import type {dataConvFun, Datapoint, NamedDatatype} from "$lib/types";
 
 /**
@@ -9,13 +9,23 @@ import type {dataConvFun, Datapoint, NamedDatatype} from "$lib/types";
  *
  * @example
  * ```typescript
+ *  // +layout.svelte
  *  let gdd = GrandDataDistributor.getInstance();
- *  gdd.registerStore('temperature', temperatureStore, (data) => data + 273.15);
+ *  gdd.registerStore('BatteryBalanceHigh');
  *  gdd.start(1000);
  * ```
  *
+ * ```svelte
+ * .
+ * <!-- +page.svelte -->
+ * <script>
+ *     let gdd = GrandDataDistributor.getInstance();
+ *     let store = gdd.stores.get('BatteryBalanceHigh');
+ * </script>
+ * <h1>{$store}</h1>
+ *
  * @see StateManager
- * @version 1.0
+ * @version 2.0
  */
 export class GrandDataDistributor {
     private intervalId: NodeJS.Timeout | null = null;
@@ -62,7 +72,7 @@ export class GrandDataDistributor {
      * @private
      */
     private async fetchData() {
-        const data:Datapoint[] = await invoke('unload_buffer');
+        const data:Datapoint[] = await invoke('generate_test_data');
         this.processData(data);
     }
 
@@ -77,6 +87,9 @@ export class GrandDataDistributor {
         });
     }
 
+    /**
+     * Get the store manager
+     */
     get stores() {
         return this.StoreManager;
     }
@@ -95,11 +108,12 @@ class StoreManager {
     /**
      * Register a store
      * @param name - the name of the store
-     * @param store - the store
+     * @param initial
      * @param processFunction - the function to process the data
      */
-    public registerStore<T>(name: NamedDatatype, store: Writable<T>, processFunction?: dataConvFun<T>) {
-        this.stores.set(name, new Store(store, processFunction));
+    public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>) {
+        if (this.stores.has(name)) throw new Error(`Store with name ${name} already exists`);
+        this.stores.set(name, new Store(initial, processFunction));
     }
 
     /**
@@ -111,24 +125,32 @@ class StoreManager {
         const store = this.stores.get(name);
         if (store) store.set(data);
     }
+
+    public getStore(name: NamedDatatype):Writable<any> {
+        if (!this.stores.has(name)) throw new Error(`Store with name ${name} does not exist`);
+        return this.stores.get(name)!.getWritable;
+    }
 }
 
 /**
  * The Store class is responsible for managing the data store
  * and processing the data before setting it to the store.
  * This allows for processing the data before setting it to the store.
- * @version 1.0
  */
 class Store<T> {
-    private readonly writable: Writable<T>;
     private readonly processFunction: dataConvFun<T>;
+    private readonly writable: Writable<T>;
 
-    constructor(writable:Writable<T>, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
-        this.writable = writable;
+    constructor(initial:T, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
+        this.writable = writable<T>(initial);
         this.processFunction = processFunction;
     }
 
     public set(data: bigint) {
-        this.writable.set(this.processFunction(data));
+        this.writable.set(this.processFunction(data, get(this.writable)));
+    }
+
+    public get getWritable():Writable<T> {
+        return this.writable;
     }
 }

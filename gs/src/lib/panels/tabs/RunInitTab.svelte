@@ -45,7 +45,7 @@
             <div>
                 <label for="speed_input">Speed: </label>
                 <input name="speed_input" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="100" step="1">
-                <label for="pos_input">Position: </label>
+                <label for="pos_input">Braking Point position: </label>
                 <input name="pos_input" bind:value={$inputPosit} class="input rounded-md px-2 col-span-2" type="number" min="0" max="60000" step="1">
                 <label for="accel_input">Acceleration: </label>
                 <input name="accel_input" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="100" step="1">
@@ -79,10 +79,8 @@
             <Status status={$south_bridge_payload.value % 2 === 0} />
             <p>Localization:</p>
             <Status status={$south_bridge_payload.value % 2 === 1} />
-            <p>Prop Thermal:</p>
+            <p>Breaking PCB:</p>
             <Status status={$south_bridge_payload.value % 2 === 0} />
-            <p>Levi Thermal:</p>
-            <Status status={$south_bridge_payload.value % 2 === 1} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
