@@ -24,7 +24,10 @@
         <Tile>
             <Chart eventChannel="speed" title="Speed" background="bg-surface-900" />
         </Tile>
-        <Tile containerClass="col-start-2">
+        <Tile>
+            <Chart eventChannel="speed" title="Acceleration" background="bg-surface-900" />
+        </Tile>
+        <Tile containerClass="col-start-1 col-span-2">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
         </Tile>
     </TileGrid>
