@@ -80,7 +80,7 @@
             <p>Localization:</p>
             <Status status={$south_bridge_payload.value % 2 === 1} />
             <p>Breaking PCB:</p>
-            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <Status on="armed" off="unarmed" status={$south_bridge_payload.value % 2 === 0} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
