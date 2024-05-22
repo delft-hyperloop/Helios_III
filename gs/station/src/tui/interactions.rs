@@ -42,6 +42,7 @@ impl App {
             KeyCode::Char('u') => self.scroll_up(10000),
             KeyCode::Char('i') => self.scroll_up(10),
             KeyCode::Char('s') => self.launch_station(),
+            // KeyCode::Char('l') =>
             // KeyCode::Char('t') => self.logs.push((LogType::Warning, format!("{}:  this is a testing goose",Util::Now()).parse().unwrap())),
             KeyCode::Tab => {
                 self.selected_row = (self.selected_row + 1) % 10;
