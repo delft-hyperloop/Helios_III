@@ -22,6 +22,9 @@
 
         // TODO: REMOVE THIS, IT'S ONLY FOR TESTING
         emit('speed', {data})
+        emit('ems', {values: [Math.random()*20, 25+Math.random()*20, 50+Math.random()*20, 75+Math.random()*20]})
+        emit('hems', {values: [Math.random()*20, 25+Math.random()*20, 50+Math.random()*20, 75+Math.random()*20]})
+
         return data;
     });
 
