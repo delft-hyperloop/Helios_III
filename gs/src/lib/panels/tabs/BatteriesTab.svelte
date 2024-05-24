@@ -44,7 +44,7 @@
         </Tile>
         <Tile containerClass="col-span-2" insideClass="flex justify-center h-full gap-2 items-center">
             <p>HV Battery relay status:</p>
-            <Status status={false} />
+            <Status on="closed" off="open" status={false} />
         </Tile>
         <Tile insideClass="flex h-full items-center">
             <div class="flex flex-col ml-4">
