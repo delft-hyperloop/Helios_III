@@ -25,6 +25,47 @@ name = "IMDVoltageDetails"
 id = 0x39
 
 
+# Temperature PCB 1 sensors
+[[Datatype]]
+name = "temp1"
+id = 0x0A
+
+[[Datatype]]
+name = "temp2"
+id = 0x0B
+
+[[Datatype]]
+name = "temp3"
+id = 0x13
+
+[[Datatype]]
+name = "temp4"
+id = 0x14
+
+[[Datatype]]
+name = "temp5"
+id = 0x18
+
+[[Datatype]]
+name = "temp6"
+id = 0x19
+
+[[Datatype]]
+name = "temp7"
+id = 0x1A
+
+[[Datatype]]
+name = "temp8"
+id = 0x1B
+
+[[Datatype]]
+name = "temp9"
+id = 0x1C
+
+[[Datatype]]
+name = "temp10"
+id = 0x1D
+
 
 [[Datatype]]
 name = "DefaultBMSLow"
