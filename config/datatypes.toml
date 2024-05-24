@@ -28,43 +28,43 @@ id = 0x39
 # Temperature PCB 1 sensors
 [[Datatype]]
 name = "temp1"
-id = 0x0A
+id = 0x90A
 
 [[Datatype]]
 name = "temp2"
-id = 0x0B
+id = 0x90B
 
 [[Datatype]]
 name = "temp3"
-id = 0x13
+id = 0x913
 
 [[Datatype]]
 name = "temp4"
-id = 0x14
+id = 0x914
 
 [[Datatype]]
 name = "temp5"
-id = 0x18
+id = 0x918
 
 [[Datatype]]
 name = "temp6"
-id = 0x19
+id = 0x919
 
 [[Datatype]]
 name = "temp7"
-id = 0x1A
+id = 0x91A
 
 [[Datatype]]
 name = "temp8"
-id = 0x1B
+id = 0x91B
 
 [[Datatype]]
 name = "temp9"
-id = 0x1C
+id = 0x91C
 
 [[Datatype]]
 name = "temp10"
-id = 0x1D
+id = 0x91D
 
 
 [[Datatype]]
