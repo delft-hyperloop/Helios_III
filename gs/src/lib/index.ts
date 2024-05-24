@@ -37,10 +37,11 @@ import type {Payload, NamedCommand, EventChannel, TempTableEntry, Log} from "$li
 
 // Stores
 import {south_bridge_payload} from "$lib/stores/data";
-import {detailTabSet, inputSpeed, details_pane, vitals_pane} from "$lib/stores/state";
+import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn} from "$lib/stores/state";
 
 // Export all
 export {
+    inputTurn,
     StrokePresets,
     GrandDataDistributor,
     PneumaticsTab,
