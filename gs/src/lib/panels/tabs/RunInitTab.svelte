@@ -1,15 +1,8 @@
 <script lang="ts">
-    import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, Command, Tile, TileGrid} from "$lib";
-    import type {IntervalFunction} from "$lib/types";
+    import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, inputTurn, Command, Tile, TileGrid} from "$lib";
+    import {type IntervalFunction, RunMode} from "$lib/types";
     import {inputEmerg, inputPosit} from "$lib/stores/state";
 
-    enum Mode {
-        ShortRun = 1,
-        LeftSwitch = 2,
-        RightSwitch = 3
-    }
-
-    let selectedMode:Mode = Mode.ShortRun;
     let calculateTheoretical:IntervalFunction;
     let clearRuns: () => void;
 
@@ -32,13 +25,19 @@
     <TileGrid columns="1fr 1fr 1.5fr" rows="auto 1fr">
         <Tile containerClass="row-span-2" insideClass="flex flex-col gap-2" heading="Run Initialisation">
             <div class="flex justify-between col-span-2">
-                <button class="btn flex-grow bg-surface-700 rounded-none rounded-l-lg p-2" type="button" class:active={selectedMode === 1} on:click={() => selectedMode = Mode.ShortRun}>
+                <button class="btn flex-grow bg-surface-700 rounded-none rounded-l-lg p-2" type="button"
+                        class:active={$inputTurn === RunMode.ShortRun}
+                        on:click={() => inputTurn.set(RunMode.ShortRun)}>
                     Short run
                 </button>
-                <button class="btn flex-grow bg-surface-700 rounded-none p-2" type="button" class:active={selectedMode === 2} on:click={() => selectedMode = Mode.LeftSwitch}>
+                <button class="btn flex-grow bg-surface-700 rounded-none p-2" type="button"
+                        class:active={$inputTurn === RunMode.LeftSwitch}
+                        on:click={() => inputTurn.set(RunMode.LeftSwitch)}>
                     Left switch
                 </button>
-                <button class="btn flex-grow bg-surface-700 rounded-none rounded-r-lg p-2" type="button" class:active={selectedMode === 3} on:click={() => selectedMode = Mode.RightSwitch}>
+                <button class="btn flex-grow bg-surface-700 rounded-none rounded-r-lg p-2" type="button"
+                        class:active={$inputTurn === RunMode.RightSwitch}
+                        on:click={() => inputTurn.set(RunMode.RightSwitch)}>
                     Right switch
                 </button>
             </div>
