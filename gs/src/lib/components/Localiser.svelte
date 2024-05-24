@@ -71,6 +71,7 @@
     });
 
     $: emergPosition = (pathLength * (util.normalize($inputEmerg, max) / 100))
+    $: emergYPosition = 26;
 
     $: if(progress_straight || progress_turn) {
         let normalized_loc = util.normalize(loc, max)
@@ -83,12 +84,14 @@
             point_divergence.style.fill = normalized_loc > 40 ? color_active : color_off;
             point_choice_turn.style.fill = normalized_loc > 73 ? color_active : color_off;
             point_end_turn.style.fill = normalized_loc >= 100 ? color_active : color_off;
+            emergYPosition = progress_turn.getPointAtLength(emergPosition).y;
         } else {
             progress_straight.style.strokeDashoffset = offset.toString();
             point_divergence.style.fill = normalized_loc > 38 ? color_active : color_off;
             point_choice_straight.style.fill = normalized_loc > 62 ? color_active : color_off;
             point_final.style.fill = normalized_loc > 74 ? color_active : color_off;
             point_end_straight.style.fill = normalized_loc >= 100 ? color_active : color_off;
+            emergYPosition = progress_straight.getPointAtLength(emergPosition).y;
         }
     }
 </script>
@@ -115,7 +118,7 @@
                     <circle bind:this={point_end_straight} cx="909" cy="26" r="10" fill="#525B5B"/>
                     <circle bind:this={point_choice_turn} cx="638" cy="78" r="10" fill="#525B5B"/>
                     <circle bind:this={point_end_turn} cx="860" cy="138" r="10" fill="#525B5B"/>
-                    <circle cx={emergPosition} cy="26" r="5" fill="red"/>
+                    <circle cx={emergPosition} cy={emergYPosition} r="5" fill="red"/>
                 </g>
             </g>
             <g id="labels">
