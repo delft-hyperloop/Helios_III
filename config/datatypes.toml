@@ -66,6 +66,17 @@ id = 0x91C
 name = "temp10"
 id = 0x91D
 
+[[Datatype]]
+name = "InsulationNegative"
+id = 0x50A
+
+[[Datatype]]
+name = "InsulationPositive"
+id = 0x50B
+
+[[Datatype]]
+name = "InsulationOriginal"
+id = 0x50C
 
 [[Datatype]]
 name = "DefaultBMSLow"
