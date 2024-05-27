@@ -53,7 +53,7 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> St
             command.name
         ));
         ids.push(command.id.to_string());
-        names.push_str(&*format!("\t\t\t\"{}\" => Command::{}(p),", command.name, command.name));
+        names.push_str(&*format!("\t\t\t\"{}\" => Command::{}(p),\n", command.name, command.name));
     }
 
     format!(

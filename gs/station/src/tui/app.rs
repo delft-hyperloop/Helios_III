@@ -21,6 +21,7 @@ pub struct App {
     message_sender: Option<Sender<Message>>,
     message_receiver: Option<Receiver<Message>>,
     command_sender: Option<Sender<Command>>,
+    levi_command_sender: Option<Sender<Command>>,
     command_receiver: Option<Receiver<Command>>,
     pub station_running: bool,
 }
@@ -42,6 +43,7 @@ impl App {
             command_sender: None,
             command_receiver: None,
             station_running: false,
+            levi_command_sender: None,
         }
     }
 
@@ -55,6 +57,7 @@ impl App {
         self.message_receiver = Some(data_receiver);
         self.command_sender = Some(command_sender);
         self.station_running = true;
+        self.message_sender = Some(data_sender.clone());
         std::thread::spawn(move ||
             Station::new().launch(data_sender, command_receiver)
         );
@@ -108,10 +111,37 @@ impl App {
         self.exit = true;
     }
 
+    pub fn launch_levi_software(&mut self) {
+        let (r, s) = crate::levi::start_levi_process();
+        let m = self.message_sender.clone();
+        std::thread::spawn(move || {
+            loop {
+                match r.recv() {
+                    Ok(msg) => {
+                        if let Some(ms) = &m {
+                            ms.send(msg).unwrap();
+                        } else {
+                            eprintln!("Failed to send message: {:?}", msg);
+                        }
+                    },
+                    Err(_) => {}
+                }
+            }
+        });
+        // replace self.levi_command_sender with s
+        self.levi_command_sender = Some(s);
+    }
+
     pub(crate) fn send_command(&mut self, command: Command) {
         if let Some(s) = self.command_sender.as_ref() {
             self.logs.push((Message::Info(format!("Trying to send command: {:?}", command)), timestamp()));
             s.send(command).unwrap();
+            if let Some(s) = self.levi_command_sender.as_ref() {
+                self.logs.push((Message::Info(format!("Trying to send command to levi: {:?}", command)), timestamp()));
+                s.send(command).unwrap();
+            } else {
+                self.logs.push((Message::Error(format!("Tried to send command `{:?}` with no connection to levi", command)), timestamp()));
+            }
         } else {
             self.logs.push((Message::Error(format!("Tried to send command `{:?}` with no connection to station", command)), timestamp()));
         }
