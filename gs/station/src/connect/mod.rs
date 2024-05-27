@@ -1,11 +1,11 @@
 mod handler;
 mod parser;
 
-use std::net::{IpAddr, TcpListener};
+use std::net::{TcpListener};
 use std::sync::mpsc::{Receiver, Sender};
 use crate::api::{Message, Status};
 use crate::connect::handler::Handler;
-use crate::{Command, Datatype, GS_SOCKET, POD_IP_ADDRESS};
+use crate::{Command, Datatype, GS_SOCKET};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Datapoint {

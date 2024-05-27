@@ -31,7 +31,7 @@ impl FSM {
                 self.transit(State::Exit).await
             }
             _ => {
-                info!("The current state ignores {}", event.to_str());
+                info!("Booting state ignores {}", event.to_str());
             }
         }
     }
