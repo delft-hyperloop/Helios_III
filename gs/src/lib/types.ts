@@ -44,7 +44,7 @@ export type EventChannel = 'north_bridge' | 'south_bridge';
 /**
  * Function to convert data received at DATAPOINT.value to a given type
  */
-export type dataConvFun<T> = (data: bigint) => T;
+export type dataConvFun<T> = (data: bigint, old:T) => T;
 
 /**
  * BMS Module Voltage
@@ -76,8 +76,22 @@ export type BmsModuleTemperature = {
     avg: bigint;
 }
 
+/**
+ * BMS Event with attached string event
+ */
 export type BMSEvent = {
     event: string
+}
+
+/**
+ * Enumerator for the types of run you can have
+ * Used in for the Localiser and for when choosing a rung in the RunInit tab.
+ * @enum {string} - straight, left or right
+ */
+export enum RunMode {
+    ShortRun = 'straight',
+    LeftSwitch = 'left',
+    RightSwitch = 'right'
 }
 
 // OLD TYPES
