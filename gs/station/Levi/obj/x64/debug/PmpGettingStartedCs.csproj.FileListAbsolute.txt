@@ -1,0 +1,9 @@
+C:\Rust\Helios_III\gs\station\Levi\obj\x64\debug\PmpGettingStartedCs.csproj.AssemblyReference.cache
+C:\Rust\Helios_III\gs\station\Levi\obj\x64\debug\PmpGettingStartedCs.csproj.SuggestedBindingRedirects.cache
+C:\Rust\Helios_III\gs\station\Levi\obj\x64\debug\PmpGettingStartedCs.csproj.CoreCompileInputs.cache
+C:\Rust\Helios_III\gs\station\Levi\windows-x86_64-debug\PmpGettingStartedCs.exe.config
+C:\Rust\Helios_III\gs\station\Levi\windows-x86_64-debug\PmpGettingStartedCs.exe
+C:\Rust\Helios_III\gs\station\Levi\windows-x86_64-debug\PmpGettingStartedCs.pdb
+C:\Rust\Helios_III\gs\station\Levi\obj\x64\debug\PmpGettingStartedCs.csproj.CopyComplete
+C:\Rust\Helios_III\gs\station\Levi\obj\x64\debug\PmpGettingStartedCs.exe
+C:\Rust\Helios_III\gs\station\Levi\obj\x64\debug\PmpGettingStartedCs.pdb

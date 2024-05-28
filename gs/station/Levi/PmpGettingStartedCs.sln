@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PmpGettingStartedCs", "PmpGettingStartedCs.csproj", "{A36C6B54-26BD-4595-81F1-2C3F49E2AAF3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		debug|x86_32 = debug|x86_32
+		debug|x86_64 = debug|x86_64
+		release|x86_32 = release|x86_32
+		release|x86_64 = release|x86_64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A36C6B54-26BD-4595-81F1-2C3F49E2AAF3}.debug|x86_32.ActiveCfg = debug|x86
+		{A36C6B54-26BD-4595-81F1-2C3F49E2AAF3}.debug|x86_32.Build.0 = debug|x86
+		{A36C6B54-26BD-4595-81F1-2C3F49E2AAF3}.debug|x86_64.ActiveCfg = debug|x64
+		{A36C6B54-26BD-4595-81F1-2C3F49E2AAF3}.debug|x86_64.Build.0 = debug|x64
+		{A36C6B54-26BD-4595-81F1-2C3F49E2AAF3}.release|x86_32.ActiveCfg = release|x86
+		{A36C6B54-26BD-4595-81F1-2C3F49E2AAF3}.release|x86_32.Build.0 = release|x86
+		{A36C6B54-26BD-4595-81F1-2C3F49E2AAF3}.release|x86_64.ActiveCfg = release|x64
+		{A36C6B54-26BD-4595-81F1-2C3F49E2AAF3}.release|x86_64.Build.0 = release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {15CE8EC0-4560-4975-82EB-93F8E1819175}
+	EndGlobalSection
+EndGlobal
