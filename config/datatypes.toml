@@ -220,3 +220,123 @@ id = 0x7F0
 name = "Info"
 id = 0x7FA
 
+
+[[Datatype]]
+name = "TempPCB1"
+id = 0x210
+
+[[Datatype]]
+name = "TempPCB2"
+id = 0x211
+
+[[Datatype]]
+name = "TempPCB3"
+id = 0x212
+
+[[Datatype]]
+name = "TempPCB4"
+id = 0x213
+
+[[Datatype]]
+name = "TempPCB5"
+id = 0x214
+
+[[Datatype]]
+name = "TempPCB6"
+id = 0x215
+
+[[Datatype]]
+name = "TempPCB7"
+id = 0x216
+
+[[Datatype]]
+name = "TempPCB8"
+id = 0x217
+
+[[Datatype]]
+name = "TempPCB9"
+id = 0x218
+
+[[Datatype]]
+name = "TempPCB10"
+id = 0x219
+
+[[Datatype]]
+name = "TempPCB11"
+id = 0x200
+
+[[Datatype]]
+name = "TempPCB12"
+id = 0x201
+
+[[Datatype]]
+name = "TempPCB13"
+id = 0x202
+
+[[Datatype]]
+name = "TempPCB14"
+id = 0x203
+
+[[Datatype]]
+name = "TempPCB15"
+id = 0x204
+
+[[Datatype]]
+name = "TempPCB16"
+id = 0x205
+
+[[Datatype]]
+name = "TempPCB17"
+id = 0x206
+
+[[Datatype]]
+name = "TempPCB18"
+id = 0x207
+
+[[Datatype]]
+name = "TempPCB19"
+id = 0x208
+
+[[Datatype]]
+name = "TempPCB20"
+id = 0x209
+
+[[Datatype]]
+name = "TempPCB21"
+id = 0x20a
+
+[[Datatype]]
+name = "TempPCB22"
+id = 0x20b
+
+[[Datatype]]
+name = "TempPCB23"
+id = 0x20c
+
+[[Datatype]]
+name = "TempPCB24"
+id = 0x20d
+
+[[Datatype]]
+name = "TempPCB25"
+id = 0x20e
+
+[[Datatype]]
+name = "TempPCB26"
+id = 0x20f
+
+[[Datatype]]
+name = "TempPCB27"
+id = 0x220
+
+[[Datatype]]
+name = "TempPCB28"
+id = 0x224
+
+[[Datatype]]
+name = "TempPCB29"
+id = 0x222
+
+[[Datatype]]
+name = "TempPCB30"
+id = 0x223
