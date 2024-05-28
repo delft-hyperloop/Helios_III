@@ -23,7 +23,7 @@ pub fn send_commands_to_levi(cmds: Receiver<Command>, mut stdin: std::process::C
                     Command::EmitEvent(_) => {}
                 }
             }
-            Err(e) => {
+            Err(_e) => {
                 // eprintln!("Error receiving command: {:?}", e);
             }
         }
