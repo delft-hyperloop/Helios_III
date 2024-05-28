@@ -191,7 +191,7 @@ async fn main(spawner: Spawner) -> ! {
     ///
 
     // Begin Spawn Tasks
-    try_spawn!(event_sender, spawner.spawn(your_mom(data_sender.clone())));
+    // try_spawn!(event_sender, spawner.spawn(your_mom(data_sender.clone())));
     // End Spawn Tasks
 
     /// # Main Loop

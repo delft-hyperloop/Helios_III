@@ -1,5 +1,5 @@
 use std::io::Write;
-use std::sync::mpsc::{Receiver, RecvError};
+use std::sync::mpsc::{Receiver};
 use crate::Command;
 
 pub fn send_commands_to_levi(cmds: Receiver<Command>, mut stdin: std::process::ChildStdin) {
@@ -61,8 +61,8 @@ pub fn send_commands_to_levi(cmds: Receiver<Command>, mut stdin: std::process::C
                     Command::EmitEvent(_) => {}
                 }
             }
-            Err(e) => {
-                eprintln!("Error receiving command: {:?}", e);
+            Err(_e) => {
+                // eprintln!("Error receiving command: {:?}", e);
             }
         }
     }

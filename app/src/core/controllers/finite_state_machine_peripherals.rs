@@ -31,7 +31,7 @@ impl FSMPeripherals {
         // let mut init = PInit{p,x,q};
         // let (braking_controller, init) = BrakingController::new(init);
         let braking_controller =
-            BrakingController::new(x, i.event_sender.clone(), p.PB8, p.PG1, p.PF12, p.TIM16).await;
+            BrakingController::new(x, i.event_sender.clone(), p.PB8, p.PG1, p.PF12,p.PB0,p.PD5, p.TIM16).await;
 
         let mut hv_controller =
             BatteryController::new(i.event_sender.clone(), 0, 0, 0, 0, 0, i.data_sender.clone(),true); //TODO <------ This is just to make it build
@@ -57,7 +57,8 @@ impl FSMPeripherals {
             },
         )
         .await;
-
+        // let mut b = Output::new(p.PB0, Level::High, Speed::High);
+        // b.set_high();
         let mut can_controller = CanController::new(
             *x,
             i.event_sender.clone(),

@@ -55,30 +55,20 @@ impl BatteryController {
 }
 pub struct GroundFaultDetection {}
 
-pub async fn ground_fault_detection_isolation_details(data: &[u8]) -> u64 {
-    let negative_insulation_resistance = ((data[0] as u64) << 8) | (data[1] as u64);
-    let positive_insulation_resistance = ((data[2] as u64) << 8) | (data[3] as u64);
-    let original_insulation_resistance = ((data[4] as u64) << 8) | (data[5] as u64);
-    let measurement_counter = data[6] as u64;
-    let isolation_quality = data[7] as u64;
-    negative_insulation_resistance << 48
-        | positive_insulation_resistance << 32
-        | original_insulation_resistance << 16
-        | measurement_counter << 8
-        | isolation_quality
+pub async fn ground_fault_detection_isolation_details(data: &[u8],data_sender: DataSender,timestamp: u64) {
+    let negative_insulation_resistance = ((data[1] as u64) << 8) | (data[0] as u64);
+   data_sender.send(Datapoint::new(Datatype::InsulationNegative, negative_insulation_resistance, timestamp)).await;
+    let positive_insulation_resistance = ((data[3] as u64) << 8) | (data[2] as u64);
+    data_sender.send(Datapoint::new(Datatype::InsulationPositive, positive_insulation_resistance, timestamp)).await;
+    let original_measurement_counter = data[4] as u64 | ((data[5] as u64)<<8);
+    data_sender.send(Datapoint::new(Datatype::InsulationOriginal, original_measurement_counter, timestamp)).await;
+
 }
 
-pub async fn ground_fault_detection_voltage_details(data: &[u8]) -> u64 {
-    let hv_voltage = ((data[0] as u64) << 8) | (data[1] as u64);
-    let hv_voltage_negative_to_earth = ((data[2] as u64) << 8) | (data[3] as u64);
-    let hv_voltage_positive_to_earth = ((data[4] as u64) << 8) | (data[5] as u64);
-    let measurement_counter = data[6] as u64;
-    let nothing = data[7] as u64;
-    hv_voltage << 48
-        | hv_voltage_negative_to_earth << 32
-        | hv_voltage_positive_to_earth << 16
-        | measurement_counter << 8
-        | nothing
+pub async fn ground_fault_detection_voltage_details(data: &[u8],data_sender: DataSender,timestamp: u64) {
+    let hv_voltage = ((data[1] as u64) << 8) | (data[0] as u64);
+    data_sender.send(Datapoint::new(Datatype::IMDVoltageDetails, hv_voltage, timestamp)).await;
+
 }
 
 //===============BMS===============//

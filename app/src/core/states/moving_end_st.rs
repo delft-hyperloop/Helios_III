@@ -3,16 +3,20 @@ use crate::Event;
 use defmt::info;
 
 impl FSM {
-    pub async fn entry_lane_switch(&mut self) {
+    pub async fn entry_end_st(&mut self) {
         todo!();
     }
 
-    pub async fn react_lane_switch(&mut self, event: Event) {
+    pub async fn react_end_st(&mut self, event: Event) {
         match event {
-            Event::LaneSwitchingCompleteEvent => {
+            Event::DirectionChangedEvent => {
                 todo!();
+            }
+            Event::RunFinishedEvent => {
+                #[cfg(debug_assertions)]
+                info!("Run finished");
 
-                self.transit(State::Cruising).await;
+                self.transit(State::Exit).await;
             }
             /// This is commented out because it was refactored to be handled by the default react ///
             // Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {

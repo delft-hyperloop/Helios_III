@@ -18,6 +18,9 @@ impl FSM {
 
     pub async fn react_hv_system_checking(&mut self, event: Event) {
         match event {
+            Event::TurnOffHVCommand => {
+                self.transit(State::Exit).await;
+            }
             Event::HVLevitationReadyEvent => {
                 self.status.check_levitation();
             }

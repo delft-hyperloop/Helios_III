@@ -3,11 +3,12 @@ use defmt::export::timestamp;
 use defmt::{info, unwrap};
 use embassy_executor::Spawner;
 use embassy_stm32::gpio::{Input, Level, Output, OutputType, Pull, Speed};
-use embassy_stm32::peripherals::TIM16;
+use embassy_stm32::peripherals::{PB0, PD5, TIM16};
 use embassy_stm32::time::khz;
 use embassy_stm32::timer::simple_pwm::{PwmPin, SimplePwm};
 use embassy_stm32::timer::Channel;
 use embassy_stm32::{peripherals, Peripherals};
+use embassy_stm32::gpio::OutputType::PushPull;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::Sender;
 use embassy_time::{Duration, Instant, Timer};
@@ -52,10 +53,17 @@ impl BrakingController {
         pb8: peripherals::PB8,
         pg1: peripherals::PG1,
         pf12: peripherals::PF12,
+        pb0: peripherals::PB0,
+        pd5: peripherals::PD5,
         ptime: TIM16,
     ) -> Self {
         // If we want to keep it alive we send a 10khz digital clock signal
         let mut braking_rearm: Output = Output::new(pg1, Level::High, Speed::Low); // <--- To keep the breaks not rearmed we send a 1, if we want to arm the breaks we send a 0
+
+        let mut led : Output = Output::new(pb0,Level::High,Speed::Low);
+        // let mut led2 : Output = Output::new(pd5,Level::High,Speed::Low);
+        led.set_high();
+        info!("high");
         let ch1 = PwmPin::new_ch1(pb8, OutputType::PushPull);
         let mut pwm = SimplePwm::new(
             ptime,
