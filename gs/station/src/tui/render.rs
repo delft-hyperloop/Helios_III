@@ -70,8 +70,8 @@ impl Widget for &App {
             .direction(Direction::Vertical)
             .constraints(
                 [
-                    Constraint::Percentage(50), // top side for text stream
-                    Constraint::Percentage(50), // bottom side for the table
+                    Constraint::Percentage(80), // top side for text stream
+                    Constraint::Percentage(20), // bottom side for the table
                 ]
                     .as_ref(),
             )

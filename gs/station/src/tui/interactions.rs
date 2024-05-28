@@ -43,10 +43,10 @@ impl App {
             KeyCode::Char('l') => self.launch_levi_software(),
             // KeyCode::Char('t') => self.logs.push((LogType::Warning, format!("{}:  this is a testing goose",Util::Now()).parse().unwrap())),
             KeyCode::Tab => {
-                self.selected_row = (self.selected_row + 1) % 10;
+                self.selected_row = (self.selected_row + 1) % self.cmds.len();
             }
             KeyCode::BackTab => {
-                self.selected_row = (self.selected_row + 9) % 10;
+                self.selected_row = (self.selected_row + self.cmds.len() - 1) % self.cmds.len();
             }
             KeyCode::Enter => {
                 self.send_command(self.cmds[self.selected_row].as_cmd());
