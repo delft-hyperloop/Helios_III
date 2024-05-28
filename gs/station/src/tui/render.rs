@@ -6,7 +6,7 @@ use ratatui::{
 use crate::api::Message;
 use crate::tui::app::App;
 
-fn border_select(app: &App, idx: usize) -> Color {
+pub(crate) fn border_select(app: &App, idx: usize) -> Color {
     match app.selected_row == idx {
         true => Color::LightGreen,
         false => Color::LightCyan,
@@ -70,8 +70,8 @@ impl Widget for &App {
             .direction(Direction::Vertical)
             .constraints(
                 [
-                    Constraint::Percentage(50), // top side for text stream
-                    Constraint::Percentage(50), // bottom side for the table
+                    Constraint::Percentage(80), // top side for text stream
+                    Constraint::Percentage(20), // bottom side for the table
                 ]
                     .as_ref(),
             )
@@ -101,19 +101,6 @@ impl Widget for &App {
         // text stream goes top left
         paragraph.render(main_chunks[0], buf);
 
-        let values = vec![
-            self.cmd_values[0].to_string(),
-            self.cmd_values[1].to_string(),
-            self.cmd_values[2].to_string(),
-            self.cmd_values[3].to_string(),
-            self.cmd_values[4].to_string(),
-            self.cmd_values[5].to_string(),
-            self.cmd_values[6].to_string(),
-            self.cmd_values[7].to_string(),
-            self.cmd_values[8].to_string(),
-            self.cmd_values[9].to_string(),
-        ];
-
         /*
         pub enum Command {
             DefaultCommand(u64),
@@ -129,30 +116,13 @@ impl Widget for &App {
         }*/
 
         // Create the table block
-        let rows = vec![
+        let mut rows = vec![
             Row::new(vec!["Command", "Value"])
                 .style(Style::default().fg(Color::Blue).bg(Color::Black).add_modifier(Modifier::BOLD)),
-            Row::new(vec!["DefaultCommand", &values[0]])
-                .style(Style::default().bg(Color::Black).fg(border_select(self, 0))),
-            Row::new(vec!["Levitate", &values[1]])
-                .style(Style::default().bg(Color::Black).fg(border_select(self, 1))),
-            Row::new(vec!["StopLevitating", &values[2]])
-                .style(Style::default().bg(Color::Black).fg(border_select(self, 2))),
-            Row::new(vec!["Configure", &values[3]])
-                .style(Style::default().bg(Color::Black).fg(border_select(self, 3))),
-            Row::new(vec!["StartRun", &values[4]])
-                .style(Style::default().bg(Color::Black).fg(border_select(self, 4))),
-            Row::new(vec!["EmergencyBrake", &values[5]])
-                .style(Style::default().bg(Color::Black).fg(border_select(self, 5))),
-            Row::new(vec!["Shutdown", &values[6]])
-                .style(Style::default().bg(Color::Black).fg(border_select(self, 6))),
-            Row::new(vec!["StartHV", &values[7]])
-                .style(Style::default().bg(Color::Black).fg(border_select(self, 7))),
-            Row::new(vec!["StopHV", &values[8]])
-                .style(Style::default().bg(Color::Black).fg(border_select(self, 8))),
-            Row::new(vec!["EmitEvent", &values[9]])
-                .style(Style::default().bg(Color::Black).fg(border_select(self, 9))),
         ];
+        self.cmds.iter().enumerate().for_each(|(i, x)| {
+            rows.push(x.to_row().style(Style::default().bg(Color::Black).fg(border_select(self, i))))
+        });
 
         let table = Table::new(rows, vec![Constraint::Fill(1), Constraint::Length(10)])
             .block(Block::default().borders(Borders::ALL).title(Title::from("Commands Panel".light_blue().bold()))
