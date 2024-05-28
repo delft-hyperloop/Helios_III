@@ -27,13 +27,14 @@ import TheoreticalRun from "$lib/components/TheoreticalRun.svelte";
 import Status from "$lib/components/generic/Status.svelte";
 import Tile from "$lib/components/generic/Tile.svelte";
 import TileGrid from "$lib/components/generic/TileGrid.svelte";
+import ToggleCommand from "$lib/components/abstract/ToggleCommand.svelte";
 
 // Utils
 import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
 import {GrandDataDistributor} from "$lib/util/GrandDataDistributor";
 import util from "$lib/util/util";
 
-import type {Payload, NamedCommand, EventChannel, TempTableEntry, Log} from "$lib/types";
+import type {Payload, NamedCommand, EventChannel, Log} from "$lib/types";
 
 // Stores
 import {south_bridge_payload} from "$lib/stores/data";
@@ -41,6 +42,7 @@ import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn} from "$l
 
 // Export all
 export {
+    ToggleCommand,
     inputTurn,
     StrokePresets,
     GrandDataDistributor,
@@ -76,4 +78,4 @@ export {
     Localiser,
     TheoreticalRun
 }
-export type {Payload, NamedCommand, EventChannel, TempTableEntry, Log}
+export type {Payload, NamedCommand, EventChannel, Log}
