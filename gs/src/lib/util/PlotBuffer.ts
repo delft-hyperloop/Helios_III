@@ -42,6 +42,8 @@ export class PlotBuffer {
                 label: "timestamp",
             }],
         };
+
+        this.addSeries(StrokePresets.hyperLoopGreen());
     }
 
     public addSeries(series:uPlot.Series) {
