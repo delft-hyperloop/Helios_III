@@ -4,6 +4,8 @@ use crate::frontend::{BackendState, BACKEND};
 use crate::{Command, ERROR_CHANNEL, INFO_CHANNEL, STATUS_CHANNEL, WARNING_CHANNEL};
 use std::sync::Mutex;
 use tauri::{Manager, State};
+use rand::Rng;
+use crate::Datatype;
 
 pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
@@ -12,7 +14,7 @@ pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
     tauri::Builder::default()
         .manage(BackendState::default())
-        .invoke_handler(tauri::generate_handler![unload_buffer, send_command,])
+        .invoke_handler(tauri::generate_handler![unload_buffer, send_command, generate_test_data])
         .setup(move |app| {
             let app_handle = app.handle();
             let mut message_rcv = backend.message_receiver.resubscribe();
@@ -55,6 +57,37 @@ pub fn tauri_main(backend: Backend) {
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+
+#[allow(unused)]
+#[tauri::command]
+pub fn generate_test_data() -> Vec<Datapoint> {
+    let mut rng = rand::thread_rng();
+    let mut datapoints = Vec::new();
+
+    let value: u64 = rng.gen_range(0..101);
+    let value2: u64 = rng.gen_range(0..101);
+    let value3: u64 = rng.gen_range(0..101);
+    let value4: u64 = rng.gen_range(0..300);
+
+    let datapoint = Datapoint { value, datatype:Datatype::from_id(0x3A3), timestamp:0 };
+    let datapoint2 = Datapoint { value:value2, datatype:Datatype::from_id(0x19F), timestamp:0 };
+    let datapoint3 = Datapoint { value:1, datatype:Datatype::from_id(0x3AA), timestamp:0 };
+    let datapoint4 = Datapoint { value:2, datatype:Datatype::from_id(0x3AA), timestamp:0 };
+    let datapoint5 = Datapoint { value:3, datatype:Datatype::from_id(0x3AA), timestamp:0 };
+    let datapoint6 = Datapoint { value:value4, datatype:Datatype::Module1AvgVoltage, timestamp:0 };
+    let datapoint7 = Datapoint { value:value4, datatype:Datatype::Module3AvgTemperature, timestamp:0 };
+
+    datapoints.push(datapoint);
+    datapoints.push(datapoint2);
+    datapoints.push(datapoint3);
+    datapoints.push(datapoint4);
+    datapoints.push(datapoint5);
+    datapoints.push(datapoint6);
+    datapoints.push(datapoint7);
+
+    datapoints
 }
 
 #[allow(unused)]

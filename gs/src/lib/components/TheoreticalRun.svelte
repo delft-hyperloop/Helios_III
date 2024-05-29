@@ -2,7 +2,6 @@
     import {Chart, PlotBuffer, StrokePresets} from "$lib";
     import {onMount} from "svelte";
     import {type TypedArray} from "uplot";
-    import {z} from "zod";
 
     export let xDataCount = 100;
 
@@ -31,11 +30,4 @@
 
 </script>
 
-<Chart eventCallback={(event) => {
-    // @ts-ignore
-    let speed = z.number().parse(event.payload.speed);
-    // @ts-ignore
-    let timestamp = z.number().parse(event.payload.timestamp);
-
-    chart.setEntry(1, timestamp, speed)
-}} eventChannel="start_run" height={250} background="bg-surface-900" yRange={[0, 50]} dataPointsCount={xDataCount} title="Theoretical vs Real run" bind:chart={chart} refreshRate={100} />
+<Chart height={250} background="bg-surface-900" title="Theoretical vs Real run" bind:chart={chart} refreshRate={100} />

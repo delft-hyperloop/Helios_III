@@ -6,7 +6,7 @@
     import Icon from "@iconify/svelte";
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import {EventChannels, type Log} from "$lib/types";
+    import {type Log} from "$lib/types";
 
     let unlistens: UnlistenFn[];
     let logContainer: HTMLElement;
@@ -46,7 +46,7 @@
 
     onDestroy(() =>
         unlistens.forEach(u => u())
-);
+    );
 
     afterUpdate(() => {
         // Only scroll to the bottom if the user has not scrolled up
