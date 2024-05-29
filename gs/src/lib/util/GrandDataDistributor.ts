@@ -23,6 +23,7 @@ import type {dataConvFun, Datapoint, NamedDatatype} from "$lib/types";
  *     let store = gdd.stores.get('BatteryBalanceHigh');
  * </script>
  * <h1>{$store}</h1>
+ * ```
  *
  * @see StateManager
  * @version 2.0
@@ -82,7 +83,6 @@ export class GrandDataDistributor {
      */
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
-            console.log(datapoint)
             this.StoreManager.updateStore(datapoint.datatype, datapoint.value);
         });
     }
