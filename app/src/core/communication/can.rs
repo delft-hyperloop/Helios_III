@@ -2,7 +2,7 @@ use core::any::Any;
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_stm32::can::frame::{Frame, Header};
-use embassy_stm32::can::{CanRx, CanTx,  Instance};
+use embassy_stm32::can::{CanRx, CanTx, Instance};
 use embassy_stm32::gpio::{Level, Output, Speed};
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_stm32::{bind_interrupts, can, peripherals, rng, Config};
@@ -16,7 +16,10 @@ use static_cell::StaticCell;
 use {defmt_rtt as _, panic_probe as _};
 // use embedded_hal::can::Id;
 use crate::core::communication::Datapoint;
-use crate::core::controllers::battery_controller::{ground_fault_detection_isolation_details, BatteryController, GroundFaultDetection, ground_fault_detection_voltage_details};
+use crate::core::controllers::battery_controller::{
+    ground_fault_detection_isolation_details, ground_fault_detection_voltage_details,
+    BatteryController, GroundFaultDetection,
+};
 use crate::core::controllers::can_controller::CanTwoUtils;
 use crate::pconfig::{bytes_to_u64, id_as_value};
 use crate::{
@@ -47,10 +50,7 @@ pub async fn can_receiving_handler(
     mut utils: Option<CanTwoUtils>,
 ) -> ! {
     let bus_nr = if utils.is_none() { 1 } else { 2 };
-    info!(
-        "[CAN] Ready for bus {:?}",
-        bus_nr
-    );
+    info!("[CAN] Ready for bus {:?}", bus_nr);
     let mut error_counter = 0u64;
     loop {
         #[cfg(debug_assertions)]
@@ -58,43 +58,49 @@ pub async fn can_receiving_handler(
         match bus.read().await {
             Ok(envelope) => {
                 error_counter = 0;
-                let (frame,timestamp) = envelope.parts();
+                let (frame, timestamp) = envelope.parts();
                 let id = id_as_value(frame.id());
                 #[cfg(debug_assertions)]
-                info!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
+                info!(
+                    "[CAN ({})] received frame: id={:?} data={:?}",
+                    bus_nr,
+                    id,
+                    frame.data()
+                );
                 if DATA_IDS.contains(&id) {
-                debug!("first if");
+                    debug!("first if");
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
                         debug!("second if");
                         let ut = utils.as_mut().unwrap();
                         if HV_IDS.contains(&id) {
                             debug!("hv if");
-                            ut.hv_controller.bms_can_handle(
-                                id,
-                                frame.data(),
-                                data_sender,
-                                timestamp.as_ticks(),
-                            ).await;
+                            ut.hv_controller
+                                .bms_can_handle(id, frame.data(), data_sender, timestamp.as_ticks())
+                                .await;
                         } else if LV_IDS.contains(&id) {
                             debug!("lv if");
-                            ut.lv_controller.bms_can_handle(
-                                id,
-                                frame.data(),
-                                data_sender,
-                                timestamp.as_ticks(),
-                            ).await;
-                           // event_sender.send(Event::ConnectionEstablishedEvent).await;
+                            ut.lv_controller
+                                .bms_can_handle(id, frame.data(), data_sender, timestamp.as_ticks())
+                                .await;
+                            // event_sender.send(Event::ConnectionEstablishedEvent).await;
                         } else if GFD_IDS.contains(&id) {
                             if id == Datatype::IMDVoltageDetails.to_id() {
-                                ground_fault_detection_isolation_details(frame.data(),data_sender,timestamp.as_ticks()).await;
-                            }
-                            else if id == Datatype::IMDVoltageDetails.to_id(){
-                                ground_fault_detection_voltage_details(frame.data(),data_sender,timestamp.as_ticks()).await;
-                            }
-                            else{
+                                ground_fault_detection_isolation_details(
+                                    frame.data(),
+                                    data_sender,
+                                    timestamp.as_ticks(),
+                                )
+                                .await;
+                            } else if id == Datatype::IMDVoltageDetails.to_id() {
+                                ground_fault_detection_voltage_details(
+                                    frame.data(),
+                                    data_sender,
+                                    timestamp.as_ticks(),
+                                )
+                                .await;
+                            } else {
                                 debug!("GFD is not using id #{}", &id);
                             }
-
                         }
                     } else {
                         data_sender
@@ -121,7 +127,10 @@ pub async fn can_receiving_handler(
             }
             Err(e) => {
                 if error_counter < 10 || error_counter % 2500 == 0 {
-                    error!("[CAN ({})] Error reading from CAN bus (#{}): {:?}", bus_nr, error_counter, e);
+                    error!(
+                        "[CAN ({})] Error reading from CAN bus (#{}): {:?}",
+                        bus_nr, error_counter, e
+                    );
                 }
                 Timer::after_millis(500);
                 error_counter += 1;

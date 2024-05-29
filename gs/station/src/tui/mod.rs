@@ -1,12 +1,12 @@
 mod app;
-mod render;
 mod interactions;
+mod render;
 
 use std::io::{self, stdout, Stdout};
 
+use crate::tui::app::App;
 use crossterm::{execute, terminal::*};
 use ratatui::prelude::*;
-use crate::tui::app::App;
 
 /// A type alias for the terminal type used in this application
 pub type Tui = Terminal<CrosstermBackend<Stdout>>;
@@ -33,5 +33,7 @@ pub fn tui_main(backend: crate::Backend) {
 
 #[inline]
 pub fn timestamp() -> String {
-    chrono::offset::Local::now().format("%H:%M:%S.%3f").to_string()
+    chrono::offset::Local::now()
+        .format("%H:%M:%S.%3f")
+        .to_string()
 }

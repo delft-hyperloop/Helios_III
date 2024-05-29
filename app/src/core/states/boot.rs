@@ -6,7 +6,7 @@ use defmt::{error, info};
 impl FSM {
     pub async fn boot_entry(&mut self) {
         info!("Entering Boot State");
-        
+
         if !self.peripherals.braking_controller.arm_breaks() {
             self.react(Event::BootingFailedEvent);
         }

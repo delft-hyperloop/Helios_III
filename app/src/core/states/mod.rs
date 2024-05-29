@@ -1,12 +1,12 @@
-mod moving_st;
 mod boot;
-mod moving_end_st;
-mod moving_ls_st;
 mod emergency_braking;
 mod establish_connection;
 mod exit;
 mod hv_system_checking;
 mod idle;
-mod moving_ls_cv;
 mod levitating;
+mod moving_end_st;
+mod moving_ls_cv;
+mod moving_ls_st;
+mod moving_st;
 mod run_config;

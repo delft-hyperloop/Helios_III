@@ -11,11 +11,13 @@ pub struct HVPeripherals {
 }
 
 impl HVPeripherals {
-    pub async fn new(
-        pb4_pin: peripherals::PB4,
-    ) -> Self {
+    pub async fn new(pb4_pin: peripherals::PB4) -> Self {
         Self {
-            enable_pin: Output::new(pb4_pin, embassy_stm32::gpio::Level::Low, embassy_stm32::gpio::Speed::Low),
+            enable_pin: Output::new(
+                pb4_pin,
+                embassy_stm32::gpio::Level::Low,
+                embassy_stm32::gpio::Speed::Low,
+            ),
         }
     }
 }

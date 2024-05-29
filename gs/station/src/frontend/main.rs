@@ -1,8 +1,8 @@
-use std::sync::Mutex;
 use crate::api::{Datapoint, Message};
 use crate::backend::Backend;
 use crate::frontend::{BackendState, BACKEND};
 use crate::{Command, ERROR_CHANNEL, INFO_CHANNEL, STATUS_CHANNEL, WARNING_CHANNEL};
+use std::sync::Mutex;
 use tauri::{Manager, State};
 
 pub fn tauri_main(backend: Backend) {
