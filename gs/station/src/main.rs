@@ -5,7 +5,7 @@ use std::io::{BufRead};
 #[cfg(feature = "backend")]
 use crate::frontend::tauri_main;
 #[cfg(feature = "tui")]
-use crate::tui::gui_main;
+use crate::tui::tui_main;
 
 #[cfg(feature = "tui")]
 pub mod tui;
@@ -14,6 +14,7 @@ pub mod api;
 #[cfg(feature = "backend")]
 mod frontend;
 mod levi;
+mod backend;
 
 include!(concat!(env!("OUT_DIR"), "/config.rs"));
 
@@ -49,7 +50,7 @@ fn main() {
         }
     } else if cfg!(feature = "tui") {
         #[cfg(feature = "tui")]
-        gui_main().unwrap();
+        tui_main().unwrap();
     } else if cfg!(feature = "backend") {
         #[cfg(feature = "backend")]
         tauri_main();

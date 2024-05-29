@@ -4,6 +4,7 @@ extern crate serde;
 use goose_utils::commands::generate_commands;
 use goose_utils::datatypes::generate_datatypes;
 use goose_utils::events::generate_events;
+use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
 use std::env;
 use std::fs;
@@ -57,6 +58,7 @@ fn main() {
     let mut content = String::new();
 
     content.push_str(&*configure_gs(&config));
+    content.push_str(&*configure_gs_ip(config.gs.ip, config.gs.port));
     content.push_str(&*generate_datatypes(&id_list, DATATYPES_PATH, true));
     content.push_str(&*generate_commands(&id_list, COMMANDS_PATH, false));
     content.push_str(&*generate_events(&id_list, EVENTS_PATH));
@@ -73,8 +75,8 @@ fn main() {
 }
 
 fn configure_gs(config: &Config) -> String {
-    format!("#[allow(non_snake_case)]\npub fn GS_SOCKET() -> std::net::SocketAddr {{ std::net::SocketAddr::new(std::net::IpAddr::from([{},{},{},{}]),{}) }}\n", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port)
-  + &*format!(
+    // format!("pub fn gs_socket() -> std::net::SocketAddr {{ std::net::SocketAddr::new(std::net::IpAddr::from([{},{},{},{}]),{}) }}\n", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port)
+    format!(
     "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
     config.pod.net.ip[0],
     config.pod.net.ip[1],

@@ -60,6 +60,8 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> St
 
     format!(
         "\n
+#[allow(non_camel_case_types)]
+#[allow(non_snake_case)]
 {}
 pub enum Command {{
 {}

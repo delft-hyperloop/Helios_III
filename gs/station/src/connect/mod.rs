@@ -3,9 +3,10 @@ mod parser;
 
 use std::net::{TcpListener};
 use std::sync::mpsc::{Receiver, Sender};
-use crate::api::{Message, Status};
+use crate::api::{gs_socket, Message, Status};
 use crate::connect::handler::Handler;
-use crate::{Command, Datatype, GS_SOCKET};
+use crate::{Command, Datatype};
+
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Datapoint {
@@ -45,17 +46,17 @@ impl Station {
         }
     }
     pub fn launch(&self, tx: Sender<Message>, rx: Receiver<Command>) {
-        let server = TcpListener::bind(GS_SOCKET());
+        let server = TcpListener::bind(gs_socket());
 
         if server.is_err() {
             tx.send(Message::Status(Status::ServerFailedToStart)).expect("[Station] Failed to send on msg tx");
-            tx.send(Message::Error(format!("Failed to bind to {}", GS_SOCKET()))).expect("[Station] Failed to send on msg tx");
+            tx.send(Message::Error(format!("Failed to bind to {}", gs_socket()))).expect("[Station] Failed to send on msg tx");
             return;
         }
 
         let listener = server.unwrap();
         tx.send(Message::Status(Status::ServerStarted)).expect("[Station] Failed to send on msg tx");
-        tx.send(Message::Info(format!("Listening on {}", GS_SOCKET()))).expect("[Station] Failed to send on msg tx");
+        tx.send(Message::Info(format!("Listening on {}", gs_socket()))).expect("[Station] Failed to send on msg tx");
         match listener.accept() {
             Ok((stream, client_socket)) => {
                 // if client_socket.ip().ne(&IpAddr::from(POD_IP_ADDRESS.0)) {
