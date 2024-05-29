@@ -3,7 +3,7 @@
     import 'uplot/dist/uPlot.min.css';
     import {type EventCallback, listen, type UnlistenFn} from '@tauri-apps/api/event';
     import {z} from "zod";
-    import {PlotBuffer} from "$lib";
+    import {PlotBuffer, StrokePresets} from "$lib";
     import {chartStore} from "$lib/stores/state";
 
 
@@ -40,6 +40,7 @@
             chart = storedChart;
         } else {
             chart = new PlotBuffer(dataPointsCount, yRange, showLegend);
+            chart.addSeries(StrokePresets.hyperLoopGreen())
             chartStore.update(store => {
                 store.set(title, chart!);
                 return store;
