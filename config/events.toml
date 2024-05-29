@@ -168,3 +168,18 @@ priority = 5
 name = "ExitEvent"
 id = 0xc1
 priority = 0
+
+[[Event]]
+name = "LaneSwitchForward"
+id = 0x502
+priority = 0
+
+[[Event]]
+name = "LaneSwitchBackwardsB"
+id = 0x503
+priority = 0
+
+[[Event]]
+name = "LaneSwitchBackwardsC"
+id = 0x504
+priority = 0
