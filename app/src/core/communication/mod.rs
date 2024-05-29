@@ -3,10 +3,6 @@ use core::cmp::Ordering;
 
 pub mod can;
 pub mod tcp;
-pub mod udp;
-mod dispatcher;
-mod parse;
-pub mod can;
 
 // IF YOU UPDATE THIS, ALSO LOOK AT config/config.toml
 // pub enum Datatype {

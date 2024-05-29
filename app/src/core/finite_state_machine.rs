@@ -1,6 +1,5 @@
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
-use crate::core::controllers::hv_controller::Status;
 use crate::{DataSender, Datatype, Event, EventReceiver};
 use core::cmp::{Eq, Ordering, PartialEq};
 use defmt::*;
@@ -11,6 +10,7 @@ use embassy_sync::priority_channel::{PriorityChannel, Receiver};
 use embassy_time::Instant;
 use heapless::binary_heap::Max;
 use heapless::Deque;
+use crate::core::fsm_status::Status;
 
 //Enum holding different states that the FSM can be in
 #[derive(Clone, Copy, Debug, Format)]
@@ -127,14 +127,12 @@ pub struct FSM {
 /// * This FSM is a singleton and an entity. Its name is Megalo coming from the ancient greek word for "Big" and from the gods Megahni and Gonzalo
 impl FSM {
     pub fn new(p: FSMPeripherals, pq: EventReceiver, dq: DataSender) -> Self {
-        //TODO: Decide if main should be dirty with peripheral initialization or if it should be done here
-
         Self {
             state: State::Boot,
             peripherals: p,
             event_queue: pq,
             data_queue: dq,
-            status: Status::new(),
+            status: Status::default(),
         }
     }
 

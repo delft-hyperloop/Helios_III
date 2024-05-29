@@ -25,7 +25,7 @@ pub fn restore() -> io::Result<()> {
     Ok(())
 }
 
-pub fn gui_main() -> io::Result<()> {
+pub fn tui_main() -> io::Result<()> {
     let mut terminal = init()?; // initialise the crossterm magic
     let app_result = App::new().run(&mut terminal);
     restore()?; // restore the terminal, it gets messed up after the TUI

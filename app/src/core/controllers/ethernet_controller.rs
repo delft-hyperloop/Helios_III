@@ -1,5 +1,4 @@
 use crate::core::communication::tcp::tcp_connection_handler;
-use crate::core::communication::udp::udp_connection_handler;
 use crate::{Event, POD_IP_ADDRESS};
 use crate::{try_spawn, DataReceiver, EventSender, Irqs, POD_MAC_ADDRESS};
 use core::arch::asm;

@@ -1,6 +1,5 @@
 use crate::core::communication::can::{can_receiving_handler, can_transmitter};
 use crate::core::communication::tcp::tcp_connection_handler;
-use crate::core::communication::udp::udp_connection_handler;
 use crate::core::controllers::battery_controller::{BatteryController, GroundFaultDetection};
 use crate::core::controllers::ethernet_controller::EthernetPins;
 use crate::Event;
