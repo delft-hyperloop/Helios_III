@@ -1,14 +1,14 @@
 use crate::core::communication::tcp::tcp_connection_handler;
-use crate::core::communication::udp::udp_connection_handler;
-use crate::{Event, POD_IP_ADDRESS};
+use crate::pconfig::ip_cidr_from_config;
 use crate::{try_spawn, DataReceiver, EventSender, Irqs, POD_MAC_ADDRESS};
+use crate::{Event, POD_IP_ADDRESS};
 use core::arch::asm;
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_net::tcp::client::{TcpClient, TcpClientState};
-use embassy_net::{Stack, StaticConfigV4};
 use embassy_net::StackResources;
 use embassy_net::{Ipv4Address, Ipv4Cidr};
+use embassy_net::{Stack, StaticConfigV4};
 use embassy_stm32::eth::generic_smi::GenericSMI;
 use embassy_stm32::eth::PHY;
 use embassy_stm32::eth::{Ethernet, PacketQueue};
@@ -28,7 +28,6 @@ use heapless::Vec;
 use rand_core::RngCore;
 use static_cell::StaticCell;
 use {defmt_rtt as _, panic_probe as _};
-use crate::pconfig::ip_cidr_from_config;
 
 type Device = Ethernet<'static, ETH, GenericSMI>;
 
@@ -86,14 +85,14 @@ impl EthernetController {
             mac_addr,
         );
 
-        // let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
-        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
-            StaticConfigV4 {
-                address: ip_cidr_from_config(POD_IP_ADDRESS),
-                gateway: None,
-                dns_servers: Default::default(),
-            }
-        );
+        let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
+        //        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
+        //            StaticConfigV4 {
+        //                address: ip_cidr_from_config(POD_IP_ADDRESS),
+        //                gateway: None,
+        //                dns_servers: Default::default(),
+        //            }
+        //        );
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();
 

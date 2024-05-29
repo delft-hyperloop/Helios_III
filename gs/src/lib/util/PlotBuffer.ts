@@ -150,6 +150,22 @@ export class StrokePresets {
             stroke: "#ff0a43"
         }
     }
+
+    public static yellow(): uPlot.Series {
+        return {
+            label: "y",
+            spanGaps: false,
+            stroke: "#ffde0a"
+        }
+    }
+
+    public static blue(): uPlot.Series {
+        return {
+            label: "y",
+            spanGaps: false,
+            stroke: "#0a85ff"
+        }
+    }
 }
 
 

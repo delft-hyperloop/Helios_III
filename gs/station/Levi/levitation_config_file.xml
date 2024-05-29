@@ -1,0 +1,316 @@
+<Controller Name="Arcas 5EG-0">
+
+  <Signal Name="SamplePeriod" Unit="s">2.5e-4</Signal>
+
+  <NamedMutation FromDefault="Cygnus D3-400-4-16" To="Cygnus A"/>
+  <NamedMutation FromDefault="Cygnus D3-400-4-32" To="Cygnus B"/>
+  <NamedMutation FromDefault="Cygnus D3-400-4-48" To="Cygnus C"/>
+  <NamedMutation FromDefault="Cygnus D3-400-4-64" To="Cygnus D"/>
+  <NamedMutation FromDefault="Cygnus D3-400-4-0" To="Cygnus E"/>
+  <NamedMutation FromDefault="EK1100-10" To="ECATStartVer"/>
+  <NamedMutation FromDefault="EL3104-11" To="ECATSensorVer"/>
+  <NamedMutation FromDefault="EK1100-12" To="ECATStartLat"/>
+  <NamedMutation FromDefault="EL3104-13" To="ECATSensorLat"/>
+
+	<Controller Name="Cygnus A">
+	  <NamedMutation FromDefault="AxisControl1" To="AxisControl A1"/>
+	  <NamedMutation FromDefault="AxisControl2" To="AxisControl A2"/>
+	</Controller>
+
+	<Controller Name="Cygnus B">
+	  <NamedMutation FromDefault="AxisControl1" To="AxisControl B1"/>
+	  <NamedMutation FromDefault="AxisControl2" To="AxisControl B2"/>
+	</Controller>
+
+	<Controller Name="Cygnus C">
+	  <NamedMutation FromDefault="AxisControl1" To="AxisControl C1"/>
+	  <NamedMutation FromDefault="AxisControl2" To="AxisControl C2"/>
+	</Controller>
+
+	<Controller Name="Cygnus D">
+	  <NamedMutation FromDefault="AxisControl1" To="AxisControl D1"/>
+	  <NamedMutation FromDefault="AxisControl2" To="AxisControl D2"/>
+	</Controller>
+
+	<AxisControlGroup Name="AxisControlGroup">
+		<AxisControl Name="Cygnus A/AxisControl A1" />
+	  <AxisControl Name="Cygnus A/AxisControl A2" />
+		<AxisControl Name="Cygnus B/AxisControl B1" />
+	  <AxisControl Name="Cygnus B/AxisControl B2" />
+    <AxisControl Name="Cygnus C/AxisControl C1" />
+	  <AxisControl Name="Cygnus C/AxisControl C2" />
+		<AxisControl Name="Cygnus D/AxisControl D1" />
+	  <AxisControl Name="Cygnus D/AxisControl D2" />
+	</AxisControlGroup>
+	
+
+<Controller Name="Cygnus E">
+        <NamedMutation FromDefault="Mot1" To="Mot_E1_Front"/>
+        <NamedMutation FromDefault="Mot2" To="Mot_E2_Back"/>
+        <NamedMutation FromDefault="AxisControl1" To="AxisControl E1 Front"/>
+        <NamedMutation FromDefault="AxisControl2" To="AxisControl E2 Back"/>
+        
+        <Actuator Name="Mot_E1_Front">
+            <NamedMutation FromDefault="Ir" To="I_E1_Front"/>
+            <NamedMutation FromDefault="DemandId" To="I_demand_Front"/>
+        </Actuator>
+        
+        <Actuator Name="Mot_E2_Back">
+            <NamedMutation FromDefault="Ir" To="I_E2_Back"/>
+            <NamedMutation FromDefault="DemandId" To="I_demand_Back"/>
+        </Actuator>
+	</Controller>
+
+ <AxisControlGroup Name="AxisControl_Lateral">
+        <AxisControl Name="Cygnus E/AxisControl E1 Front" />
+        <AxisControl Name="Cygnus E/AxisControl E2 Back" />
+	</AxisControlGroup>
+
+  <Template Name="TemplateLaserSensors" TemplateType="ProcessingBlock">
+    <Updatable Name="Updatable">
+      <FilePath>C:\Rust\Helios_III\gs\station\Levi\Flushed\TemplateLaserSensorsFull_prodrive_rtw\libTemplateLaserSensorsFull-bb-armv8a_64.bin</FilePath>
+    </Updatable>
+  </Template>
+
+  <Template Name="TemplateAirgapControllers" TemplateType="ProcessingBlock">
+	  <Updatable Name="Updatable">
+	    <FilePath>C:\Rust\Helios_III\gs\station\Levi\Flushed\PIDcontroller4CoreCentralizedTestReadyMotor_prodrive_rtw\libPIDcontroller4CoreCentralizedTestReadyMotor-bb-armv8a_64.bin</FilePath>
+	  </Updatable>
+  </Template>
+
+  <Template Name="TemplateLateralController" TemplateType="ProcessingBlock">
+	  <Updatable Name="Updatable">
+	    <FilePath>C:\Rust\Helios_III\gs\station\Levi\Flushed\ControllerLateral_prodrive_rtw\libControllerLateral-bb-armv8a_64.bin</FilePath>
+	  </Updatable>
+  </Template>
+
+ 
+	<ProcessingBlock Name="LaserSensors" Template="TemplateLaserSensors" CalculationStart="True">
+    	  <Input Name="Voltage_A" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
+	  <Input Name="Voltage_B" Source="ECATSensorVer/Receive/AI Inputs2_Value"/>
+	  <Input Name="Voltage_C" Source="ECATSensorVer/Receive/AI Inputs3_Value"/>
+	  <Input Name="Voltage_D" Source="ECATSensorVer/Receive/AI Inputs4_Value"/>
+
+    	  <Input Name="Voltage_A2" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
+	  <Input Name="Voltage_B2" Source="ECATSensorLat/Receive/AI Inputs2_Value"/>
+	  <Input Name="Voltage_C2" Source="ECATSensorLat/Receive/AI Inputs3_Value"/>
+	  <Input Name="Voltage_D2" Source="ECATSensorLat/Receive/AI Inputs4_Value"/>
+
+          <Input Name="VerticalAxisControllerState_In" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
+	  <Input Name="LateralAxisControllerState_In" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
+	</ProcessingBlock>
+  
+	<ProcessingBlock Name="Airgap_controllers" Template="TemplateAirgapControllers" CalculationStart="True">
+    <Input Name="G_A" Source="LaserSensors/G_A"/>
+    <Input Name="G_B" Source="LaserSensors/G_B"/>
+    <Input Name="G_C" Source="LaserSensors/G_C"/>
+    <Input Name="G_D" Source="LaserSensors/G_D"/>
+
+    <Input Name="I_A_m" Source="Cygnus A/Mot1/Ir"/>
+    <Input Name="I_B_m" Source="Cygnus B/Mot1/Ir"/>
+    <Input Name="I_C_m" Source="Cygnus C/Mot1/Ir"/>
+    <Input Name="I_D_m" Source="Cygnus D/Mot1/Ir"/>
+
+    <Input Name="Vr1" Source="Cygnus A/Mot1/Vr"/>
+    <Input Name="Vr2" Source="Cygnus B/Mot1/Vr"/>
+    <Input Name="Vr3" Source="Cygnus C/Mot1/Vr"/>
+    <Input Name="Vr4" Source="Cygnus D/Mot1/Vr"/>
+
+    <Input Name="Vt1" Source="Cygnus A/Mot1/Vt"/>
+    <Input Name="Vt2" Source="Cygnus B/Mot1/Vt"/>
+    <Input Name="Vt3" Source="Cygnus C/Mot1/Vt"/>
+    <Input Name="Vt4" Source="Cygnus D/Mot1/Vt"/>
+
+    <Input Name="EMS_F_Front" Source="LateralController/EMS_F_Front"/>
+    <Input Name="EMS_F_Back" Source="LateralController/EMS_F_Back"/>
+
+    <Input Name="VerticalAxisState" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
+
+	</ProcessingBlock> 
+
+	<ProcessingBlock Name="LateralController" Template="TemplateLateralController" CalculationStart="True">
+    <Input Name="G_A2" Source="LaserSensors/G_A2"/>
+    <Input Name="G_B2" Source="LaserSensors/G_B2"/>
+    <Input Name="G_C2" Source="LaserSensors/G_C2"/>
+    <Input Name="G_D2" Source="LaserSensors/G_D2"/>
+
+    <Input Name="motor1" Source="Airgap_controllers/motorfrontback_0"/>
+    <Input Name="motor2" Source="Airgap_controllers/motorfrontback_1"/>
+    <Input Name="hems1" Source="Airgap_controllers/HEMSForces_0"/>
+    <Input Name="hems2" Source="Airgap_controllers/HEMSForces_1"/>
+    <Input Name="hems3" Source="Airgap_controllers/HEMSForces_2"/>
+    <Input Name="hems4" Source="Airgap_controllers/HEMSForces_3"/>
+
+     <Input Name="I_Front_m" Source="Cygnus E/Mot_E1_Front/I_E1_Front"/>
+     <Input Name="I_Back_m" Source="Cygnus E/Mot_E2_Back/I_E2_Back"/>
+
+     <Input Name="VrF" Source="Cygnus E/Mot_E1_Front/Vr"/>
+     <Input Name="VrB" Source="Cygnus E/Mot_E2_Back/Vr"/>
+
+     <Input Name="VtF" Source="Cygnus E/Mot_E1_Front/Vt"/>
+     <Input Name="VtB" Source="Cygnus E/Mot_E2_Back/Vt"/>
+
+    <Input Name="LateralAxisState" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
+	</ProcessingBlock> 
+
+
+  <Controller Name="Cygnus A">
+    <Actuator Name="Mot1">
+      <Input Name ="DemandId" Source ="Airgap_controllers/I_A"/>
+      <Input Name ="DemandId">
+        <Signal Name="LowerSaturation">-10</Signal>
+        <Signal Name="UpperSaturation">10</Signal>
+      </Input>
+      <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>
+      <Signal Name="BiQuadParameter0">140.7434</Signal>
+      <Signal Name="BiQuadParameter1">-140.2187</Signal>
+      <Signal Name="BiQuadParameter2">0.000000</Signal>
+      <Signal Name="BiQuadParameter3">-1.000000</Signal>
+      <Signal Name="BiQuadParameter4">0.000000</Signal>
+      <Signal Name="DriveType">3</Signal>
+    </Actuator>
+      
+    <Actuator Name="Mot2">
+      <Input Name ="DemandId" Source ="Airgap_controllers/I_A"/>
+      <Input Name ="DemandId">
+        <Signal Name="LowerSaturation">-10</Signal>
+        <Signal Name="UpperSaturation">10</Signal>
+      </Input>
+      <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>
+      <Signal Name="BiQuadParameter0">140.7434</Signal>
+      <Signal Name="BiQuadParameter1">-140.2187</Signal>
+      <Signal Name="BiQuadParameter2">0.000000</Signal>
+      <Signal Name="BiQuadParameter3">-1.000000</Signal>
+      <Signal Name="BiQuadParameter4">0.000000</Signal>
+      <Signal Name="DriveType">3</Signal>    </Actuator>
+  </Controller>
+
+  <Controller Name="Cygnus B">
+    <Actuator Name="Mot1">
+      <Input Name ="DemandId" Source ="Airgap_controllers/I_B"/>
+         <Input Name ="DemandId">
+        <Signal Name="LowerSaturation">-10</Signal>
+        <Signal Name="UpperSaturation">10</Signal>
+      </Input>
+      <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>
+      <Signal Name="BiQuadParameter0">140.7434</Signal>
+      <Signal Name="BiQuadParameter1">-140.2187</Signal>
+      <Signal Name="BiQuadParameter2">0.000000</Signal>
+      <Signal Name="BiQuadParameter3">-1.000000</Signal>
+      <Signal Name="BiQuadParameter4">0.000000</Signal>
+      <Signal Name="DriveType">3</Signal>
+    </Actuator>
+      
+    <Actuator Name="Mot2">
+      <Input Name ="DemandId" Source ="Airgap_controllers/I_B"/>
+          <Input Name ="DemandId">
+        <Signal Name="LowerSaturation">-10</Signal>
+        <Signal Name="UpperSaturation">10</Signal>
+      </Input>
+      <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>
+      <Signal Name="BiQuadParameter0">140.7434</Signal>
+      <Signal Name="BiQuadParameter1">-140.2187</Signal>
+      <Signal Name="BiQuadParameter2">0.000000</Signal>
+      <Signal Name="BiQuadParameter3">-1.000000</Signal>
+      <Signal Name="BiQuadParameter4">0.000000</Signal>
+      <Signal Name="DriveType">3</Signal>
+    </Actuator>
+  </Controller>
+
+  <Controller Name="Cygnus C">
+    <Actuator Name="Mot1">
+      <Input Name ="DemandId" Source ="Airgap_controllers/I_C"/>
+          <Input Name ="DemandId">
+        <Signal Name="LowerSaturation">-10</Signal>
+        <Signal Name="UpperSaturation">10</Signal>
+      </Input>
+      <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>
+      <Signal Name="BiQuadParameter0">140.7434</Signal>
+      <Signal Name="BiQuadParameter1">-140.2187</Signal>
+      <Signal Name="BiQuadParameter2">0.000000</Signal>
+      <Signal Name="BiQuadParameter3">-1.000000</Signal>
+      <Signal Name="BiQuadParameter4">0.000000</Signal>
+      <Signal Name="DriveType">3</Signal>
+    </Actuator>
+      
+    <Actuator Name="Mot2">
+      <Input Name ="DemandId" Source ="Airgap_controllers/I_C"/>
+          <Input Name ="DemandId">
+        <Signal Name="LowerSaturation">-10</Signal>
+        <Signal Name="UpperSaturation">10</Signal>
+      </Input>
+      <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>
+      <Signal Name="BiQuadParameter0">140.7434</Signal>
+      <Signal Name="BiQuadParameter1">-140.2187</Signal>
+      <Signal Name="BiQuadParameter2">0.000000</Signal>
+      <Signal Name="BiQuadParameter3">-1.000000</Signal>
+      <Signal Name="BiQuadParameter4">0.000000</Signal>
+      <Signal Name="DriveType">3</Signal>
+    </Actuator>
+  </Controller>
+
+  <Controller Name="Cygnus D">
+    <Actuator Name="Mot1">
+      <Input Name ="DemandId" Source ="Airgap_controllers/I_D"/>
+         <Input Name ="DemandId">
+        <Signal Name="LowerSaturation">-10</Signal>
+        <Signal Name="UpperSaturation">10</Signal>
+      </Input>
+      <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>
+      <Signal Name="BiQuadParameter0">140.7434</Signal>
+      <Signal Name="BiQuadParameter1">-140.2187</Signal>
+      <Signal Name="BiQuadParameter2">0.000000</Signal>
+      <Signal Name="BiQuadParameter3">-1.000000</Signal>
+      <Signal Name="BiQuadParameter4">0.000000</Signal>
+      <Signal Name="DriveType">3</Signal>
+    </Actuator>
+      
+    <Actuator Name="Mot2">
+      <Input Name ="DemandId" Source ="Airgap_controllers/I_D"/>
+          <Input Name ="DemandId">
+        <Signal Name="LowerSaturation">-10</Signal>
+        <Signal Name="UpperSaturation">10</Signal>
+      </Input>
+      <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>
+      <Signal Name="BiQuadParameter0">140.7434</Signal>
+      <Signal Name="BiQuadParameter1">-140.2187</Signal>
+      <Signal Name="BiQuadParameter2">0.000000</Signal>
+      <Signal Name="BiQuadParameter3">-1.000000</Signal>
+      <Signal Name="BiQuadParameter4">0.000000</Signal>
+      <Signal Name="DriveType">3</Signal>
+    </Actuator>
+  </Controller>
+
+	<Controller Name="Cygnus E">
+        <Actuator Name="Mot_E1_Front">
+            <Input Name ="I_demand_Front" Source ="LateralController/I_Demand_Front"/>
+            <Input Name ="I_demand_Front">
+                <Signal Name="LowerSaturation">-5.6</Signal>
+                <Signal Name="UpperSaturation">5.6</Signal>
+            </Input>
+            <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>  
+            <Signal Name="BiQuadParameter0">59.0619</Signal>
+            <Signal Name="BiQuadParameter1">-58.9426</Signal>
+            <Signal Name="BiQuadParameter2">0.000000</Signal>
+            <Signal Name="BiQuadParameter3">-1.000000</Signal>
+            <Signal Name="BiQuadParameter4">0.000000</Signal>
+            <Signal Name="DriveType">3</Signal>
+        </Actuator>
+        
+        <Actuator Name="Mot_E2_Back">
+            <Input Name ="I_demand_Back" Source ="LateralController/I_Demand_Back"/>
+            <Input Name ="I_demand_Back">
+                <Signal Name="LowerSaturation">-5.6</Signal>
+                <Signal Name="UpperSaturation">5.6</Signal>
+            </Input>
+            <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>  
+            <Signal Name="BiQuadParameter0">59.0619</Signal>
+            <Signal Name="BiQuadParameter1">-58.9426</Signal>
+            <Signal Name="BiQuadParameter2">0.000000</Signal>
+            <Signal Name="BiQuadParameter3">-1.000000</Signal>
+            <Signal Name="BiQuadParameter4">0.000000</Signal>
+            <Signal Name="DriveType">3</Signal>
+        </Actuator>
+	</Controller>
+
+</Controller>

@@ -1,24 +1,53 @@
 <script lang="ts">
-    import {south_bridge_payload, Chart} from "$lib";
+    import {south_bridge_payload, Chart, TileGrid, Tile, PlotBuffer, StrokePresets} from "$lib";
+    import {onMount} from "svelte";
+    import {z} from "zod";
 
     let width:number;
     let updateSizes:((w:number)=>void)[] = [];
     $: updateSizes.forEach(updateSize => updateSize(width));
 
-    let charts = ["Motor 1", "Motor 2", "HEMS", "EMS"];
+
+    let hemsChart:PlotBuffer;
+    let emsChart:PlotBuffer;
+
+    onMount(() => {
+        hemsChart.addSeries(StrokePresets.theoretical())
+        hemsChart.addSeries(StrokePresets.yellow())
+        hemsChart.addSeries(StrokePresets.blue())
+
+        emsChart.addSeries(StrokePresets.theoretical())
+        emsChart.addSeries(StrokePresets.yellow())
+        emsChart.addSeries(StrokePresets.blue())
+    })
 </script>
 
 <div class="p-4">
-    <h2 class="text-xl font-semibold mb-4">Motors</h2>
-    <div bind:clientWidth={width} class="grid grid-cols-2 gap-2">
-        {#each charts as title, i}
-            <Chart {title} background="bg-surface-900" height={250} refreshRate={100} />
-        {/each}
-    </div>
-    <div class="flex justify-center mt-4 gap-4">
-        <p class="text-sm text-gray-400">Motor 1: <span class="font-mono">{$south_bridge_payload.value}</span></p>
-        <p class="text-sm text-gray-400">Motor 2: <span class="font-mono">{$south_bridge_payload.value}</span></p>
-        <p class="text-sm text-gray-400">HEMS: <span class="font-mono">{$south_bridge_payload.value}</span></p>
-        <p class="text-sm text-gray-400">EMS: <span class="font-mono">{$south_bridge_payload.value}</span></p>
-    </div>
+    <h2 class="text-xl font-semibold mb-4">Current</h2>
+    <TileGrid columns="3" rows="">
+        <Tile>
+            <Chart  eventCallback={(event) => {
+                // @ts-ignore
+                hemsChart.addEntry(1, z.number().parse(event.payload.values[0]));
+                // @ts-ignore
+                hemsChart.addEntry(2, z.number().parse(event.payload.values[1]));
+                // @ts-ignore
+                hemsChart.addEntry(3, z.number().parse(event.payload.values[2]));
+                // @ts-ignore
+                hemsChart.addEntry(4, z.number().parse(event.payload.values[3]));
+            }} bind:chart={hemsChart} eventChannel="hems" title="HEMS" background="bg-surface-900" />
+        </Tile>
+        <Tile>
+            <Chart eventCallback={(event) => {
+                // @ts-ignore
+                emsChart.addEntry(1, z.number().parse(event.payload.values[0]));
+                // @ts-ignore
+                emsChart.addEntry(2, z.number().parse(event.payload.values[1]));
+                // @ts-ignore
+                emsChart.addEntry(3, z.number().parse(event.payload.values[2]));
+                // @ts-ignore
+                emsChart.addEntry(4, z.number().parse(event.payload.values[3]));
+            }} bind:chart={emsChart} eventChannel="ems" title="EMS" background="bg-surface-900" />
+        </Tile>
+    </TileGrid>
 </div>

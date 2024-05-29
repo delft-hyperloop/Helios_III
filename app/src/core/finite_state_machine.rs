@@ -1,6 +1,6 @@
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
-use crate::core::controllers::hv_controller::Status;
+use crate::core::fsm_status::Status;
 use crate::{DataSender, Datatype, Event, EventReceiver};
 use core::cmp::{Eq, Ordering, PartialEq};
 use defmt::*;
@@ -22,10 +22,10 @@ pub enum State {
     Idle,
     HVSystemChecking,
     Levitating,
-    Accelerating,
-    Cruising,
-    LaneSwitch,
-    Braking,
+    MovingST,
+    MovingLSST,
+    MovingLSCV,
+    EndST,
     EmergencyBraking,
     Exit,
     Crashing,
@@ -33,9 +33,7 @@ pub enum State {
 
 /// All the functionalities states can have like converting to id's or format print statements should go here
 /// The actual implementation of each state should just be attached to the state machine in separate files
-impl State {
-
-}
+impl State {}
 
 // [!!!!!] [April 3 2024] -> This is here as a reference only, if you want to add or edit events go to ../config/events.toml
 /*
@@ -127,14 +125,12 @@ pub struct FSM {
 /// * This FSM is a singleton and an entity. Its name is Megalo coming from the ancient greek word for "Big" and from the gods Megahni and Gonzalo
 impl FSM {
     pub fn new(p: FSMPeripherals, pq: EventReceiver, dq: DataSender) -> Self {
-        //TODO: Decide if main should be dirty with peripheral initialization or if it should be done here
-
         Self {
             state: State::Boot,
             peripherals: p,
             event_queue: pq,
             data_queue: dq,
-            status: Status::new(),
+            status: Status::default(),
         }
     }
 
@@ -144,7 +140,13 @@ impl FSM {
         info!("Exiting state: {:?}", self.state);
         info!("Entering state: {:?}", next_state);
         self.state = next_state;
-        self.data_queue.send(Datapoint::new(Datatype::FSMState, next_state as u64, Instant::now().as_ticks())).await;
+        self.data_queue
+            .send(Datapoint::new(
+                Datatype::FSMState,
+                next_state as u64,
+                Instant::now().as_ticks(),
+            ))
+            .await;
         self.entry();
     }
     pub async fn entry(&mut self) {
@@ -155,10 +157,10 @@ impl FSM {
             State::RunConfig => self.entry_run_config().await,
             State::HVSystemChecking => self.entry_hv_system_checking().await,
             State::Levitating => self.entry_levitating().await,
-            State::Accelerating => self.entry_accelerating().await,
-            State::Cruising => self.entry_cruising().await,
-            State::LaneSwitch => self.entry_lane_switch().await,
-            State::Braking => self.entry_braking().await,
+            State::MovingST => self.entry_accelerating().await,
+            State::MovingLSST => self.entry_cruising().await,
+            State::MovingLSCV => self.entry_ls_cv().await,
+            State::EndST => self.entry_end_st().await,
             State::EmergencyBraking => self.entry_emergency_braking().await,
             State::Exit => self.entry_exit().await,
             State::Crashing => {
@@ -169,7 +171,11 @@ impl FSM {
     pub(crate) async fn react(&mut self, event: Event) {
         info!("[fsm] reacting to {}", event.to_str());
         self.data_queue
-            .send(Datapoint::new(Datatype::FSMEvent, event.to_id() as u64, 69))
+            .send(Datapoint::new(
+                Datatype::FSMEvent,
+                event.to_id() as u64,
+                embassy_time::Instant::now().as_ticks(),
+            ))
             .await;
         match event {
             Event::LevitationErrorEvent
@@ -189,10 +195,10 @@ impl FSM {
             State::RunConfig => self.react_run_config(event).await,
             State::HVSystemChecking => self.react_hv_system_checking(event).await,
             State::Levitating => self.react_levitating(event).await,
-            State::Accelerating => self.react_accelerating(event).await,
-            State::Cruising => self.react_cruising(event).await,
-            State::LaneSwitch => self.react_lane_switch(event).await,
-            State::Braking => self.react_braking(event).await,
+            State::MovingST => self.react_mv_st(event).await,
+            State::MovingLSST => self.react_mv_ls_st(event).await,
+            State::MovingLSCV => self.react_mv_ls_cv(event).await,
+            State::EndST => self.react_end_st(event).await,
             State::Exit => self.react_exit(event).await,
             State::EmergencyBraking => {}
             State::Crashing => {}

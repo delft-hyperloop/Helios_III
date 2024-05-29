@@ -1,5 +1,5 @@
 /* AUTO GENERATED USING npm run generate:commands */
-export type NamedCommand = "DefaultCommand" | "Levitate" | "StopLevitating" | "Configure" | "StartRun" | "EmergencyBrake" | "Shutdown" | "StartHV" | "StopHV"
+export type NamedCommand = "DefaultCommand" | "Levitate" | "StopLevitating" | "Configure" | "StartRun" | "EmergencyBrake" | "Shutdown" | "StartHV" | "StopHV" | "OpenContactor" | "CloseContactor" | "DcOff" | "DcOn" | "EmitEvent"
     /* debug commands */ | 'establish_connection' | 'start_north_bridge' | 'start_south_bridge' | 'abort'
 
 /*AUTO GENERATED USING npm run generate:datatypes */
@@ -44,7 +44,7 @@ export type EventChannel = 'north_bridge' | 'south_bridge';
 /**
  * Function to convert data received at DATAPOINT.value to a given type
  */
-export type dataConvFun<T> = (data: bigint) => T;
+export type dataConvFun<T> = (data: bigint, old:T) => T;
 
 /**
  * BMS Module Voltage
@@ -76,12 +76,25 @@ export type BmsModuleTemperature = {
     avg: bigint;
 }
 
+/**
+ * BMS Event with attached string event
+ */
 export type BMSEvent = {
     event: string
 }
 
+/**
+ * Enumerator for the types of run you can have
+ * Used in for the Localiser and for when choosing a rung in the RunInit tab.
+ * @enum {string} - straight, left or right
+ */
+export enum RunMode {
+    ShortRun = 'straight',
+    LeftSwitch = 'left',
+    RightSwitch = 'right'
+}
+
 // OLD TYPES
-export type TempTableEntry = {name:string, value: number}
 export type Log = {
     log_type:string, message:string, timestamp:number
 }

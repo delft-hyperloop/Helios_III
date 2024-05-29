@@ -7,9 +7,7 @@
         south_bridge_payload,
         TileGrid,
         Tile,
-        Command,
-        hvBattery,
-        lvBattery, PlotBuffer, StrokePresets
+        Command, PlotBuffer, StrokePresets, GrandDataDistributor
     } from "$lib";
     import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
@@ -19,6 +17,10 @@
     import {z} from "zod";
 
     let width: number;
+
+    const storeManager = GrandDataDistributor.getInstance().stores;
+    const lvBattery = storeManager.getStore("BatteryBalanceLow");
+    const hvBattery = storeManager.getStore("BatteryBalanceHigh");
 
     let tableArr: any[][];
     let tableArr2: any[][];

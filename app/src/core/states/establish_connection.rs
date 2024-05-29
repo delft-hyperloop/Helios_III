@@ -1,7 +1,7 @@
+use crate::core::communication::Datapoint;
 use crate::core::finite_state_machine::{State, FSM};
 use crate::{Datatype, Event};
 use defmt::info;
-use crate::core::communication::Datapoint;
 
 impl FSM {
     pub async fn entry_establish_connection(&mut self) {
@@ -18,16 +18,20 @@ impl FSM {
             Event::ConnectionEstablishmentFailedEvent => {
                 self.transit(State::Exit).await;
             }
-            Event::ArmBrakesCommand => {
-                match self.peripherals.braking_controller.arm_breaks() {
-                    true => {
-                        self.data_queue.send(Datapoint::new(Datatype::Info, 1, embassy_time::Instant::now().as_ticks())).await;
-                    }
-                    false => {
-                        self.transit(State::Exit).await;
-                    }
+            Event::ArmBrakesCommand => match self.peripherals.braking_controller.arm_breaks() {
+                true => {
+                    self.data_queue
+                        .send(Datapoint::new(
+                            Datatype::Info,
+                            1,
+                            embassy_time::Instant::now().as_ticks(),
+                        ))
+                        .await;
                 }
-            }
+                false => {
+                    self.transit(State::Exit).await;
+                }
+            },
 
             _ => {
                 info!("The current state ignores {}", event.to_str());

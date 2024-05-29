@@ -1,5 +1,9 @@
+use crate::core::communication::Datapoint;
 use crate::pconfig::{embassy_socket_from_config, socket_from_config};
-use crate::{Command, DataReceiver, Datatype, Event, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, IP_TIMEOUT, KEEP_ALIVE, NETWORK_BUFFER_SIZE};
+use crate::{
+    Command, DataReceiver, Datatype, Event, EventSender, GS_IP_ADDRESS, IP_TIMEOUT, KEEP_ALIVE,
+    NETWORK_BUFFER_SIZE,
+};
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_net::tcp::client::{TcpClient, TcpClientState};
@@ -18,12 +22,11 @@ use embassy_time::{Duration, Timer};
 use embedded_io_async::{Read, Write};
 use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
 use heapless::binary_heap::Max;
-use heapless::Vec;
 use heapless::Deque;
+use heapless::Vec;
 use rand_core::RngCore;
 use static_cell::StaticCell;
 use {defmt_rtt as _, panic_probe as _};
-use crate::core::communication::Datapoint;
 
 /// This is the task that:
 /// 1. bugs the ground station to connect until it does
@@ -43,7 +46,7 @@ pub async fn tcp_connection_handler(
     //
     // let client = TcpClient::new(&stack, &state);
 
-    let gs_addr = embassy_socket_from_config(GS_IP_ADDRESS);
+    let gs_addr = unsafe { embassy_socket_from_config(GS_IP_ADDRESS) };
     let mut rx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
     let mut tx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
 
@@ -122,7 +125,16 @@ pub async fn tcp_connection_handler(
                             #[cfg(debug_assertions)]
                             info!("[tcp] Command received: {:?}", cmd);
                             #[cfg(debug_assertions)]
-                            socket.write_all(&Datapoint::new(Datatype::Info, cmd.to_id() as u64, embassy_time::Instant::now().as_ticks()).as_bytes()).await;
+                            socket
+                                .write_all(
+                                    &Datapoint::new(
+                                        Datatype::Info,
+                                        cmd.to_id() as u64,
+                                        embassy_time::Instant::now().as_ticks(),
+                                    )
+                                    .as_bytes(),
+                                )
+                                .await;
                             match cmd {
                                 Command::EmergencyBrake(_) => {
                                     event_sender.send(Event::EmergencyBrakeCommand).await;
@@ -179,8 +191,11 @@ pub async fn tcp_connection_handler(
                                 Command::EmitEvent(e) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] EmitEvent command received");
-                                    event_sender.send(Event::from_id((e & 0xFFFF) as u16, Some(69420))).await;
+                                    event_sender
+                                        .send(Event::from_id((e & 0xFFFF) as u16, Some(69420)))
+                                        .await;
                                 }
+                                _ => {} // TODO: DELETE THIS
                             }
                         }
                     } else {
@@ -197,10 +212,8 @@ pub async fn tcp_connection_handler(
                 //     continue 'connection;
                 // }
 
-                
                 // let id = (buf[0] as u16) << 8 | (buf[1] as u16);
                 // let cmd = Command::from_id(id);
-
             }
             // socket.write_all(b"trying to receive on data mpmc").await;
             socket.flush().await;

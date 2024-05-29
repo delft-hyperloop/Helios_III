@@ -25,6 +25,17 @@ name = "IMDVoltageDetails"
 id = 0x39
 
 
+[[Datatype]]
+name = "InsulationNegative"
+id = 0x50A
+
+[[Datatype]]
+name = "InsulationPositive"
+id = 0x50B
+
+[[Datatype]]
+name = "InsulationOriginal"
+id = 0x50C
 
 [[Datatype]]
 name = "DefaultBMSLow"
@@ -82,14 +93,6 @@ id = 0x1DC
 [[Datatype]]
 name = "ChargeStateLow"
 id = 0x1A1
-
-[[Datatype]]
-name = "SingleCellVoltageHigh"
-id = 0x3C0
-
-[[Datatype]]
-name = "SingleCellTemperatureHigh"
-id = 0x4A0
 
 [[Datatype]]
 name = "ChargeStateHigh"
@@ -216,6 +219,7 @@ id = 0x15
 [[Datatype]]
 name = "UnknownCanId"
 id = 0x7F0
+
 [[Datatype]]
 name = "Info"
 id = 0x7FA
@@ -340,3 +344,316 @@ id = 0x222
 [[Datatype]]
 name = "TempPCB30"
 id = 0x223
+
+[[Datatype]]
+name = "location"
+id = 0x500
+
+[[Datatype]]
+name = "velocity"
+id = 0x501
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_1"
+id = 0x3C0
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_1"
+id = 0x4A0
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_2"
+id = 0x3C1
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_2"
+id = 0x4A1
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_3"
+id = 0x3C2
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_3"
+id = 0x4A2
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_4"
+id = 0x3C3
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_4"
+id = 0x4A3
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_5"
+id = 0x3C4
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_5"
+id = 0x4A4
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_6"
+id = 0x3C5
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_6"
+id = 0x4A5
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_7"
+id = 0x3C6
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_7"
+id = 0x4A6
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_8"
+id = 0x3C7
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_8"
+id = 0x4A7
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_9"
+id = 0x3C8
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_9"
+id = 0x4A8
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_10"
+id = 0x3C9
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_10"
+id = 0x4A9
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_11"
+id = 0x3CA
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_11"
+id = 0x4AA
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_12"
+id = 0x3CB
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_12"
+id = 0x4AB
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_13"
+id = 0x3CC
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_13"
+id = 0x4AC
+
+[[Datatype]]
+name = "SingleCellVoltageHigh_14"
+id = 0x3CD
+
+[[Datatype]]
+name = "SingleCellTemperatureHigh_14"
+id = 0x4AD
+
+[[Datatype]]
+name = "Module1MaxVoltage"
+id = 0x4B0
+
+[[Datatype]]
+name = "Module2MaxVoltage"
+id = 0x4B1
+
+[[Datatype]]
+name = "Module3MaxVoltage"
+id = 0x4B2
+
+[[Datatype]]
+name = "Module4MaxVoltage"
+id = 0x4B3
+
+[[Datatype]]
+name = "Module5MaxVoltage"
+id = 0x4B4
+
+[[Datatype]]
+name = "Module6MaxVoltage"
+id = 0x4B5
+
+[[Datatype]]
+name = "Module7MaxVoltage"
+id = 0x4B6
+
+[[Datatype]]
+name = "Module8MaxVoltage"
+id = 0x4B7
+
+[[Datatype]]
+name = "Module1MinVoltage"
+id = 0x4B8
+
+[[Datatype]]
+name = "Module2MinVoltage"
+id = 0x4B9
+
+[[Datatype]]
+name = "Module3MinVoltage"
+id = 0x4BA
+
+[[Datatype]]
+name = "Module4MinVoltage"
+id = 0x4BB
+
+[[Datatype]]
+name = "Module5MinVoltage"
+id = 0x4BC
+
+[[Datatype]]
+name = "Module6MinVoltage"
+id = 0x4BD
+
+[[Datatype]]
+name = "Module7MinVoltage"
+id = 0x4BE
+
+[[Datatype]]
+name = "Module8MinVoltage"
+id = 0x4BF
+
+[[Datatype]]
+name = "Module1MaxTemperature"
+id = 0x4C0
+
+[[Datatype]]
+name = "Module2MaxTemperature"
+id = 0x4C1
+
+[[Datatype]]
+name = "Module3MaxTemperature"
+id = 0x4C2
+
+[[Datatype]]
+name = "Module4MaxTemperature"
+id = 0x4C3
+
+[[Datatype]]
+name = "Module5MaxTemperature"
+id = 0x4C4
+
+[[Datatype]]
+name = "Module6MaxTemperature"
+id = 0x4C5
+
+[[Datatype]]
+name = "Module7MaxTemperature"
+id = 0x4C6
+
+[[Datatype]]
+name = "Module8MaxTemperature"
+id = 0x4C7
+
+[[Datatype]]
+name = "Module1MinTemperature"
+id = 0x4C8
+
+[[Datatype]]
+name = "Module2MinTemperature"
+id = 0x4C9
+
+[[Datatype]]
+name = "Module3MinTemperature"
+id = 0x4CA
+
+[[Datatype]]
+name = "Module4MinTemperature"
+id = 0x4CB
+
+[[Datatype]]
+name = "Module5MinTemperature"
+id = 0x4CC
+
+[[Datatype]]
+name = "Module6MinTemperature"
+id = 0x4CD
+
+[[Datatype]]
+name = "Module7MinTemperature"
+id = 0x4CE
+
+[[Datatype]]
+name = "Module8MinTemperature"
+id = 0x4CF
+
+[[Datatype]]
+name = "Module1AvgVoltage"
+id = 0x4D0
+
+[[Datatype]]
+name = "Module2AvgVoltage"
+id = 0x4D1
+
+[[Datatype]]
+name = "Module3AvgVoltage"
+id = 0x4D2
+
+[[Datatype]]
+name = "Module4AvgVoltage"
+id = 0x4D3
+
+[[Datatype]]
+name = "Module5AvgVoltage"
+id = 0x4D4
+
+[[Datatype]]
+name = "Module6AvgVoltage"
+id = 0x4D5
+
+[[Datatype]]
+name = "Module7AvgVoltage"
+id = 0x4D6
+
+[[Datatype]]
+name = "Module8AvgVoltage"
+id = 0x4D7
+
+[[Datatype]]
+name = "Module1AvgTemperature"
+id = 0x4D8
+
+[[Datatype]]
+name = "Module2AvgTemperature"
+id = 0x4D9
+
+[[Datatype]]
+name = "Module3AvgTemperature"
+id = 0x4DA
+
+[[Datatype]]
+name = "Module4AvgTemperature"
+id = 0x4DB
+
+[[Datatype]]
+name = "Module5AvgTemperature"
+id = 0x4DC
+
+[[Datatype]]
+name = "Module6AvgTemperature"
+id = 0x4DD
+
+[[Datatype]]
+name = "Module7AvgTemperature"
+id = 0x4DE
+
+[[Datatype]]
+name = "Module8AvgTemperature"
+id = 0x4DF
+
