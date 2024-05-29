@@ -159,6 +159,7 @@ name = "PodDropSwitchTriggered"
 id = 0xbF
 priority = 5
 
+
 [[Event]]
 name = "EndOfTrackReached"
 id = 0xc0
@@ -182,4 +183,9 @@ priority = 0
 [[Event]]
 name = "LaneSwitchBackwardsC"
 id = 0x504
+priority = 0
+
+[[Event]]
+name = "LaneSwitchEnded"
+id = 0x505
 priority = 0
