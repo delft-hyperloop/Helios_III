@@ -20,11 +20,14 @@ impl FSM {
             Event::SetRunConfig(x) => {
                 todo!(); // TODO: send message to propulsion to set desired speed ?
                 //self.peripherals.propulsion_controller.set_run_config(x);
-                self.transit(State::Idle).await;
+                // self.transit(State::Idle).await;
+            }
+            Event::ArmBrakesCommand => {
+                self.peripherals.braking_controller.arm_breaks();
+
             }
             Event::RunConfigCompleteEvent => {
                 todo!(); // TODO: receive reply from propulsion that desired speed has been set
-
                 self.transit(State::Idle).await;
             }
             Event::RunConfigFailedEvent => {

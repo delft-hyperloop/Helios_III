@@ -2,6 +2,7 @@ use crate::NETWORK_BUFFER_SIZE;
 use std::collections::VecDeque;
 use tokio::io::AsyncReadExt;
 use tokio::net::tcp::OwnedReadHalf;
+use crate::api::Message;
 
 pub async fn get_messages_from_tcp(
     mut reader: OwnedReadHalf,
@@ -30,6 +31,7 @@ pub async fn get_messages_from_tcp(
                 break;
             }
             Ok(n) => {
+                message_transmitter.send(Message::Info(format!("[TRACE] received {} bytes", n))).unwrap();
                 let _ = &buffer[..n].iter().for_each(|x| {
                     byte_queue.push_back(*x);
                 });
