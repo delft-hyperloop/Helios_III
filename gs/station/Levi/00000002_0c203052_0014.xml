@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated from: C:\Temporary\200227\Beckhoff_EtherCAT_ESI\Beckhoff_EL31xx.xml -->
+<!-- Generated time: 2020-1-27 13:42:38 -->
+<Controller Name="EL3104" Slave="True">
+  <Properties>
+    <Property Name="HardwareInterfacePn" Value="0c20-3052-0014-0000"/>
+    <Property Name="BusType" Value="EtherCAT"/>
+    <Property Name="VendorId" Value="00000002"/>
+    <Property Name="IsRebootSupported" Value="False" />
+    <Property Name="HasId" Value="True" />
+  </Properties>
+  <EtherCatObjects>
+    <EtherCatObject Index="0x12" Name="Object_Id" Access="R" DataType="Unsigned16"/>
+    <EtherCatObject Index="0x1000" Name="Object_Device type" Access="R" DataType="Unsigned32" ResetValue="0x012c1389"/>
+    <EtherCatObject Index="0x1008" Name="Object_Device name" Access="R" DataType="Unsigned48" ResetValue="0x343031334c45"/>
+    <EtherCatObject Index="0x1009" Name="Object_Hardware version" Access="R" DataType="Unsigned16"/>
+    <EtherCatObject Index="0x100a" Name="Object_Software version" Access="R" DataType="Unsigned16"/>
+    <EtherCatObject Index="0x1011" Name="Object_Restore default parameters">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x1"/>
+      <EtherCatObject Access="RW" DataType="Unsigned32" SubIndex="1" Name="SubIndex 001" ResetValue="0x0"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1018" Name="Object_Identity">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x4"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="1" Name="Vendor ID" ResetValue="0x2"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="2" Name="Product code" ResetValue="0xc203052"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="3" Name="Revision" ResetValue="0x100000"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="4" Name="Serial number" ResetValue="0x0"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x10f0" Name="Object_Backup parameter handling">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="1" Name="Checksum" ResetValue="0x0"/>
+    </EtherCatObject>
+    <!-- Not supported
+      - DataType of 'Exclude TxPDOs' is not supported
+
+    <EtherCatObject Index="0x1800" Name="Object_AI TxPDO-Par Standard Ch_1">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x9"/>
+      <EtherCatObject Access="R" DataType="????" SubIndex="6" Name="Exclude TxPDOs" ResetValue="0x1a01"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="7" Name="TxPDO State"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="9" Name="TxPDO Toggle"/>
+    </EtherCatObject>
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: Object 'Exclude TxPDOs' is of type 'OctetString', This type is not supported.
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: ResetValue '0x1a01' is too large (derived from defaultData/defaultValue in ESI file)
+    -->
+    <!-- Not supported
+      - DataType of 'Exclude TxPDOs' is not supported
+
+    <EtherCatObject Index="0x1801" Name="Object_AI TxPDO-Par Compact Ch_1">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x6"/>
+      <EtherCatObject Access="R" DataType="????" SubIndex="6" Name="Exclude TxPDOs" ResetValue="0x1a00"/>
+    </EtherCatObject>
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: Object 'Exclude TxPDOs' is of type 'OctetString', This type is not supported.
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: ResetValue '0x1a00' is too large (derived from defaultData/defaultValue in ESI file)
+    -->
+    <!-- Not supported
+      - DataType of 'Exclude TxPDOs' is not supported
+
+    <EtherCatObject Index="0x1802" Name="Object_AI TxPDO-Par Standard Ch_2">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x9"/>
+      <EtherCatObject Access="R" DataType="????" SubIndex="6" Name="Exclude TxPDOs" ResetValue="0x1a03"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="7" Name="TxPDO State"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="9" Name="TxPDO Toggle"/>
+    </EtherCatObject>
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: Object 'Exclude TxPDOs' is of type 'OctetString', This type is not supported.
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: ResetValue '0x1a03' is too large (derived from defaultData/defaultValue in ESI file)
+    -->
+    <!-- Not supported
+      - DataType of 'Exclude TxPDOs' is not supported
+
+    <EtherCatObject Index="0x1803" Name="Object_AI TxPDO-Par Compact Ch_2">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x6"/>
+      <EtherCatObject Access="R" DataType="????" SubIndex="6" Name="Exclude TxPDOs" ResetValue="0x1a02"/>
+    </EtherCatObject>
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: Object 'Exclude TxPDOs' is of type 'OctetString', This type is not supported.
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: ResetValue '0x1a02' is too large (derived from defaultData/defaultValue in ESI file)
+    -->
+    <!-- Not supported
+      - DataType of 'Exclude TxPDOs' is not supported
+
+    <EtherCatObject Index="0x1804" Name="Object_AI TxPDO-Par Standard Ch_3">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x9"/>
+      <EtherCatObject Access="R" DataType="????" SubIndex="6" Name="Exclude TxPDOs" ResetValue="0x1a05"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="7" Name="TxPDO State"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="9" Name="TxPDO Toggle"/>
+    </EtherCatObject>
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: Object 'Exclude TxPDOs' is of type 'OctetString', This type is not supported.
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: ResetValue '0x1a05' is too large (derived from defaultData/defaultValue in ESI file)
+    -->
+    <!-- Not supported
+      - DataType of 'Exclude TxPDOs' is not supported
+
+    <EtherCatObject Index="0x1805" Name="Object_AI TxPDO-Par Compact Ch_3">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x6"/>
+      <EtherCatObject Access="R" DataType="????" SubIndex="6" Name="Exclude TxPDOs" ResetValue="0x1a04"/>
+    </EtherCatObject>
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: Object 'Exclude TxPDOs' is of type 'OctetString', This type is not supported.
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: ResetValue '0x1a04' is too large (derived from defaultData/defaultValue in ESI file)
+    -->
+    <!-- Not supported
+      - DataType of 'Exclude TxPDOs' is not supported
+
+    <EtherCatObject Index="0x1806" Name="Object_AI TxPDO-Par Standard Ch_4">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x9"/>
+      <EtherCatObject Access="R" DataType="????" SubIndex="6" Name="Exclude TxPDOs" ResetValue="0x1a07"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="7" Name="TxPDO State"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="9" Name="TxPDO Toggle"/>
+    </EtherCatObject>
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: Object 'Exclude TxPDOs' is of type 'OctetString', This type is not supported.
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: ResetValue '0x1a07' is too large (derived from defaultData/defaultValue in ESI file)
+    -->
+    <!-- Not supported
+      - DataType of 'Exclude TxPDOs' is not supported
+
+    <EtherCatObject Index="0x1807" Name="Object_AI TxPDO-Par Compact Ch_4">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x6"/>
+      <EtherCatObject Access="R" DataType="????" SubIndex="6" Name="Exclude TxPDOs" ResetValue="0x1a06"/>
+    </EtherCatObject>
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: Object 'Exclude TxPDOs' is of type 'OctetString', This type is not supported.
+      - Warning: EL3104(00000002_0c203052_00140000.xml) - Not supported by PMP: ResetValue '0x1a06' is too large (derived from defaultData/defaultValue in ESI file)
+    -->
+    <EtherCatObject Index="0x1a00" Name="Object_AI TxPDO-Map Standard Ch_1">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0xb"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="1" Name="SubIndex 001" ResetValue="0x60000101"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="2" Name="SubIndex 002" ResetValue="0x60000201"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="3" Name="SubIndex 003" ResetValue="0x60000302"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="4" Name="SubIndex 004" ResetValue="0x60000502"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="5" Name="SubIndex 005" ResetValue="0x60000701"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="6" Name="SubIndex 006" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="7" Name="SubIndex 007" ResetValue="0x5"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="8" Name="SubIndex 008" ResetValue="0x1c322001"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="9" Name="SubIndex 009" ResetValue="0x18000701"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="10" Name="SubIndex 010" ResetValue="0x18000901"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="11" Name="SubIndex 011" ResetValue="0x60001110"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1a01" Name="Object_AI TxPDO-Map Compact Ch_1">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="1" Name="SubIndex 001" ResetValue="0x60001110"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1a02" Name="Object_AI TxPDO-Map Standard Ch_2">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0xb"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="1" Name="SubIndex 001" ResetValue="0x60100101"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="2" Name="SubIndex 002" ResetValue="0x60100201"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="3" Name="SubIndex 003" ResetValue="0x60100302"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="4" Name="SubIndex 004" ResetValue="0x60100502"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="5" Name="SubIndex 005" ResetValue="0x60100701"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="6" Name="SubIndex 006" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="7" Name="SubIndex 007" ResetValue="0x5"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="8" Name="SubIndex 008" ResetValue="0x1c322001"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="9" Name="SubIndex 009" ResetValue="0x18020701"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="10" Name="SubIndex 010" ResetValue="0x18020901"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="11" Name="SubIndex 011" ResetValue="0x60101110"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1a03" Name="Object_AI TxPDO-Map Compact Ch_2">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="1" Name="SubIndex 001" ResetValue="0x60101110"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1a04" Name="Object_AI TxPDO-Map Standard Ch_3">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0xb"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="1" Name="SubIndex 001" ResetValue="0x60200101"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="2" Name="SubIndex 002" ResetValue="0x60200201"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="3" Name="SubIndex 003" ResetValue="0x60200302"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="4" Name="SubIndex 004" ResetValue="0x60200502"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="5" Name="SubIndex 005" ResetValue="0x60200701"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="6" Name="SubIndex 006" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="7" Name="SubIndex 007" ResetValue="0x5"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="8" Name="SubIndex 008" ResetValue="0x1c322001"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="9" Name="SubIndex 009" ResetValue="0x18040701"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="10" Name="SubIndex 010" ResetValue="0x18040901"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="11" Name="SubIndex 011" ResetValue="0x60201110"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1a05" Name="Object_AI TxPDO-Map Compact Ch_3">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="1" Name="SubIndex 001" ResetValue="0x60201110"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1a06" Name="Object_AI TxPDO-Map Standard Ch_4">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0xb"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="1" Name="SubIndex 001" ResetValue="0x60300101"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="2" Name="SubIndex 002" ResetValue="0x60300201"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="3" Name="SubIndex 003" ResetValue="0x60300302"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="4" Name="SubIndex 004" ResetValue="0x60300502"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="5" Name="SubIndex 005" ResetValue="0x60300701"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="6" Name="SubIndex 006" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="7" Name="SubIndex 007" ResetValue="0x5"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="8" Name="SubIndex 008" ResetValue="0x1c322001"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="9" Name="SubIndex 009" ResetValue="0x18060701"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="10" Name="SubIndex 010" ResetValue="0x18060901"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="11" Name="SubIndex 011" ResetValue="0x60301110"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1a07" Name="Object_AI TxPDO-Map Compact Ch_4">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="1" Name="SubIndex 001" ResetValue="0x60301110"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1c00" Name="Object_Sync manager type">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x4"/>
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="1" Name="SubIndex 001" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="2" Name="SubIndex 002" ResetValue="0x2"/>
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="3" Name="SubIndex 003" ResetValue="0x3"/>
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="4" Name="SubIndex 004" ResetValue="0x4"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1c12" Name="Object_RxPDO assign">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x0"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1c13" Name="Object_TxPDO assign">
+      <EtherCatObject Access="RW" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x4"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="1" Name="SubIndex 001" ResetValue="0x1a00"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="2" Name="SubIndex 002" ResetValue="0x1a02"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="3" Name="SubIndex 003" ResetValue="0x1a04"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="4" Name="SubIndex 004" ResetValue="0x1a06"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x1c33" Name="Object_SM input parameter">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x20"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="1" Name="Sync mode" ResetValue="0x22"/>
+      <EtherCatObject Access="RW" DataType="Unsigned32" SubIndex="2" Name="Cycle time" ResetValue="0xf4240"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="3" Name="Shift time" ResetValue="0x186a0"/>
+      <EtherCatObject Access="R" DataType="Unsigned16" SubIndex="4" Name="Sync modes supported" ResetValue="0xc007"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="5" Name="Minimum cycle time" ResetValue="0x186a0"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="6" Name="Calc and copy time" ResetValue="0x2710"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="7" Name="Minimum delay time" ResetValue="0x186a0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="8" Name="Command" ResetValue="0x0"/>
+      <EtherCatObject Access="R" DataType="Unsigned32" SubIndex="9" Name="Maximum Delay time" ResetValue="0x186a0"/>
+      <EtherCatObject Access="R" DataType="Unsigned16" SubIndex="11" Name="SM event missed counter" ResetValue="0x0"/>
+      <EtherCatObject Access="R" DataType="Unsigned16" SubIndex="12" Name="Cycle exceeded counter" ResetValue="0x0"/>
+      <EtherCatObject Access="R" DataType="Unsigned16" SubIndex="13" Name="Shift too short counter" ResetValue="0x0"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="32" Name="Sync error" ResetValue="0x0"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x6000" Name="Object_AI Inputs1">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x11"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="1" Name="Underrange" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="2" Name="Overrange" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit2" SubIndex="3" Name="Limit 1" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit2" SubIndex="5" Name="Limit 2" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="7" Name="Error" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="14" Name="Sync error"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="15" Name="TxPDO State"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="16" Name="TxPDO Toggle"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Integer16" SubIndex="17" Name="Value"/>  <!-- TxPdo -->
+    </EtherCatObject>
+    <EtherCatObject Index="0x6010" Name="Object_AI Inputs2">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x11"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="1" Name="Underrange" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="2" Name="Overrange" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit2" SubIndex="3" Name="Limit 1" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit2" SubIndex="5" Name="Limit 2" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="7" Name="Error" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="14" Name="Sync error"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="15" Name="TxPDO State"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="16" Name="TxPDO Toggle"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Integer16" SubIndex="17" Name="Value"/>  <!-- TxPdo -->
+    </EtherCatObject>
+    <EtherCatObject Index="0x6020" Name="Object_AI Inputs3">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x11"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="1" Name="Underrange" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="2" Name="Overrange" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit2" SubIndex="3" Name="Limit 1" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit2" SubIndex="5" Name="Limit 2" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="7" Name="Error" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="14" Name="Sync error"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="15" Name="TxPDO State"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="16" Name="TxPDO Toggle"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Integer16" SubIndex="17" Name="Value"/>  <!-- TxPdo -->
+    </EtherCatObject>
+    <EtherCatObject Index="0x6030" Name="Object_AI Inputs4">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x11"/>
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="1" Name="Underrange" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="2" Name="Overrange" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit2" SubIndex="3" Name="Limit 1" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit2" SubIndex="5" Name="Limit 2" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="7" Name="Error" ResetValue="0x0"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="14" Name="Sync error"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="15" Name="TxPDO State"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Bit1" SubIndex="16" Name="TxPDO Toggle"/>  <!-- TxPdo -->
+      <EtherCatObject Access="R" DataType="Integer16" SubIndex="17" Name="Value"/>  <!-- TxPdo -->
+    </EtherCatObject>
+    <EtherCatObject Index="0x8000" Name="Object_AI Settings1">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x18"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="1" Name="Enable user scale" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit3" SubIndex="2" Name="Presentation" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="5" Name="Siemens bits" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="6" Name="Enable filter" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="7" Name="Enable limit 1" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="8" Name="Enable limit 2" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="10" Name="Enable user calibration" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="11" Name="Enable vendor calibration" ResetValue="0x1"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="14" Name="Swap limit bits" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="17" Name="User scale offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned32" SubIndex="18" Name="User scale gain" ResetValue="0x10000"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="19" Name="Limit 1" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="20" Name="Limit 2" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="21" Name="Filter settings" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="23" Name="User calibration offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="24" Name="User calibration gain" ResetValue="0x4000"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x800e" Name="Object_AI Internal data1">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned16" SubIndex="1" Name="ADC raw value" ResetValue="0x0"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x800f" Name="Object_AI Vendor data1">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x2"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="1" Name="Calibration offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="2" Name="Calibration gain" ResetValue="0x4000"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x8010" Name="Object_AI Settings2">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x18"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="1" Name="Enable user scale" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit3" SubIndex="2" Name="Presentation" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="5" Name="Siemens bits" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="6" Name="Enable filter" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="7" Name="Enable limit 1" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="8" Name="Enable limit 2" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="10" Name="Enable user calibration" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="11" Name="Enable vendor calibration" ResetValue="0x1"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="14" Name="Swap limit bits" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="17" Name="User scale offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned32" SubIndex="18" Name="User scale gain" ResetValue="0x10000"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="19" Name="Limit 1" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="20" Name="Limit 2" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="21" Name="Filter settings" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="23" Name="User calibration offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="24" Name="User calibration gain" ResetValue="0x4000"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x801e" Name="Object_AI Internal data2">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned16" SubIndex="1" Name="ADC raw value" ResetValue="0x0"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x801f" Name="Object_AI Vendor data2">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x2"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="1" Name="Calibration offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="2" Name="Calibration gain" ResetValue="0x4000"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x8020" Name="Object_AI Settings3">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x18"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="1" Name="Enable user scale" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit3" SubIndex="2" Name="Presentation" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="5" Name="Siemens bits" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="6" Name="Enable filter" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="7" Name="Enable limit 1" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="8" Name="Enable limit 2" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="10" Name="Enable user calibration" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="11" Name="Enable vendor calibration" ResetValue="0x1"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="14" Name="Swap limit bits" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="17" Name="User scale offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned32" SubIndex="18" Name="User scale gain" ResetValue="0x10000"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="19" Name="Limit 1" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="20" Name="Limit 2" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="21" Name="Filter settings" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="23" Name="User calibration offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="24" Name="User calibration gain" ResetValue="0x4000"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x802e" Name="Object_AI Internal data3">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned16" SubIndex="1" Name="ADC raw value" ResetValue="0x0"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x802f" Name="Object_AI Vendor data3">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x2"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="1" Name="Calibration offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="2" Name="Calibration gain" ResetValue="0x4000"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x8030" Name="Object_AI Settings4">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x18"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="1" Name="Enable user scale" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit3" SubIndex="2" Name="Presentation" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="5" Name="Siemens bits" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="6" Name="Enable filter" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="7" Name="Enable limit 1" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="8" Name="Enable limit 2" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="10" Name="Enable user calibration" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="11" Name="Enable vendor calibration" ResetValue="0x1"/>
+      <EtherCatObject Access="RW" DataType="Bit1" SubIndex="14" Name="Swap limit bits" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="17" Name="User scale offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned32" SubIndex="18" Name="User scale gain" ResetValue="0x10000"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="19" Name="Limit 1" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="20" Name="Limit 2" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="21" Name="Filter settings" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="23" Name="User calibration offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="24" Name="User calibration gain" ResetValue="0x4000"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x803e" Name="Object_AI Internal data4">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x1"/>
+      <EtherCatObject Access="R" DataType="Unsigned16" SubIndex="1" Name="ADC raw value" ResetValue="0x0"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0x803f" Name="Object_AI Vendor data4">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x2"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="1" Name="Calibration offset" ResetValue="0x0"/>
+      <EtherCatObject Access="RW" DataType="Unsigned16" SubIndex="2" Name="Calibration gain" ResetValue="0x4000"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0xf000" Name="Object_Modular device profile">
+      <EtherCatObject Access="R" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x2"/>
+      <EtherCatObject Access="R" DataType="Unsigned16" SubIndex="1" Name="Module index distance" ResetValue="0x10"/>
+      <EtherCatObject Access="R" DataType="Unsigned16" SubIndex="2" Name="Maximum number of modules" ResetValue="0x4"/>
+    </EtherCatObject>
+    <EtherCatObject Index="0xf008" Name="Object_Code word" Access="RW" DataType="Unsigned32" ResetValue="0x00000000"/>
+    <EtherCatObject Index="0xf010" Name="Object_Module list">
+      <EtherCatObject Access="RW" DataType="Unsigned8" SubIndex="0" Name="SubIndex 000" ResetValue="0x4"/>
+      <EtherCatObject Access="RW" DataType="Unsigned32" SubIndex="1" Name="SubIndex 001" ResetValue="0x12c"/>
+      <EtherCatObject Access="RW" DataType="Unsigned32" SubIndex="2" Name="SubIndex 002" ResetValue="0x12c"/>
+      <EtherCatObject Access="RW" DataType="Unsigned32" SubIndex="3" Name="SubIndex 003" ResetValue="0x12c"/>
+      <EtherCatObject Access="RW" DataType="Unsigned32" SubIndex="4" Name="SubIndex 004" ResetValue="0x12c"/>
+    </EtherCatObject>
+  </EtherCatObjects>
+  <Types>
+    <ProcessingBlockType Name="NrtcOnly.TxPdoProcessingBlock">
+      <Signals>
+<!--         <Signal Name="AI TxPDO-Par Standard Ch_1_TxPDO State" Object="Object_AI TxPDO-Par Standard Ch_1.TxPDO State" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--         <Signal Name="AI TxPDO-Par Standard Ch_1_TxPDO Toggle" Object="Object_AI TxPDO-Par Standard Ch_1.TxPDO Toggle" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--         <Signal Name="AI TxPDO-Par Standard Ch_2_TxPDO State" Object="Object_AI TxPDO-Par Standard Ch_2.TxPDO State" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--         <Signal Name="AI TxPDO-Par Standard Ch_2_TxPDO Toggle" Object="Object_AI TxPDO-Par Standard Ch_2.TxPDO Toggle" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--         <Signal Name="AI TxPDO-Par Standard Ch_3_TxPDO State" Object="Object_AI TxPDO-Par Standard Ch_3.TxPDO State" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--         <Signal Name="AI TxPDO-Par Standard Ch_3_TxPDO Toggle" Object="Object_AI TxPDO-Par Standard Ch_3.TxPDO Toggle" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--         <Signal Name="AI TxPDO-Par Standard Ch_4_TxPDO State" Object="Object_AI TxPDO-Par Standard Ch_4.TxPDO State" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--         <Signal Name="AI TxPDO-Par Standard Ch_4_TxPDO Toggle" Object="Object_AI TxPDO-Par Standard Ch_4.TxPDO Toggle" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+        <Signal Name="AI Inputs1_Underrange" Object="Object_AI Inputs1.Underrange" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs1_Overrange" Object="Object_AI Inputs1.Overrange" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs1_Limit 1" Object="Object_AI Inputs1.Limit 1" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs1_Limit 2" Object="Object_AI Inputs1.Limit 2" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs1_Error" Object="Object_AI Inputs1.Error" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs1_Sync error" Object="Object_AI Inputs1.Sync error" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs1_TxPDO State" Object="Object_AI Inputs1.TxPDO State" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs1_TxPDO Toggle" Object="Object_AI Inputs1.TxPDO Toggle" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs1_Value" Object="Object_AI Inputs1.Value" DataType="Float" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs2_Underrange" Object="Object_AI Inputs2.Underrange" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs2_Overrange" Object="Object_AI Inputs2.Overrange" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs2_Limit 1" Object="Object_AI Inputs2.Limit 1" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs2_Limit 2" Object="Object_AI Inputs2.Limit 2" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs2_Error" Object="Object_AI Inputs2.Error" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs2_Sync error" Object="Object_AI Inputs2.Sync error" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs2_TxPDO State" Object="Object_AI Inputs2.TxPDO State" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs2_TxPDO Toggle" Object="Object_AI Inputs2.TxPDO Toggle" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs2_Value" Object="Object_AI Inputs2.Value" DataType="Float" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs3_Underrange" Object="Object_AI Inputs3.Underrange" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs3_Overrange" Object="Object_AI Inputs3.Overrange" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs3_Limit 1" Object="Object_AI Inputs3.Limit 1" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs3_Limit 2" Object="Object_AI Inputs3.Limit 2" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs3_Error" Object="Object_AI Inputs3.Error" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs3_Sync error" Object="Object_AI Inputs3.Sync error" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs3_TxPDO State" Object="Object_AI Inputs3.TxPDO State" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs3_TxPDO Toggle" Object="Object_AI Inputs3.TxPDO Toggle" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs3_Value" Object="Object_AI Inputs3.Value" DataType="Float" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs4_Underrange" Object="Object_AI Inputs4.Underrange" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs4_Overrange" Object="Object_AI Inputs4.Overrange" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs4_Limit 1" Object="Object_AI Inputs4.Limit 1" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs4_Limit 2" Object="Object_AI Inputs4.Limit 2" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs4_Error" Object="Object_AI Inputs4.Error" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs4_Sync error" Object="Object_AI Inputs4.Sync error" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs4_TxPDO State" Object="Object_AI Inputs4.TxPDO State" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs4_TxPDO Toggle" Object="Object_AI Inputs4.TxPDO Toggle" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="AI Inputs4_Value" Object="Object_AI Inputs4.Value" DataType="Float" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+      </Signals>
+    </ProcessingBlockType>
+    <ProcessingBlockType Name="NrtcOnly.RxPdoProcessingBlock">
+      <Inputs>
+      </Inputs>
+    </ProcessingBlockType>
+  </Types>
+  <Signals>
+    <Signal Name="Id" Object="Object_Id" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Device type" Object="Object_Device type" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Device name" Object="Object_Device name" DataType="Double" Description="" Scaling="One" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Hardware version" Object="Object_Hardware version" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Software version" Object="Object_Software version" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Restore default parameters_SubIndex 000" Object="Object_Restore default parameters.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Restore default parameters_SubIndex 001" Object="Object_Restore default parameters.SubIndex 001" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Identity_SubIndex 000" Object="Object_Identity.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Identity_Vendor ID" Object="Object_Identity.Vendor ID" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Identity_Product code" Object="Object_Identity.Product code" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Identity_Revision" Object="Object_Identity.Revision" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Identity_Serial number" Object="Object_Identity.Serial number" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Backup parameter handling_SubIndex 000" Object="Object_Backup parameter handling.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Backup parameter handling_Checksum" Object="Object_Backup parameter handling.Checksum" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+<!--     <Signal Name="AI TxPDO-Par Standard Ch_1_SubIndex 000" Object="Object_AI TxPDO-Par Standard Ch_1.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Standard Ch_1_Exclude TxPDOs" Object="Object_AI TxPDO-Par Standard Ch_1.Exclude TxPDOs" DataType="OctetString" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Compact Ch_1_SubIndex 000" Object="Object_AI TxPDO-Par Compact Ch_1.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Compact Ch_1_Exclude TxPDOs" Object="Object_AI TxPDO-Par Compact Ch_1.Exclude TxPDOs" DataType="OctetString" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Standard Ch_2_SubIndex 000" Object="Object_AI TxPDO-Par Standard Ch_2.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Standard Ch_2_Exclude TxPDOs" Object="Object_AI TxPDO-Par Standard Ch_2.Exclude TxPDOs" DataType="OctetString" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Compact Ch_2_SubIndex 000" Object="Object_AI TxPDO-Par Compact Ch_2.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Compact Ch_2_Exclude TxPDOs" Object="Object_AI TxPDO-Par Compact Ch_2.Exclude TxPDOs" DataType="OctetString" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Standard Ch_3_SubIndex 000" Object="Object_AI TxPDO-Par Standard Ch_3.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Standard Ch_3_Exclude TxPDOs" Object="Object_AI TxPDO-Par Standard Ch_3.Exclude TxPDOs" DataType="OctetString" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Compact Ch_3_SubIndex 000" Object="Object_AI TxPDO-Par Compact Ch_3.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Compact Ch_3_Exclude TxPDOs" Object="Object_AI TxPDO-Par Compact Ch_3.Exclude TxPDOs" DataType="OctetString" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Standard Ch_4_SubIndex 000" Object="Object_AI TxPDO-Par Standard Ch_4.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Standard Ch_4_Exclude TxPDOs" Object="Object_AI TxPDO-Par Standard Ch_4.Exclude TxPDOs" DataType="OctetString" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Compact Ch_4_SubIndex 000" Object="Object_AI TxPDO-Par Compact Ch_4.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+<!--     <Signal Name="AI TxPDO-Par Compact Ch_4_Exclude TxPDOs" Object="Object_AI TxPDO-Par Compact Ch_4.Exclude TxPDOs" DataType="OctetString" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />-->
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 000" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 001" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 001" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 002" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 002" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 003" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 003" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 004" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 004" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 005" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 005" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 006" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 006" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 007" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 007" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 008" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 008" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 009" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 009" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 010" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 010" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_1_SubIndex 011" Object="Object_AI TxPDO-Map Standard Ch_1.SubIndex 011" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Compact Ch_1_SubIndex 000" Object="Object_AI TxPDO-Map Compact Ch_1.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Compact Ch_1_SubIndex 001" Object="Object_AI TxPDO-Map Compact Ch_1.SubIndex 001" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 000" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 001" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 001" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 002" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 002" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 003" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 003" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 004" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 004" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 005" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 005" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 006" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 006" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 007" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 007" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 008" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 008" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 009" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 009" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 010" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 010" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_2_SubIndex 011" Object="Object_AI TxPDO-Map Standard Ch_2.SubIndex 011" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Compact Ch_2_SubIndex 000" Object="Object_AI TxPDO-Map Compact Ch_2.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Compact Ch_2_SubIndex 001" Object="Object_AI TxPDO-Map Compact Ch_2.SubIndex 001" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 000" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 001" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 001" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 002" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 002" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 003" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 003" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 004" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 004" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 005" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 005" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 006" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 006" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 007" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 007" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 008" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 008" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 009" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 009" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 010" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 010" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_3_SubIndex 011" Object="Object_AI TxPDO-Map Standard Ch_3.SubIndex 011" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Compact Ch_3_SubIndex 000" Object="Object_AI TxPDO-Map Compact Ch_3.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Compact Ch_3_SubIndex 001" Object="Object_AI TxPDO-Map Compact Ch_3.SubIndex 001" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 000" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 001" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 001" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 002" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 002" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 003" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 003" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 004" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 004" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 005" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 005" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 006" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 006" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 007" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 007" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 008" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 008" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 009" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 009" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 010" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 010" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Standard Ch_4_SubIndex 011" Object="Object_AI TxPDO-Map Standard Ch_4.SubIndex 011" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Compact Ch_4_SubIndex 000" Object="Object_AI TxPDO-Map Compact Ch_4.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI TxPDO-Map Compact Ch_4_SubIndex 001" Object="Object_AI TxPDO-Map Compact Ch_4.SubIndex 001" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Sync manager type_SubIndex 000" Object="Object_Sync manager type.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Sync manager type_SubIndex 001" Object="Object_Sync manager type.SubIndex 001" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Sync manager type_SubIndex 002" Object="Object_Sync manager type.SubIndex 002" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Sync manager type_SubIndex 003" Object="Object_Sync manager type.SubIndex 003" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Sync manager type_SubIndex 004" Object="Object_Sync manager type.SubIndex 004" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="RxPDO assign_SubIndex 000" Object="Object_RxPDO assign.SubIndex 000" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="TxPDO assign_SubIndex 000" Object="Object_TxPDO assign.SubIndex 000" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="TxPDO assign_SubIndex 001" Object="Object_TxPDO assign.SubIndex 001" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="TxPDO assign_SubIndex 002" Object="Object_TxPDO assign.SubIndex 002" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="TxPDO assign_SubIndex 003" Object="Object_TxPDO assign.SubIndex 003" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="TxPDO assign_SubIndex 004" Object="Object_TxPDO assign.SubIndex 004" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_SubIndex 000" Object="Object_SM input parameter.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Sync mode" Object="Object_SM input parameter.Sync mode" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Cycle time" Object="Object_SM input parameter.Cycle time" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Shift time" Object="Object_SM input parameter.Shift time" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Sync modes supported" Object="Object_SM input parameter.Sync modes supported" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Minimum cycle time" Object="Object_SM input parameter.Minimum cycle time" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Calc and copy time" Object="Object_SM input parameter.Calc and copy time" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Minimum delay time" Object="Object_SM input parameter.Minimum delay time" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Command" Object="Object_SM input parameter.Command" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Maximum Delay time" Object="Object_SM input parameter.Maximum Delay time" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_SM event missed counter" Object="Object_SM input parameter.SM event missed counter" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Cycle exceeded counter" Object="Object_SM input parameter.Cycle exceeded counter" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Shift too short counter" Object="Object_SM input parameter.Shift too short counter" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="SM input parameter_Sync error" Object="Object_SM input parameter.Sync error" DataType="Bool" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Inputs1_SubIndex 000" Object="Object_AI Inputs1.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Inputs2_SubIndex 000" Object="Object_AI Inputs2.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Inputs3_SubIndex 000" Object="Object_AI Inputs3.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Inputs4_SubIndex 000" Object="Object_AI Inputs4.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_SubIndex 000" Object="Object_AI Settings1.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Enable user scale" Object="Object_AI Settings1.Enable user scale" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Presentation" Object="Object_AI Settings1.Presentation" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Siemens bits" Object="Object_AI Settings1.Siemens bits" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Enable filter" Object="Object_AI Settings1.Enable filter" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Enable limit 1" Object="Object_AI Settings1.Enable limit 1" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Enable limit 2" Object="Object_AI Settings1.Enable limit 2" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Enable user calibration" Object="Object_AI Settings1.Enable user calibration" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Enable vendor calibration" Object="Object_AI Settings1.Enable vendor calibration" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Swap limit bits" Object="Object_AI Settings1.Swap limit bits" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_User scale offset" Object="Object_AI Settings1.User scale offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_User scale gain" Object="Object_AI Settings1.User scale gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Limit 1" Object="Object_AI Settings1.Limit 1" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Limit 2" Object="Object_AI Settings1.Limit 2" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_Filter settings" Object="Object_AI Settings1.Filter settings" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_User calibration offset" Object="Object_AI Settings1.User calibration offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings1_User calibration gain" Object="Object_AI Settings1.User calibration gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Internal data1_SubIndex 000" Object="Object_AI Internal data1.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Internal data1_ADC raw value" Object="Object_AI Internal data1.ADC raw value" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data1_SubIndex 000" Object="Object_AI Vendor data1.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data1_Calibration offset" Object="Object_AI Vendor data1.Calibration offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data1_Calibration gain" Object="Object_AI Vendor data1.Calibration gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_SubIndex 000" Object="Object_AI Settings2.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Enable user scale" Object="Object_AI Settings2.Enable user scale" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Presentation" Object="Object_AI Settings2.Presentation" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Siemens bits" Object="Object_AI Settings2.Siemens bits" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Enable filter" Object="Object_AI Settings2.Enable filter" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Enable limit 1" Object="Object_AI Settings2.Enable limit 1" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Enable limit 2" Object="Object_AI Settings2.Enable limit 2" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Enable user calibration" Object="Object_AI Settings2.Enable user calibration" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Enable vendor calibration" Object="Object_AI Settings2.Enable vendor calibration" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Swap limit bits" Object="Object_AI Settings2.Swap limit bits" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_User scale offset" Object="Object_AI Settings2.User scale offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_User scale gain" Object="Object_AI Settings2.User scale gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Limit 1" Object="Object_AI Settings2.Limit 1" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Limit 2" Object="Object_AI Settings2.Limit 2" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_Filter settings" Object="Object_AI Settings2.Filter settings" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_User calibration offset" Object="Object_AI Settings2.User calibration offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings2_User calibration gain" Object="Object_AI Settings2.User calibration gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Internal data2_SubIndex 000" Object="Object_AI Internal data2.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Internal data2_ADC raw value" Object="Object_AI Internal data2.ADC raw value" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data2_SubIndex 000" Object="Object_AI Vendor data2.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data2_Calibration offset" Object="Object_AI Vendor data2.Calibration offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data2_Calibration gain" Object="Object_AI Vendor data2.Calibration gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_SubIndex 000" Object="Object_AI Settings3.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Enable user scale" Object="Object_AI Settings3.Enable user scale" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Presentation" Object="Object_AI Settings3.Presentation" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Siemens bits" Object="Object_AI Settings3.Siemens bits" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Enable filter" Object="Object_AI Settings3.Enable filter" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Enable limit 1" Object="Object_AI Settings3.Enable limit 1" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Enable limit 2" Object="Object_AI Settings3.Enable limit 2" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Enable user calibration" Object="Object_AI Settings3.Enable user calibration" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Enable vendor calibration" Object="Object_AI Settings3.Enable vendor calibration" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Swap limit bits" Object="Object_AI Settings3.Swap limit bits" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_User scale offset" Object="Object_AI Settings3.User scale offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_User scale gain" Object="Object_AI Settings3.User scale gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Limit 1" Object="Object_AI Settings3.Limit 1" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Limit 2" Object="Object_AI Settings3.Limit 2" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_Filter settings" Object="Object_AI Settings3.Filter settings" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_User calibration offset" Object="Object_AI Settings3.User calibration offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings3_User calibration gain" Object="Object_AI Settings3.User calibration gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Internal data3_SubIndex 000" Object="Object_AI Internal data3.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Internal data3_ADC raw value" Object="Object_AI Internal data3.ADC raw value" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data3_SubIndex 000" Object="Object_AI Vendor data3.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data3_Calibration offset" Object="Object_AI Vendor data3.Calibration offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data3_Calibration gain" Object="Object_AI Vendor data3.Calibration gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_SubIndex 000" Object="Object_AI Settings4.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Enable user scale" Object="Object_AI Settings4.Enable user scale" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Presentation" Object="Object_AI Settings4.Presentation" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Siemens bits" Object="Object_AI Settings4.Siemens bits" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Enable filter" Object="Object_AI Settings4.Enable filter" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Enable limit 1" Object="Object_AI Settings4.Enable limit 1" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Enable limit 2" Object="Object_AI Settings4.Enable limit 2" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Enable user calibration" Object="Object_AI Settings4.Enable user calibration" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Enable vendor calibration" Object="Object_AI Settings4.Enable vendor calibration" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Swap limit bits" Object="Object_AI Settings4.Swap limit bits" DataType="Bool" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_User scale offset" Object="Object_AI Settings4.User scale offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_User scale gain" Object="Object_AI Settings4.User scale gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Limit 1" Object="Object_AI Settings4.Limit 1" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Limit 2" Object="Object_AI Settings4.Limit 2" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_Filter settings" Object="Object_AI Settings4.Filter settings" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_User calibration offset" Object="Object_AI Settings4.User calibration offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Settings4_User calibration gain" Object="Object_AI Settings4.User calibration gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Internal data4_SubIndex 000" Object="Object_AI Internal data4.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Internal data4_ADC raw value" Object="Object_AI Internal data4.ADC raw value" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data4_SubIndex 000" Object="Object_AI Vendor data4.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data4_Calibration offset" Object="Object_AI Vendor data4.Calibration offset" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="AI Vendor data4_Calibration gain" Object="Object_AI Vendor data4.Calibration gain" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Modular device profile_SubIndex 000" Object="Object_Modular device profile.SubIndex 000" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Modular device profile_Module index distance" Object="Object_Modular device profile.Module index distance" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Modular device profile_Maximum number of modules" Object="Object_Modular device profile.Maximum number of modules" DataType="Uint32" Description="" Access="R" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Code word" Object="Object_Code word" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Module list_SubIndex 000" Object="Object_Module list.SubIndex 000" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Module list_SubIndex 001" Object="Object_Module list.SubIndex 001" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Module list_SubIndex 002" Object="Object_Module list.SubIndex 002" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Module list_SubIndex 003" Object="Object_Module list.SubIndex 003" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Name="Module list_SubIndex 004" Object="Object_Module list.SubIndex 004" DataType="Uint32" Description="" Access="RW" Unit="" LowerBound="Min" UpperBound="Max" />
+    <Signal Access="R" DataType="Float" Hidden="True" LowerBound="0.0" Name="OgcOneOffset" ResetValue="0.0" Unit="" UpperBound="0.0" />
+    <Signal Access="R" DataType="Float" Hidden="True" LowerBound="1.0" Name="OgcOneGain"   ResetValue="1.0" Unit="" UpperBound="1.0" />
+    <Signal Name="IsBackupRunning" Access="R" DataType="Bool" Hidden="True" LowerBound="False" ResetValue="False" Unit="" UpperBound="True" />
+  </Signals>
+  <ProcessingBlocks>
+    <ProcessingBlock Name="Receive" Type="NrtcOnly.TxPdoProcessingBlock"/>
+  </ProcessingBlocks>
+</Controller>

@@ -1,12 +1,12 @@
-mod accelerating;
 mod boot;
-mod braking;
-mod cruising;
 mod emergency_braking;
 mod establish_connection;
 mod exit;
 mod hv_system_checking;
 mod idle;
-mod lane_switch;
 mod levitating;
+mod moving_end_st;
+mod moving_ls_cv;
+mod moving_ls_st;
+mod moving_st;
 mod run_config;

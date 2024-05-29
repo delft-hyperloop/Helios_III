@@ -7,10 +7,6 @@ impl FSM {
     pub async fn boot_entry(&mut self) {
         info!("Entering Boot State");
 
-        self.data_queue
-            .send(Datapoint::new(Datatype::FSMState, 13, embassy_time::Instant::now().as_ticks())).await;
-        self.react(Event::BootingCompleteEvent);
-        return;
         if !self.peripherals.braking_controller.arm_breaks() {
             self.react(Event::BootingFailedEvent);
         }
@@ -31,7 +27,7 @@ impl FSM {
                 self.transit(State::Exit).await
             }
             _ => {
-                info!("The current state ignores {}", event.to_str());
+                info!("Booting state ignores {}", event.to_str());
             }
         }
     }

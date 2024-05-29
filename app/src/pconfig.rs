@@ -1,6 +1,6 @@
 use embassy_net::IpAddress::Ipv4;
-use embassy_net::{IpEndpoint, Ipv4Cidr};
 use embassy_net::Ipv4Address;
+use embassy_net::{IpEndpoint, Ipv4Cidr};
 use embassy_stm32::can::config;
 use embassy_stm32::rcc::Pll;
 use embassy_stm32::rcc::*;
@@ -19,9 +19,10 @@ pub fn default_configuration() -> Config {
     //     freq: embassy_stm32::time::Hertz(24_000_000),
     //     mode: rcc::HseMode::Oscillator
     // });
-    config.rcc.hse = Some(rcc::Hse { // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
+    config.rcc.hse = Some(rcc::Hse {
+        // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
         freq: embassy_stm32::time::Hertz(24_000_000),
-        mode: rcc::HseMode::Oscillator
+        mode: rcc::HseMode::Oscillator,
     });
     config.rcc.pll1 = Some(Pll {
         source: PllSource::HSE,
