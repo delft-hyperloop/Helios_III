@@ -82,5 +82,21 @@ name = "StopHV"
 id = 0x61
 
 [[Command]]
+name = "OpenContactor"
+id = 0x62
+
+[[Command]]
+name = "CloseContactor"
+id = 0x63
+
+[[Command]]
+name = "DcOff"
+id = 0x64
+
+[[Command]]
+name = "DcOn"
+id = 0x65
+
+[[Command]]
 name = "EmitEvent"
 id = 0x7A0
