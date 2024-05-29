@@ -25,6 +25,7 @@ struct Config {
 #[derive(Debug, Deserialize)]
 struct GS {
     ip: [u8; 4],
+    force: bool,
     port: u16,
     // udp_port: u16,
     buffer_size: usize,
@@ -77,7 +78,7 @@ fn main() {
     let mut content = String::new();
 
     content.push_str(&*configure_ip(&config));
-    content.push_str(&*configure_gs_ip(config.gs.ip, config.gs.port));
+    content.push_str(&*configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force));
     content.push_str(&*configure_pod(&config));
     content.push_str(&*configure_internal(&config));
     content.push_str(&*goose_utils::commands::generate_commands(&id_list, COMMANDS_PATH, true));

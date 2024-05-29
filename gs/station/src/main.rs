@@ -1,60 +1,34 @@
 // Prevents an additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::io::{BufRead};
+use crate::backend::Backend;
 #[cfg(feature = "backend")]
-use crate::frontend::tauri_main;
+use crate::frontend::main::tauri_main;
 #[cfg(feature = "tui")]
 use crate::tui::tui_main;
 
-#[cfg(feature = "tui")]
-pub mod tui;
-pub mod connect;
 pub mod api;
+mod backend;
+pub mod connect;
 #[cfg(feature = "backend")]
 mod frontend;
 mod levi;
-mod backend;
+#[cfg(feature = "tui")]
+pub mod tui;
 
 include!(concat!(env!("OUT_DIR"), "/config.rs"));
 
+/// Entry point of the application
+#[tokio::main]
+async fn main() {
+    let backend = Backend::new();
 
-fn main() {
-    // parse command line arguments to see if we should run the TUI or just the backend
-    let args: Vec<String> = std::env::args().collect();
-    if args.len() > 1 && args[1] == "levi" {
-        let (r, s) = levi::start_levi_process();
-        std::thread::spawn(move || {
-            loop {
-                match r.recv() {
-                    Ok(msg) => println!("received: {:?}", msg),
-                    Err(_) => {}
-                }
-            }
-        });
-        loop {
-            let stdin = std::io::stdin();
-            let mut handle = stdin.lock();
-            let mut line = String::new();
-            match handle.read_line(&mut line) {
-                Ok(_) => {
-                    match line.as_str() {
-                        "levitate\n" => s.send(Command::Levitate(0)).unwrap(),
-                        "stop_levitating\n" => s.send(Command::StopLevitating(0)).unwrap(),
-                        _ => {}
-                    }
-                },
-                Err(error) => {
-                    println!("Error reading from stdin: {}", error);
-                }
-            }
-        }
-    } else if cfg!(feature = "tui") {
+    if cfg!(feature = "tui") {
         #[cfg(feature = "tui")]
-        tui_main().unwrap();
+        tui_main(backend); // the frontend can transmit commands and subscribe to receive messages
     } else if cfg!(feature = "backend") {
         #[cfg(feature = "backend")]
-        tauri_main();
+        tauri_main(backend);
     } else {
         println!("No features enabled, exiting");
     }
