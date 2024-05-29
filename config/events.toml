@@ -159,7 +159,13 @@ name = "EndOfTrackReached"
 id = 0xbF
 priority = 5
 
+
 [[Event]]
 name = "ExitEvent"
 id = 0xc0
+priority = 0
+
+[[Event]]
+name = "LaneSwitchEnded"
+id = 0x505
 priority = 0
