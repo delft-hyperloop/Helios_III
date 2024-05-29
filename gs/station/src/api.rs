@@ -1,7 +1,10 @@
 use std::sync::mpsc::{Receiver, Sender};
+#[cfg(feature = "tui")]
 use ratatui::prelude::Color;
 use crate::Command;
 use crate::connect::Datapoint;
+use crate::GS_IP_ADDRESS;
+
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum Status {
@@ -26,6 +29,7 @@ pub enum Message {
 }
 
 impl Status {
+    #[cfg(feature = "tui")]
     pub fn colour(&self) -> Color {
         match self {
             Status::ServerStarted => Color::Green,
@@ -72,13 +76,17 @@ pub fn state_to_string(state: u64) -> String {
         3 => "Idle".to_string(),
         4 => "HVSystemChecking".to_string(),
         5 => "Levitating".to_string(),
-        6 => "Accelerating".to_string(),
-        7 => "Cruising".to_string(),
-        8 => "LaneSwitch".to_string(),
-        9 => "Braking".to_string(),
+        6 => "MovingST".to_string(),
+        7 => "MovingLSST".to_string(),
+        8 => "MovingLSCV".to_string(),
+        9 => "EndST".to_string(),
         10 => "EmergencyBraking".to_string(),
         11 => "Exit".to_string(),
         12 => "Crashing".to_string(),
         _ => "Unknown!!".to_string(),
     }
+}
+
+pub fn gs_socket() -> std::net::SocketAddr {
+    std::net::SocketAddr::new(std::net::IpAddr::from(GS_IP_ADDRESS.0), GS_IP_ADDRESS.1)
 }

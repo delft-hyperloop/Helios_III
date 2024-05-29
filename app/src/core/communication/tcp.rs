@@ -1,5 +1,5 @@
 use crate::pconfig::{embassy_socket_from_config, socket_from_config};
-use crate::{Command, DataReceiver, Datatype, Event, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, IP_TIMEOUT, KEEP_ALIVE, NETWORK_BUFFER_SIZE};
+use crate::{Command, DataReceiver, Datatype, Event, EventSender, GS_IP_ADDRESS, IP_TIMEOUT, KEEP_ALIVE, NETWORK_BUFFER_SIZE};
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_net::tcp::client::{TcpClient, TcpClientState};
@@ -181,6 +181,7 @@ pub async fn tcp_connection_handler(
                                     info!("[tcp] EmitEvent command received");
                                     event_sender.send(Event::from_id((e & 0xFFFF) as u16, Some(69420))).await;
                                 }
+                                _ => {} // TODO: DELETE THIS
                             }
                         }
                     } else {
