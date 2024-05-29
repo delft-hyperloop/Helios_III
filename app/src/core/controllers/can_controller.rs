@@ -86,7 +86,7 @@ impl CanController {
 
         let (mut c1_tx, mut c1_rx,p1) = can1.split();
         let (mut c2_tx, mut c2_rx,p2) = can2.split();
-        c2_tx.write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap()).await;
+        c1_tx.write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap()).await;
 
         // try_spawn!(
         //     event_sender,
@@ -106,7 +106,7 @@ impl CanController {
                 event_sender.clone(),
                 can_two_receiver.clone(),
                 data_sender.clone(),
-                c1_rx,
+                c2_rx,
                 Some(CanTwoUtils {
                     can_sender: can_two_sender.clone(),
                     hv_controller,

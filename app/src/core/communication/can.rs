@@ -74,7 +74,7 @@ pub async fn can_receiving_handler(
                                 frame.data(),
                                 data_sender,
                                 timestamp.as_ticks(),
-                            );
+                            ).await;
                         } else if LV_IDS.contains(&id) {
                             debug!("lv if");
                             ut.lv_controller.bms_can_handle(
@@ -90,6 +90,9 @@ pub async fn can_receiving_handler(
                             }
                             else if id == Datatype::IMDVoltageDetails.to_id(){
                                 ground_fault_detection_voltage_details(frame.data(),data_sender,timestamp.as_ticks()).await;
+                            }
+                            else{
+                                debug!("GFD is not using id #{}", &id);
                             }
 
                         }
