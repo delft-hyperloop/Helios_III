@@ -44,11 +44,11 @@ id = 0x63
 
 [[Command]]
 name = "DcOff"
-id = 0x63
+id = 0x64
 
 [[Command]]
 name = "DcOn"
-id = 0x64
+id = 0x65
 
 [[Command]]
 name = "EmitEvent"
