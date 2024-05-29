@@ -55,6 +55,10 @@ export class PlotBuffer {
         this._data[seriesIndex] = data;
     }
 
+    public getSeriesData(seriesIndex: number) {
+        return this._data[seriesIndex];
+    }
+
     public setEntry(seriesIndex:number, dataIndex:number, value:number) {
         this._data[seriesIndex][dataIndex] = value;
     }
