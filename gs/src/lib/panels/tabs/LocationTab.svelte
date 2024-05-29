@@ -23,10 +23,10 @@
             <Localiser loc={$south_bridge_payload.value} max={50} turning={$inputTurn !== RunMode.ShortRun}/>
         </Tile>
         <Tile>
-            <Chart eventChannel="speed" title="Speed" background="bg-surface-900" />
+            <Chart title="Speed" background="bg-surface-900" />
         </Tile>
         <Tile>
-            <Chart eventChannel="speed" title="Acceleration" background="bg-surface-900" />
+            <Chart title="Acceleration" background="bg-surface-900" />
         </Tile>
         <Tile containerClass="col-start-1 col-span-2">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>

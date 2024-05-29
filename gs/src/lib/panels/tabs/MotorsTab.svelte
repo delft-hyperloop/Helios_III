@@ -13,10 +13,10 @@
     <h2 class="text-xl font-semibold mb-4">Current</h2>
     <TileGrid columns="3" rows="">
         <Tile>
-            <Chart bind:chart={hemsChart} eventChannel="hems" title="HEMS" background="bg-surface-900" />
+            <Chart bind:chart={hemsChart} title="HEMS" background="bg-surface-900" />
         </Tile>
         <Tile>
-            <Chart bind:chart={emsChart} eventChannel="ems" title="EMS" background="bg-surface-900" />
+            <Chart bind:chart={emsChart}    title="EMS" background="bg-surface-900" />
         </Tile>
     </TileGrid>
 </div>
