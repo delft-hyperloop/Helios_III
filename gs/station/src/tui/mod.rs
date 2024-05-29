@@ -25,11 +25,10 @@ pub fn restore() -> io::Result<()> {
     Ok(())
 }
 
-pub fn gui_main() -> io::Result<()> {
-    let mut terminal = init()?; // initialise the crossterm magic
-    let app_result = App::new().run(&mut terminal);
-    restore()?; // restore the terminal, it gets messed up after the TUI
-    app_result // if error, pass along, if ok, also pass along but do nothing about it
+pub fn tui_main(backend: crate::Backend) {
+    let mut terminal = init().unwrap(); // initialise the crossterm magic
+    App::new(backend).run(&mut terminal).unwrap();
+    restore().unwrap(); // restore the terminal, it gets messed up after the TUI
 }
 
 #[inline]

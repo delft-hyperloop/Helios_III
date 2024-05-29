@@ -23,6 +23,7 @@ pub struct FSMPeripherals {
     pub can_controller: CanController,
     pub hv_peripherals: HVPeripherals,
     //  pub lv_controller: BatteryController,
+    pub red_led: Output<'static>,
 }
 
 impl FSMPeripherals {
@@ -86,6 +87,7 @@ impl FSMPeripherals {
             eth_controller,
             can_controller,
             hv_peripherals: HVPeripherals::new(p.PB4).await,
+            red_led: Output::new(p.PB14, Level::Low, Speed::High),
         }
     }
 }

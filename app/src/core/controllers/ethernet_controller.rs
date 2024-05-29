@@ -1,5 +1,4 @@
 use crate::core::communication::tcp::tcp_connection_handler;
-use crate::core::communication::udp::udp_connection_handler;
 use crate::{Event, POD_IP_ADDRESS};
 use crate::{try_spawn, DataReceiver, EventSender, Irqs, POD_MAC_ADDRESS};
 use core::arch::asm;
@@ -86,14 +85,14 @@ impl EthernetController {
             mac_addr,
         );
 
-        // let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
-        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
-            StaticConfigV4 {
-                address: ip_cidr_from_config(POD_IP_ADDRESS),
-                gateway: None,
-                dns_servers: Default::default(),
-            }
-        );
+         let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
+//        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
+//            StaticConfigV4 {
+//                address: ip_cidr_from_config(POD_IP_ADDRESS),
+//                gateway: None,
+//                dns_servers: Default::default(),
+//            }
+//        );
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();
 

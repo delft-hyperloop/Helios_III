@@ -1,6 +1,20 @@
 <script lang="ts">
-    import {Battery, Chart, hvBattery, lvBattery, south_bridge_payload, Status, Table, Tile, TileGrid} from "$lib";
-    import {hvModulesTemp, hvModulesVol} from "$lib/stores/data";
+    import {
+        Battery,
+        Chart,
+        GrandDataDistributor,
+        south_bridge_payload,
+        Status,
+        Table,
+        Tile,
+        TileGrid
+    } from "$lib";
+
+    const storeManager = GrandDataDistributor.getInstance().stores;
+    const hvModulesTemp = storeManager.getStore("BatteryTemperatureHigh")
+    const hvModulesVol = storeManager.getStore("BatteryVoltageHigh")
+    const lvBattery = storeManager.getStore("BatteryBalanceLow");
+    const hvBattery = storeManager.getStore("BatteryBalanceHigh");
 
     let titles = ["Battery", "Avg cell V", "Max cell V", "Min cell V"
         , "Avg cell °C", "Max cell °C", "Min cell °C"];
@@ -30,7 +44,7 @@
         </Tile>
         <Tile containerClass="col-span-2" insideClass="flex justify-center h-full gap-2 items-center">
             <p>HV Battery relay status:</p>
-            <Status status={false} />
+            <Status on="closed" off="open" status={false} />
         </Tile>
         <Tile insideClass="flex h-full items-center">
             <div class="flex flex-col ml-4">

@@ -7,15 +7,44 @@
         BottomBar,
         TitleBar,
         GrandDataDistributor,
-        hvBattery,
-        lvBattery,
-        hvBatCurrent
     } from "$lib";
     import {initializeStores, Toast} from '@skeletonlabs/skeleton';
     import type {BmsModuleTemperature, BmsModuleVoltage} from "$lib/types";
-    import {hvModulesTemp, hvModulesVol} from "$lib/stores/data";
     import {moduleTemperature} from "$lib/util/DecodeBMS";
-    import {get} from "svelte/store";
+    import {initTemps} from "$lib/stores/data";
+
+
+    let gdd = GrandDataDistributor.getInstance();
+    gdd.stores.registerStore<bigint>("BatteryBalanceHigh", BigInt(-1));
+    gdd.stores.registerStore<bigint>("BatteryBalanceLow", BigInt(-1));
+    gdd.stores.registerStore<bigint>("BatteryCurrentHigh", BigInt(-1), data => {
+        emit('current_hv', {x: 50, y: data})
+
+        // TODO: REMOVE THIS, IT'S ONLY FOR TESTING
+        emit('speed', {data})
+        emit('ems', {values: [Math.random()*20, 25+Math.random()*20, 50+Math.random()*20, 75+Math.random()*20]})
+        emit('hems', {values: [Math.random()*20, 25+Math.random()*20, 50+Math.random()*20, 75+Math.random()*20]})
+
+        return data;
+    });
+
+    gdd.stores.registerStore<BmsModuleTemperature[]>("BatteryTemperatureHigh", initTemps, (data:bigint, old:BmsModuleTemperature[]) => {
+        let {id, max, min, avg} = moduleTemperature(data);
+
+        let updatedArray = [...old]
+        updatedArray[Number(id)] = {id, max, min, avg};
+        return updatedArray;
+    });
+
+    gdd.stores.registerStore<BmsModuleVoltage[]>("BatteryVoltageHigh", initTemps, (data:bigint, old:BmsModuleTemperature[]) => {
+        let {id, max, min, avg} = moduleTemperature(data);
+
+        let updatedArray = [...old]
+        updatedArray[Number(id)] = {id, max, min, avg};
+        return updatedArray;
+    });
+    gdd.start(100);
+
 
     initializeStores();
 
@@ -29,31 +58,6 @@
             south_bridge_payload.set(event.payload);
         });
 
-        let gdd = GrandDataDistributor.getInstance();
-        gdd.stores.registerStore<bigint>("BatteryBalanceHigh", hvBattery);
-        gdd.stores.registerStore<bigint>("BatteryBalanceLow", lvBattery);
-        gdd.stores.registerStore<bigint>("BatteryCurrentHigh", hvBatCurrent, data => {
-            emit('current_hv', {x: 50, y: data})
-            return data;
-        });
-
-        gdd.stores.registerStore<BmsModuleTemperature[]>("BatteryTemperatureHigh", hvModulesTemp, data => {
-            let {id, max, min, avg} = moduleTemperature(data);
-
-            let updatedArray = [...get(hvModulesTemp)]
-            updatedArray[Number(id)] = {id, max, min, avg};
-            return updatedArray;
-        });
-
-        gdd.stores.registerStore<BmsModuleVoltage[]>("BatteryVoltageHigh", hvModulesVol, data => {
-            let {id, max, min, avg} = moduleTemperature(data);
-
-            let updatedArray = [...get(hvModulesVol)];
-            updatedArray[Number(id)] = {id, max, min, avg};
-            return updatedArray;
-        });
-
-        gdd.start(100);
     });
 
     onDestroy(() => {

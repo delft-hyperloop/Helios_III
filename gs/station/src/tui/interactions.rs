@@ -1,8 +1,6 @@
 use std::cmp::min;
 use crate::tui::app::App;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
-use crate::Command::EmergencyBrake;
-use crate::COMMAND_IDS;
 
 impl App {
     /// updates the application's state based on user input
@@ -33,57 +31,59 @@ impl App {
     /// Keyboard shortcuts!
     fn handle_key_event(&mut self, key_event: KeyEvent) {
         match key_event.code {
-            KeyCode::Char('q') => self.exit(),
-            KeyCode::Esc => self.send_command(crate::Command::EmergencyBrake(0)),
+            KeyCode::Char('q') => self.quit(),
+            KeyCode::Esc => self.backend.send_command(crate::Command::EmergencyBrake(0)),
             KeyCode::Up => self.scroll_up(1),
             KeyCode::Down => self.scroll_down(1),
             KeyCode::Char('k') | KeyCode::Char('j') => self.scroll_down(10),
             KeyCode::Char('m') => self.scroll_down(10000),
             KeyCode::Char('u') => self.scroll_up(10000),
             KeyCode::Char('i') => self.scroll_up(10),
-            KeyCode::Char('s') => self.launch_station(),
+            KeyCode::Char('s') => self.backend.start_server(),
+            KeyCode::Char('l') => self.backend.start_levi(),
             // KeyCode::Char('t') => self.logs.push((LogType::Warning, format!("{}:  this is a testing goose",Util::Now()).parse().unwrap())),
             KeyCode::Tab => {
-                self.selected_row = (self.selected_row + 1) % 10;
+                self.selected_row = (self.selected_row + 1) % self.cmds.len();
             }
             KeyCode::BackTab => {
-                self.selected_row = (self.selected_row + 9) % 10;
+                self.selected_row = (self.selected_row + self.cmds.len() - 1) % self.cmds.len();
             }
             KeyCode::Enter => {
-                self.send_command(crate::Command::from_id(COMMAND_IDS[self.selected_row], self.cmd_values[self.selected_row]));
+                self.backend.send_command(self.cmds[self.selected_row].as_cmd());
+                // self.backend.warn(format!("interpreting {:?}", self.cmds[self.selected_row]));
             }
             KeyCode::Char('1') => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 1;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 1;
             }
             KeyCode::Char('2') => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 2;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 2;
             }
             KeyCode::Char('3') => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 3;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 3;
             }
             KeyCode::Char('4') => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 4;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 4;
             }
             KeyCode::Char('5') => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 5;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 5;
             }
             KeyCode::Char('6') => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 6;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 6;
             }
             KeyCode::Char('7') => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 7;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 7;
             }
             KeyCode::Char('8') => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 8;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 8;
             }
             KeyCode::Char('9') => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10 + 9;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 9;
             }
             KeyCode::Char('0') => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] * 10;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10;
             }
             KeyCode::Backspace => {
-                self.cmd_values[self.selected_row] = self.cmd_values[self.selected_row] / 10;
+                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value / 10;
             }
             _ => {}
         }

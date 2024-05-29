@@ -1,6 +1,5 @@
 use crate::core::communication::can::{can_receiving_handler, can_transmitter};
 use crate::core::communication::tcp::tcp_connection_handler;
-use crate::core::communication::udp::udp_connection_handler;
 use crate::core::controllers::battery_controller::{BatteryController, GroundFaultDetection};
 use crate::core::controllers::ethernet_controller::EthernetPins;
 use crate::Event;
@@ -75,7 +74,7 @@ impl CanController {
             can::CanConfigurator::new(pins.fdcan1, pins.pd0_pin, pins.pd1_pin, CanOneInterrupts);
 
         let mut can2 =
-            can::CanConfigurator::new(pins.fdcan2, pins.pb5_pin, pins.pb6_pin, CanTwoInterrupts); // <--- Im not really sure if this are the correct pins
+            can::CanConfigurator::new(pins.fdcan2, pins.pb5_pin /* pb5=can2 RX */, pins.pb6_pin /* pb6=can2 TX */, CanTwoInterrupts); 
         can1.config().protocol_exception_handling = false;
         can2.config().protocol_exception_handling = false;
 
@@ -87,7 +86,7 @@ impl CanController {
 
         let (mut c1_tx, mut c1_rx,p1) = can1.split();
         let (mut c2_tx, mut c2_rx,p2) = can2.split();
-        c2_tx.write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap()).await;
+        c1_tx.write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap()).await;
 
         // try_spawn!(
         //     event_sender,
@@ -107,7 +106,7 @@ impl CanController {
                 event_sender.clone(),
                 can_two_receiver.clone(),
                 data_sender.clone(),
-                c1_rx,
+                c2_rx,
                 Some(CanTwoUtils {
                     can_sender: can_two_sender.clone(),
                     hv_controller,

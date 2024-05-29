@@ -30,7 +30,7 @@ pub fn generate_datatypes(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> S
     let mut data_ids = vec![];
     for dtype in config.Datatype {
         if dtype.id & 0b1111_1000_0000_0000 != 0 {
-            panic!("IDs need to be u11. Found {} > {}", dtype.id, 2 ^ 11);
+            panic!("IDs need to be u11. Found {} > {}", dtype.id, 2_u16.pow(11));
         } else {
             if id_list.contains(&dtype.id) {
                 panic!(

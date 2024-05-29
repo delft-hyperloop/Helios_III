@@ -4,10 +4,11 @@ extern crate serde;
 use goose_utils::commands::generate_commands;
 use goose_utils::datatypes::generate_datatypes;
 use goose_utils::events::generate_events;
+use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
 use std::env;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
 #[derive(Debug, Deserialize)]
@@ -29,6 +30,7 @@ struct NetConfig {
 #[derive(Debug, Deserialize)]
 struct GS {
     ip: [u8; 4],
+    force: bool,
     port: u16,
     // udp_port: u16,
     buffer_size: usize,
@@ -37,6 +39,7 @@ struct GS {
     warning_channel: String,
     info_channel: String,
     error_channel: String,
+    levi_exec_path: PathBuf,
 }
 
 pub const CONFIG_PATH: &str = "../../config/config.toml";
@@ -55,7 +58,8 @@ fn main() {
 
     let mut content = String::new();
 
-    content.push_str(&*configure_ip(&config));
+    content.push_str(&*configure_gs(&config));
+    content.push_str(&*configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force));
     content.push_str(&*generate_datatypes(&id_list, DATATYPES_PATH, true));
     content.push_str(&*generate_commands(&id_list, COMMANDS_PATH, false));
     content.push_str(&*generate_events(&id_list, EVENTS_PATH));
@@ -71,24 +75,37 @@ fn main() {
     println!("cargo:rerun-if-changed={}", EVENTS_PATH);
 }
 
-fn configure_ip(config: &Config) -> String {
-    format!("#[allow(non_snake_case)]\npub fn GS_SOCKET() -> std::net::SocketAddr {{ std::net::SocketAddr::new(std::net::IpAddr::from([{},{},{},{}]),{}) }}\n", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port)
-  + &*format!(
-    "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
-    config.pod.net.ip[0],
-    config.pod.net.ip[1],
-    config.pod.net.ip[2],
-    config.pod.net.ip[3],
-    config.pod.net.port
-  ) + &*format!(
-    "pub const NETWORK_BUFFER_SIZE: usize = {};\n",
-    config.gs.buffer_size
-  ) + &*format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
+fn configure_gs(config: &Config) -> String {
+    // format!("pub fn gs_socket() -> std::net::SocketAddr {{ std::net::SocketAddr::new(std::net::IpAddr::from([{},{},{},{}]),{}) }}\n", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port)
+    format!(
+        "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+        config.pod.net.ip[0],
+        config.pod.net.ip[1],
+        config.pod.net.ip[2],
+        config.pod.net.ip[3],
+        config.pod.net.port
+    ) + &*format!(
+        "pub const NETWORK_BUFFER_SIZE: usize = {};\n",
+        config.gs.buffer_size
+    ) + &*format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
+        + &*format!(
+            "pub const LEVI_EXEC_PATH: &str = \"{}\";\n",
+            config.gs.levi_exec_path.to_str().unwrap()
+        )
 }
 
 fn configure_channels(config: &Config) -> String {
-    format!("\npub const STATUS_CHANNEL: &str = \"{}\";\n", config.gs.status_channel)
-    + &*format!("pub const WARNING_CHANNEL: &str = \"{}\";\n", config.gs.warning_channel)
-    + &*format!("pub const INFO_CHANNEL: &str = \"{}\";\n", config.gs.info_channel)
-    + &*format!("pub const ERROR_CHANNEL: &str = \"{}\";\n", config.gs.error_channel)
+    format!(
+        "\npub const STATUS_CHANNEL: &str = \"{}\";\n",
+        config.gs.status_channel
+    ) + &*format!(
+        "pub const WARNING_CHANNEL: &str = \"{}\";\n",
+        config.gs.warning_channel
+    ) + &*format!(
+        "pub const INFO_CHANNEL: &str = \"{}\";\n",
+        config.gs.info_channel
+    ) + &*format!(
+        "pub const ERROR_CHANNEL: &str = \"{}\";\n",
+        config.gs.error_channel
+    )
 }

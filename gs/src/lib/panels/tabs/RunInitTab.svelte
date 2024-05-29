@@ -1,15 +1,8 @@
 <script lang="ts">
-    import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, Command, Tile, TileGrid} from "$lib";
-    import type {IntervalFunction} from "$lib/types";
+    import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, inputTurn, Command, Tile, TileGrid} from "$lib";
+    import {type IntervalFunction, RunMode} from "$lib/types";
     import {inputEmerg, inputPosit} from "$lib/stores/state";
 
-    enum Mode {
-        ShortRun = 1,
-        LeftSwitch = 2,
-        RightSwitch = 3
-    }
-
-    let selectedMode:Mode = Mode.ShortRun;
     let calculateTheoretical:IntervalFunction;
     let clearRuns: () => void;
 
@@ -32,20 +25,26 @@
     <TileGrid columns="1fr 1fr 1.5fr" rows="auto 1fr">
         <Tile containerClass="row-span-2" insideClass="flex flex-col gap-2" heading="Run Initialisation">
             <div class="flex justify-between col-span-2">
-                <button class="btn flex-grow bg-surface-700 rounded-none rounded-l-lg p-2" type="button" class:active={selectedMode === 1} on:click={() => selectedMode = Mode.ShortRun}>
+                <button class="btn flex-grow bg-surface-700 rounded-none rounded-l-lg p-2" type="button"
+                        class:active={$inputTurn === RunMode.ShortRun}
+                        on:click={() => inputTurn.set(RunMode.ShortRun)}>
                     Short run
                 </button>
-                <button class="btn flex-grow bg-surface-700 rounded-none p-2" type="button" class:active={selectedMode === 2} on:click={() => selectedMode = Mode.LeftSwitch}>
+                <button class="btn flex-grow bg-surface-700 rounded-none p-2" type="button"
+                        class:active={$inputTurn === RunMode.LeftSwitch}
+                        on:click={() => inputTurn.set(RunMode.LeftSwitch)}>
                     Left switch
                 </button>
-                <button class="btn flex-grow bg-surface-700 rounded-none rounded-r-lg p-2" type="button" class:active={selectedMode === 3} on:click={() => selectedMode = Mode.RightSwitch}>
+                <button class="btn flex-grow bg-surface-700 rounded-none rounded-r-lg p-2" type="button"
+                        class:active={$inputTurn === RunMode.RightSwitch}
+                        on:click={() => inputTurn.set(RunMode.RightSwitch)}>
                     Right switch
                 </button>
             </div>
             <div>
                 <label for="speed_input">Speed: </label>
                 <input name="speed_input" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="100" step="1">
-                <label for="pos_input">Position: </label>
+                <label for="pos_input">Braking Point position: </label>
                 <input name="pos_input" bind:value={$inputPosit} class="input rounded-md px-2 col-span-2" type="number" min="0" max="60000" step="1">
                 <label for="accel_input">Acceleration: </label>
                 <input name="accel_input" bind:value={$inputSpeed} class="input rounded-md px-2 col-span-2" type="number" min="0" max="100" step="1">
@@ -79,10 +78,8 @@
             <Status status={$south_bridge_payload.value % 2 === 0} />
             <p>Localization:</p>
             <Status status={$south_bridge_payload.value % 2 === 1} />
-            <p>Prop Thermal:</p>
-            <Status status={$south_bridge_payload.value % 2 === 0} />
-            <p>Levi Thermal:</p>
-            <Status status={$south_bridge_payload.value % 2 === 1} />
+            <p>Breaking PCB:</p>
+            <Status on="armed" off="unarmed" status={$south_bridge_payload.value % 2 === 0} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>

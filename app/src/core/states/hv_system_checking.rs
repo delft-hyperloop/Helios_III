@@ -9,7 +9,6 @@ impl FSM {
     pub async fn entry_hv_system_checking(&mut self) {
         #[cfg(debug_assertions)]
         info!("Entering HV System Checking");
-        self.status.reset();
         self.peripherals.hv_peripherals.enable_pin.set_high();
         warn!("HV SYSTEM IS ON!");
         warn!("HV SYSTEM IS ON!");
@@ -18,19 +17,10 @@ impl FSM {
 
     pub async fn react_hv_system_checking(&mut self, event: Event) {
         match event {
-            Event::HVLevitationReadyEvent => {
-                self.status.check_levitation();
-            }
-            Event::HVPowertrainReadyEvent => {
-                self.status.check_powertrain();
-            }
-            Event::HVPropulsionReadyEvent => {
-                self.status.check_propulsion();
+            Event::TurnOffHVCommand => {
+                self.transit(State::Exit).await;
             }
             Event::StartLevitatingCommand => {
-                if (self.status.check_all()) {
-                    self.transit(State::Levitating).await;
-                }
                 todo!();
 
                 self.transit(State::Levitating).await

@@ -1,11 +1,9 @@
-use std::io;
-use std::sync::mpsc::{Receiver, Sender, TryRecvError};
+use crate::api::{Datapoint, Message, state_to_string};
+use crate::backend::Backend;
+use crate::COMMANDS_LIST;
+use crate::tui::render::CmdRow;
 use ratatui::Frame;
-use crate::api::{Message, state_to_string};
-use crate::Command;
-use crate::connect::{Datapoint, Station};
 use crate::tui::{timestamp, Tui};
-
 
 #[allow(dead_code)]
 pub struct App {
@@ -16,17 +14,13 @@ pub struct App {
     pub time_elapsed: u64,
     pub selected: usize,
     pub selected_row: usize,
-    pub cmd_values: Vec<u64>,
+    pub cmds: Vec<CmdRow>,
     pub cur_state: String,
-    message_sender: Option<Sender<Message>>,
-    message_receiver: Option<Receiver<Message>>,
-    command_sender: Option<Sender<Command>>,
-    command_receiver: Option<Receiver<Command>>,
-    pub station_running: bool,
+    pub backend: Backend,
 }
 
 impl App {
-    pub fn new() -> Self {
+    pub fn new(backend: Backend) -> Self {
         Self {
             logs: vec![],
             data: vec![],
@@ -35,32 +29,13 @@ impl App {
             time_elapsed: 0,
             selected: 0,
             selected_row: 0,
-            cmd_values : vec![0; 10],
+            cmds: COMMANDS_LIST.iter().map(|x| CmdRow { name: format!("{}", x), value: 0 }).collect(),
             cur_state: "None Yet".to_string(),
-            message_sender: None,
-            message_receiver: None,
-            command_sender: None,
-            command_receiver: None,
-            station_running: false,
+            backend
         }
     }
 
-    pub fn launch_station(&mut self) {
-        if self.station_running {
-            return;
-        }
-        let (data_sender, data_receiver) = std::sync::mpsc::channel();
-        let (command_sender, command_receiver) = std::sync::mpsc::channel();
-        data_sender.send(Message::Info("Station started".to_string())).unwrap();
-        self.message_receiver = Some(data_receiver);
-        self.command_sender = Some(command_sender);
-        self.station_running = true;
-        std::thread::spawn(move ||
-            Station::new().launch(data_sender, command_receiver)
-        );
-    }
-
-    pub fn run(&mut self, terminal: &mut Tui) -> io::Result<()> {
+    pub fn run(&mut self, terminal: &mut Tui) -> std::io::Result<()> {
         while !self.exit {
             terminal.draw(|frame| self.render_frame(frame))?;
             self.handle_events();
@@ -74,46 +49,26 @@ impl App {
         frame.render_widget(self, frame.size());
     }
 
-    pub fn receive_data(&mut self) {
-        if self.message_receiver.is_none() {
-            return;
-        }
-        let x = std::mem::replace(&mut self.message_receiver, None).unwrap();
-        match x.try_recv() {
-            Ok(msg) => {
-                self.message_receiver = Some(x);
-                match msg {
-                    Message::Data(datapoint) => {
-                        if datapoint.datatype == crate::Datatype::FSMState {
-                            self.cur_state = format!("{}", state_to_string(datapoint.value));
-                            self.logs.push((Message::Warning(format!("State changed to: {:?}", datapoint.value.to_be_bytes())), timestamp()));
-                        }
-                        self.logs.push((Message::Data(datapoint), timestamp()))
+    fn receive_data(&mut self) {
+        while let Ok(msg) = self.backend.message_receiver.try_recv() {
+            match msg {
+                Message::Data(datapoint) => {
+                    if datapoint.datatype == crate::Datatype::FSMState {
+                        self.cur_state = format!("{}", state_to_string(datapoint.value));
+                        self.logs.push((Message::Warning(format!("State changed to: {:?}", datapoint.value.to_be_bytes())), timestamp()));
                     }
-                    _ => {
-                        self.logs.push((msg, timestamp()))
-                    }
+                    self.logs.push((Message::Data(datapoint), timestamp()))
+                }
+                msg => {
+                    self.logs.push((msg, timestamp()));
                 }
             }
-            Err(TryRecvError::Empty) => {
-                self.message_receiver = Some(x);
-            }
-            Err(TryRecvError::Disconnected) => {
-                self.exit = true;
-            }
         }
     }
 
-    pub fn exit(&mut self) {
+    pub fn quit(&mut self) {
         self.exit = true;
-    }
-
-    pub(crate) fn send_command(&mut self, command: Command) {
-        if let Some(s) = self.command_sender.as_ref() {
-            self.logs.push((Message::Info(format!("Trying to send command: {:?}", command)), timestamp()));
-            s.send(command).unwrap();
-        } else {
-            self.logs.push((Message::Error(format!("Tried to send command `{:?}` with no connection to station", command)), timestamp()));
-        }
+        self.backend.quit_levi();
+        self.backend.quit_server();
     }
 }

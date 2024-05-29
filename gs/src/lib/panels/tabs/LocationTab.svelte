@@ -1,5 +1,6 @@
 <script lang="ts">
-    import {south_bridge_payload, Table, Localiser, TileGrid, Tile} from "$lib";
+    import {south_bridge_payload, Table, Localiser, TileGrid, Tile, Chart, inputTurn} from "$lib";
+    import {RunMode} from "$lib/types";
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -19,12 +20,15 @@
     <h2 class="text-xl font-semibold mb-4">Location & IMU</h2>
     <TileGrid columns="1fr 1fr" rows="">
         <Tile containerClass="col-span-2">
-            <Localiser loc={$south_bridge_payload.value} max={50} turning={false}/>
+            <Localiser loc={$south_bridge_payload.value} max={50} turning={$inputTurn !== RunMode.ShortRun}/>
         </Tile>
         <Tile>
-            <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
+            <Chart eventChannel="speed" title="Speed" background="bg-surface-900" />
         </Tile>
-        <Tile containerClass="col-start-2">
+        <Tile>
+            <Chart eventChannel="speed" title="Acceleration" background="bg-surface-900" />
+        </Tile>
+        <Tile containerClass="col-start-1 col-span-2">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
         </Tile>
     </TileGrid>
