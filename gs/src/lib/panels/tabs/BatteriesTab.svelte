@@ -7,7 +7,7 @@
         Status,
         Table,
         Tile,
-        TileGrid
+        TileGrid, ToggleCommand
     } from "$lib";
 
     const storeManager = GrandDataDistributor.getInstance().stores;
@@ -27,6 +27,9 @@
             tableArr[i+1] = [`HV mod ${i}`, $hvModulesVol[i].avg, $hvModulesVol[i].max, $hvModulesVol[i].min, $hvModulesTemp[i].avg, $hvModulesTemp[i].max, $hvModulesTemp[i].min];
         }
     }
+
+    let dcStatus:boolean = false;
+    let connectorStatus:boolean = false;
 </script>
 
 <div class="p-4">
@@ -42,9 +45,15 @@
                 <p>High voltage</p>
             </div>
         </Tile>
-        <Tile containerClass="col-span-2" insideClass="flex justify-center h-full gap-2 items-center">
-            <p>HV Battery relay status:</p>
-            <Status on="closed" off="open" status={false} />
+        <Tile containerClass="col-span-2" insideClass="flex flex-col h-full gap-2 items-center">
+            <div class="w-full flex justify-between items-center">
+                <Status label="HV Battery relay status" on="closed" off="open" bind:status={connectorStatus} />
+                <ToggleCommand onCmd="OpenContactor" offCmd="CloseContactor" bind:status={connectorStatus} />
+            </div>
+            <div class="w-full flex justify-between items-center">
+                <Status label="DC Converter status" on="closed" off="open" bind:status={dcStatus} />
+                <ToggleCommand onCmd="DcOn" offCmd="DcOff" bind:status={dcStatus} />
+            </div>
         </Tile>
         <Tile insideClass="flex h-full items-center">
             <div class="flex flex-col ml-4">

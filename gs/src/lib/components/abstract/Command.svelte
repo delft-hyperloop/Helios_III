@@ -5,11 +5,11 @@
     export let className: string = '';
     export let cmd: NamedCommand;
     export let val: number = 0;
-    export let callback: () => void = () => {};
+    export let callback: (val:number) => void = () => {};
 
     const send = async () => {
         await invoke('send_command', {cmd, val});
-        callback();
+        callback(val);
     };
 </script>
 

@@ -1,5 +1,5 @@
 /* AUTO GENERATED USING npm run generate:commands */
-export type NamedCommand = "DefaultCommand" | "Levitate" | "StopLevitating" | "Configure" | "StartRun" | "EmergencyBrake" | "Shutdown" | "StartHV" | "StopHV"
+export type NamedCommand = "DefaultCommand" | "Levitate" | "StopLevitating" | "Configure" | "StartRun" | "EmergencyBrake" | "Shutdown" | "StartHV" | "StopHV" | "OpenContactor" | "CloseContactor" | "DcOff" | "DcOn" | "EmitEvent"
     /* debug commands */ | 'establish_connection' | 'start_north_bridge' | 'start_south_bridge' | 'abort'
 
 /*AUTO GENERATED USING npm run generate:datatypes */
@@ -95,7 +95,6 @@ export enum RunMode {
 }
 
 // OLD TYPES
-export type TempTableEntry = {name:string, value: number}
 export type Log = {
     log_type:string, message:string, timestamp:number
 }

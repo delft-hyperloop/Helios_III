@@ -46,7 +46,7 @@ pub async fn tcp_connection_handler(
     //
     // let client = TcpClient::new(&stack, &state);
 
-    let gs_addr = embassy_socket_from_config(GS_IP_ADDRESS);
+    let gs_addr = unsafe { embassy_socket_from_config(GS_IP_ADDRESS) };
     let mut rx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
     let mut tx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
 
