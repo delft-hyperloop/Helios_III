@@ -28,7 +28,8 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> St
     let mut ids = Vec::new();
     let mut names = String::new();
     let mut name_list = Vec::new();
-    for command in config.Command {
+    let mut to_idx = String::new();
+    for (i, command) in config.Command.iter().enumerate() {
         if command.id & 0b1111_1000_0000_0000 != 0 {
             panic!("IDs need to be u11. Found {} > {}", command.id, 2 ^ 11);
         } else {
@@ -56,6 +57,7 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> St
         ids.push(command.id.to_string());
         name_list.push(format!("\"{}\"", command.name.to_string()));
         names.push_str(&*format!("\t\t\t\"{}\" => Command::{}(p),\n", &command.name, &command.name));
+        to_idx.push_str(&*format!("\t\t\tCommand::{}(_) => {i},\n", &command.name));
     }
 
     format!(
@@ -101,10 +103,21 @@ impl Command {{
             _ => Command::DefaultCommand(p)
         }}
     }}
+    pub fn to_idx(&self) -> usize {{
+        match *self {{
+{}
+        }}
+    }}
+    pub fn to_str(&self) -> &str {{
+        COMMANDS_LIST[self.to_idx()]
+    }}
 }}
 pub const COMMAND_IDS: [u16; {}] = [{}];
 pub const COMMANDS_LIST: [&str; {}] = [{}];
 ",
-        if drv { "#[derive(Debug, Clone, Copy, defmt::Format)]" } else { "#[derive(Debug, Clone, Copy)]" }, enum_definitions, match_to_id, match_from_id, to_bytes, names, ids.len(), ids.join(", "), name_list.len(), name_list.join(", ")
+        if drv { "#[derive(Debug, Clone, Copy, defmt::Format)]" } else { "#[derive(Debug, Clone, Copy)]" },
+        enum_definitions, match_to_id, match_from_id, to_bytes, names,
+        to_idx,
+        ids.len(), ids.join(", "), name_list.len(), name_list.join(", ")
     )
 }
