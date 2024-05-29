@@ -74,7 +74,7 @@ pub async fn can_receiving_handler(
                                 frame.data(),
                                 data_sender,
                                 timestamp.as_ticks(),
-                            );
+                            ).await;
                         } else if LV_IDS.contains(&id) {
                             debug!("lv if");
                             ut.lv_controller.bms_can_handle(
