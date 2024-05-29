@@ -8,8 +8,11 @@
     dead_code,
     unreachable_code,
     unused,
-    unused_doc_comments
+    unused_doc_comments,
+    clippy::too_many_arguments
 )]
+#![deny(clippy::async_yields_async)]
+
 
 // Import absolutely EVERYTHING
 
@@ -170,12 +173,15 @@ async fn main(spawner: Spawner) -> ! {
     /// End peripheral configuration
 
     /// Create FSM
-    let mut fsm = FSM::new(per, event_receiver, data_sender);
-    fsm.entry();
+    let mut fsm = Fsm::new(per, event_receiver, data_sender);
+    fsm.entry().await;
     ///
 
     // Begin Spawn Tasks
-    // try_spawn!(event_sender, spawner.spawn(your_mom(data_sender.clone())));
+    try_spawn!(
+        event_sender,
+        spawner.spawn(your_mom(data_sender, event_sender))
+    );
     // End Spawn Tasks
 
     /// # Main Loop
@@ -190,29 +196,30 @@ async fn main(spawner: Spawner) -> ! {
 /// # Your Mom
 /// she fixes everything
 #[embassy_executor::task]
-pub async fn your_mom(ds: DataSender) {
+pub async fn your_mom(ds: DataSender, es: EventSender) {
     let mut idx = 10;
     loop {
         info!("Your mom");
-        Timer::after_secs(1).await;
-        ds.send(Datapoint::new(
-            Datatype::BatteryVoltageHigh,
-            42,
-            Instant::now().as_ticks(),
-        ))
-        .await;
-        ds.send(Datapoint::new(
-            Datatype::BatteryBalanceHigh,
-            69,
-            Instant::now().as_ticks(),
-        ))
-        .await;
-        ds.send(Datapoint::new(
-            Datatype::BatteryCurrentHigh,
-            idx,
-            Instant::now().as_ticks(),
-        ))
-        .await;
+        Timer::after_secs(5).await;
+        es.send(Event::Heartbeat).await;
+        // ds.send(Datapoint::new(
+        //     Datatype::BatteryVoltageHigh,
+        //     42,
+        //     Instant::now().as_ticks(),
+        // ))
+        // .await;
+        // ds.send(Datapoint::new(
+        //     Datatype::BatteryBalanceHigh,
+        //     69,
+        //     Instant::now().as_ticks(),
+        // ))
+        // .await;
+        // ds.send(Datapoint::new(
+        //     Datatype::BatteryCurrentHigh,
+        //     idx,
+        //     Instant::now().as_ticks(),
+        // ))
+        // .await;
         // ds.send(Datapoint::new(Datatype::BatteryVoltageHigh, 6543, Instant::now().as_ticks())).await;
         idx = (idx + 9) % 50;
     }

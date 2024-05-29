@@ -2,7 +2,6 @@
 
 extern crate serde;
 
-use goose_utils;
 use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
 use std::env;
@@ -19,7 +18,7 @@ use std::sync::Mutex;
 #[derive(Debug, Deserialize)]
 struct Config {
     gs: GS,
-    pod: POD,
+    pod: Pod,
 }
 
 #[derive(Debug, Deserialize)]
@@ -33,14 +32,14 @@ struct GS {
 }
 
 #[derive(Debug, Deserialize)]
-struct POD {
+struct Pod {
     net: NetConfig,
     internal: InternalConfig,
-    bms: BMS,
+    bms: Bms,
 }
 
 #[derive(Debug, Deserialize)]
-struct BMS {
+struct Bms {
     lv_ids: Vec<u16>,
     hv_ids: Vec<u16>,
     gfd_ids: Vec<u16>,
@@ -77,35 +76,38 @@ fn main() {
 
     let mut content = String::new();
 
-    content.push_str(&*configure_ip(&config));
-    content.push_str(&*configure_gs_ip(
+    content.push_str(&configure_ip(&config));
+    content.push_str(&configure_gs_ip(
         config.gs.ip,
         config.gs.port,
         config.gs.force,
     ));
-    content.push_str(&*configure_pod(&config));
-    content.push_str(&*configure_internal(&config));
-    content.push_str(&*goose_utils::commands::generate_commands(
+    content.push_str(&configure_pod(&config));
+    content.push_str(&configure_internal(&config));
+    content.push_str(&goose_utils::commands::generate_commands(
         &id_list,
         COMMANDS_PATH,
         true,
     ));
-    content.push_str(&*goose_utils::datatypes::generate_datatypes(
+    content.push_str(&goose_utils::datatypes::generate_datatypes(
         &id_list,
         DATATYPES_PATH,
         false,
     ));
-    content.push_str(&*goose_utils::events::generate_events(
+    content.push_str(&goose_utils::events::generate_events(
         &id_list,
         EVENTS_PATH,
     ));
     // content.push_str(&*can::main(&id_list));
 
-    fs::write(dest_path.clone(), content).expect(&*format!(
-        "Couldn't write to {}! Build failed.",
-        dest_path.to_str().unwrap()
+    fs::write(dest_path.clone(), content).unwrap_or_else(|e| panic!(
+        "Couldn't write to {}! Build failed with error: {}",
+        dest_path.to_str().unwrap(), e
     ));
     println!("cargo:rerun-if-changed={}", CONFIG_PATH);
+    println!("cargo:rerun-if-changed={}", EVENTS_PATH);
+    println!("cargo:rerun-if-changed={}", COMMANDS_PATH);
+    println!("cargo:rerun-if-changed={}", DATATYPES_PATH);
 
     // linking
     println!("cargo:rustc-link-arg-bins=--nmagic");

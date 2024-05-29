@@ -1,9 +1,9 @@
-use crate::core::finite_state_machine::{State, FSM};
-use crate::Event;
+use crate::core::finite_state_machine::{State, Fsm};
+use crate::{transit, Event};
 use defmt::info;
 
-impl FSM {
-    pub async fn entry_ls_cv(&mut self) {
+impl Fsm {
+    pub fn entry_ls_cv(&mut self) {
         todo!();
     }
 
@@ -12,7 +12,7 @@ impl FSM {
             Event::LaneSwitchingCompleteEvent => {
                 todo!();
 
-                self.transit(State::MovingLSST).await;
+                transit!(self, State::MovingLSST);
             }
             /// This is commented out because it was refactored to be handled by the default react ///
             // Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {

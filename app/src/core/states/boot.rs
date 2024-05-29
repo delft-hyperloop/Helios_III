@@ -1,10 +1,10 @@
 use crate::core::communication::Datapoint;
-use crate::core::finite_state_machine::{State, FSM};
-use crate::{Datatype, Event};
+use crate::core::finite_state_machine::{State, Fsm};
+use crate::{transit, Datatype, Event};
 use defmt::{error, info};
 
-impl FSM {
-    pub async fn boot_entry(&mut self) {
+impl Fsm {
+    pub fn boot_entry(&mut self) {
         info!("Entering Boot State");
 
         if !self.peripherals.braking_controller.arm_breaks() {
@@ -19,12 +19,12 @@ impl FSM {
             Event::BootingCompleteEvent => {
                 info!("Booting complete");
 
-                self.transit(State::EstablishConnection).await;
+                transit!(self, State::EstablishConnection);
             }
             Event::BootingFailedEvent => {
                 error!("Booting failed!!");
 
-                self.transit(State::Exit).await
+                transit!(self, State::Exit);
             }
             _ => {
                 info!("Booting state ignores {}", event.to_str());

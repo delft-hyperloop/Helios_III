@@ -157,13 +157,12 @@ impl BatteryController {
                     self.module_buffer = [0; 14];
                     self.current_number_of_cells = 0;
                     self.receive_single_cell_id = false;
+                } else if (Datatype::SingleCellTemperatureLow.to_id() == id) {
+                    // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
                 } else {
-                    if (Datatype::SingleCellTemperatureLow.to_id() == id) {
-                        // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
-                    } else {
-                        self.individual_temperature_bms(data, timestamp).await;
-                    }
+                    self.individual_temperature_bms(data, timestamp).await;
                 }
+
                 info!("Individual Temperature")
             }
             x if Datatype::SingleCellVoltageLow.to_id() == id
@@ -178,13 +177,11 @@ impl BatteryController {
                     self.module_buffer = [0; 14];
                     self.current_number_of_cells = 0;
                     self.receive_single_cell_id = false;
-                } else {
-                    if (Datatype::SingleCellVoltageLow.to_id() == id) {
+                } else if (Datatype::SingleCellVoltageLow.to_id() == id) {
                         // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
-                    } else {
-                        self.individual_voltages_bms(data, timestamp).await;
-                        self.number_of_msgs += 1;
-                    }
+                } else {
+                    self.individual_voltages_bms(data, timestamp).await;
+                    self.number_of_msgs += 1;
                 }
 
                 info!("Individual Voltage")
@@ -319,7 +316,7 @@ impl BatteryController {
         self.data_sender
             .send(Datapoint::new(
                 battery_current_dt,
-                current as u64,
+                current,
                 timestamp,
             ))
             .await;
@@ -333,7 +330,7 @@ impl BatteryController {
         self.data_sender
             .send(Datapoint::new(
                 estimated_charge_dt,
-                estimated_charge as u64,
+                estimated_charge,
                 timestamp,
             ))
             .await;
@@ -415,9 +412,9 @@ impl BatteryController {
         let module_id = self.single_cell_id;
         let (mut min_voltage, mut max_voltage, mut avg_voltage) =
             Self::module_data_calculation(self.module_buffer).await;
-        min_voltage = min_voltage + 200;
-        max_voltage = max_voltage + 200;
-        avg_voltage = avg_voltage + 200;
+        min_voltage += 200;
+        max_voltage += 200;
+        avg_voltage += 200;
         let (avg_voltage_dt, min_voltage_dt, max_voltage_dt) = Self::match_voltage(module_id).await;
         self.data_sender
             .send(Datapoint::new(avg_voltage_dt, avg_voltage, timestamp))
@@ -547,7 +544,7 @@ impl BatteryController {
             }
             avg += x;
         }
-        avg = avg / n;
+        avg /= n;
         (min, max, avg)
     }
 

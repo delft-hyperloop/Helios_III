@@ -90,10 +90,10 @@ pub async fn tcp_connection_handler(
             //                info!("[tcp] Sent default event");
             //                Timer::after_millis(1000).await;
             //            } else {
-            Timer::after_micros(100).await;
+            Timer::after_millis(1).await;
             //            }
             if socket.can_recv() {
-                let n = socket.read(&mut buf).await.unwrap_or_else(|_| 420000);
+                let n = socket.read(&mut buf).await.unwrap_or(420000);
                 if n == 42000 {
                     error!("[tcp] Failed to read from socket");
                     continue 'connection;
@@ -106,7 +106,7 @@ pub async fn tcp_connection_handler(
                 #[cfg(debug_assertions)]
                 info!("[tcp] !!!!!!!!!!!!!!! Received::  {:?}", &buf[..n]);
 
-                &buf[0..n].iter().for_each(|x| {
+                buf[0..n].iter().for_each(|x| {
                     parsing_buffer.push_back(*x).unwrap();
                 });
                 while let Some(p) = parsing_buffer.front() {
@@ -116,8 +116,8 @@ pub async fn tcp_connection_handler(
                         } else {
                             // we actually have 20 bytes in the buffer, we can create a command from them
                             let mut x = [0u8; 20];
-                            for i in 0..20 {
-                                x[i] = parsing_buffer.pop_front().unwrap();
+                            for i in &mut x {
+                                *i = parsing_buffer.pop_front().unwrap();
                             }
                             // parsing_buffer.iter().take(20).enumerate().for_each(|(i, y)| { x[i] = *y });
 
@@ -141,7 +141,7 @@ pub async fn tcp_connection_handler(
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] EmergencyBrake command received!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                                     socket.flush().await;
-                                    socket.write_all(b"").await;
+                                    // socket.write_all(b"").await;
                                 }
                                 Command::DefaultCommand(_) => {
                                     #[cfg(debug_assertions)]
@@ -223,7 +223,7 @@ pub async fn tcp_connection_handler(
                     let mut data = data.as_bytes();
                     #[cfg(debug_assertions)]
                     info!("[tcp:mpmc] Sending data: {:?}", data);
-                    match socket.write_all(&mut data).await {
+                    match socket.write_all(&data).await {
                         Ok(_) => {
                             #[cfg(debug_assertions)]
                             info!("[tcp:socket] Data written successfully");
