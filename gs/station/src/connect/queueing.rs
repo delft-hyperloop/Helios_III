@@ -23,6 +23,8 @@ pub async fn parse(parsing_buffer: &mut VecDeque<u8>, tx: Sender<Message>) {
                     .drain(..20)
                     .enumerate()
                     .for_each(|(i, y)| x[i] = y);
+                // x.reverse();
+                // tx.send(Message::Info(format!("[TRACE] received: {:?}", x))).unwrap();
                 tx.send(Message::Data(Datapoint::from_bytes(&x)))
                     .expect("[Parser] Failed to send on msg tx");
             }

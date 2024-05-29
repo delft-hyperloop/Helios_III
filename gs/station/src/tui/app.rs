@@ -57,7 +57,7 @@ impl App {
                         self.cur_state = format!("{}", state_to_string(datapoint.value));
                         self.logs.push((Message::Warning(format!("State changed to: {:?}", datapoint.value.to_be_bytes())), timestamp()));
                     }
-                    self.data.push(datapoint.clone());
+                    self.logs.push((Message::Data(datapoint), timestamp()))
                 }
                 msg => {
                     self.logs.push((msg, timestamp()));
