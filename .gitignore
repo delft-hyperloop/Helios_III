@@ -8,3 +8,4 @@ app/.cargo/config.toml
 .DS_Store
 app/.cargo/*
 app/.cargo/config.toml
+Cargo.lock

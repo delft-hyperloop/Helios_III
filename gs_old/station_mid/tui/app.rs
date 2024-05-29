@@ -4,8 +4,6 @@ use ratatui::Frame;
 use crate::api::{Message, state_to_string};
 use crate::{Command, COMMANDS_LIST};
 use crate::connect::{Datapoint, Station};
-use crate::tui::{timestamp, Tui};
-
 
 pub struct CmdRow {
     pub name: String,

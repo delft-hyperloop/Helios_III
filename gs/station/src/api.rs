@@ -1,10 +1,36 @@
-use std::sync::mpsc::{Receiver, Sender};
+use crate::GS_IP_ADDRESS;
+use crate::{Command, Datatype};
 #[cfg(feature = "tui")]
 use ratatui::prelude::Color;
-use crate::Command;
-use crate::connect::Datapoint;
-use crate::GS_IP_ADDRESS;
+use std::sync::mpsc::{Receiver, Sender};
 
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct Datapoint {
+    pub datatype: Datatype,
+    pub value: u64,
+    pub timestamp: u64,
+}
+
+impl Datapoint {
+    pub fn new(datatype: Datatype, value: u64, timestamp: u64) -> Self {
+        Self {
+            datatype,
+            value,
+            timestamp,
+        }
+    }
+    pub fn from_bytes(buf: &[u8; 20]) -> Self {
+        Datapoint::new(
+            Datatype::from_id(u16::from_be_bytes([buf[1], buf[2]])),
+            u64::from_le_bytes([
+                buf[3], buf[4], buf[5], buf[6], buf[7], buf[8], buf[9], buf[10],
+            ]),
+            u64::from_le_bytes([
+                buf[11], buf[12], buf[13], buf[14], buf[15], buf[16], buf[17], buf[18],
+            ]),
+        )
+    }
+}
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum Status {
