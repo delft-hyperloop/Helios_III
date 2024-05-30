@@ -7,7 +7,12 @@
     export let val: number = 0;
     export let callback: (val:number) => void = () => {};
     export let send = async () => {
-        await invoke('send_command', {cmd, val});
+        console.log(`Sending command: ${cmd}, value: ${val}`);
+        await invoke('send_command', {cmdName: cmd, val}).then(() => {
+            console.log(`Command ${cmd} sent`);
+        }).catch((e) => {
+            console.error(`Error sending command ${cmd}: ${e}`);
+        });
         callback(val);
     };
 </script>
