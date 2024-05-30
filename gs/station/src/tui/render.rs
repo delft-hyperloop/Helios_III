@@ -203,12 +203,10 @@ impl Widget for &App {
             ),
         ];
         for (k, v) in &self.special_data {
-            data.push(
-                Line::styled(
-                    format!("{:?}: {}", k, v),
-                    Style::default().fg(Color::White),
-                )
-            );
+            data.push(Line::styled(
+                format!("{:?}: {}", k, v),
+                Style::default().fg(Color::White),
+            ));
         }
 
         let data_paragraph = Paragraph::new(data)

@@ -14,11 +14,11 @@ use std::sync::Mutex;
 #[derive(Debug, Deserialize)]
 struct Config {
     gs: GS,
-    pod: POD,
+    pod: Pod,
 }
 
 #[derive(Debug, Deserialize)]
-struct POD {
+struct Pod {
     net: NetConfig,
 }
 #[derive(Debug, Deserialize)]
@@ -58,21 +58,24 @@ fn main() {
 
     let mut content = String::new();
 
-    content.push_str(&*configure_gs(&config));
-    content.push_str(&*configure_gs_ip(
+    content.push_str(&configure_gs(&config));
+    content.push_str(&configure_gs_ip(
         config.gs.ip,
         config.gs.port,
         config.gs.force,
     ));
-    content.push_str(&*generate_datatypes(&id_list, DATATYPES_PATH, true));
-    content.push_str(&*generate_commands(&id_list, COMMANDS_PATH, false));
-    content.push_str(&*generate_events(&id_list, EVENTS_PATH));
-    content.push_str(&*configure_channels(&config));
+    content.push_str(&generate_datatypes(&id_list, DATATYPES_PATH, true));
+    content.push_str(&generate_commands(&id_list, COMMANDS_PATH, false));
+    content.push_str(&generate_events(&id_list, EVENTS_PATH));
+    content.push_str(&configure_channels(&config));
 
-    fs::write(dest_path.clone(), content).expect(&*format!(
-        "Couldn't write to {}! Build failed.",
-        dest_path.to_str().unwrap()
-    ));
+    fs::write(dest_path.clone(), content).unwrap_or_else(|_| {
+        panic!(
+            "Couldn't write to {}! Build failed.",
+            dest_path.to_str().unwrap()
+        )
+    });
+
     println!("cargo:rerun-if-changed={}", CONFIG_PATH);
     println!("cargo:rerun-if-changed={}", COMMANDS_PATH);
     println!("cargo:rerun-if-changed={}", DATATYPES_PATH);
