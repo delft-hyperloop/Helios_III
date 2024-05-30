@@ -32,18 +32,22 @@
 
     onMount(async () => {
         unlistens[0] = await listen('status_channel', (event) => {
-                                         //@ts-ignore
+            console.log(event)
+                                        //@ts-ignore
                                          logs.push({message: event.payload, status: 'STATUS', timestamp: Date.now().valueOf()})
                                      });
         unlistens[1] = await listen(EventChannels.INFO, (event) => {
+            console.log(event)
                                          //@ts-ignore
                                          logs.push({message: event.payload, log_type: 'INFO', timestamp: Date.now().valueOf()})
                                      });
         unlistens[2] = await listen(EventChannels.WARNING, (event) => {
+            console.log(event)
                                          //@ts-ignore
                                          logs.push({message: event.payload, log_type: 'WARNING', timestamp: Date.now().valueOf()})
                                      });
         unlistens[3] = await listen(EventChannels.ERROR, (event) => {
+            console.log(event)
                                          //@ts-ignore
                                          logs.push({message: event.payload, log_type: 'ERROR', timestamp: Date.now().valueOf()})
                                      });
