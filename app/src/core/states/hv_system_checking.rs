@@ -9,7 +9,7 @@ impl Fsm {
     pub fn entry_hv_system_checking(&mut self) {
         #[cfg(debug_assertions)]
         info!("Entering HV System Checking");
-        self.peripherals.hv_peripherals.enable_pin.set_high();
+        // self.peripherals.hv_peripherals.enable_pin.set_high();
         warn!("HV SYSTEM IS ON!");
         warn!("HV SYSTEM IS ON!");
         warn!("HV SYSTEM IS ON!");

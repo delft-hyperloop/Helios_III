@@ -195,6 +195,13 @@ pub async fn tcp_connection_handler(
                                         .send(Event::from_id((e & 0xFFFF) as u16, Some(69420)))
                                         .await;
                                 }
+                                Command::SystemReset(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] SystemReset command received");
+                                    event_sender
+                                        .send(Event::SystemResetCommand)
+                                        .await;
+                                }
                                 _ => {} // TODO: DELETE THIS
                             }
                         }

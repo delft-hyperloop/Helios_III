@@ -10,7 +10,7 @@ impl Fsm {
             BRAKE = true;
         }
 
-        self.peripherals.hv_peripherals.enable_pin.set_low();
+        self.peripherals.hv_peripherals.power_hv_off();
         self.peripherals.red_led.set_high();
         error!("Emergency Braking!!");
         warn!("Emergency Braking!!!");
@@ -19,5 +19,14 @@ impl Fsm {
         error!("Emergency Braking!!");
 
         // transit!(self, State::Exit);
+    }
+
+    pub async fn react_emergency_braking(&mut self, event: Event) {
+        match event {
+            Event::SystemResetCommand => {
+                transit!(self, State::RunConfig);
+            }
+            _ => {}
+        }
     }
 }

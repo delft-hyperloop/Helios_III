@@ -111,7 +111,11 @@ impl FSMPeripherals {
             braking_controller,
             eth_controller,
             can_controller,
-            hv_peripherals: HVPeripherals::new(p.PB4).await,
+            hv_peripherals: HVPeripherals {
+                pin_4: Output::new(p.PD3, Level::Low, Speed::Low),
+                pin_6: Output::new(p.PG9, Level::Low, Speed::Low),
+                pin_7: Output::new(p.PG10, Level::Low, Speed::Low),
+            },
             red_led: Output::new(p.PB14, Level::Low, Speed::High),
         }
     }
