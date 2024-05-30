@@ -112,6 +112,8 @@ pub async fn ground_fault_detection_voltage_details(
         ))
         .await;
 }
+keep_alive = 1000 # keep alive interval, in milliseconds.
+
 
 //===============BMS===============//
 
@@ -185,11 +187,16 @@ impl BatteryController {
                     }
 
                 }
-                let module_id = ((id - Datatype::SingleCellTemperatureHigh_1.to_id())*8) as usize;
-                for (i, &x) in data.iter().enumerate() {
-                    self.temp_buffer[module_id + i] = x as u64;
+                if (Datatype::SingleCellTemperatureLow.to_id() == id) {
+                    // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
+                } else {
+                    let module_id = ((id - Datatype::SingleCellTemperatureHigh_1.to_id())*8) as usize;
+                    for (i, &x) in data.iter().enumerate() {
+                        self.temp_buffer[module_id + i] = x as u64;
+                    }
+                    self.number_of_temp += 1;
                 }
-                self.number_of_temp += 1;
+
                 info!("Individual Temperature")
             }
             x if Datatype::SingleCellVoltageLow.to_id() == id
@@ -221,17 +228,16 @@ impl BatteryController {
                 //     self.module_buffer = [0; 14];
                 //     self.current_number_of_cells = 0;
                 //     self.receive_single_cell_id = false;
-                // } else if (Datatype::SingleCellVoltageLow.to_id() == id) {
-                //         // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
-                // } else {
-                //     self.individual_voltages_bms(data, timestamp).await;
-                //     self.number_of_msgs += 1;
-                // }
-                let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id())*8) as usize;
-                for (i, &x) in data.iter().enumerate() {
-                    self.voltage_buffer[module_id + i] = x as u64;
+               if (Datatype::SingleCellVoltageLow.to_id() == id) {
+                        // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
+                } else {
+                   let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id())*8) as usize;
+                   for (i, &x) in data.iter().enumerate() {
+                       self.voltage_buffer[module_id + i] = x as u64;
+                   }
+                   self.number_of_volt += 1;
                 }
-                self.number_of_volt += 1;
+
 
                 info!("Individual Voltage")
             }
