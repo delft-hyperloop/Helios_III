@@ -59,6 +59,7 @@ pub async fn can_receiving_handler(
             Ok(envelope) => {
                 error_counter = 0;
                 let (frame, timestamp) = envelope.parts();
+                // frame.header().format();
                 let id = id_as_value(frame.id());
                 #[cfg(debug_assertions)]
                 info!(
