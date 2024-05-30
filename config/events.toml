@@ -194,3 +194,9 @@ priority = 0
 name = "Heartbeat"
 id = 0x420
 priority = 1
+
+[[Event]]
+name = "TurnAllHVRelaysOnEvent"
+id = 0x421
+priority = 1
+
