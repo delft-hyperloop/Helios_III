@@ -18,7 +18,7 @@
     let filters: Record<string, boolean> = { 'STATUS': true, 'WARNING': true, 'INFO': true, 'ERROR': true }; // filter variable
 
     $: filteredLogs = logs.filter(log => filters[log.log_type]);
-
+``
     function toggleFilter(type: string) {
         filters[type] = !filters[type];
     }
@@ -33,24 +33,24 @@
     onMount(async () => {
         unlistens[0] = await listen('status_channel', (event) => {
             console.log(event)
-                                        //@ts-ignore
-                                         logs.push({message: event.payload, status: 'STATUS', timestamp: Date.now().valueOf()})
-                                     });
+            //@ts-ignore
+            logs = [...logs, {message: event.payload, status: 'STATUS', timestamp: Date.now().valueOf()}];
+        });
         unlistens[1] = await listen(EventChannels.INFO, (event) => {
             console.log(event)
-                                         //@ts-ignore
-                                         logs.push({message: event.payload, log_type: 'INFO', timestamp: Date.now().valueOf()})
-                                     });
+         //@ts-ignore
+            logs = [...logs, {message: event.payload, log_type: 'INFO', timestamp: Date.now().valueOf()}];
+        });
         unlistens[2] = await listen(EventChannels.WARNING, (event) => {
             console.log(event)
                                          //@ts-ignore
-                                         logs.push({message: event.payload, log_type: 'WARNING', timestamp: Date.now().valueOf()})
-                                     });
+            logs = [...logs, {message: event.payload, log_type: 'WARNING', timestamp: Date.now().valueOf()}];
+         });
         unlistens[3] = await listen(EventChannels.ERROR, (event) => {
             console.log(event)
                                          //@ts-ignore
-                                         logs.push({message: event.payload, log_type: 'ERROR', timestamp: Date.now().valueOf()})
-                                     });
+            logs = [...logs, {message: event.payload, log_type: 'ERROR', timestamp: Date.now().valueOf()}];
+         });
 
         logContainer.addEventListener('scroll', () => {
             userHasScrolled = logContainer.scrollTop < logContainer.scrollHeight - logContainer.clientHeight;
