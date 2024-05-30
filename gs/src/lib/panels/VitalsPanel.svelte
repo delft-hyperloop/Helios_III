@@ -60,7 +60,7 @@
                     message: "Abort operation triggered",
                     background: 'variant-filled-error',
                 });
-            }} send={async () => await invoke("EmergencyBreak")} className="bg-error-500 text-surface-100 btn py-0 border border-error-500 rounded-sm" cmd="abort"/>
+            }} className="bg-error-500 text-surface-100 btn py-0 border border-error-500 rounded-sm" cmd="EmergencyBrake"/>
         </svelte:fragment>
     </AppBar>
 
