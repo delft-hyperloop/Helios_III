@@ -170,11 +170,18 @@ impl BatteryController {
                 // }
                 if (self.number_of_temp>=13){
                     self.number_of_temp = 0;
-                    let i = 0;
-                    while (i<13){
+                    let mut i = 0;
+                    while (i<8){
                         self.single_cell_id = i;
-                        self.module_buffer = self.temp_buffer[i*8..(i+1)*8];
+                        let a = &self.temp_buffer[(i*14)as usize..((i+1)*14) as usize];
+                        // Initialize a new fixed-size array
+                        let mut temp: [u64; 14] = [0; 14];
+
+                        temp.copy_from_slice(a);
+                        // Copy the elements from the slice to the fixed-size array
+                        self.module_buffer =temp;
                         self.send_module_temp(timestamp).await;
+                        i+=1;
                     }
 
                 }
@@ -191,11 +198,18 @@ impl BatteryController {
             {
                 if (self.number_of_volt>=13){
                     self.number_of_volt = 0;
-                    let i = 0;
-                    while (i<13){
+                    let mut i = 0;
+                    while (i<8){
                         self.single_cell_id = i;
-                        self.module_buffer = self.voltage_buffer[i*8..(i+1)*8];
+                        let a = &self.temp_buffer[(i*14)as usize..((i+1)*14) as usize];
+                        // Initialize a new fixed-size array
+                        let mut temp: [u64; 14] = [0; 14];
+
+                        temp.copy_from_slice(a);
+                        // Copy the elements from the slice to the fixed-size array
+                        self.module_buffer =temp;
                         self.send_module_voltage(timestamp).await;
+                        i+=1;
                     }
 
                 }
