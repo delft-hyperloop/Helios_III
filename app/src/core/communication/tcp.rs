@@ -56,7 +56,13 @@ pub async fn tcp_connection_handler(
     let mut buf = [0; { NETWORK_BUFFER_SIZE }];
     'netstack: loop {
         // info!("====================================================Connecting to ground station______________________________");
-        socket.connect(gs_addr).await;
+        match socket.connect(gs_addr).await {
+            Ok(_) => {}
+            Err(e) => {
+                error!("[tcp:stack] error connecting to gs: {:?}", e);
+                continue 'netstack;
+            }
+        }
         event_sender.send(Event::ConnectionEstablishedEvent).await;
         // let mut connection = client.connect(gs_addr).await.unwrap();
         // info!("----------------------------------------------------------------Connected to ground station==========================");
@@ -96,7 +102,7 @@ pub async fn tcp_connection_handler(
                 let n = socket.read(&mut buf).await.unwrap_or(420000);
                 if n == 42000 {
                     error!("[tcp] Failed to read from socket");
-                    continue 'connection;
+                    break 'connection;
                 }
                 if n == 0 {
                     info!("[tcp] Connection closed by ground station..");
@@ -200,6 +206,13 @@ pub async fn tcp_connection_handler(
                                     info!("[tcp] SystemReset command received");
                                     event_sender
                                         .send(Event::SystemResetCommand)
+                                        .await;
+                                }
+                                Command::FinishRunConfig(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] FinishRunConfig command received");
+                                    event_sender
+                                        .send(Event::RunConfigCompleteEvent)
                                         .await;
                                 }
                                 _ => {} // TODO: DELETE THIS
