@@ -6,7 +6,7 @@
     import Icon from "@iconify/svelte";
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import {type Log} from "$lib/types";
+    import {EventChannels, type Log} from "$lib/types";
 
     let unlistens: UnlistenFn[];
     let logContainer: HTMLElement;
@@ -35,9 +35,18 @@
                                          //@ts-ignore
                                          logs.push({message: event.payload, status: 'STATUS', timestamp: Date.now().valueOf()})
                                      });
-        //unlistens[1] = await registerChannel(EventChannels.INFO, "INFO");
-        //unlistens[2] = await registerChannel(EventChannels.WARNING, "WARNING");
-        //unlistens[3] = await registerChannel(EventChannels.ERROR, "ERROR");
+        unlistens[1] = await listen(EventChannels.INFO, (event) => {
+                                         //@ts-ignore
+                                         logs.push({message: event.payload, log_type: 'INFO', timestamp: Date.now().valueOf()})
+                                     });
+        unlistens[2] = await listen(EventChannels.WARNING, (event) => {
+                                         //@ts-ignore
+                                         logs.push({message: event.payload, log_type: 'WARNING', timestamp: Date.now().valueOf()})
+                                     });
+        unlistens[3] = await listen(EventChannels.ERROR, (event) => {
+                                         //@ts-ignore
+                                         logs.push({message: event.payload, log_type: 'ERROR', timestamp: Date.now().valueOf()})
+                                     });
 
         logContainer.addEventListener('scroll', () => {
             userHasScrolled = logContainer.scrollTop < logContainer.scrollHeight - logContainer.clientHeight;
