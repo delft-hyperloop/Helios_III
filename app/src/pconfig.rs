@@ -8,7 +8,7 @@ use embassy_stm32::{rcc, Config};
 use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
 // use embedded_hal::can::Id;
 use crate::Event;
-use embedded_can::Id;
+use embedded_can::{ExtendedId, Id};
 use embedded_nal_async::AddrType::IPv4;
 
 #[inline]
@@ -98,6 +98,23 @@ pub fn id_as_value(id: &embedded_can::Id) -> u16 {
         Id::Standard(x) => x.as_raw(),
         Id::Extended(y) => y.as_raw() as u16,
     }
+}
+
+pub fn extended_as_value(id: &ExtendedId) -> u16 {
+    let temp = id.as_raw();
+    let big_id = temp & (0xFFF0000)>>20;
+    let mut small_id = temp & 0x00000FF;
+    let dt = temp & 0x0000F00>>8;
+    match dt {
+        0x0 => small_id = small_id, // Normal Messages
+        0x1 => small_id = small_id + 32, // Voltage Messages
+        0x2 => small_id = small_id + 256, // Temp messages
+        0x3 => small_id = small_id + 0, //  I wonder what are these
+        0x5 => small_id = 0x5, // Current messages
+        0x8 => small_id = small_id + 96, // Balance messages
+        _ => small_id = small_id | 0x000,
+    }
+    (big_id + small_id) as u16
 }
 
 #[macro_export]
