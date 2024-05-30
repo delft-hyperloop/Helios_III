@@ -1,6 +1,6 @@
 [gs]
 ip = [192,168,1,4]
-force = true
+force = false
 port = 6942
 udp_port = 6943
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
