@@ -86,8 +86,8 @@ impl Widget for &App {
             .direction(Direction::Vertical)
             .constraints(
                 [
-                    Constraint::Percentage(80), // top side for text stream
-                    Constraint::Percentage(20), // bottom side for the table
+                    Constraint::Percentage(65), // top side for text stream
+                    Constraint::Percentage(35), // bottom side for the table
                 ]
                 .as_ref(),
             )
@@ -180,7 +180,7 @@ impl Widget for &App {
             .border_style(Style::default().fg(Color::Blue))
             .borders(Borders::ALL);
 
-        let data = vec![
+        let mut data = vec![
             Line::styled(
                 format!("Current State: {}", self.cur_state),
                 Style::default().fg(Color::White).bg(Color::Blue),
@@ -197,7 +197,19 @@ impl Widget for &App {
                 format!("Lines printed: {}", self.logs.len()),
                 Style::default().fg(Color::White),
             ),
+            Line::styled(
+                "Powertrain data:",
+                Style::default().fg(Color::White).bg(Color::Blue),
+            ),
         ];
+        for (k, v) in &self.special_data {
+            data.push(
+                Line::styled(
+                    format!("{:?}: {}", k, v),
+                    Style::default().fg(Color::White),
+                )
+            );
+        }
 
         let data_paragraph = Paragraph::new(data)
             .wrap(Wrap { trim: false })

@@ -76,7 +76,7 @@ impl Datatype {{
     }}
 }}
 pub static DATA_IDS : [u16;{}] = [{}];\n",
-        if drv { "#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]" } else { "#[derive(Debug, Clone, Copy, PartialEq, Eq)]" },
+        if drv { "#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize, PartialOrd, Ord)]" } else { "#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]" },
         enum_definitions,
         match_to_id,
         match_from_id,
