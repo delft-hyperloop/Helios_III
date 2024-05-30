@@ -50,7 +50,7 @@ pub async fn can_receiving_handler(
     info!("[CAN] Ready for bus {:?}", bus_nr);
     let mut error_counter = 0u64;
     loop {
-        // #[cfg(debug_assertions)]
+        #[cfg(debug_assertions)]
         // info!("Entering read loop on bus #{}", bus_nr);
         match bus.read().await {
             Ok(envelope) => {
