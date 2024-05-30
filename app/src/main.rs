@@ -12,7 +12,7 @@
     clippy::too_many_arguments
 )]
 #![deny(clippy::async_yields_async)]
-
+#[warn(unused_must_use)]
 
 // Import absolutely EVERYTHING
 
