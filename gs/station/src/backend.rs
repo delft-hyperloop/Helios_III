@@ -13,8 +13,6 @@ use tokio::task::AbortHandle;
 // }
 
 pub struct Backend {
-    pub data_buffer: Vec<Message>,
-    pub command_buffer: Vec<Command>,
     pub server_handle: Option<AbortHandle>,
     pub levi_handle: Option<(AbortHandle, AbortHandle)>,
     pub message_transmitter: tokio::sync::broadcast::Sender<Message>,
@@ -34,8 +32,6 @@ impl Backend {
         let (command_transmitter, command_receiver) =
             tokio::sync::broadcast::channel::<Command>(128);
         Self {
-            data_buffer: Vec::new(),
-            command_buffer: Vec::new(),
             server_handle: None,
             levi_handle: None,
             message_transmitter,
