@@ -191,6 +191,11 @@ impl Fsm {
                 transit!(self, State::EmergencyBraking);
                 return;
             }
+            Event::TurnAllHVRelaysOnEvent => {
+                self.peripherals.hv_peripherals.pin_4.set_high();
+                self.peripherals.hv_peripherals.pin_6.set_high();
+                self.peripherals.hv_peripherals.pin_7.set_high();
+            }
             _ => {
                 trace!("Event was not emergency brake, continuing...");
             }

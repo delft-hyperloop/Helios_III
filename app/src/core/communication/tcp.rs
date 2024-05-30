@@ -39,6 +39,7 @@ pub async fn tcp_connection_handler(
     event_sender: EventSender,
     data_receiver: DataReceiver,
 ) -> ! {
+    let mut last_valid_timestamp = embassy_time::Instant::now().as_millis();
     // info!("------------------------------------------------ TCP Connection Handler Started! ------------------------------------------");
     stack.wait_config_up().await;
 
@@ -47,19 +48,28 @@ pub async fn tcp_connection_handler(
     // let client = TcpClient::new(&stack, &state);
 
     let gs_addr = unsafe { embassy_socket_from_config(GS_IP_ADDRESS) };
-    let mut rx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
-    let mut tx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
 
-    let mut socket: TcpSocket =
-        TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
+    // let mut socket: TcpSocket =
+    //     TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
 
     let mut buf = [0; { NETWORK_BUFFER_SIZE }];
     'netstack: loop {
         // info!("====================================================Connecting to ground station______________________________");
+        let mut rx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
+        let mut tx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
+
+        let mut socket: TcpSocket =
+            TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
+
         match socket.connect(gs_addr).await {
-            Ok(_) => {}
+            Ok(_) => { last_valid_timestamp = embassy_time::Instant::now().as_millis(); }
             Err(e) => {
-                error!("[tcp:stack] error connecting to gs: {:?}", e);
+                let d = embassy_time::Instant::now().as_millis() - last_valid_timestamp;
+                error!("[tcp:stack] error connecting to gs: {:?} (diff={})", e, d);
+                if d > IP_TIMEOUT {
+                    event_sender.send(Event::EmergencyBrakeCommand).await;
+                }
+                Timer::after_millis(500).await;
                 continue 'netstack;
             }
         }
@@ -98,7 +108,12 @@ pub async fn tcp_connection_handler(
             //            } else {
             Timer::after_millis(1).await;
             //            }
+            if !socket.may_recv() || !socket.may_send() {
+                error!("[tcp] may_recv: connection closed");
+                break 'connection;
+            }
             if socket.can_recv() {
+                last_valid_timestamp = embassy_time::Instant::now().as_millis();
                 let n = socket.read(&mut buf).await.unwrap_or(420000);
                 if n == 42000 {
                     error!("[tcp] Failed to read from socket");
@@ -213,6 +228,13 @@ pub async fn tcp_connection_handler(
                                     info!("[tcp] FinishRunConfig command received");
                                     event_sender
                                         .send(Event::RunConfigCompleteEvent)
+                                        .await;
+                                }
+                                Command::TurnAllHVRelaysOnUNSAFE(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] TurnAllHVRelaysOn command received");
+                                    event_sender
+                                        .send(Event::TurnAllHVRelaysOnEvent)
                                         .await;
                                 }
                                 _ => {} // TODO: DELETE THIS
