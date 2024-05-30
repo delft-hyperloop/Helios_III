@@ -590,6 +590,9 @@ impl BatteryController {
             }
             avg += x;
         }
+        if (n<=0) {
+            n = 1
+        }
         avg /= n;
         (min, max, avg)
     }
