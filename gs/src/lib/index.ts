@@ -39,6 +39,9 @@ import type {Payload, NamedCommand, EventChannel, Log} from "$lib/types";
 // Stores
 import {south_bridge_payload} from "$lib/stores/data";
 import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn} from "$lib/stores/state";
+import uPlot from "uplot";
+
+export const chartDataStore = new Map<string, uPlot.AlignedData>();
 
 // Export all
 export {

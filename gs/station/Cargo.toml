@@ -1,6 +1,6 @@
 [package]
 name = "station"
-version = "0.3.0"
+version = "0.4.0"
 description = "Helios III Ground Station"
 authors = ["Andreas Tsatsanis", " Francisco Amaro", "Kiril Panayotov"]
 license = "MIT"
@@ -31,7 +31,7 @@ regex = "1.10.3"
 rayon = "1.9.0"
 colored = "2.1.0"
 time = "0.3.34"
-tauri = { version = "1.6.2", features = [ "window-start-dragging", "window-unminimize", "window-unmaximize", "window-minimize", "window-hide", "window-show", "window-close", "window-maximize"], optional = true }
+tauri = { version = "1.6.7", features = [ "window-start-dragging", "window-unminimize", "window-unmaximize", "window-minimize", "window-hide", "window-show", "window-close", "window-maximize"], optional = true }
 tokio = { version = "1.29.1", features = ["rt", "rt-multi-thread", "macros", "net", "process", "sync", "io-std", "io-util"] }
 anyhow = "1.0.86"
 

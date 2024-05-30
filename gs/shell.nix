@@ -13,6 +13,7 @@ let
   ];
 
   packages = with pkgs; [
+    nodejs_20
     pkg-config
     dbus
     openssl_3
@@ -22,6 +23,7 @@ let
     webkitgtk
     appimagekit
     librsvg
+    cargo-tauri
   ];
 in
 pkgs.mkShell {

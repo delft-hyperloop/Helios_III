@@ -94,17 +94,17 @@ impl CanController {
             .write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap())
             .await;
 
-        // try_spawn!(
-        //     event_sender,
-        //     x.spawn(can_receiving_handler(
-        //         x,
-        //         event_sender.clone(),
-        //         can_one_receiver.clone(),
-        //         data_sender.clone(),
-        //         c1_rx,
-        //         None
-        //     ))
-        // );
+        try_spawn!(
+            event_sender,
+            x.spawn(can_receiving_handler(
+                x,
+                event_sender.clone(),
+                can_one_receiver.clone(),
+                data_sender.clone(),
+                c1_rx,
+                None
+            ))
+        );
         try_spawn!(
             event_sender,
             x.spawn(can_receiving_handler(
