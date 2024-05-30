@@ -112,7 +112,7 @@ pub async fn ground_fault_detection_voltage_details(
         ))
         .await;
 }
-keep_alive = 1000 # keep alive interval, in milliseconds.
+
 
 
 //===============BMS===============//
