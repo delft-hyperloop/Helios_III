@@ -8,7 +8,7 @@
     import {afterUpdate, onDestroy, onMount} from "svelte";
     import {EventChannels, type Log} from "$lib/types";
 
-    let unlistens: UnlistenFn[];
+    let unlistens: UnlistenFn[] = [];
     let logContainer: HTMLElement;
     let userHasScrolled = false;
     let logs: Log[] = [];
