@@ -2,6 +2,7 @@
     import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, inputTurn, Command, Tile, TileGrid} from "$lib";
     import {type IntervalFunction, RunMode} from "$lib/types";
     import {inputEmerg, inputPosit} from "$lib/stores/state";
+    import {invoke} from "@tauri-apps/api/tauri";
 
     let calculateTheoretical:IntervalFunction;
     let clearRuns: () => void;
