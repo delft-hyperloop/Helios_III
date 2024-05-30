@@ -22,6 +22,7 @@ pub async fn transmit_commands_to_tcp(
                         }
                         Err(e) => {
                             eprintln!("Error sending command over tcp: {:?}", e);
+                            break;
                         }
                     }
                 }

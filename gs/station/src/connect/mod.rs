@@ -32,7 +32,7 @@ pub async fn connect_main(
         // The second item contains the IP and port of the new connection.
         let (socket, client_addr) = listener.accept().await.unwrap();
         message_transmitter
-            .send(crate::api::Message::Info(format!(
+            .send(Message::Info(format!(
                 "New connection from: {}",
                 client_addr
             )))
