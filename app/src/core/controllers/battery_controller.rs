@@ -21,7 +21,10 @@ pub struct BatteryController {
     receive_single_cell_id: bool,
     current_number_of_cells: usize,
     module_buffer: [u64; 14],
-    number_of_msgs: u8,
+    temp_buffer: [u64; 112],
+    voltage_buffer: [u64; 112],
+    number_of_temp: u8,
+    number_of_volt: u8,
 }
 
 impl BatteryController {
@@ -53,7 +56,10 @@ impl BatteryController {
             receive_single_cell_id: true,
             current_number_of_cells: 0,
             module_buffer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            number_of_msgs: 0,
+            temp_buffer: [0; 112],
+            voltage_buffer: [0; 112],
+            number_of_temp: 0,
+            number_of_volt:0,
         }
     }
 }
@@ -105,6 +111,8 @@ pub async fn ground_fault_detection_voltage_details(
         .await;
 }
 
+
+
 //===============BMS===============//
 
 impl BatteryController {
@@ -146,19 +154,45 @@ impl BatteryController {
                     && Datatype::SingleCellTemperatureHigh_14.to_id() >= id) =>
             {
                 debug!("Individual Temperature");
-                if id - Datatype::SingleCellTemperatureHigh_1.to_id() != 0 {
-                    self.receive_single_cell_id = true;
-                }
+                // if (id - Datatype::SingleCellTemperatureHigh_1.to_id() != 0) {
+                //     self.receive_single_cell_id = true;
+                // }
+                //
+                // if (self.receive_single_cell_id) {
+                //     self.single_cell_id = 0;
+                //     self.module_buffer = [0; 14];
+                //     self.current_number_of_cells = 0;
+                //     self.receive_single_cell_id = false;
+                // } else if (Datatype::SingleCellTemperatureLow.to_id() == id) {
+                //     // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
+                // } else {
+                //     self.individual_temperature_bms(data, timestamp).await;
+                // }
+                if (self.number_of_temp>=13){
+                    self.number_of_temp = 0;
+                    let mut i = 0;
+                    while (i<8){
+                        self.single_cell_id = i;
+                        let a = &self.temp_buffer[(i*14)as usize..((i+1)*14) as usize];
+                        // Initialize a new fixed-size array
+                        let mut temp: [u64; 14] = [0; 14];
 
-                if self.receive_single_cell_id {
-                    self.single_cell_id = 0;
-                    self.module_buffer = [0; 14];
-                    self.current_number_of_cells = 0;
-                    self.receive_single_cell_id = false;
-                } else if Datatype::SingleCellTemperatureLow.to_id() == id {
+                        temp.copy_from_slice(a);
+                        // Copy the elements from the slice to the fixed-size array
+                        self.module_buffer =temp;
+                        self.send_module_temp(timestamp).await;
+                        i+=1;
+                    }
+
+                }
+                if (Datatype::SingleCellTemperatureLow.to_id() == id) {
                     // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
                 } else {
-                    self.individual_temperature_bms(data, timestamp).await;
+                    let module_id = ((id - Datatype::SingleCellTemperatureHigh_1.to_id())*8) as usize;
+                    for (i, &x) in data.iter().enumerate() {
+                        self.temp_buffer[module_id + i] = x as u64;
+                    }
+                    self.number_of_temp += 1;
                 }
 
                 info!("Individual Temperature")
@@ -167,20 +201,41 @@ impl BatteryController {
                 || (Datatype::SingleCellVoltageHigh_1.to_id() <= id
                     && Datatype::SingleCellVoltageHigh_14.to_id() >= id) =>
             {
-                if id - Datatype::SingleCellVoltageHigh_1.to_id() != 0 {
-                    self.receive_single_cell_id = true;
+                if (self.number_of_volt>=13){
+                    self.number_of_volt = 0;
+                    let mut i = 0;
+                    while (i<8){
+                        self.single_cell_id = i;
+                        let a = &self.temp_buffer[(i*14)as usize..((i+1)*14) as usize];
+                        // Initialize a new fixed-size array
+                        let mut temp: [u64; 14] = [0; 14];
+
+                        temp.copy_from_slice(a);
+                        // Copy the elements from the slice to the fixed-size array
+                        self.module_buffer =temp;
+                        self.send_module_voltage(timestamp).await;
+                        i+=1;
+                    }
+
                 }
-                if self.receive_single_cell_id {
-                    self.single_cell_id = 0;
-                    self.module_buffer = [0; 14];
-                    self.current_number_of_cells = 0;
-                    self.receive_single_cell_id = false;
-                } else if Datatype::SingleCellVoltageLow.to_id() == id {
-                    // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
+                // if (id - Datatype::SingleCellVoltageHigh_1.to_id() != 0) {
+                //     self.receive_single_cell_id = true;
+                // }
+                // if (self.receive_single_cell_id) {
+                //     self.single_cell_id = 0;
+                //     self.module_buffer = [0; 14];
+                //     self.current_number_of_cells = 0;
+                //     self.receive_single_cell_id = false;
+               if (Datatype::SingleCellVoltageLow.to_id() == id) {
+                        // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
                 } else {
-                    self.individual_voltages_bms(data, timestamp).await;
-                    self.number_of_msgs += 1;
+                   let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id())*8) as usize;
+                   for (i, &x) in data.iter().enumerate() {
+                       self.voltage_buffer[module_id + i] = x as u64;
+                   }
+                   self.number_of_volt += 1;
                 }
+
 
                 info!("Individual Voltage")
             }
@@ -406,9 +461,6 @@ impl BatteryController {
         let module_id = self.single_cell_id;
         let (mut min_voltage, mut max_voltage, mut avg_voltage) =
             Self::module_data_calculation(self.module_buffer).await;
-        min_voltage += 200;
-        max_voltage += 200;
-        avg_voltage += 200;
         let (avg_voltage_dt, min_voltage_dt, max_voltage_dt) = Self::match_voltage(module_id).await;
         self.data_sender
             .send(Datapoint::new(avg_voltage_dt, avg_voltage, timestamp))
@@ -537,6 +589,9 @@ impl BatteryController {
                 max = x;
             }
             avg += x;
+        }
+        if (n<=0) {
+            n = 1
         }
         avg /= n;
         (min, max, avg)
