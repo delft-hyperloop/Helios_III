@@ -2,7 +2,7 @@ use crate::api::{state_to_string, Datapoint, Message};
 use crate::backend::Backend;
 use crate::tui::render::CmdRow;
 use crate::tui::{timestamp, Tui};
-use crate::{Datatype, Event, Info, COMMANDS_LIST};
+use crate::{Datatype, Event, COMMANDS_LIST, Info};
 use ratatui::Frame;
 use std::collections::BTreeMap;
 
@@ -75,46 +75,48 @@ impl App {
     fn receive_data(&mut self) {
         while let Ok(msg) = self.backend.message_receiver.try_recv() {
             match msg {
-                Message::Data(datapoint) => match datapoint.datatype {
-                    Datatype::Info => match Info::from_id(datapoint.value as u16) {
-                        Info::Safe => {
-                            self.safe = true;
+                Message::Data(datapoint) => {
+                    if self.scroll > 50 {
+                        self.scroll += 1;
+                    }
+                    match datapoint.datatype {
+                        Datatype::Info => match Info::from_id(datapoint.value as u16) {
+                            Info::Safe => {
+                                self.safe = true;
+                            }
+                            Info::Unsafe => {
+                                self.safe = false;
+                            }
+                            _ => {}
                         }
-                        Info::Unsafe => {
-                            self.safe = false;
-                        }
-                        _ => {}
-                    },
-                    Datatype::FSMState => {
-                        self.cur_state = state_to_string(datapoint.value).to_string();
-                        self.logs.push((
+                        Datatype::FSMState => {
+                            self.cur_state = state_to_string(datapoint.value).to_string();
+                            self.logs.push((
                             Message::Warning(format!(
-                                "State changed to: {:?}",
-                                datapoint.value.to_be_bytes()
+                            "State changed to: {:?}",
+                            datapoint.value.to_be_bytes()
                             )),
                             timestamp(),
-                        ));
-                        self.logs.push((Message::Data(datapoint), timestamp()));
-                        if self.logs.len() > 42 {
-                            self.scroll += 1;
+                            ));
+                            self.logs.push((Message::Data(datapoint), timestamp()))
                         }
-                    }
-                    Datatype::FSMEvent => {
-                        if datapoint.value == Event::Heartbeat.to_id() as u64 {
-                            self.last_heartbeat = timestamp();
-                        } else if self
-                            .special_data
-                            .keys()
-                            .collect::<Vec<&Datatype>>()
-                            .contains(&&datapoint.datatype)
-                        {
-                            self.special_data
-                                .insert(datapoint.datatype, datapoint.value);
-                        } else {
-                            self.logs.push((Message::Data(datapoint), timestamp()));
-                            if self.logs.len() > 42 {
-                                self.scroll += 1;
+                        Datatype::FSMEvent => {
+                            if datapoint.value == Event::Heartbeat.to_id() as u64 {
+                                self.last_heartbeat = timestamp();
+                            } else if self
+                                .special_data
+                                .keys()
+                                .collect::<Vec<&Datatype>>()
+                                .contains(&&datapoint.datatype)
+                            {
+                                self.special_data
+                                    .insert(datapoint.datatype, datapoint.value);
+                            } else {
+                                self.logs.push((Message::Data(datapoint), timestamp()))
                             }
+                        }
+                        _ => {
+                            self.logs.push((Message::Data(datapoint), timestamp()))
                         }
                     }
                     _ => {

@@ -215,8 +215,7 @@ pub async fn tcp_connection_handler(
                                 Command::StopHV(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] StopHV command received");
-                                    event_sender.send(Event::TurnOffHVCommand).await;
-                                    // TODO: no turn off HV exists??
+                                    event_sender.send(Event::TurnOffHVCommand).await; // TODO: no turn off HV exists??
                                 }
                                 Command::EmitEvent(e) => {
                                     #[cfg(debug_assertions)]
