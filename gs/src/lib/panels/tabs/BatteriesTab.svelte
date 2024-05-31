@@ -90,7 +90,6 @@
 
 <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Batteries</h2>
-    {$avg1Vol}
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="auto 1fr auto">
         <Tile insideClass="flex h-full items-center gap-4">
             <div class="flex flex-col items-center">
