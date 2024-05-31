@@ -8,6 +8,7 @@ impl Fsm {
         unsafe {
             BRAKE = true;
         }
+        self.peripherals.hv_peripherals.power_hv_off();
         info!("In exit state...");
     }
 
@@ -17,8 +18,6 @@ impl Fsm {
                 todo!();
             }
             Event::SystemResetCommand => {
-                todo!();
-
                 transit!(self, State::RunConfig);
             }
 

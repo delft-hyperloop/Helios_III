@@ -214,13 +214,19 @@ impl Fsm {
             State::Exit => self.react_exit(event).await,
             State::EmergencyBraking => self.react_emergency_braking(event).await,
             State::Crashing => {
-                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
-                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
-                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
-                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
+                self.log(crate::Info::Crashed).await;
                 info!("TRYING TO REACT WHILE CRASHING!!!!!!");
             }
         }
+    }
+
+    /// # Send data to the ground station
+    pub async fn send_data(&mut self, dtype: Datatype, data: u64) {
+        self.data_queue.send(Datapoint::new(dtype, data, Instant::now().as_ticks())).await;
+    }
+
+    pub async fn log(&self, info: crate::Info) {
+        self.data_queue.send(Datapoint::new(Datatype::Info, info.to_idx() as u64, Instant::now().as_ticks()));
     }
 }
 

@@ -198,8 +198,8 @@ impl Widget for &App {
                 Style::default().fg(Color::White),
             ),
             Line::styled(
-                "Powertrain data:",
-                Style::default().fg(Color::White).bg(Color::Blue),
+                "Pod data:",
+                Style::default().fg(Color::White).bg(Color::Blue).underlined(),
             ),
         ];
         for (k, v) in &self.special_data {

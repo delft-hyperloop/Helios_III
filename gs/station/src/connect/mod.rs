@@ -20,7 +20,7 @@ pub async fn connect_main(
         .unwrap();
     let listener = TcpListener::bind(gs_socket()).await.unwrap();
     message_transmitter
-        .send(Message::Status(crate::api::Status::ServerStarted))
+        .send(Message::Status(crate::Info::ServerStarted))
         .unwrap();
     message_transmitter
         .send(Message::Info(format!(

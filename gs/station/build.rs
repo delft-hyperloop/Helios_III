@@ -68,6 +68,7 @@ fn main() {
     content.push_str(&generate_commands(&id_list, COMMANDS_PATH, false));
     content.push_str(&generate_events(&id_list, EVENTS_PATH));
     content.push_str(&configure_channels(&config));
+    content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, true));
 
     fs::write(dest_path.clone(), content).unwrap_or_else(|_| {
         panic!(
