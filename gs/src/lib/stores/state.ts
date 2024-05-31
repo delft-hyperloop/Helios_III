@@ -12,3 +12,5 @@ export const vitals_pane: Writable<number> = writable(40)
 export const details_pane: Writable<number> = writable(80)
 
 export const chartStore = writable(new Map<string, PlotBuffer>());
+
+export const serverStatus: Writable<boolean> = writable(false);

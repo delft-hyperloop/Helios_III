@@ -1,6 +1,5 @@
 <script lang="ts">
     import {
-        south_bridge_payload,
         Table,
         TheoreticalRun,
         Status,
@@ -13,22 +12,21 @@
     } from "$lib";
     import {type IntervalFunction, RunMode} from "$lib/types";
     import {inputEmerg, inputPosit} from "$lib/stores/state";
-    import {invoke} from "@tauri-apps/api/tauri";
 
     let calculateTheoretical:IntervalFunction;
     let clearRuns: () => void;
 
     let tableArr2:any[][];
     $: tableArr2 = [
-        ["Some", $south_bridge_payload.value],
-        ["Important", $south_bridge_payload.value],
-        ["Value", $south_bridge_payload.value],
-        ["That", $south_bridge_payload.value],
-        ["Could", $south_bridge_payload.value],
-        ["stay", $south_bridge_payload.value],
-        ["as a", $south_bridge_payload.value],
-        ["table entry", $south_bridge_payload.value],
-        ["here", $south_bridge_payload.value]
+        ["Some", 0],
+        ["Important", 0],
+        ["Value", 0],
+        ["That", 0],
+        ["Could", 0],
+        ["stay", 0],
+        ["as a", 0],
+        ["table entry", 0],
+        ["here", 0]
     ]
 </script>
 
@@ -81,17 +79,17 @@
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
             <p>Helios III</p>
-            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <Status status={0 % 2 === 0} />
             <p>Propulsion:</p>
-            <Status status={$south_bridge_payload.value % 2 === 1} />
+            <Status status={0 % 2 === 1} />
             <p>Levitation:</p>
-            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <Status status={0 % 2 === 0} />
             <p>PTC:</p>
-            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <Status status={0 % 2 === 0} />
             <p>Localization:</p>
-            <Status status={$south_bridge_payload.value % 2 === 1} />
+            <Status status={0 % 2 === 1} />
             <p>Breaking PCB:</p>
-            <Status on="armed" off="unarmed" status={$south_bridge_payload.value % 2 === 0} />
+            <Status on="armed" off="unarmed" status={0 % 2 === 0} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
