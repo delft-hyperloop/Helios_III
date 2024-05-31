@@ -1,5 +1,16 @@
 <script lang="ts">
-    import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, inputTurn, Command, Tile, TileGrid} from "$lib";
+    import {
+        south_bridge_payload,
+        Table,
+        TheoreticalRun,
+        Status,
+        inputSpeed,
+        inputTurn,
+        Command,
+        Tile,
+        TileGrid,
+        TauriCommand
+    } from "$lib";
     import {type IntervalFunction, RunMode} from "$lib/types";
     import {inputEmerg, inputPosit} from "$lib/stores/state";
     import {invoke} from "@tauri-apps/api/tauri";
@@ -54,13 +65,7 @@
             </div>
             <div class="flex-grow"></div>
             <div class="grid grid-cols-2 gap-2">
-                <Command send={
-                    async () => {
-                        await invoke('start_server');
-                    }
-                }
-
-                 cmd="establish_connection" className="btn rounded-md bg-surface-700  col-span-2" />
+                <TauriCommand cmd="start_server" className="btn rounded-md bg-surface-700  col-span-2" />
                 <Command cmd="StartHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="Levitate" className="btn flex-grow rounded-md bg-surface-700 " />
