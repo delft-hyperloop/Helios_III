@@ -7,7 +7,8 @@
     const handleSuccess = () => {
         toastStore.trigger({
             message: "Server started successfully",
-            background: "success"
+            background: "bg-primary-400",
+            timeout: 1500
         });
         serverStatus.set(true);
     };
@@ -15,7 +16,7 @@
     const handleFailure = () => {
         toastStore.trigger({
             message: "Server did not start successfully",
-            background: "success"
+            background: "bg-error-400"
         });
     };
 </script>
