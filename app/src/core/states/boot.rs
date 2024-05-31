@@ -1,15 +1,18 @@
-use crate::core::communication::Datapoint;
-use crate::core::finite_state_machine::{State, Fsm};
-use crate::{transit, Datatype, Event};
-use defmt::{error, info};
+use defmt::error;
+use defmt::info;
+
+use crate::core::finite_state_machine::Fsm;
+use crate::core::finite_state_machine::State;
+use crate::transit;
+use crate::Event;
 
 impl Fsm {
     pub fn boot_entry(&mut self) {
         info!("Entering Boot State");
 
-        if !self.peripherals.braking_controller.arm_breaks() {
-            self.react(Event::BootingFailedEvent);
-        }
+        // if !self.peripherals.braking_controller.arm_breaks() {
+        //     self.react(Event::BootingFailedEvent);
+        // }
         info!("Booting complete");
         // TODO -> Start also the connection with the sensor hub ||| I think this will be a task that starts can bus 1 and 2
     }
