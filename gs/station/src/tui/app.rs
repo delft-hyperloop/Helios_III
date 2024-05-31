@@ -51,6 +51,7 @@ impl App {
                 (Datatype::TotalBatteryVoltageHigh, 0),
                 (Datatype::SingleCellVoltageLow, 0),
                 (Datatype::BatteryMaxBalancingLow, 0),
+                (Datatype::Localisation, 0),
             ]),
             backend,
         }

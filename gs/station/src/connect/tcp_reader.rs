@@ -15,7 +15,7 @@ pub async fn get_messages_from_tcp(
             Ok(0) => {
                 message_transmitter
                     .send(crate::api::Message::Status(
-                        crate::api::Status::ConnectionClosedByClient,
+                        crate::Info::ConnectionClosedByClient,
                     ))
                     .unwrap();
                 message_transmitter

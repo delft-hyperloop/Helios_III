@@ -1,11 +1,13 @@
 mod read_from_stdout;
 mod write_to_stdin;
+mod parse_input;
 
 use crate::LEVI_EXEC_PATH;
 use tokio::task::AbortHandle;
 
 pub fn levi_main(
     message_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
+    command_transmitter: tokio::sync::broadcast::Sender<crate::Command>,
     command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
 ) -> anyhow::Result<(AbortHandle, AbortHandle)> {
     let mut lcmd = tokio::process::Command::new(LEVI_EXEC_PATH);
@@ -24,9 +26,10 @@ pub fn levi_main(
     })
     .abort_handle();
 
-    let transmitter = message_transmitter.clone();
+    let msg_transmitter = message_transmitter.clone();
+    let cmd_transmitter = command_transmitter.clone();
     let lh2 = tokio::spawn(async move {
-        read_from_stdout::read_from_levi_child_stdout(stdout, transmitter).await
+        read_from_stdout::read_from_levi_child_stdout(stdout, msg_transmitter, cmd_transmitter).await
     })
     .abort_handle();
 

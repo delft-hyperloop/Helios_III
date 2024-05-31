@@ -18,7 +18,10 @@ impl Fsm {
     pub async fn react_hv_system_checking(&mut self, event: Event) {
         match event {
             Event::TurnOffHVCommand => {
-                transit!(self, State::Exit);
+                self.peripherals.hv_peripherals.power_hv_off();
+                #[cfg(debug_assertions)]
+                info!("HV Relays turned off");
+                // transit!(self, State::Exit);
             }
             Event::StartLevitatingCommand => {
                 todo!();

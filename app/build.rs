@@ -98,6 +98,7 @@ fn main() {
         &id_list,
         EVENTS_PATH,
     ));
+    content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, false));
     // content.push_str(&*can::main(&id_list));
 
     fs::write(dest_path.clone(), content).unwrap_or_else(|e| panic!(
