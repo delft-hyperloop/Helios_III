@@ -231,7 +231,8 @@ impl BatteryController {
                 } else {
                    let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id())*8) as usize;
                    for (i, &x) in data.iter().enumerate() {
-                       self.voltage_buffer[module_id + i] = x as u64;
+                       if x !=0 {
+                       self.voltage_buffer[module_id + i] = x as u64;}
                    }
                    self.number_of_volt += 1;
                 }
@@ -347,9 +348,9 @@ impl BatteryController {
             .await;
     }
     pub async fn state_of_charge_bms(&mut self, data: &[u8], timestamp: u64) {
-        let current = (data[1] as u64) << 8 | data[0] as u64; //AMPERES scaled by 10
+        let current = (data[0] as u64) << 8 | data[1] as u64; //AMPERES scaled by 0.1
         let estimated_charge = (data[2] as u64) << 8 | data[3] as u64; //AMPERES
-        let state_of_charge = data[6]; //PERCENTAGE
+        let state_of_charge = (data[5] as u64) << 8 | data[6] as u64; //PERCENTAGE
         let battery_current_dt = if self.high_voltage {
             Datatype::BatteryCurrentHigh
         } else {
@@ -594,6 +595,9 @@ impl BatteryController {
             n = 1
         }
         avg /= n;
+        if (min == 1000) {
+            min = 0;
+        }
         (min, max, avg)
     }
 
