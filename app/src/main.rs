@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 #![allow(
-    unused_must_use,
+    // unused_must_use,
 //     unused_imports,
 //     unused_variables,
 //     unused_mut,
