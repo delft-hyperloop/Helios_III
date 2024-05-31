@@ -226,12 +226,13 @@ impl BatteryController {
                 if Datatype::SingleCellVoltageLow.to_id() == id {
                     // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
                 } else {
-                   let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id())*8) as usize;
-                   for (i, &x) in data.iter().enumerate() {
-                       if x !=0 {
-                       self.voltage_buffer[module_id + i] = x as u64;}
-                   }
-                   self.number_of_volt += 1;
+                    let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id()) * 8) as usize;
+                    for (i, &x) in data.iter().enumerate() {
+                        if x != 0 {
+                            self.voltage_buffer[module_id + i] = x as u64;
+                        }
+                    }
+                    self.number_of_volt += 1;
                 }
 
                 info!("Individual Voltage")
@@ -369,7 +370,7 @@ impl BatteryController {
         self.data_sender
             .send(Datapoint::new(
                 charge_state_dt,
-                state_of_charge as u64,
+                state_of_charge,
                 timestamp,
             ))
             .await;
@@ -592,7 +593,7 @@ impl BatteryController {
             n = 1
         }
         avg /= n;
-        if (min == 1000) {
+        if min == 1000 {
             min = 0;
         }
         (min, max, avg)
