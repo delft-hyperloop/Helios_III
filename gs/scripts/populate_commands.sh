@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# This script is used to populate the commands type using the /config/commands.toml file
-# The result of this will be put in /gs/src/lib/types.ts in the beginning of the file
-
 echo 'Populating commands...'
 
 # Get the commands from the commands.toml file
@@ -12,12 +9,16 @@ commands=$(grep -oP '(?<=name = ").*(?=")' ../config/commands.toml)
 commands=$(echo "$commands" | sed -r 's/(.*)/"\1"/')
 
 # Format into TS union
-commands=$(echo "$commands" | sed -r ':a;N;$!ba;s/\n/ | /g')
+commands_union=$(echo "$commands" | sed -r ':a;N;$!ba;s/\n/ | /g')
 
-# Delete the line after the AUTO GENERATED USING npm run generate:commands comment
-sed -i '/AUTO GENERATED USING npm run generate:commands/{n;d}' ./src/lib/types.ts
+# Format into TS array
+commands_array=$(echo "$commands" | sed -r ':a;N;$!ba;s/\n/, /g')
 
-# Add the new NamedCommand type definition
-sed -i "/AUTO GENERATED USING npm run generate:commands/a\export type NamedCommand = $commands" ./src/lib/types.ts
+# Replace the NamedCommand type definition
+sed -i "s/^export type NamedCommand.*/export type NamedCommand = $commands_union;/" ./src/lib/types.ts
 
-echo $commands
+# Replace the NamedCommandValues array
+sed -i "s/^export const NamedCommandValues.*/export const NamedCommandValues:NamedCommand[] = [$commands_array];/" ./src/lib/types.ts
+
+echo $commands_union
+echo $commands_array
