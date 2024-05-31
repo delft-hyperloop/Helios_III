@@ -84,9 +84,9 @@ impl CanController {
             event_sender,
             x.spawn(can_receiving_handler(
                 x,
-                event_sender.clone(),
-                can_one_receiver.clone(),
-                data_sender.clone(),
+                event_sender,
+                can_one_receiver,
+                data_sender,
                 c1_rx,
                 None
             ))

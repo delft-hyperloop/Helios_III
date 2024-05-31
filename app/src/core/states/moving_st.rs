@@ -21,7 +21,6 @@ impl Fsm {
                 todo!();
             }
             Event::BrakingPointReachedEvent => {
-
                 transit!(self, State::EndST);
                 todo!();
             }

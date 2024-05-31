@@ -199,7 +199,10 @@ impl Widget for &App {
             ),
             Line::styled(
                 "Pod data:",
-                Style::default().fg(Color::White).bg(Color::Blue).underlined(),
+                Style::default()
+                    .fg(Color::White)
+                    .bg(Color::Blue)
+                    .underlined(),
             ),
         ];
         for (k, v) in &self.special_data {

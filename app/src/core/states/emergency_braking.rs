@@ -30,7 +30,10 @@ impl Fsm {
             Event::SystemResetCommand => {
                 transit!(self, State::RunConfig);
             }
-            _ => {}
+            _ => {
+                #[cfg(debug_assertions)]
+                info!("[fsm] EmergencyBrake state ignores {:?}", event);
+            }
         }
     }
 }
