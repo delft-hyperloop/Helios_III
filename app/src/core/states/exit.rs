@@ -1,7 +1,10 @@
-use crate::core::controllers::breaking_controller::BRAKE;
-use crate::core::finite_state_machine::{State, Fsm};
-use crate::{transit, Event};
 use defmt::info;
+
+use crate::core::controllers::breaking_controller::BRAKE;
+use crate::core::finite_state_machine::Fsm;
+use crate::core::finite_state_machine::State;
+use crate::transit;
+use crate::Event;
 
 impl Fsm {
     pub fn entry_exit(&mut self) {
