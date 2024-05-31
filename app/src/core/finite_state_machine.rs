@@ -6,7 +6,7 @@ use embassy_time::Instant;
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::core::fsm_status::Status;
-use crate::DataSender;
+use crate::{DataSender, Info};
 use crate::Datatype;
 use crate::Event;
 use crate::EventReceiver;
@@ -168,7 +168,10 @@ impl Fsm {
             State::MovingLSST => self.entry_cruising(),
             State::MovingLSCV => self.entry_ls_cv(),
             State::EndST => self.entry_end_st(),
-            State::EmergencyBraking => self.entry_emergency_braking(),
+            State::EmergencyBraking => {
+                self.entry_emergency_braking();
+                self.pod_safe().await;
+            },
             State::Exit => self.entry_exit(),
             State::Crashing => self.entry_exit(),
         };
@@ -234,6 +237,14 @@ impl Fsm {
             info.to_idx(),
             Instant::now().as_ticks(),
         )).await;
+    }
+
+    pub async fn pod_safe(&self) {
+        self.data_queue.send(Datapoint::new(Datatype::Info, Info::to_idx(&Info::Safe), Instant::now().as_ticks())).await;
+    }
+
+    pub async fn pod_unsafe(&self) {
+        self.data_queue.send(Datapoint::new(Datatype::Info, Info::to_idx(&Info::Unsafe), Instant::now().as_ticks())).await;
     }
 }
 
