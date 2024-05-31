@@ -1,5 +1,4 @@
-use embassy_stm32::gpio::Output;
-
+#[allow(dead_code)]
 pub struct PropulsionController {
     // pub analog_setting_pin: Output<'static>,
     // pub enable_pin: Output<'static>,

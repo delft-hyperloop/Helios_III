@@ -51,6 +51,7 @@ impl App {
                 (Datatype::TotalBatteryVoltageHigh, 0),
                 (Datatype::SingleCellVoltageLow, 0),
                 (Datatype::BatteryMaxBalancingLow, 0),
+                (Datatype::Localisation, 0),
             ]),
             backend,
         }
@@ -74,6 +75,9 @@ impl App {
         while let Ok(msg) = self.backend.message_receiver.try_recv() {
             match msg {
                 Message::Data(datapoint) => {
+                    if self.scroll > 50 {
+                        self.scroll += 1;
+                    }
                     if datapoint.datatype == crate::Datatype::FSMState {
                         self.cur_state = format!("{}", state_to_string(datapoint.value));
                         self.logs.push((

@@ -1,17 +1,15 @@
+use core::cmp::Ordering;
+
+use defmt::*;
+use embassy_time::Instant;
+
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::core::fsm_status::Status;
-use crate::{DataSender, Datatype, Event, EventReceiver};
-use core::cmp::{Eq, Ordering, PartialEq};
-use defmt::*;
-use embassy_stm32;
-use embassy_stm32::Peripherals;
-use embassy_sync::blocking_mutex::raw::NoopRawMutex;
-use embassy_sync::priority_channel::{PriorityChannel, Receiver};
-use embassy_time::Instant;
-use heapless::binary_heap::Max;
-use heapless::pool::boxed::Box;
-use heapless::Deque;
+use crate::DataSender;
+use crate::Datatype;
+use crate::Event;
+use crate::EventReceiver;
 
 #[macro_export]
 macro_rules! transit {
@@ -25,6 +23,7 @@ macro_rules! transit {
 
 //Enum holding different states that the FSM can be in
 #[derive(Clone, Copy, Debug, Format)]
+#[allow(dead_code)]
 #[repr(u64)]
 pub enum State {
     Boot,
@@ -124,6 +123,7 @@ impl Ord for Event {
     }
 }
 
+#[allow(dead_code)]
 pub struct Fsm {
     pub state: State,
     pub peripherals: FSMPeripherals,
@@ -191,6 +191,11 @@ impl Fsm {
                 transit!(self, State::EmergencyBraking);
                 return;
             }
+            Event::TurnAllHVRelaysOnEvent => {
+                self.peripherals.hv_peripherals.pin_4.set_high();
+                self.peripherals.hv_peripherals.pin_6.set_high();
+                self.peripherals.hv_peripherals.pin_7.set_high();
+            }
             _ => {
                 trace!("Event was not emergency brake, continuing...");
             }
@@ -209,13 +214,26 @@ impl Fsm {
             State::Exit => self.react_exit(event).await,
             State::EmergencyBraking => self.react_emergency_braking(event).await,
             State::Crashing => {
-                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
-                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
-                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
-                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
+                self.log(crate::Info::Crashed).await;
                 info!("TRYING TO REACT WHILE CRASHING!!!!!!");
             }
         }
+    }
+
+    /// # Send data to the ground station
+    #[allow(unused)]
+    pub async fn send_data(&mut self, dtype: Datatype, data: u64) {
+        self.data_queue
+            .send(Datapoint::new(dtype, data, Instant::now().as_ticks()))
+            .await;
+    }
+
+    pub async fn log(&self, info: crate::Info) {
+        self.data_queue.send(Datapoint::new(
+            Datatype::Info,
+            info.to_idx(),
+            Instant::now().as_ticks(),
+        ));
     }
 }
 

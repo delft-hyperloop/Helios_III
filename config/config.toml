@@ -1,10 +1,10 @@
 [gs]
-ip = [192,168,1,4]
+ip = [192,168,0,93]
 force = false
 port = 6942
 udp_port = 6943
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
-timeout = 15000 # this is the timeout for the socket, in milliseconds.
+timeout = 1500 # this is the timeout for the socket, in milliseconds.
 status_channel = "status_channel"
 info_channel = "info_channel"
 warning_channel = "warning_channel"
@@ -29,4 +29,43 @@ hv_ids = [0x3A0, 0x3A1, 0x3A2, 0x3A3, 0x3A4, 0x3A5, 0x3A6, 0x3A7, 0x3A8, 0x3A9, 
 gfd_ids = [0x37,0x38,0x39]
 sensor_hub = [0x1b,0x1c,0x1d,0x15]
 
+[[Info]]
+label = "ServerStarted"
+colour = "Green"
+
+[[Info]]    
+label = "ServerFailedToStart"
+colour = "red"
+
+[[Info]]
+label = "UnknownClient"
+colour = "yellow"
+
+[[Info]]
+label = "ConnectionEstablished"
+colour = "green"
+
+[[Info]]
+label = "ConnectionClosedByClient"
+colour = "red"
+
+[[Info]]
+label = "ConnectionClosedByServer"
+colour = "red"
+
+[[Info]]
+label = "ConnectionDropped"
+colour = "red"
+
+[[Info]]
+label = "FailedToReadFromConnection"
+colour = "red"
+
+[[Info]]
+label = "LeviProgramStarted"
+colour = "green"
+
+[[Info]]
+label = "Crashed"
+colour = "blue"
 

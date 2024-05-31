@@ -1,5 +1,4 @@
 use crate::Datatype;
-use core::cmp::Ordering;
 
 pub mod can;
 pub mod tcp;

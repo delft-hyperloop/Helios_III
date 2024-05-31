@@ -1,12 +1,6 @@
 use defmt::info;
-use crate::Event;
-use embassy_executor::Spawner;
 use embassy_stm32::gpio::Output;
-use embassy_stm32::peripherals;
-use embassy_sync::blocking_mutex::raw::NoopRawMutex;
-use embassy_sync::priority_channel::Sender;
 use embassy_time::Timer;
-use heapless::binary_heap::Max;
 
 pub struct HVPeripherals {
     pub pin_4: Output<'static>,
@@ -15,7 +9,6 @@ pub struct HVPeripherals {
 }
 
 impl HVPeripherals {
-
     pub async fn power_on_hv_procedure(&mut self) {
         self.pin_6.set_high();
         #[cfg(debug_assertions)]

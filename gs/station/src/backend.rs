@@ -62,11 +62,12 @@ impl Backend {
         if self.levi_handle.is_none() {
             match crate::levi::levi_main(
                 self.message_transmitter.clone(),
+                self.command_transmitter.clone(),
                 self.command_receiver.resubscribe(),
             ) {
                 Ok(lh) => {
                     self.levi_handle = Some(lh);
-                    self.status(crate::api::Status::LeviProgramStarted);
+                    self.status(crate::Info::LeviProgramStarted);
                     self.info("Levi process started".to_string());
                 }
                 Err(e) => {
@@ -93,7 +94,7 @@ impl Backend {
     pub fn err(&mut self, msg: String) {
         self.message_transmitter.send(Message::Error(msg)).unwrap();
     }
-    pub fn status(&mut self, status: crate::api::Status) {
+    pub fn status(&mut self, status: crate::Info) {
         self.message_transmitter
             .send(Message::Status(status))
             .unwrap();

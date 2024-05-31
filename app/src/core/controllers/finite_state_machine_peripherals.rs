@@ -1,22 +1,19 @@
+use embassy_executor::Spawner;
+use embassy_stm32::gpio::Level;
+use embassy_stm32::gpio::Output;
+use embassy_stm32::gpio::Speed;
+use embassy_stm32::Peripherals;
+
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::breaking_controller::BrakingController;
-use crate::core::controllers::can_controller::{CanController, CanPins};
-use crate::core::controllers::ethernet_controller::{EthernetController, EthernetPins};
+use crate::core::controllers::can_controller::CanController;
+use crate::core::controllers::can_controller::CanPins;
+use crate::core::controllers::ethernet_controller::EthernetController;
+use crate::core::controllers::ethernet_controller::EthernetPins;
 use crate::core::controllers::hv_controller::HVPeripherals;
-use crate::core::finite_state_machine::Fsm;
-use crate::{DataReceiver, EventSender, InternalMessaging};
-use defmt::{info, unwrap};
-use embassy_executor::Spawner;
-use embassy_stm32::flash::Error::Size;
-use embassy_stm32::gpio::{Input, Level, Output, Pull, Speed};
-use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
-use embassy_stm32::{bind_interrupts, can, eth, peripherals, rng, Peripheral, Peripherals};
-use embassy_sync::blocking_mutex::raw::{NoopRawMutex, RawMutex, ThreadModeRawMutex};
-use embassy_sync::mutex::Mutex;
-use embassy_sync::priority_channel::{PriorityChannel, Sender};
-use embassy_time::{Duration, Instant, Timer};
-use heapless::binary_heap::Max;
+use crate::InternalMessaging;
 
+#[allow(dead_code)]
 pub struct FSMPeripherals {
     pub braking_controller: BrakingController,
     pub eth_controller: EthernetController,
@@ -43,28 +40,12 @@ impl FSMPeripherals {
         )
         .await;
 
-        let mut hv_controller = BatteryController::new(
-            i.event_sender,
-            0,
-            0,
-            0,
-            0,
-            0,
-            i.data_sender,
-            true,
-        ); //TODO <------ This is just to make it build
-        let mut lv_controller = BatteryController::new(
-            i.event_sender,
-            0,
-            0,
-            0,
-            0,
-            0,
-            i.data_sender,
-            false,
-        ); //TODO <------ This is just to make it build
+        let hv_controller =
+            BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, true); //TODO <------ This is just to make it build
+        let lv_controller =
+            BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, false); //TODO <------ This is just to make it build
 
-        let mut eth_controller = EthernetController::new(
+        let eth_controller = EthernetController::new(
             *x,
             i.event_sender,
             i.data_receiver,
@@ -85,7 +66,7 @@ impl FSMPeripherals {
         .await;
         // let mut b = Output::new(p.PB0, Level::High, Speed::High);
         // b.set_high();
-        let mut can_controller = CanController::new(
+        let can_controller = CanController::new(
             *x,
             i.event_sender,
             i.data_sender,
