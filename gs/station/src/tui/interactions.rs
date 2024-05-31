@@ -83,10 +83,10 @@ impl App {
                 self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 9;
             }
             KeyCode::Char('0') => {
-                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10;
+                self.cmds[self.selected_row].value *= 10;
             }
             KeyCode::Backspace => {
-                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value / 10;
+                self.cmds[self.selected_row].value /= 10;
             }
             _ => {}
         }

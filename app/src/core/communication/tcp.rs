@@ -52,8 +52,7 @@ pub async fn tcp_connection_handler(
         let mut rx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
         let mut tx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
 
-        let mut socket: TcpSocket =
-            TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+        let mut socket: TcpSocket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
 
         match socket.connect(gs_addr).await {
             Ok(_) => {
@@ -142,7 +141,7 @@ pub async fn tcp_connection_handler(
                             #[cfg(debug_assertions)]
                             info!("[tcp] Command received: {:?}", cmd);
                             #[cfg(debug_assertions)]
-                            socket
+                            let _ = socket
                                 .write_all(
                                     &Datapoint::new(
                                         Datatype::Info,
@@ -157,17 +156,20 @@ pub async fn tcp_connection_handler(
                                     event_sender.send(Event::EmergencyBrakeCommand).await;
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] EmergencyBrake command received!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                                    socket.flush().await;
+                                    if let Err(e) = socket.write_all(&Datapoint::new(Datatype::Info, crate::Info::EmergencyBrakeReceived.to_idx(), embassy_time::Instant::now().as_ticks()).as_bytes()).await {
+                                        error!("Could confirm emergency braking by tcp: {:?}", e);
+                                    }
+                                    let _ = socket.flush().await;
                                     // socket.write_all(b"").await;
                                 }
                                 Command::DefaultCommand(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] DefaultCommand received, unsure what to do with it...");
-                                    socket.flush().await;
-                                    socket
+                                    let _ = socket.flush().await;
+                                    let _ = socket
                                         .write_all(b"DefaultCommand received, unsure what to do with it...")
                                         .await;
-                                    socket.flush().await;
+                                    let _ = socket.flush().await;
                                 }
                                 Command::Levitate(_) => {
                                     #[cfg(debug_assertions)]
@@ -203,7 +205,7 @@ pub async fn tcp_connection_handler(
                                 Command::StopHV(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] StopHV command received");
-                                    // event_sender.send(Event::TurnOffHVCommand).await; // TODO: no turn off HV exists??
+                                    event_sender.send(Event::TurnOffHVCommand).await; // TODO: no turn off HV exists??
                                 }
                                 Command::EmitEvent(e) => {
                                     #[cfg(debug_assertions)]
@@ -222,11 +224,11 @@ pub async fn tcp_connection_handler(
                                     info!("[tcp] FinishRunConfig command received");
                                     event_sender.send(Event::RunConfigCompleteEvent).await;
                                 }
-                                Command::TurnAllHVRelaysOnUNSAFE(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] TurnAllHVRelaysOn command received");
-                                    event_sender.send(Event::TurnAllHVRelaysOnEvent).await;
-                                }
+                                // Command::TurnAllHVRelaysOnUNSAFE(_) => {
+                                //     #[cfg(debug_assertions)]
+                                //     info!("[tcp] TurnAllHVRelaysOn command received");
+                                //     event_sender.send(Event::TurnAllHVRelaysOnEvent).await;
+                                // }
                                 _ => {} // TODO: DELETE THIS
                             }
                         }
@@ -248,7 +250,9 @@ pub async fn tcp_connection_handler(
                 // let cmd = Command::from_id(id);
             }
             // socket.write_all(b"trying to receive on data mpmc").await;
-            socket.flush().await;
+            if let Err(e) = socket.flush().await {
+                error!("Could not flush TCP buffer! {:?}", e);
+            }
             match data_receiver.try_receive() {
                 Ok(data) => {
                     // socket.write(b"received on data mpmc").await;

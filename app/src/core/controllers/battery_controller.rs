@@ -59,7 +59,7 @@ impl BatteryController {
             temp_buffer: [0; 112],
             voltage_buffer: [0; 112],
             number_of_temp: 0,
-            number_of_volt:0,
+            number_of_volt: 0,
         }
     }
 }
@@ -110,8 +110,6 @@ pub async fn ground_fault_detection_voltage_details(
         ))
         .await;
 }
-
-
 
 //===============BMS===============//
 
@@ -168,27 +166,27 @@ impl BatteryController {
                 // } else {
                 //     self.individual_temperature_bms(data, timestamp).await;
                 // }
-                if (self.number_of_temp>=13){
+                if self.number_of_temp >= 13 {
                     self.number_of_temp = 0;
                     let mut i = 0;
-                    while (i<8){
+                    while i < 8 {
                         self.single_cell_id = i;
-                        let a = &self.temp_buffer[(i*14)as usize..((i+1)*14) as usize];
+                        let a = &self.temp_buffer[(i * 14) as usize..((i + 1) * 14) as usize];
                         // Initialize a new fixed-size array
                         let mut temp: [u64; 14] = [0; 14];
 
                         temp.copy_from_slice(a);
                         // Copy the elements from the slice to the fixed-size array
-                        self.module_buffer =temp;
+                        self.module_buffer = temp;
                         self.send_module_temp(timestamp).await;
-                        i+=1;
+                        i += 1;
                     }
-
                 }
-                if (Datatype::SingleCellTemperatureLow.to_id() == id) {
+                if Datatype::SingleCellTemperatureLow.to_id() == id {
                     // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
                 } else {
-                    let module_id = ((id - Datatype::SingleCellTemperatureHigh_1.to_id())*8) as usize;
+                    let module_id =
+                        ((id - Datatype::SingleCellTemperatureHigh_1.to_id()) * 8) as usize;
                     for (i, &x) in data.iter().enumerate() {
                         self.temp_buffer[module_id + i] = x as u64;
                     }
@@ -201,22 +199,21 @@ impl BatteryController {
                 || (Datatype::SingleCellVoltageHigh_1.to_id() <= id
                     && Datatype::SingleCellVoltageHigh_14.to_id() >= id) =>
             {
-                if (self.number_of_volt>=13){
+                if self.number_of_volt >= 13 {
                     self.number_of_volt = 0;
                     let mut i = 0;
-                    while (i<8){
+                    while i < 8 {
                         self.single_cell_id = i;
-                        let a = &self.temp_buffer[(i*14)as usize..((i+1)*14) as usize];
+                        let a = &self.temp_buffer[(i * 14) as usize..((i + 1) * 14) as usize];
                         // Initialize a new fixed-size array
                         let mut temp: [u64; 14] = [0; 14];
 
                         temp.copy_from_slice(a);
                         // Copy the elements from the slice to the fixed-size array
-                        self.module_buffer =temp;
+                        self.module_buffer = temp;
                         self.send_module_voltage(timestamp).await;
-                        i+=1;
+                        i += 1;
                     }
-
                 }
                 // if (id - Datatype::SingleCellVoltageHigh_1.to_id() != 0) {
                 //     self.receive_single_cell_id = true;
@@ -226,8 +223,8 @@ impl BatteryController {
                 //     self.module_buffer = [0; 14];
                 //     self.current_number_of_cells = 0;
                 //     self.receive_single_cell_id = false;
-               if (Datatype::SingleCellVoltageLow.to_id() == id) {
-                        // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
+                if Datatype::SingleCellVoltageLow.to_id() == id {
+                    // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
                 } else {
                    let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id())*8) as usize;
                    for (i, &x) in data.iter().enumerate() {
@@ -236,7 +233,6 @@ impl BatteryController {
                    }
                    self.number_of_volt += 1;
                 }
-
 
                 info!("Individual Voltage")
             }
@@ -418,8 +414,9 @@ impl BatteryController {
             .await;
     }
 
+    #[allow(dead_code)]
     pub async fn individual_temperature_bms(&mut self, data: &[u8], timestamp: u64) {
-        for (_i, &x) in data.iter().enumerate() {
+        for &x in data.iter() {
             if self.single_cell_id < 8 {
                 self.module_buffer[self.current_number_of_cells] = x as u64;
                 if self.current_number_of_cells == 13 {
@@ -460,7 +457,7 @@ impl BatteryController {
 
     async fn send_module_voltage(&mut self, timestamp: u64) {
         let module_id = self.single_cell_id;
-        let (mut min_voltage, mut max_voltage, mut avg_voltage) =
+        let (min_voltage, max_voltage, avg_voltage) =
             Self::module_data_calculation(self.module_buffer).await;
         let (avg_voltage_dt, min_voltage_dt, max_voltage_dt) = Self::match_voltage(module_id).await;
         self.data_sender
@@ -578,7 +575,7 @@ impl BatteryController {
         let mut max: u64 = 0;
         let mut avg: u64 = 0;
         let mut n = 14;
-        for (_i, &x) in data.iter().enumerate() {
+        for &x in data.iter() {
             if x == 0 {
                 n -= 1;
                 continue;
@@ -591,7 +588,7 @@ impl BatteryController {
             }
             avg += x;
         }
-        if (n<=0) {
+        if n == 0 {
             n = 1
         }
         avg /= n;
@@ -601,8 +598,9 @@ impl BatteryController {
         (min, max, avg)
     }
 
+    #[allow(dead_code)]
     pub async fn individual_voltages_bms(&mut self, data: &[u8], timestamp: u64) {
-        for (_i, &x) in data.iter().enumerate() {
+        for &x in data.iter() {
             if self.single_cell_id < 8 {
                 self.module_buffer[self.current_number_of_cells] = x as u64;
                 if self.current_number_of_cells == 13 {

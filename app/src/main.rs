@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 #![allow(
-    unused_must_use,
+    // unused_must_use,
 //     unused_imports,
 //     unused_variables,
 //     unused_mut,
@@ -107,12 +107,8 @@ async fn main(spawner: Spawner) -> ! {
     let config = default_configuration();
     let p = embassy_stm32::init(config);
 
-    let event_queue: &'static mut PriorityChannel<
-        NoopRawMutex,
-        Event,
-        Max,
-        { EVENT_QUEUE_SIZE },
-    > = EVENT_QUEUE.init(PriorityChannel::new());
+    let event_queue: &'static mut PriorityChannel<NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }> =
+        EVENT_QUEUE.init(PriorityChannel::new());
 
     let event_sender: EventSender = event_queue.sender();
     let event_receiver: Receiver<'static, NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }> =
