@@ -62,7 +62,11 @@ impl Widget for &App {
                     .position(Position::Bottom),
             )
             .borders(Borders::ALL)
-            .style(Style::default().fg(Color::Blue).bg(Color::Black))
+            .style(if self.safe {
+                Style::default().fg(Color::Blue).bg(Color::Black)
+            } else {
+                Style::default().fg(Color::LightRed).bg(Color::Black)
+            })
             .border_set(border::THICK);
 
         // Calculate inner area by subtracting the border

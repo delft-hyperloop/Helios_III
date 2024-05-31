@@ -117,15 +117,15 @@ pub fn extended_as_value(id: &ExtendedId) -> u16 {
     let mut small_id = temp & 0xFF;
     info!("small_id {:?}", small_id);
     let dt = temp & 0x0000F00;
-    #[allow(clippy::self_assignment, )]
+    #[allow(clippy::self_assignment)]
     match dt {
-        0x000 => small_id += 0,      // Normal Messages
+        0x000 => small_id += 0,    // Normal Messages
         0x100 => small_id += 0x20, // Voltage Messages
         0x200 => small_id += 256,  // Temp messages
         0x300 => small_id += 0,    //  I wonder what are these
-        0x500 => small_id = 0x5,             // Current messages
+        0x500 => small_id = 0x5,   // Current messages
         0x800 => small_id += 96,   // Balance messages
-        _ => {} // small_id = small_id | 0x000,
+        _ => {}                    // small_id = small_id | 0x000,
     }
     info!("small_id {:?}", small_id);
     (big_id + small_id) as u16

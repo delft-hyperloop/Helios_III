@@ -13,6 +13,7 @@ impl Fsm {
     pub async fn react_idle(&mut self, event: Event) {
         match event {
             Event::TurnOnHVCommand => {
+                self.pod_unsafe().await;
                 //todo check for preconditions
                 #[cfg(debug_assertions)] // todo actually turn on hv
                 info!("Starting HV System");

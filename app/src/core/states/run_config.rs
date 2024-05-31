@@ -49,7 +49,6 @@ impl Fsm {
                 transit!(self, State::Idle); // todo make this a command on gs
             }
             Event::RunConfigFailedEvent => {
-                #[cfg(debug_assertions)]
                 error!("Run config failed");
 
                 transit!(self, State::Exit);
