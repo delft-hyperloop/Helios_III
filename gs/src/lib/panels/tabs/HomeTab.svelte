@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import {serverStatus, TauriCommand} from "$lib";
     import {getToastStore} from "@skeletonlabs/skeleton";
 
@@ -13,9 +13,9 @@
         serverStatus.set(true);
     };
 
-    const handleFailure = () => {
+    const handleFailure = (error:string) => {
         toastStore.trigger({
-            message: "Server did not start successfully",
+            message: `Server did not start successfully: ${error}`,
             background: "bg-error-400"
         });
     };
