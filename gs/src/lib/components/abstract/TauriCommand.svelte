@@ -3,19 +3,14 @@
     import {type NamedCommand, util} from "$lib";
 
     export let className: string = '';
-    export let cmd: NamedCommand;
-    export let val: number = 0;
-    export let callback: (val:number) => void = () => {};
-
-
-    let send = async () => {
-        console.log(`Sending command: ${cmd}, value: ${val}`);
-        await invoke('send_command', {cmdName: cmd, val}).then(() => {
+    export let cmd: 'start_server' | 'start_levi' | 'quit_levi' | 'quit_server';
+    export let send = async () => {
+        console.log(`Sending command: ${cmd}`);
+        await invoke(cmd).then(() => {
             console.log(`Command ${cmd} sent`);
         }).catch((e) => {
             console.error(`Error sending command ${cmd}: ${e}`);
         });
-        callback(val);
     };
 </script>
 
