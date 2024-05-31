@@ -89,7 +89,7 @@ pub async fn can_receiving_handler(
                                     timestamp.as_ticks(),
                                 )
                                 .await;
-                            } else if id == Datatype::IMDVoltageDetails.to_id() {
+                            } else if id == Datatype::IMDIsolationDetails.to_id() {
                                 ground_fault_detection_voltage_details(
                                     frame.data(),
                                     data_sender,
