@@ -13,7 +13,12 @@
     let userHasScrolled = false;
     let logs: Log[] = [];
 
-    let groups = ['STATUS', 'INFO', 'WARNING', 'ERROR'];
+    let colours = new Map([
+        ['STATUS', 'text-surface-50'],
+        ['WARNING', 'text-warning-400'],
+        ['INFO', 'text-surface-300'],
+        ['ERROR', 'text-error-500']
+    ]);
 
     let filters: Record<string, boolean> = { 'STATUS': true, 'WARNING': true, 'INFO': true, 'ERROR': true }; // filter variable
 
@@ -90,7 +95,7 @@
     <div class="h-full p-1 pb-16 overflow-y-auto" bind:this={logContainer}>
         {#each filteredLogs as log}
             <div class="flex items-center">
-                <p><span class="font-mono font-light">[{log.timestamp}]</span>{log.log_type}: {log.message}</p>
+                <p class="{colours.get(log.log_type)}"><span class="font-mono font-light">[{log.timestamp}]</span>{log.log_type}: {log.message}</p>
             </div>
         {/each}
         <hr>
