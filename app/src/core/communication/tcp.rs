@@ -52,8 +52,7 @@ pub async fn tcp_connection_handler(
         let mut rx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
         let mut tx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
 
-        let mut socket: TcpSocket =
-            TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+        let mut socket: TcpSocket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
 
         match socket.connect(gs_addr).await {
             Ok(_) => {

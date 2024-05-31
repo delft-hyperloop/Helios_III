@@ -1,8 +1,8 @@
-use std::str::FromStr;
 use crate::GS_IP_ADDRESS;
 use crate::{Command, Datatype, Info};
 #[cfg(feature = "tui")]
 use ratatui::prelude::Color;
+use std::str::FromStr;
 use std::sync::mpsc::{Receiver, Sender};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
