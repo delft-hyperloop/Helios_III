@@ -1,9 +1,9 @@
-use crate::core::communication::Datapoint;
+use defmt::info;
+use defmt::warn;
+
 use crate::core::finite_state_machine::*;
-use crate::{transit, Datatype, Event};
-use defmt::{info, warn};
-use embassy_stm32::gpio::Level::High;
-use embassy_stm32::gpio::Output;
+use crate::transit;
+use crate::Event;
 
 impl Fsm {
     pub fn entry_hv_system_checking(&mut self) {
@@ -24,18 +24,9 @@ impl Fsm {
                 // transit!(self, State::Exit);
             }
             Event::StartLevitatingCommand => {
-                todo!();
-
                 transit!(self, State::Levitating);
+                todo!();
             }
-            /// This is commented out because it was refactored to be handled by the default react ///
-            // /// Error Events that are core from all states that HV is on
-            // Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {
-            //
-            //     todo!();
-            //
-            //     self.transit(State::EmergencyBraking)
-            // }
             _ => {
                 info!("The current state ignores {}", event.to_str());
             }

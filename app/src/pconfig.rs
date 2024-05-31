@@ -1,16 +1,25 @@
+#![allow(unused)]
+
 use defmt::info;
 use embassy_net::IpAddress::Ipv4;
+use embassy_net::IpEndpoint;
 use embassy_net::Ipv4Address;
-use embassy_net::{IpEndpoint, Ipv4Cidr};
+use embassy_net::Ipv4Cidr;
 use embassy_stm32::can::config;
+use embassy_stm32::rcc;
 use embassy_stm32::rcc::Pll;
 use embassy_stm32::rcc::*;
-use embassy_stm32::{rcc, Config};
-use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
+use embassy_stm32::Config;
+use embedded_can::ExtendedId;
+use embedded_can::Id;
+use embedded_nal_async::AddrType::IPv4;
+use embedded_nal_async::Ipv4Addr;
+use embedded_nal_async::SocketAddr;
+use embedded_nal_async::SocketAddrV4;
+use embedded_nal_async::TcpConnect;
+
 // use embedded_hal::can::Id;
 use crate::Event;
-use embedded_can::{ExtendedId, Id};
-use embedded_nal_async::AddrType::IPv4;
 
 #[inline]
 pub fn default_configuration() -> Config {
@@ -22,7 +31,7 @@ pub fn default_configuration() -> Config {
     // });
     config.rcc.hse = Some(rcc::Hse {
         // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
-        freq: embassy_stm32::time::Hertz(8_000_000),
+        freq: embassy_stm32::time::Hertz(24_000_000),
         mode: rcc::HseMode::Oscillator,
     });
     config.rcc.pll1 = Some(Pll {
@@ -101,24 +110,24 @@ pub fn id_as_value(id: &embedded_can::Id) -> u16 {
     }
 }
 
-
 pub fn extended_as_value(id: &ExtendedId) -> u16 {
     let temp = id.as_raw();
-    let big_id = (temp & (0xFFFF000))>>16;
-    info!( "big_id {:?}", big_id);
+    let big_id = (temp & (0xFFFF000)) >> 16;
+    info!("big_id {:?}", big_id);
     let mut small_id = temp & 0xFF;
-    info!( "small_id {:?}", small_id);
+    info!("small_id {:?}", small_id);
     let dt = temp & 0x0000F00;
+    #[allow(clippy::self_assignment)]
     match dt {
-        0x000 => small_id = small_id, // Normal Messages
+        0x000 => small_id = small_id,        // Normal Messages
         0x100 => small_id = small_id + 0x20, // Voltage Messages
-        0x200 => small_id = small_id + 256, // Temp messages
-        0x300 => small_id = small_id + 0, //  I wonder what are these
-        0x500 => small_id = 0x5, // Current messages
-        0x800    => small_id = small_id + 96, // Balance messages
+        0x200 => small_id = small_id + 256,  // Temp messages
+        0x300 => small_id = small_id + 0,    //  I wonder what are these
+        0x500 => small_id = 0x5,             // Current messages
+        0x800 => small_id = small_id + 96,   // Balance messages
         _ => small_id = small_id | 0x000,
     }
-    info!( "small_id {:?}", small_id);
+    info!("small_id {:?}", small_id);
     (big_id + small_id) as u16
 }
 
@@ -130,10 +139,6 @@ macro_rules! try_spawn {
             Err(embassy_executor::SpawnError::Busy) => {
                 defmt::error!("Failed to spawn task because of SpawnError::Busy");
                 defmt::error!("->> Try increasing the pool_size for the task you're trying to spawn");
-                $event_sender.send(Event::BootingFailedEvent).await;
-            }
-            Err(err) => {
-                defmt::error!("Failed to spawn task: {:?}", err);
                 $event_sender.send(Event::BootingFailedEvent).await;
             }
         }

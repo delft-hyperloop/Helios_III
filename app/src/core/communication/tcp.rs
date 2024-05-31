@@ -1,32 +1,26 @@
-use crate::core::communication::Datapoint;
-use crate::pconfig::{embassy_socket_from_config, socket_from_config};
-use crate::{
-    Command, DataReceiver, Datatype, Event, EventSender, GS_IP_ADDRESS, IP_TIMEOUT, KEEP_ALIVE,
-    NETWORK_BUFFER_SIZE,
-};
 use defmt::*;
+use defmt_rtt as _;
 use embassy_executor::Spawner;
-use embassy_net::tcp::client::{TcpClient, TcpClientState};
 use embassy_net::tcp::TcpSocket;
-use embassy_net::{Ipv4Address, Ipv4Cidr};
-use embassy_net::{Stack, StackResources};
+use embassy_net::Stack;
 use embassy_stm32::eth::generic_smi::GenericSMI;
-use embassy_stm32::eth::{Ethernet, PacketQueue, PHY};
-use embassy_stm32::gpio::{Level, Output, Speed};
+use embassy_stm32::eth::Ethernet;
 use embassy_stm32::peripherals::ETH;
-use embassy_stm32::rng::Rng;
-use embassy_stm32::{bind_interrupts, eth, peripherals, rng, Config};
-use embassy_sync::blocking_mutex::raw::NoopRawMutex;
-use embassy_sync::priority_channel::{Receiver, Sender};
-use embassy_time::{Duration, Timer};
-use embedded_io_async::{Read, Write};
-use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
-use heapless::binary_heap::Max;
+use embassy_time::Timer;
+use embedded_io_async::Write;
 use heapless::Deque;
-use heapless::Vec;
-use rand_core::RngCore;
-use static_cell::StaticCell;
-use {defmt_rtt as _, panic_probe as _};
+use panic_probe as _;
+
+use crate::core::communication::Datapoint;
+use crate::pconfig::embassy_socket_from_config;
+use crate::Command;
+use crate::DataReceiver;
+use crate::Datatype;
+use crate::Event;
+use crate::EventSender;
+use crate::GS_IP_ADDRESS;
+use crate::IP_TIMEOUT;
+use crate::NETWORK_BUFFER_SIZE;
 
 /// This is the task that:
 /// 1. bugs the ground station to connect until it does
@@ -34,7 +28,7 @@ use {defmt_rtt as _, panic_probe as _};
 /// 3. has the receiving from TCP internal loop, where it creates Events on the EventQueue
 #[embassy_executor::task]
 pub async fn tcp_connection_handler(
-    x: Spawner,
+    _x: Spawner,
     stack: &'static Stack<Ethernet<'static, ETH, GenericSMI>>,
     event_sender: EventSender,
     data_receiver: DataReceiver,
@@ -55,14 +49,16 @@ pub async fn tcp_connection_handler(
     let mut buf = [0; { NETWORK_BUFFER_SIZE }];
     'netstack: loop {
         // info!("====================================================Connecting to ground station______________________________");
-        let mut rx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
-        let mut tx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
+        let mut rx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
+        let mut tx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
 
         let mut socket: TcpSocket =
-            TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
+            TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
 
         match socket.connect(gs_addr).await {
-            Ok(_) => { last_valid_timestamp = embassy_time::Instant::now().as_millis(); }
+            Ok(_) => {
+                last_valid_timestamp = embassy_time::Instant::now().as_millis();
+            }
             Err(e) => {
                 let d = embassy_time::Instant::now().as_millis() - last_valid_timestamp;
                 error!("[tcp:stack] error connecting to gs: {:?} (diff={})", e, d);
@@ -219,23 +215,17 @@ pub async fn tcp_connection_handler(
                                 Command::SystemReset(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] SystemReset command received");
-                                    event_sender
-                                        .send(Event::SystemResetCommand)
-                                        .await;
+                                    event_sender.send(Event::SystemResetCommand).await;
                                 }
                                 Command::FinishRunConfig(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] FinishRunConfig command received");
-                                    event_sender
-                                        .send(Event::RunConfigCompleteEvent)
-                                        .await;
+                                    event_sender.send(Event::RunConfigCompleteEvent).await;
                                 }
                                 Command::TurnAllHVRelaysOnUNSAFE(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] TurnAllHVRelaysOn command received");
-                                    event_sender
-                                        .send(Event::TurnAllHVRelaysOnEvent)
-                                        .await;
+                                    event_sender.send(Event::TurnAllHVRelaysOnEvent).await;
                                 }
                                 _ => {} // TODO: DELETE THIS
                             }
@@ -262,7 +252,7 @@ pub async fn tcp_connection_handler(
             match data_receiver.try_receive() {
                 Ok(data) => {
                     // socket.write(b"received on data mpmc").await;
-                    let mut data = data.as_bytes();
+                    let data = data.as_bytes();
                     #[cfg(debug_assertions)]
                     info!("[tcp:mpmc] Sending data: {:?}", data);
                     match socket.write_all(&data).await {
@@ -277,7 +267,7 @@ pub async fn tcp_connection_handler(
                     }
                     // socket.
                 }
-                Err(e) => {
+                Err(_e) => {
                     // socket.write(b"took an L on data mpmc").await;
                     // #[cfg(debug_assertions)]
                     // info!("[tcp:mpmc] try receive error: {:?}", e);
