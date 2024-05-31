@@ -1,4 +1,6 @@
 <script lang="ts">
+    import {Command} from "$lib";
+
 
 </script>
 
