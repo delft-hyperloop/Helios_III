@@ -1,7 +1,7 @@
 use crate::api::Message;
-use tokio::io::AsyncBufReadExt;
 use crate::levi::parse_input::handle_line_from_levi;
 use crate::Command;
+use tokio::io::AsyncBufReadExt;
 
 /// # Read from levi child stdout
 /// reads from the stdout of the levi child process, and sends the messages to the message_transmitter.
@@ -22,9 +22,16 @@ pub async fn read_from_levi_child_stdout(
             }
             Ok(n) => {
                 message_transmitter
-                    .send(Message::Info(format!("[TRACE] RECEIVED LEVI: ({}), {:?}", n, &line)))
+                    .send(Message::Info(format!(
+                        "[TRACE] RECEIVED LEVI: ({}), {:?}",
+                        n, &line
+                    )))
                     .unwrap();
-                handle_line_from_levi(&line, message_transmitter.clone(), command_transmitter.clone());
+                handle_line_from_levi(
+                    &line,
+                    message_transmitter.clone(),
+                    command_transmitter.clone(),
+                );
             }
             Err(e) => {
                 message_transmitter

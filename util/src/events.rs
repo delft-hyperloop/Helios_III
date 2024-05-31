@@ -22,7 +22,7 @@ pub fn get_events_config(path: &str) -> Config {
     toml::from_str(&config_str).unwrap()
 }
 
-pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
+pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> String {
     let config: Config = get_events_config(path);
 
     let mut enum_definitions = String::new();
@@ -89,7 +89,7 @@ pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
         to_str
     ) + &*format!(
         "
-#[derive(Debug, PartialEq, Eq)]
+{}
 pub enum Event {{
 {}
 }}
@@ -124,7 +124,7 @@ impl Event {{
     pub fn to_str(&self) -> &'static str {{
         EVENTS_DISPLAY[self.to_idx()]
     }}
-}}",
+}}", if drv { "#[derive(Debug, PartialEq, Eq, defmt::Format)]" } else { "#[derive(Debug, PartialEq, Eq)]" },
         enum_definitions, match_to_id, match_from_id, priorities, to_idx, event_count
     ) + &*format!(
         "\n\npub static EVENT_IDS : [u16;{}] = [{}];\n",
