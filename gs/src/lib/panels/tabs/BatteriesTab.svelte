@@ -3,7 +3,6 @@
         Battery,
         Chart,
         GrandDataDistributor,
-        south_bridge_payload,
         Status,
         Table,
         Tile,
@@ -115,8 +114,8 @@
         </Tile>
         <Tile insideClass="flex h-full items-center">
             <div class="flex flex-col ml-4">
-                <p>LV Current: {$south_bridge_payload.value}</p>
-                <p>HV Current: {$south_bridge_payload.value}</p>
+                <p>LV Current: NOT SET</p>
+                <p>HV Current: NOT SET</p>
             </div>
         </Tile>
         <Tile containerClass="col-span-4" heading="Battery stats">

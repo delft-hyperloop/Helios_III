@@ -1,6 +1,5 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import {south_bridge_payload} from "$lib";
 
     export let size:'sm'|'lg' = 'sm'
 
@@ -37,7 +36,7 @@
 
         setInterval(() => {
             turn_off_all(all_states);
-            turn_on(all_states[$south_bridge_payload.value % all_states.length])
+            turn_on(all_states[2 % all_states.length])
         }, 100)
     })
 
