@@ -156,7 +156,17 @@ pub async fn tcp_connection_handler(
                                     event_sender.send(Event::EmergencyBrakeCommand).await;
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] EmergencyBrake command received!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                                    if let Err(e) = socket.write_all(&Datapoint::new(Datatype::Info, crate::Info::EmergencyBrakeReceived.to_idx(), embassy_time::Instant::now().as_ticks()).as_bytes()).await {
+                                    if let Err(e) = socket
+                                        .write_all(
+                                            &Datapoint::new(
+                                                Datatype::Info,
+                                                crate::Info::EmergencyBrakeReceived.to_idx(),
+                                                embassy_time::Instant::now().as_ticks(),
+                                            )
+                                            .as_bytes(),
+                                        )
+                                        .await
+                                    {
                                         error!("Could confirm emergency braking by tcp: {:?}", e);
                                     }
                                     let _ = socket.flush().await;
@@ -205,7 +215,8 @@ pub async fn tcp_connection_handler(
                                 Command::StopHV(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] StopHV command received");
-                                    // event_sender.send(Event::TurnOffHVCommand).await; // TODO: no turn off HV exists??
+                                    event_sender.send(Event::TurnOffHVCommand).await;
+                                    // TODO: no turn off HV exists??
                                 }
                                 Command::EmitEvent(e) => {
                                     #[cfg(debug_assertions)]
@@ -264,9 +275,9 @@ pub async fn tcp_connection_handler(
                             #[cfg(debug_assertions)]
                             info!("[tcp:socket] Data written successfully");
                         }
-                        Err(e) => {
+                        Err(_e) => {
                             #[cfg(debug_assertions)]
-                            error!("[tcp:socket] Failed to write data: {:?}", e);
+                            error!("[tcp:socket] Failed to write data: {:?}", _e);
                         }
                     }
                     // socket.

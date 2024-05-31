@@ -95,7 +95,11 @@ fn main() {
         DATATYPES_PATH,
         false,
     ));
-    content.push_str(&goose_utils::events::generate_events(&id_list, EVENTS_PATH, true));
+    content.push_str(&goose_utils::events::generate_events(
+        &id_list,
+        EVENTS_PATH,
+        true,
+    ));
     content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, false));
     // content.push_str(&*can::main(&id_list));
 
