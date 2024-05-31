@@ -18,7 +18,7 @@ impl CmdRow {
         ratatui::widgets::Row::new(vec![self.name.clone(), self.value.to_string()])
     }
     pub fn as_cmd(&self) -> Command {
-        Command::from_string(&self.name.trim(), self.value)
+        Command::from_string(self.name.trim(), self.value)
     }
 }
 
@@ -33,26 +33,26 @@ impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let title = Title::from(" Goose™ Ground Station ultimate ".light_green().bold());
         let instructions = Title::from(Line::from(vec![
-            "Scroll Up".light_blue().into(),
+            "Scroll Up".light_blue(),
             " <I> ".light_cyan().bold(),
-            " –– ".blue().into(),
-            "Scroll Down".light_blue().into(),
+            " –– ".blue(),
+            "Scroll Down".light_blue(),
             " <J> ".light_cyan().bold(),
-            " –– ".blue().into(),
-            "Scroll to End".light_blue().into(),
+            " –– ".blue(),
+            "Scroll to End".light_blue(),
             " <M, U> ".light_cyan().bold(),
-            " –– ".blue().into(),
-            "Emergency Brake".red().into(),
+            " –– ".blue(),
+            "Emergency Brake".red(),
             " <Esc> ".light_red().bold(),
-            " –– ".blue().into(),
-            "Launch Station".light_green().into(),
+            " –– ".blue(),
+            "Launch Station".light_green(),
             " <S> ".light_green().bold(),
-            " –– ".blue().into(),
-            "Quit".magenta().into(),
+            " –– ".blue(),
+            "Quit".magenta(),
             " <Q> ".light_magenta().bold(),
-            " ––––––– ".blue().into(),
-            "timestamp: ".light_blue().into(),
-            format!(" <{}> ", self.time_elapsed).light_blue().into(),
+            " ––––––– ".blue(),
+            "timestamp: ".light_blue(),
+            format!(" <{}> ", self.time_elapsed).light_blue(),
         ]));
         let outer_block = Block::default()
             .title(title.alignment(Alignment::Center))

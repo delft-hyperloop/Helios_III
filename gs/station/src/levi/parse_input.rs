@@ -3,7 +3,7 @@ use crate::{Command, Datatype};
 use tokio::sync::broadcast::Sender;
 
 pub fn handle_line_from_levi(line: &String, msg_send: Sender<Message>, cmd_send: Sender<Command>) {
-    let params = line.split(":").collect::<Vec<&str>>();
+    let params = line.split(':').collect::<Vec<&str>>();
 
     match params[0] {
         "INFO" => {

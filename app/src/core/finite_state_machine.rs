@@ -233,7 +233,7 @@ impl Fsm {
             Datatype::Info,
             info.to_idx(),
             Instant::now().as_ticks(),
-        ));
+        )).await;
     }
 }
 

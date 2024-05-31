@@ -105,9 +105,9 @@ id = 0x66
 name = "FinishRunConfig"
 id = 0x67
 
-[[Command]]
-name = "TurnAllHVRelaysOnUNSAFE"
-id = 0x68
+#[[Command]]
+#name = "TurnAllHVRelaysOnUNSAFE"
+#id = 0x68
 
 [[Command]]
 name = "EmitEvent"

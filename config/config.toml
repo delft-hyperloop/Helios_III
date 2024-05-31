@@ -69,3 +69,7 @@ colour = "green"
 label = "Crashed"
 colour = "blue"
 
+[[Info]]
+label = "EmergencyBrakeReceived"
+colour = "magenta"
+

@@ -36,7 +36,7 @@ impl App {
             cmds: COMMANDS_LIST
                 .iter()
                 .map(|x| CmdRow {
-                    name: format!("{}", x),
+                    name: x.to_string(),
                     value: 0,
                 })
                 .collect(),
@@ -79,7 +79,7 @@ impl App {
                         self.scroll += 1;
                     }
                     if datapoint.datatype == crate::Datatype::FSMState {
-                        self.cur_state = format!("{}", state_to_string(datapoint.value));
+                        self.cur_state = state_to_string(datapoint.value).to_string();
                         self.logs.push((
                             Message::Warning(format!(
                                 "State changed to: {:?}",
