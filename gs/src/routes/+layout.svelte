@@ -1,6 +1,5 @@
 <script lang="ts">
     import '../app.postcss';
-    import {emit} from "@tauri-apps/api/event";
     import {BottomBar, GrandDataDistributor, PlotBuffer, StrokePresets, TitleBar,} from "$lib";
     import {initializeStores, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
@@ -31,7 +30,11 @@
     trr.addSeries(StrokePresets.theoretical())
     $chartStore.set('Theoretical vs Real run', trr)
 
+    let lvCurrent = new PlotBuffer(1000, [-4000, 4000], false)
+    $chartStore.set('LV Current', lvCurrent)
 
+    let hvCurrent = new PlotBuffer(1000, [-4000, 4000], false)
+    $chartStore.set('HV Current', hvCurrent)
 
     ///////////////////////////////////////////////////////
     ///// GRAND DATA DISTRIBUTOR //////////////////////////
@@ -112,14 +115,19 @@
     gdd.stores.registerStore<number>("Module8MaxVoltage", 0.0, voltParse);
     gdd.stores.registerStore<number>("Module8MinVoltage", 0.0, voltParse);
 
-    const currParse:dataConvFun<number> = (data:bigint) => {
-        return Number(data) / 10;
-    }
+    gdd.stores.registerStore<number>("BatteryCurrentLow", 0.0, data => {
+        const curr = Number(data) / 10;
+        $chartStore.get("LV Current")?.addEntry(1, curr);
+        return curr;
+    });
 
     gdd.stores.registerStore<number>("BatteryCurrentHigh", 0.0, data => {
-        emit('current_hv', {x: 50, y: currParse(data, 0)})
+        const curr = Number(data) / 10;
+        $chartStore.get("HV Current")?.addEntry(1, curr);
+        return curr;
+    });
 
-        // TODO: REMOVE THIS, IT'S ONLY FOR TESTING
+    /*
         emit('speed', {data})
 
         $chartStore.get("EMS")?.addEntry(1, Math.random()*20);
@@ -130,10 +138,7 @@
         $chartStore.get("HEMS")?.addEntry(2, 25+Math.random()*20);
         $chartStore.get("HEMS")?.addEntry(3, 50+Math.random()*20);
         $chartStore.get("HEMS")?.addEntry(4, 75+Math.random()*20);
-
-        return Number(data);
-    });
-
+     */
 
     gdd.start(100);
 
