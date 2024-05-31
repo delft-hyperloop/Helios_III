@@ -151,9 +151,11 @@ pub fn send_command(cmd_name: String, val: u64) {
 
 #[allow(unused)]
 #[tauri::command]
-pub fn start_server() {
+pub fn start_server() -> bool {
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
-        backend_mutex.get_mut().unwrap().start_server();
+        backend_mutex.get_mut().unwrap().start_server()
+    } else {
+        false
     }
 }
 

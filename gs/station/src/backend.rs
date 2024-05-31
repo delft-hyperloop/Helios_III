@@ -43,7 +43,7 @@ impl Backend {
 
     /// # Start a TCP server
     /// ### Uses the backend's existing broadcast channels
-    pub fn start_server(&mut self) {
+    pub fn start_server(&mut self) -> bool {
         if self.server_handle.is_none() {
             let m = self.message_transmitter.clone();
             let c = self.command_receiver.resubscribe();
@@ -53,8 +53,10 @@ impl Backend {
             );
             // self.status(crate::api::Status::ServerStarted);
             self.info(format!("Server handle: {:?}", self.server_handle));
+            true
         } else {
             self.warn("Server already running".to_string());
+            false
         }
     }
 
