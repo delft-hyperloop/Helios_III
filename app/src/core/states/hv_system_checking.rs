@@ -21,7 +21,7 @@ impl Fsm {
                 self.peripherals.hv_peripherals.power_hv_off();
                 #[cfg(debug_assertions)]
                 info!("HV Relays turned off");
-                // transit!(self, State::Exit);
+                transit!(self, State::Idle);
             }
             Event::StartLevitatingCommand => {
                 transit!(self, State::Levitating);

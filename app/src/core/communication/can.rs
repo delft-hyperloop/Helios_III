@@ -130,7 +130,7 @@ pub async fn can_receiving_handler(
                         bus_nr, error_counter, e
                     );
                 }
-                Timer::after_millis(500);
+                Timer::after_millis(500).await;
                 error_counter += 1;
             }
         }

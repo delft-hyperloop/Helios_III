@@ -21,6 +21,12 @@ pub struct Backend {
     pub command_receiver: tokio::sync::broadcast::Receiver<Command>,
 }
 
+impl Default for Backend {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Backend {
     /// # Create a backend instance
     /// this creates two new broadcast channels, one for messages and one for commands.
