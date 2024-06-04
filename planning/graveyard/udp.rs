@@ -1,5 +1,5 @@
 use crate::pconfig::socket_from_config;
-use crate::{GS_IP_ADDRESS, GS_UPD_IP_ADDRESS};
+use crate::{GS_IP_ADDRESS};
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_net::tcp::client::{TcpClient, TcpClientState};

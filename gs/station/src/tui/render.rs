@@ -1,10 +1,26 @@
+use crate::api::Message;
+use crate::tui::app::App;
+use crate::Command;
 use ratatui::{
     prelude::*,
     symbols::border,
     widgets::{block::*, *},
 };
-use crate::api::Message;
-use crate::tui::app::App;
+
+#[derive(Debug)]
+pub struct CmdRow {
+    pub name: String,
+    pub value: u64,
+}
+
+impl CmdRow {
+    pub fn to_row(&self) -> ratatui::widgets::Row {
+        ratatui::widgets::Row::new(vec![self.name.clone(), self.value.to_string()])
+    }
+    pub fn as_cmd(&self) -> Command {
+        Command::from_string(self.name.trim(), self.value)
+    }
+}
 
 pub(crate) fn border_select(app: &App, idx: usize) -> Color {
     match app.selected_row == idx {
@@ -15,29 +31,35 @@ pub(crate) fn border_select(app: &App, idx: usize) -> Color {
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
+        let safety_style = if self.safe {
+            Style::default().fg(Color::Blue).bg(Color::Black)
+        } else {
+            Style::default().fg(Color::LightRed).bg(Color::Black)
+        };
         let title = Title::from(" Goose™ Ground Station ultimate ".light_green().bold());
         let instructions = Title::from(Line::from(vec![
-            "Scroll Up".light_blue().into(),
+            "Scroll Up".light_blue(),
             " <I> ".light_cyan().bold(),
-            " –– ".blue().into(),
-            "Scroll Down".light_blue().into(),
+            " –– ".set_style(safety_style),
+            "Scroll Down".light_blue(),
             " <J> ".light_cyan().bold(),
-            " –– ".blue().into(),
-            "Scroll to End".light_blue().into(),
+            " –– ".set_style(safety_style),
+            "Scroll to End".light_blue(),
             " <M, U> ".light_cyan().bold(),
-            " –– ".blue().into(),
-            "Emergency Brake".red().into(),
+            " –– ".set_style(safety_style),
+            "Emergency Brake".red(),
             " <Esc> ".light_red().bold(),
-            " –– ".blue().into(),
-            "Launch Station".light_green().into(),
+            " –– ".set_style(safety_style),
+            "Launch Station".light_green(),
             " <S> ".light_green().bold(),
-            " –– ".blue().into(),
-            "Quit".magenta().into(),
+            " –– ".set_style(safety_style),
+            "Quit".magenta(),
             " <Q> ".light_magenta().bold(),
-            " ––––––– ".blue().into(),
-            "timestamp: ".light_blue().into(),
-            format!(" <{}> ", self.time_elapsed).light_blue().into(),
+            " ––––––– ".set_style(safety_style),
+            "timestamp: ".light_blue(),
+            format!(" <{}> ", self.time_elapsed).light_blue(),
         ]));
+
         let outer_block = Block::default()
             .title(title.alignment(Alignment::Center))
             .title(
@@ -46,7 +68,7 @@ impl Widget for &App {
                     .position(Position::Bottom),
             )
             .borders(Borders::ALL)
-            .style(Style::default().fg(Color::Blue).bg(Color::Black))
+            .style(safety_style)
             .border_set(border::THICK);
 
         // Calculate inner area by subtracting the border
@@ -61,7 +83,7 @@ impl Widget for &App {
                     Constraint::Percentage(58), // left half for text stream
                     Constraint::Percentage(42), // right half for table and data out
                 ]
-                    .as_ref(),
+                .as_ref(),
             )
             .split(inner_area);
 
@@ -70,28 +92,46 @@ impl Widget for &App {
             .direction(Direction::Vertical)
             .constraints(
                 [
-                    Constraint::Percentage(80), // top side for text stream
-                    Constraint::Percentage(20), // bottom side for the table
+                    Constraint::Percentage(65), // top side for text stream
+                    Constraint::Percentage(35), // bottom side for the table
                 ]
-                    .as_ref(),
+                .as_ref(),
             )
             .split(main_chunks[1]);
 
-        let text_block = Block::default().title("Text Stream")
+        let text_block = Block::default()
+            .title("Text Stream")
             .title_style(Style::default().fg(Color::LightBlue).bold()) // Styling the title
             .border_style(Style::default().fg(Color::Blue))
             .borders(Borders::ALL);
 
         // Create the text stream
-        let styled_logs: Vec<Line> = self.logs.iter().map(|(msg, t)| {
-            match msg {
-                Message::Data(d) => Line::styled(format!("[{}] {:?}={} at {}", t, d.datatype, d.value, d.timestamp), Style::default().bg(Color::Cyan)),
-                Message::Status(s) => Line::styled(format!("[{}] {:?}", t, s), Style::default().fg(s.colour())),
-                Message::Info(x) => Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::White)),
-                Message::Warning(x) => Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Yellow)),
-                Message::Error(x) => Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Red)),
-            }
-        }).collect();
+        let styled_logs: Vec<Line> = self
+            .logs
+            .iter()
+            .map(|(msg, t)| match msg {
+                Message::Data(d) => Line::styled(
+                    format!("[{}] {:?}={} at {}", t, d.datatype, d.value, d.timestamp),
+                    Style::default().bg(Color::Cyan),
+                ),
+                Message::Status(s) => {
+                    Line::styled(format!("[{}] {:?}", t, s), Style::default().fg(s.colour()))
+                }
+                Message::Info(x) => Line::styled(format!("[{}] {}", t, x), {
+                    if x.contains("[TRACE]") {
+                        Style::default().fg(Color::Gray)
+                    } else {
+                        Style::default().fg(Color::White)
+                    }
+                }),
+                Message::Warning(x) => {
+                    Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Yellow))
+                }
+                Message::Error(x) => {
+                    Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Red))
+                }
+            })
+            .collect();
         // Render the text stream
         let paragraph = Paragraph::new(styled_logs)
             .wrap(Wrap { trim: false })
@@ -116,32 +156,67 @@ impl Widget for &App {
         }*/
 
         // Create the table block
-        let mut rows = vec![
-            Row::new(vec!["Command", "Value"])
-                .style(Style::default().fg(Color::Blue).bg(Color::Black).add_modifier(Modifier::BOLD)),
-        ];
+        let mut rows = vec![Row::new(vec!["Command", "Value"]).style(
+            Style::default()
+                .fg(Color::Blue)
+                .bg(Color::Black)
+                .add_modifier(Modifier::BOLD),
+        )];
         self.cmds.iter().enumerate().for_each(|(i, x)| {
-            rows.push(x.to_row().style(Style::default().bg(Color::Black).fg(border_select(self, i))))
+            rows.push(
+                x.to_row()
+                    .style(Style::default().bg(Color::Black).fg(border_select(self, i))),
+            )
         });
 
-        let table = Table::new(rows, vec![Constraint::Fill(1), Constraint::Length(10)])
-            .block(Block::default().borders(Borders::ALL).title(Title::from("Commands Panel".light_blue().bold()))
-                .border_style(Style::default().fg(Color::Blue)));
+        let table = Table::new(rows, vec![Constraint::Fill(1), Constraint::Length(10)]).block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title(Title::from("Commands Panel".light_blue().bold()))
+                .border_style(Style::default().fg(Color::Blue)),
+        );
 
         // Render the table
         ratatui::widgets::Widget::render(table, right_chunks[0], buf);
 
         // A paragraph to display data (bottom right)
-        let data_block = Block::default().title("Other Info")
+        let data_block = Block::default()
+            .title("Other Info")
             .title_style(Style::default().fg(Color::LightBlue).bold()) // Styling the title
             .border_style(Style::default().fg(Color::Blue))
             .borders(Borders::ALL);
 
-        let data = vec![
-            Line::styled(format!("Current State: {}", self.cur_state), Style::default().fg(Color::White).bg(Color::Blue)),
-            Line::styled(format!("Selected Row: {}", self.selected_row), Style::default().fg(Color::White)),
-
+        let mut data = vec![
+            Line::styled(
+                format!("Current State: {}", self.cur_state),
+                Style::default().fg(Color::White).bg(Color::Blue),
+            ),
+            Line::styled(
+                format!("Selected Row: {}", self.selected_row),
+                Style::default().fg(Color::White),
+            ),
+            Line::styled(
+                format!("Last heartbeat: {}", self.last_heartbeat),
+                Style::default().fg(Color::White),
+            ),
+            Line::styled(
+                format!("Lines printed: {}", self.logs.len()),
+                Style::default().fg(Color::White),
+            ),
+            Line::styled(
+                "Pod data:",
+                Style::default()
+                    .fg(Color::White)
+                    .bg(Color::Blue)
+                    .underlined(),
+            ),
         ];
+        for (k, v) in &self.special_data {
+            data.push(Line::styled(
+                format!("{:?}: {}", k, v),
+                Style::default().fg(Color::White),
+            ));
+        }
 
         let data_paragraph = Paragraph::new(data)
             .wrap(Wrap { trim: false })

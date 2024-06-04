@@ -1,6 +1,7 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import {get, type Writable, writable} from "svelte/store";
-import type {dataConvFun, Datapoint, NamedDatatype} from "$lib/types";
+import {type dataConvFun, type Datapoint, EventChannels, type NamedDatatype} from "$lib/types";
+import {emit} from "@tauri-apps/api/event";
 
 /**
  * The GrandDataDistributor class is responsible for fetching data from the backend
@@ -23,6 +24,7 @@ import type {dataConvFun, Datapoint, NamedDatatype} from "$lib/types";
  *     let store = gdd.stores.get('BatteryBalanceHigh');
  * </script>
  * <h1>{$store}</h1>
+ * ```
  *
  * @see StateManager
  * @version 2.0
@@ -72,7 +74,7 @@ export class GrandDataDistributor {
      * @private
      */
     private async fetchData() {
-        const data:Datapoint[] = await invoke('generate_test_data');
+        const data:Datapoint[] = await invoke('unload_buffer');
         this.processData(data);
     }
 
@@ -82,7 +84,7 @@ export class GrandDataDistributor {
      */
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
-            console.log(datapoint)
+            emit(EventChannels.INFO, `Datapoint received: ${datapoint.datatype} - ${datapoint.value}`);
             this.StoreManager.updateStore(datapoint.datatype, datapoint.value);
         });
     }

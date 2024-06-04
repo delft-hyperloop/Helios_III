@@ -1,9 +1,7 @@
 use crate::Datatype;
-use core::cmp::Ordering;
 
 pub mod can;
 pub mod tcp;
-pub mod udp;
 
 // IF YOU UPDATE THIS, ALSO LOOK AT config/config.toml
 // pub enum Datatype {

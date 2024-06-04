@@ -1,10 +1,18 @@
-use crate::core::finite_state_machine::{State, FSM};
-use crate::Event;
 use defmt::info;
 
-impl FSM {
-    pub async fn entry_exit(&mut self) {
-        todo!();
+use crate::core::controllers::breaking_controller::BRAKE;
+use crate::core::finite_state_machine::Fsm;
+use crate::core::finite_state_machine::State;
+use crate::transit;
+use crate::Event;
+
+impl Fsm {
+    pub fn entry_exit(&mut self) {
+        unsafe {
+            BRAKE = true;
+        }
+        self.peripherals.hv_peripherals.power_hv_off();
+        info!("In exit state...");
     }
 
     pub async fn react_exit(&mut self, event: Event) {
@@ -13,9 +21,7 @@ impl FSM {
                 todo!();
             }
             Event::SystemResetCommand => {
-                todo!();
-
-                self.transit(State::RunConfig).await;
+                transit!(self, State::RunConfig);
             }
 
             _ => {

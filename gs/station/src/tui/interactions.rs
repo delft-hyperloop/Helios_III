@@ -1,13 +1,13 @@
-use std::cmp::min;
 use crate::tui::app::App;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
+use std::cmp::min;
 
 impl App {
     /// updates the application's state based on user input
-    pub(crate) fn handle_events(&mut self) {
+    pub(crate) fn handle_events(&mut self) -> anyhow::Result<()> {
         match event::poll(std::time::Duration::from_micros(500)) {
             Ok(true) => {
-                match event::read().unwrap() {
+                match event::read()? {
                     // it's important to check that the event is a key press event as
                     // crossterm also emits key release and repeat events on Windows.
                     Event::Key(key_event) if key_event.kind == KeyEventKind::Press => {
@@ -17,8 +17,11 @@ impl App {
                 }
             }
             Ok(false) => {} // no event exists
-            Err(e) => {eprintln!("error processing events?? {:?}", e)} // error reading event
+            Err(e) => {
+                eprintln!("error processing events?? {:?}", e)
+            } // error reading event
         };
+        Ok(())
     }
 
     fn scroll_up(&mut self, val: u16) {
@@ -31,17 +34,19 @@ impl App {
     /// Keyboard shortcuts!
     fn handle_key_event(&mut self, key_event: KeyEvent) {
         match key_event.code {
-            KeyCode::Char('q') => self.exit(),
-            KeyCode::Esc => self.send_command(crate::Command::EmergencyBrake(0)),
+            KeyCode::Char('q') => self.quit(),
+            KeyCode::Esc => self.backend.send_command(crate::Command::EmergencyBrake(0)),
             KeyCode::Up => self.scroll_up(1),
             KeyCode::Down => self.scroll_down(1),
             KeyCode::Char('k') | KeyCode::Char('j') => self.scroll_down(10),
             KeyCode::Char('m') => self.scroll_down(10000),
             KeyCode::Char('u') => self.scroll_up(10000),
             KeyCode::Char('i') => self.scroll_up(10),
-            KeyCode::Char('s') => self.launch_station(),
-            KeyCode::Char('l') => self.launch_levi_software(),
-            // KeyCode::Char('t') => self.logs.push((LogType::Warning, format!("{}:  this is a testing goose",Util::Now()).parse().unwrap())),
+            KeyCode::Char('s') => {
+                self.backend.start_server();
+            }
+            KeyCode::Char('l') => self.backend.start_levi(),
+            // KeyCode::Char('t') => self.logs.push((LogType::Warning, format!("{}:  this is a testing goose",Util::Now()).parse()?)),
             KeyCode::Tab => {
                 self.selected_row = (self.selected_row + 1) % self.cmds.len();
             }
@@ -49,7 +54,9 @@ impl App {
                 self.selected_row = (self.selected_row + self.cmds.len() - 1) % self.cmds.len();
             }
             KeyCode::Enter => {
-                self.send_command(self.cmds[self.selected_row].as_cmd());
+                self.backend
+                    .send_command(self.cmds[self.selected_row].as_cmd());
+                // self.backend.warn(format!("interpreting {:?}", self.cmds[self.selected_row]));
             }
             KeyCode::Char('1') => {
                 self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 1;
@@ -79,10 +86,10 @@ impl App {
                 self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 9;
             }
             KeyCode::Char('0') => {
-                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10;
+                self.cmds[self.selected_row].value *= 10;
             }
             KeyCode::Backspace => {
-                self.cmds[self.selected_row].value = self.cmds[self.selected_row].value / 10;
+                self.cmds[self.selected_row].value /= 10;
             }
             _ => {}
         }

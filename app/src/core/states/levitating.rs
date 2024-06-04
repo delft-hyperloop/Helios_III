@@ -1,18 +1,20 @@
-use crate::core::finite_state_machine::{State, FSM};
-use crate::Event;
 use defmt::info;
 
-impl FSM {
-    pub async fn entry_levitating(&mut self) {
+use crate::core::finite_state_machine::Fsm;
+use crate::core::finite_state_machine::State;
+use crate::transit;
+use crate::Event;
+
+impl Fsm {
+    pub fn entry_levitating(&mut self) {
         todo!();
     }
 
     pub async fn react_levitating(&mut self, event: Event) {
         match event {
             Event::StartAcceleratingCommand => {
+                transit!(self, State::MovingST);
                 todo!(); // TODO: send message to propulsion to start
-
-                self.transit(State::MovingST).await;
             }
             Event::HVPropulsionReadyEvent => {
                 todo!();

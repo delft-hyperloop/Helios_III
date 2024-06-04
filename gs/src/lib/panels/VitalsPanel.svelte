@@ -4,17 +4,14 @@
         Battery,
         Table,
         FSM,
-        south_bridge_payload,
         TileGrid,
         Tile,
-        Command, PlotBuffer, StrokePresets, GrandDataDistributor
+        Command, GrandDataDistributor
     } from "$lib";
     import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
     import Keydown from "svelte-keydown";
-    import {onMount} from "svelte";
-    import {z} from "zod";
 
     let width: number;
 
@@ -25,27 +22,22 @@
     let tableArr: any[][];
     let tableArr2: any[][];
     $: tableArr = [
-        ["Upper drawer VB", $south_bridge_payload.value],
-        ["Bottom drawer VB", $south_bridge_payload.value],
-        ["outside of VB", $south_bridge_payload.value],
-        ["HEMS", $south_bridge_payload.value],
-        ["Motor core", $south_bridge_payload.value],
+        ["Upper drawer VB", 0],
+        ["Bottom drawer VB", 0],
+        ["outside of VB", 0],
+        ["HEMS", 0],
+        ["Motor core", 0],
     ]
     $: tableArr2 = [
-        ["Current State", $south_bridge_payload.value],
-        ["Bottom drawer VB", $south_bridge_payload.value],
-        ["outside of VB", $south_bridge_payload.value],
-        ["HEMS", $south_bridge_payload.value],
-        ["Motor core", $south_bridge_payload.value]
+        ["Current State", 0],
+        ["Bottom drawer VB", 0],
+        ["outside of VB", 0],
+        ["HEMS", 0],
+        ["Motor core", 0]
     ]
 
     const toastStore = getToastStore();
 
-    let offsetXChart:PlotBuffer;
-
-    onMount(() => {
-        offsetXChart.addSeries(StrokePresets.theoretical())
-    })
 </script>
 
 <Keydown on:combo={({detail}) => {
@@ -67,7 +59,7 @@
                     message: "Abort operation triggered",
                     background: 'variant-filled-error',
                 });
-            }} className="bg-error-500 text-surface-100 btn py-0 border border-error-500 rounded-sm" cmd="abort"/>
+            }} className="bg-error-500 text-surface-100 btn py-0 border border-error-500 rounded-sm" cmd="EmergencyBrake"/>
         </svelte:fragment>
     </AppBar>
 
@@ -97,8 +89,8 @@
                 <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4">
-                            <p>Velocity: <span class="font-mono font-medium">{$south_bridge_payload.value}</span></p>
-                            <p>Position: <span class="font-mono font-medium">{$south_bridge_payload.value}</span></p>
+                            <p>Velocity: <span class="font-mono font-medium">{0}</span></p>
+                            <p>Position: <span class="font-mono font-medium">{0}</span></p>
                         </div>
                         <div class="flex gap-4">
                             <div class="flex gap-2">
@@ -121,16 +113,8 @@
                 </Tile>
                 <!--     OFFSET GRAPHS       -->
                 <Tile containerClass="py-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Chart bind:chart={offsetXChart}
-                           eventCallback={(event) => {
-                                // @ts-ignore
-                                offsetXChart.addEntry(1, z.number().parse(event.payload.x));
-
-                                // @ts-ignore
-                                offsetXChart.addEntry(2, z.number().parse(event.payload.y));
-                           }}
-                           title="Offset horizontal"
-                           eventChannel="current_hv" refreshRate={100}/>
+                    <Chart title="Offset Horizontal"
+                           refreshRate={100}/>
                 </Tile>
                 <Tile containerClass="py-1 h-full w-full col-span-{width < 550 ? 2 : 1}" bgToken={800}>
                     <Chart title="Offset Vertical" refreshRate={100}/>

@@ -42,6 +42,8 @@ export class PlotBuffer {
                 label: "timestamp",
             }],
         };
+
+        this.addSeries(StrokePresets.hyperLoopGreen());
     }
 
     public addSeries(series:uPlot.Series) {
@@ -53,6 +55,10 @@ export class PlotBuffer {
     public updateSeries(seriesIndex:number, data:uPlot.TypedArray) {
         if (seriesIndex >= this._data.length) throw new Error("Series index out of bounds");
         this._data[seriesIndex] = data;
+    }
+
+    public getSeriesData(seriesIndex: number) {
+        return this._data[seriesIndex];
     }
 
     public setEntry(seriesIndex:number, dataIndex:number, value:number) {

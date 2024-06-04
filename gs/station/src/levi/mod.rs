@@ -1,19 +1,90 @@
-mod handler;
-mod writer;
-mod parser;
+mod parse_input;
+mod read_from_stdout;
+mod write_to_stdin;
 
-use std::sync::mpsc::{Receiver, Sender};
 use crate::api::Message;
-use crate::api::Status::LeviProgramStarted;
-use crate::Command;
+use crate::LEVI_EXEC_PATH;
+use anyhow::anyhow;
+use tokio::task::AbortHandle;
 
-pub fn start_levi_process() -> (Receiver<Message>, Sender<Command>) {
-    let (data_sender, data_receiver) = std::sync::mpsc::channel();
-    let (command_sender, command_receiver) = std::sync::mpsc::channel();
-    data_sender.send(Message::Status(LeviProgramStarted)).unwrap();
-    std::thread::spawn(move || {
-        let _ = handler::run_levi_software(data_sender.clone(), command_receiver);
-        data_sender.send(Message::Error("Levi process has stopped".to_string())).unwrap();
-    });
-    (data_receiver, command_sender)
+pub fn levi_main(
+    message_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
+    command_transmitter: tokio::sync::broadcast::Sender<crate::Command>,
+    command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
+) -> anyhow::Result<(AbortHandle, AbortHandle)> {
+    let mut lcmd = tokio::process::Command::new(LEVI_EXEC_PATH);
+    lcmd.stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped());
+
+    let mut levi_child = lcmd.spawn()?;
+
+    let stdin = levi_child
+        .stdin
+        .ok_or(anyhow!("couldn't take the child's stdin"))?;
+    let stdout = levi_child
+        .stdout
+        .take()
+        .ok_or(anyhow!("couldn't take the child's stdout"))?;
+
+    let transmitter = message_transmitter.clone();
+    let lh1 = tokio::spawn(async move {
+        match write_to_stdin::write_to_levi_child_stdin(
+            stdin,
+            transmitter.clone(),
+            command_receiver,
+        )
+        .await
+        {
+            Ok(_) => {
+                transmitter
+                    .send(Message::Error(
+                        "[write_to_levi_child_stdin] finished without any errors.".to_string(),
+                    ))
+                    .expect("messaging channel closed... this is irrecoverable");
+            }
+            Err(e) => {
+                transmitter
+                    .send(Message::Error(format!(
+                        "[write_to_levi_child_stdin] finished with errors: {:?}",
+                        e
+                    )))
+                    .expect("messaging channel closed... this is irrecoverable");
+            }
+        }
+        // todo: send emergency brake command if levi connection is lost?
+    })
+    .abort_handle();
+
+    let msg_transmitter = message_transmitter.clone();
+    let cmd_transmitter = command_transmitter.clone();
+    let lh2 = tokio::spawn(async move {
+        match read_from_stdout::read_from_levi_child_stdout(
+            stdout,
+            msg_transmitter.clone(),
+            cmd_transmitter,
+        )
+        .await
+        {
+            Ok(_) => {
+                msg_transmitter
+                    .send(Message::Error(
+                        "[read_from_levi_child_stdout] finished without any errors.".to_string(),
+                    ))
+                    .expect("messaging channel closed... this is irrecoverable");
+            }
+            Err(e) => {
+                msg_transmitter
+                    .send(Message::Error(format!(
+                        "[read_from_levi_child_stdout] finished with errors: {:?}",
+                        e
+                    )))
+                    .expect("messaging channel closed... this is irrecoverable");
+            }
+        }
+        // todo: send emergency brake command if levi connection is lost?
+    })
+    .abort_handle();
+
+    Ok((lh1, lh2))
 }

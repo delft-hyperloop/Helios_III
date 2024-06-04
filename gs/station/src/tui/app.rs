@@ -1,25 +1,10 @@
-use std::io;
-use std::sync::mpsc::{Receiver, Sender, TryRecvError};
-use ratatui::Frame;
-use crate::api::{Message, state_to_string};
-use crate::{Command, COMMANDS_LIST};
-use crate::connect::{Datapoint, Station};
+use crate::api::{state_to_string, Datapoint, Message};
+use crate::backend::Backend;
+use crate::tui::render::CmdRow;
 use crate::tui::{timestamp, Tui};
-
-
-pub struct CmdRow {
-    pub name: String,
-    pub value: u64,
-}
-
-impl CmdRow {
-    pub fn to_row(&self) -> ratatui::widgets::Row {
-        ratatui::widgets::Row::new(vec![self.name.clone(), self.value.to_string()])
-    }
-    pub fn as_cmd(&self) -> Command {
-        Command::from_string(&self.name, self.value)
-    }
-}
+use crate::{Datatype, Event, Info, COMMANDS_LIST};
+use ratatui::Frame;
+use std::collections::BTreeMap;
 
 #[allow(dead_code)]
 pub struct App {
@@ -32,16 +17,14 @@ pub struct App {
     pub selected_row: usize,
     pub cmds: Vec<CmdRow>,
     pub cur_state: String,
-    message_sender: Option<Sender<Message>>,
-    message_receiver: Option<Receiver<Message>>,
-    command_sender: Option<Sender<Command>>,
-    levi_command_sender: Option<Sender<Command>>,
-    command_receiver: Option<Receiver<Command>>,
-    pub station_running: bool,
+    pub last_heartbeat: String,
+    pub special_data: BTreeMap<Datatype, u64>,
+    pub backend: Backend,
+    pub safe: bool,
 }
 
 impl App {
-    pub fn new() -> Self {
+    pub fn new(backend: Backend) -> Self {
         Self {
             logs: vec![],
             data: vec![],
@@ -50,37 +33,35 @@ impl App {
             time_elapsed: 0,
             selected: 0,
             selected_row: 0,
-            cmds: COMMANDS_LIST.iter().map(|x| CmdRow { name: format!("{:?}", x), value: 0 }).collect(),
+            cmds: COMMANDS_LIST
+                .iter()
+                .map(|x| CmdRow {
+                    name: x.to_string(),
+                    value: 0,
+                })
+                .collect(),
             cur_state: "None Yet".to_string(),
-            message_sender: None,
-            message_receiver: None,
-            command_sender: None,
-            command_receiver: None,
-            station_running: false,
-            levi_command_sender: None,
+            last_heartbeat: "None Yet".to_string(),
+            special_data: BTreeMap::from([
+                (Datatype::InsulationNegative, 0),
+                (Datatype::InsulationPositive, 0),
+                (Datatype::BatteryCurrentHigh, 0),
+                (Datatype::BatteryTemperatureHigh, 0),
+                (Datatype::TotalBatteryVoltageLow, 0),
+                (Datatype::TotalBatteryVoltageHigh, 0),
+                (Datatype::SingleCellVoltageLow, 0),
+                (Datatype::BatteryMaxBalancingLow, 0),
+                (Datatype::Localisation, 0),
+            ]),
+            backend,
+            safe: true,
         }
     }
 
-    pub fn launch_station(&mut self) {
-        if self.station_running {
-            return;
-        }
-        let (data_sender, data_receiver) = std::sync::mpsc::channel();
-        let (command_sender, command_receiver) = std::sync::mpsc::channel();
-        data_sender.send(Message::Info("Station started".to_string())).unwrap();
-        self.message_receiver = Some(data_receiver);
-        self.command_sender = Some(command_sender);
-        self.station_running = true;
-        self.message_sender = Some(data_sender.clone());
-        std::thread::spawn(move ||
-            Station::new().launch(data_sender, command_receiver)
-        );
-    }
-
-    pub fn run(&mut self, terminal: &mut Tui) -> io::Result<()> {
+    pub fn run(&mut self, terminal: &mut Tui) -> anyhow::Result<()> {
         while !self.exit {
             terminal.draw(|frame| self.render_frame(frame))?;
-            self.handle_events();
+            self.handle_events()?;
             self.receive_data();
             self.time_elapsed = self.time_elapsed.wrapping_add(1);
         }
@@ -91,75 +72,71 @@ impl App {
         frame.render_widget(self, frame.size());
     }
 
-    pub fn receive_data(&mut self) {
-        if self.message_receiver.is_none() {
-            return;
-        }
-        let x = std::mem::replace(&mut self.message_receiver, None).unwrap();
-        match x.try_recv() {
-            Ok(msg) => {
-                self.message_receiver = Some(x);
-                match msg {
-                    Message::Data(datapoint) => {
-                        if datapoint.datatype == crate::Datatype::FSMState {
-                            self.cur_state = format!("{}", state_to_string(datapoint.value));
-                            self.logs.push((Message::Warning(format!("State changed to: {:?}", datapoint.value.to_be_bytes())), timestamp()));
+    fn receive_data(&mut self) {
+        while let Ok(msg) = self.backend.message_receiver.try_recv() {
+            match msg {
+                Message::Data(datapoint) => match datapoint.datatype {
+                    Datatype::Info => match Info::from_id(datapoint.value as u16) {
+                        Info::Safe => {
+                            self.safe = true;
                         }
-                        self.logs.push((Message::Data(datapoint), timestamp()))
+                        Info::Unsafe => {
+                            self.safe = false;
+                        }
+                        _ => {}
+                    },
+                    Datatype::FSMState => {
+                        self.cur_state = state_to_string(datapoint.value).to_string();
+                        self.logs.push((
+                            Message::Warning(format!(
+                            "State changed to: {:?}",
+                            datapoint.value.to_be_bytes()
+                            )),
+                            timestamp(),
+                        ));
+                        self.logs.push((Message::Data(datapoint), timestamp()));
+                        if self.logs.len() > 42 {
+                            self.scroll += 1;
+                        }
+                    }
+                    Datatype::FSMEvent => {
+                        if datapoint.value == Event::Heartbeat.to_id() as u64 {
+                            self.last_heartbeat = timestamp();
+                        } else if self
+                            .special_data
+                            .keys()
+                            .collect::<Vec<&Datatype>>()
+                            .contains(&&datapoint.datatype)
+                        {
+                            self.special_data
+                                .insert(datapoint.datatype, datapoint.value);
+                        } else {
+                            self.logs.push((Message::Data(datapoint), timestamp()));
+                            if self.logs.len() > 42 {
+                                self.scroll += 1;
+                            }
+                        }
                     }
                     _ => {
-                        self.logs.push((msg, timestamp()))
+                        self.logs.push((Message::Data(datapoint), timestamp()));
+                        if self.logs.len() > 42 {
+                            self.scroll += 1;
+                        }
+                    }
+                },
+                msg => {
+                    self.logs.push((msg, timestamp()));
+                    if self.logs.len() > 42 {
+                        self.scroll += 1;
                     }
                 }
             }
-            Err(TryRecvError::Empty) => {
-                self.message_receiver = Some(x);
-            }
-            Err(TryRecvError::Disconnected) => {
-                self.exit = true;
-            }
         }
     }
 
-    pub fn exit(&mut self) {
+    pub fn quit(&mut self) {
         self.exit = true;
+        self.backend.quit_levi();
+        self.backend.quit_server();
     }
-
-    pub fn launch_levi_software(&mut self) {
-        let (r, s) = crate::levi::start_levi_process();
-        let m = self.message_sender.clone();
-        std::thread::spawn(move || {
-            loop {
-                match r.recv() {
-                    Ok(msg) => {
-                        if let Some(ms) = &m {
-                            ms.send(msg).unwrap();
-                        } else {
-                            eprintln!("Failed to send message: {:?}", msg);
-                        }
-                    },
-                    Err(_) => {}
-                }
-            }
-        });
-        // replace self.levi_command_sender with s
-        self.levi_command_sender = Some(s);
-    }
-
-    pub(crate) fn send_command(&mut self, command: Command) {
-        if let Some(s) = self.command_sender.as_ref() {
-            self.logs.push((Message::Info(format!("Trying to send command: {:?}", command)), timestamp()));
-            s.send(command).unwrap();
-            if let Some(s) = self.levi_command_sender.as_ref() {
-                self.logs.push((Message::Info(format!("Trying to send command to levi: {:?}", command)), timestamp()));
-                s.send(command).unwrap();
-            } else {
-                self.logs.push((Message::Error(format!("Tried to send command `{:?}` with no connection to levi", command)), timestamp()));
-            }
-        } else {
-            self.logs.push((Message::Error(format!("Tried to send command `{:?}` with no connection to station", command)), timestamp()));
-        }
-    }
-
-
 }

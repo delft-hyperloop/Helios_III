@@ -1,45 +1,37 @@
-use crate::core::finite_state_machine::{State, FSM};
-use crate::Event;
 use defmt::info;
 
-impl FSM {
-    pub async fn entry_idle(&mut self) {
+use crate::core::finite_state_machine::Fsm;
+use crate::core::finite_state_machine::State;
+use crate::transit;
+use crate::Event;
+
+impl Fsm {
+    pub fn entry_idle(&mut self) {
         info!("Entering Idle State")
     }
 
     pub async fn react_idle(&mut self, event: Event) {
         match event {
-            // Event::LVLevitationReadyEvent => {
-            //
-            //     todo!();
-            //
-            // }
-            // Event::LVPowertrainReadyEvent => {
-            //
-            //     todo!();
-            //
-            // }
-            // Event::LVPropulsionReadyEvent => {
-            //
-            //     todo!();
-            //
-            // }
             Event::TurnOnHVCommand => {
-                #[cfg(debug_assertions)]
+                self.pod_unsafe().await;
+                //todo check for preconditions
+                #[cfg(debug_assertions)] // todo actually turn on hv
                 info!("Starting HV System");
-                self.transit(State::HVSystemChecking).await;
+                info!("Starting HV System");
+                // self.peripherals
+                //     .braking_controller
+                //     .start_run_brake_precondition();
+                self.peripherals
+                    .hv_peripherals
+                    .power_on_hv_procedure()
+                    .await;
+                transit!(self, State::HVSystemChecking);
             }
             Event::ArmBrakesCommand => {
-                todo!();
+                #[cfg(debug_assertions)]
+                info!("[fsm] arming brakes");
+                self.peripherals.braking_controller.arm_breaks();
             }
-            /// This is commented out because it was refactored to be handled by the default react ///
-            // /// Here this events can be triggered for the first time, but they'll transit to Exit State instead of emergency breaking as HV is off
-            // Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent|Event::ConnectionLossEvent=> {
-            //
-            //     todo!();
-            //
-            //     self.transit(State::Exit)
-            // }
             _ => {
                 info!("The current state ignores {}", event.to_str());
             }

@@ -8,15 +8,15 @@
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {onDestroy, onMount} from "svelte";
     import {details_pane, vitals_pane} from "$lib";
+    import {EventChannels} from "$lib/types";
 
     let unlisten_error: UnlistenFn;
     const toastStore = getToastStore();
 
     onMount(async () => {
-        unlisten_error = await listen("error_channel", (event) => {
+        unlisten_error = await listen(EventChannels.ERROR, (event) => {
             toastStore.trigger({
-                //@ts-ignore
-                message: event.payload.message,
+                message: event.payload as string || "An error occurred",
                 background: 'variant-filled-error',
             });
         });
@@ -37,7 +37,7 @@
                 <Pane minSize={50} class="bg-surface-800">
                     <DetailsPanel />
                 </Pane>
-                <Pane size={20} snapSize={10} minSize={5} class="bg-surface-800">
+                <Pane size={50} snapSize={10} minSize={5} class="bg-surface-800">
                     <LogsPanel />
                 </Pane>
             </Splitpanes>
