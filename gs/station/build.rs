@@ -35,6 +35,7 @@ struct GS {
     // udp_port: u16,
     buffer_size: usize,
     timeout: u64,
+    heartbeat: u64,
     status_channel: String,
     warning_channel: String,
     info_channel: String,
@@ -96,6 +97,7 @@ fn configure_gs(config: &Config) -> String {
         "pub const NETWORK_BUFFER_SIZE: usize = {};\n",
         config.gs.buffer_size
     ) + &*format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
+        + &*format!("pub const HEARTBEAT: u64 = {};\n", config.gs.heartbeat)
         + &*format!(
             "pub const LEVI_EXEC_PATH: &str = \"{}\";\n",
             config.gs.levi_exec_path.to_str().unwrap()

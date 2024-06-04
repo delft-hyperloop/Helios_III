@@ -648,3 +648,7 @@ id = 0x4DE
 name = "Module8AvgTemperature"
 id = 0x4DF
 
+[[Datatype]]
+name = "ResponseHeartbeat"
+id = 0x678
+

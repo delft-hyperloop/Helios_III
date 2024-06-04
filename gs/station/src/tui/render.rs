@@ -31,29 +31,35 @@ pub(crate) fn border_select(app: &App, idx: usize) -> Color {
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
+        let safety_style = if self.safe {
+            Style::default().fg(Color::Blue).bg(Color::Black)
+        } else {
+            Style::default().fg(Color::LightRed).bg(Color::Black)
+        };
         let title = Title::from(" Goose™ Ground Station ultimate ".light_green().bold());
         let instructions = Title::from(Line::from(vec![
             "Scroll Up".light_blue(),
             " <I> ".light_cyan().bold(),
-            " –– ".blue(),
+            " –– ".set_style(safety_style),
             "Scroll Down".light_blue(),
             " <J> ".light_cyan().bold(),
-            " –– ".blue(),
+            " –– ".set_style(safety_style),
             "Scroll to End".light_blue(),
             " <M, U> ".light_cyan().bold(),
-            " –– ".blue(),
+            " –– ".set_style(safety_style),
             "Emergency Brake".red(),
             " <Esc> ".light_red().bold(),
-            " –– ".blue(),
+            " –– ".set_style(safety_style),
             "Launch Station".light_green(),
             " <S> ".light_green().bold(),
-            " –– ".blue(),
+            " –– ".set_style(safety_style),
             "Quit".magenta(),
             " <Q> ".light_magenta().bold(),
-            " ––––––– ".blue(),
+            " ––––––– ".set_style(safety_style),
             "timestamp: ".light_blue(),
             format!(" <{}> ", self.time_elapsed).light_blue(),
         ]));
+
         let outer_block = Block::default()
             .title(title.alignment(Alignment::Center))
             .title(
@@ -62,11 +68,7 @@ impl Widget for &App {
                     .position(Position::Bottom),
             )
             .borders(Borders::ALL)
-            .style(if self.safe {
-                Style::default().fg(Color::Blue).bg(Color::Black)
-            } else {
-                Style::default().fg(Color::LightRed).bg(Color::Black)
-            })
+            .style(safety_style)
             .border_set(border::THICK);
 
         // Calculate inner area by subtracting the border

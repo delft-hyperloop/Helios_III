@@ -22,9 +22,9 @@ pub fn generate_info(path: &str, drv: bool) -> String {
     let mut match_from_id = String::new();
     let mut colours = String::new();
     for (i, info) in config.Info.iter().enumerate() {
-        enum_definitions.push_str(&format!("\t{},\n", info.label));
-        match_to_id.push_str(&format!("\t\t\tInfo::{} => {},\n", info.label, i));
-        match_from_id.push_str(&format!("\t\t\t{} => Info::{},", i, info.label));
+        enum_definitions.push_str(&format!("    {},\n", info.label));
+        match_to_id.push_str(&format!("            Info::{} => {},\n", info.label, i));
+        match_from_id.push_str(&format!("            {} => Info::{},", i, info.label));
         if let Some(c) = &info.colour {
             colours.push_str(&format!("{:?}, ", c));
         } else {

@@ -51,32 +51,32 @@ pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> Stri
         }
         match event.params {
             None => {
-                enum_definitions.push_str(&format!("\t{},\n", event.name));
-                match_to_id.push_str(&format!("\t\t\tEvent::{} => {},\n", event.name, event.id));
+                enum_definitions.push_str(&format!("    {},\n", event.name));
+                match_to_id.push_str(&format!("            Event::{} => {},\n", event.name, event.id));
                 // to_str.push_str(&format!("Event::{} => \"{}\",\n", command.name, command.name));
                 priorities.push_str(&format!(
-                    "\t\t\tEvent::{} => {},\n",
+                    "            Event::{} => {},\n",
                     event.name, event.priority
                 ));
-                match_from_id.push_str(&format!("\t\t\t{} => Event::{},\n", event.id, event.name));
-                to_idx.push_str(&format!("\t\t\tEvent::{} => {},\n", event.name, i));
+                match_from_id.push_str(&format!("            {} => Event::{},\n", event.id, event.name));
+                to_idx.push_str(&format!("            Event::{} => {},\n", event.name, i));
             }
             Some(x) => {
-                enum_definitions.push_str(&format!("\t{}({}),\n", event.name, x));
+                enum_definitions.push_str(&format!("    {}({}),\n", event.name, x));
                 match_to_id.push_str(&format!(
-                    "\t\t\tEvent::{}(_) => {},\n",
+                    "            Event::{}(_) => {},\n",
                     event.name, event.id
                 ));
                 // to_str.push_str(&format!("Event::{}(_) => \"{}\",\n", command.name, command.name));
                 priorities.push_str(&format!(
-                    "\t\t\tEvent::{}(_) => {},\n",
+                    "            Event::{}(_) => {},\n",
                     event.name, event.priority
                 ));
                 match_from_id.push_str(&format!(
-                    "\t\t\t{} => Event::{}(v.unwrap_or(0)),\n",
+                    "            {} => Event::{}(v.unwrap_or(0)),\n",
                     event.id, event.name
                 ));
-                to_idx.push_str(&format!("\t\t\tEvent::{}(_) => {},\n", event.name, i));
+                to_idx.push_str(&format!("            Event::{}(_) => {},\n", event.name, i));
             }
         }
         to_str.push_str(&format!("\"{}\",", event.name));
@@ -84,7 +84,7 @@ pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> Stri
     }
 
     format!(
-        "\n\npub static EVENTS_DISPLAY: [&str; {}] = [{}\"Unknown\"];\n",
+        "\n\npub const EVENTS_DISPLAY: [&str; {}] = [{}\"Unknown\"];\n",
         event_count + 1,
         to_str
     ) + &*format!(
