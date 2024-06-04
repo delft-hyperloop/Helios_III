@@ -1,4 +1,6 @@
 use crate::api::Message;
+use crate::levi::parse_input::handle_line_from_levi;
+use crate::Command;
 use tokio::io::AsyncBufReadExt;
 
 /// # Read from levi child stdout
@@ -6,29 +8,33 @@ use tokio::io::AsyncBufReadExt;
 pub async fn read_from_levi_child_stdout(
     stdout: tokio::process::ChildStdout,
     message_transmitter: tokio::sync::broadcast::Sender<Message>,
-) {
+    command_transmitter: tokio::sync::broadcast::Sender<Command>,
+) -> anyhow::Result<()> {
     let mut reader = tokio::io::BufReader::new(stdout);
     let mut line = String::new();
     loop {
         match reader.read_line(&mut line).await {
             Ok(0) => {
-                message_transmitter
-                    .send(Message::Error("Levi stdout closed.".to_string()))
-                    .unwrap();
+                message_transmitter.send(Message::Error("Levi stdout closed.".to_string()))?;
                 break;
             }
             Ok(n) => {
-                message_transmitter
-                    .send(Message::Info(format!("RECEIVED LEVI: ({}), {:?}", n, line)))
-                    .unwrap();
+                message_transmitter.send(Message::Info(format!(
+                    "[TRACE] RECEIVED LEVI: ({}), {:?}",
+                    n, &line
+                )))?;
+                handle_line_from_levi(
+                    &line,
+                    message_transmitter.clone(),
+                    command_transmitter.clone(),
+                )?;
             }
             Err(e) => {
-                message_transmitter
-                    .send(Message::Error(format!("Levi stdout closed: {:?}", e)))
-                    .unwrap();
+                message_transmitter.send(Message::Error(format!("Levi stdout closed: {:?}", e)))?;
                 break;
             }
         }
         line.clear();
     }
+    Ok(())
 }

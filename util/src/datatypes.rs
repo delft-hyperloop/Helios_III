@@ -28,6 +28,7 @@ pub fn generate_datatypes(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> S
     let mut match_from_id = String::new();
     let mut id_list = id_list.lock().unwrap();
     let mut data_ids = vec![];
+    let mut from_str = String::new();
     for dtype in config.Datatype {
         if dtype.id & 0b1111_1000_0000_0000 != 0 {
             panic!("IDs need to be u11. Found {} > {}", dtype.id, 2_u16.pow(11));
@@ -41,14 +42,18 @@ pub fn generate_datatypes(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> S
             id_list.push(dtype.id);
             data_ids.push(dtype.id);
         }
-        enum_definitions.push_str(&format!("\t{},\n", dtype.name));
+        enum_definitions.push_str(&format!("    {},\n", dtype.name));
         match_to_id.push_str(&format!(
-            "\t\t\tDatatype::{} => {},\n",
+            "            Datatype::{} => {},\n",
             dtype.name, dtype.id
         ));
         match_from_id.push_str(&format!(
-            "\t\t\t{} => Datatype::{},\n",
+            "            {} => Datatype::{},\n",
             dtype.id, dtype.name
+        ));
+        from_str.push_str(&format!(
+            "            {:?} => Datatype::{},\n",
+            dtype.name, dtype.name
         ));
     }
 
@@ -74,12 +79,25 @@ impl Datatype {{
             _ => Datatype::DefaultDatatype,
         }}
     }}
+
+    #[allow(clippy::should_implement_trait)]
+    pub fn from_str(s: &str) -> Self {{
+        match s {{
+{}
+            _ => Datatype::DefaultDatatype,
+        }}
+    }}
 }}
 pub static DATA_IDS : [u16;{}] = [{}];\n",
-        if drv { "#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]" } else { "#[derive(Debug, Clone, Copy, PartialEq, Eq)]" },
+        if drv {
+            "#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize, PartialOrd, Ord)]"
+        } else {
+            "#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]"
+        },
         enum_definitions,
         match_to_id,
         match_from_id,
+        from_str,
         data_ids.len(),
         data_ids
             .iter()

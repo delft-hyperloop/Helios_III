@@ -1,7 +1,8 @@
 use crate::GS_IP_ADDRESS;
-use crate::{Command, Datatype};
+use crate::{Command, Datatype, Info};
 #[cfg(feature = "tui")]
 use ratatui::prelude::Color;
+use std::str::FromStr;
 use std::sync::mpsc::{Receiver, Sender};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -33,41 +34,18 @@ impl Datapoint {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub enum Status {
-    ServerStarted,
-    ServerFailedToStart,
-    UnknownClient,
-    ConnectionEstablished,
-    ConnectionClosedByClient,
-    ConnectionClosedByServer,
-    ConnectionDropped,
-    FailedToReadFromConnection,
-    LeviProgramStarted,
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum Message {
     Data(Datapoint),
-    Status(Status),
+    Status(Info),
     Info(String),
     Warning(String),
     Error(String),
 }
 
-impl Status {
+impl Info {
     #[cfg(feature = "tui")]
     pub fn colour(&self) -> Color {
-        match self {
-            Status::ServerStarted => Color::Green,
-            Status::ServerFailedToStart => Color::Red,
-            Status::UnknownClient => Color::Yellow,
-            Status::ConnectionEstablished => Color::Green,
-            Status::ConnectionClosedByClient => Color::Yellow,
-            Status::ConnectionClosedByServer => Color::Yellow,
-            Status::ConnectionDropped => Color::Red,
-            Status::FailedToReadFromConnection => Color::Red,
-            Status::LeviProgramStarted => Color::Green,
-        }
+        Color::from_str(self.to_colour_str()).unwrap()
     }
 }
 

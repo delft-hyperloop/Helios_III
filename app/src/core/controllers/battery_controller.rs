@@ -1,15 +1,13 @@
-use crate::core::communication::Datapoint;
-use crate::core::controllers::ethernet_controller::EthernetPins;
-use crate::pconfig::bytes_to_u64;
-use crate::{DataReceiver, DataSender, Datatype, EventSender};
-use defmt::export::u64;
-use defmt::{debug, info};
-use embassy_executor::Spawner;
-use embassy_stm32::adc::Temperature;
-use embassy_stm32::can::Timestamp;
-use embassy_time::Instant;
-use embedded_hal::can::{Id, StandardId};
+use defmt::debug;
+use defmt::info;
 
+use crate::core::communication::Datapoint;
+use crate::pconfig::bytes_to_u64;
+use crate::DataSender;
+use crate::Datatype;
+use crate::EventSender;
+
+#[allow(dead_code)]
 pub struct BatteryController {
     sender: EventSender,
     data_sender: DataSender,
@@ -23,7 +21,10 @@ pub struct BatteryController {
     receive_single_cell_id: bool,
     current_number_of_cells: usize,
     module_buffer: [u64; 14],
-    number_of_msgs: u8,
+    temp_buffer: [u64; 112],
+    voltage_buffer: [u64; 112],
+    number_of_temp: u8,
+    number_of_volt: u8,
 }
 
 impl BatteryController {
@@ -55,7 +56,10 @@ impl BatteryController {
             receive_single_cell_id: true,
             current_number_of_cells: 0,
             module_buffer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            number_of_msgs: 0,
+            temp_buffer: [0; 112],
+            voltage_buffer: [0; 112],
+            number_of_temp: 0,
+            number_of_volt: 0,
         }
     }
 }
@@ -114,7 +118,7 @@ impl BatteryController {
         &mut self,
         id: u16,
         data: &[u8],
-        sender: DataSender,
+        _sender: DataSender,
         timestamp: u64,
     ) {
         debug!("Here BMS");
@@ -143,45 +147,92 @@ impl BatteryController {
                 self.state_of_charge_bms(data, timestamp).await;
                 info!("Charge State")
             }
-            x if Datatype::SingleCellTemperatureLow.to_id() == id
+            _x if Datatype::SingleCellTemperatureLow.to_id() == id
                 || (Datatype::SingleCellTemperatureHigh_1.to_id() <= id
                     && Datatype::SingleCellTemperatureHigh_14.to_id() >= id) =>
             {
                 debug!("Individual Temperature");
-                if (id - Datatype::SingleCellTemperatureHigh_1.to_id() != 0) {
-                    self.receive_single_cell_id = true;
-                }
+                // if (id - Datatype::SingleCellTemperatureHigh_1.to_id() != 0) {
+                //     self.receive_single_cell_id = true;
+                // }
+                //
+                // if (self.receive_single_cell_id) {
+                //     self.single_cell_id = 0;
+                //     self.module_buffer = [0; 14];
+                //     self.current_number_of_cells = 0;
+                //     self.receive_single_cell_id = false;
+                // } else if (Datatype::SingleCellTemperatureLow.to_id() == id) {
+                //     // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
+                // } else {
+                //     self.individual_temperature_bms(data, timestamp).await;
+                // }
+                if self.number_of_temp >= 13 {
+                    self.number_of_temp = 0;
+                    let mut i = 0;
+                    while i < 8 {
+                        self.single_cell_id = i;
+                        let a = &self.temp_buffer[(i * 14) as usize..((i + 1) * 14) as usize];
+                        // Initialize a new fixed-size array
+                        let mut temp: [u64; 14] = [0; 14];
 
-                if (self.receive_single_cell_id) {
-                    self.single_cell_id = 0;
-                    self.module_buffer = [0; 14];
-                    self.current_number_of_cells = 0;
-                    self.receive_single_cell_id = false;
-                } else if (Datatype::SingleCellTemperatureLow.to_id() == id) {
+                        temp.copy_from_slice(a);
+                        // Copy the elements from the slice to the fixed-size array
+                        self.module_buffer = temp;
+                        self.send_module_temp(timestamp).await;
+                        i += 1;
+                    }
+                }
+                if Datatype::SingleCellTemperatureLow.to_id() == id {
                     // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
                 } else {
-                    self.individual_temperature_bms(data, timestamp).await;
+                    let module_id =
+                        ((id - Datatype::SingleCellTemperatureHigh_1.to_id()) * 8) as usize;
+                    for (i, &x) in data.iter().enumerate() {
+                        self.temp_buffer[module_id + i] = x as u64;
+                    }
+                    self.number_of_temp += 1;
                 }
 
                 info!("Individual Temperature")
             }
-            x if Datatype::SingleCellVoltageLow.to_id() == id
+            _x if Datatype::SingleCellVoltageLow.to_id() == id
                 || (Datatype::SingleCellVoltageHigh_1.to_id() <= id
                     && Datatype::SingleCellVoltageHigh_14.to_id() >= id) =>
             {
-                if (id - Datatype::SingleCellVoltageHigh_1.to_id() != 0) {
-                    self.receive_single_cell_id = true;
+                if self.number_of_volt >= 13 {
+                    self.number_of_volt = 0;
+                    let mut i = 0;
+                    while i < 8 {
+                        self.single_cell_id = i;
+                        let a = &self.temp_buffer[(i * 14) as usize..((i + 1) * 14) as usize];
+                        // Initialize a new fixed-size array
+                        let mut temp: [u64; 14] = [0; 14];
+
+                        temp.copy_from_slice(a);
+                        // Copy the elements from the slice to the fixed-size array
+                        self.module_buffer = temp;
+                        self.send_module_voltage(timestamp).await;
+                        i += 1;
+                    }
                 }
-                if (self.receive_single_cell_id) {
-                    self.single_cell_id = 0;
-                    self.module_buffer = [0; 14];
-                    self.current_number_of_cells = 0;
-                    self.receive_single_cell_id = false;
-                } else if (Datatype::SingleCellVoltageLow.to_id() == id) {
-                        // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
+                // if (id - Datatype::SingleCellVoltageHigh_1.to_id() != 0) {
+                //     self.receive_single_cell_id = true;
+                // }
+                // if (self.receive_single_cell_id) {
+                //     self.single_cell_id = 0;
+                //     self.module_buffer = [0; 14];
+                //     self.current_number_of_cells = 0;
+                //     self.receive_single_cell_id = false;
+                if Datatype::SingleCellVoltageLow.to_id() == id {
+                    // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
                 } else {
-                    self.individual_voltages_bms(data, timestamp).await;
-                    self.number_of_msgs += 1;
+                    let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id()) * 8) as usize;
+                    for (i, &x) in data.iter().enumerate() {
+                        if x != 0 {
+                            self.voltage_buffer[module_id + i] = x as u64;
+                        }
+                    }
+                    self.number_of_volt += 1;
                 }
 
                 info!("Individual Voltage")
@@ -197,7 +248,7 @@ impl BatteryController {
     }
     pub async fn event_bms(&mut self, data: &[u8], timestamp: u64) {
         // let mut msg: u64 = 0;
-        let dt = if (self.high_voltage) {
+        let dt = if self.high_voltage {
             Datatype::BatteryEventHigh
         } else {
             Datatype::BatteryEventLow
@@ -207,31 +258,31 @@ impl BatteryController {
             .await;
     }
     pub async fn battery_voltage_overall_bms(&mut self, data: &[u8], timestamp: u64) {
-        let min_cell_voltage = (data[0] as u64 + 200); //VOLTAGE scaled by 100
-                                                       //Should be a decimal number so multiplying it by 100 is not such a bad idea
-        let max_cell_voltage = (data[1] as u64 + 200); //VOLTAGE
-        let avg_cell_voltage = (data[0] as u64 + 200); //VOLTAGE
-        let total_pack_voltage = ((((data[5] as u64) << 24)
+        let min_cell_voltage = data[0] as u64 + 200; //VOLTAGE scaled by 100
+                                                     //Should be a decimal number so multiplying it by 100 is not such a bad idea
+        let max_cell_voltage = data[1] as u64 + 200; //VOLTAGE
+        let avg_cell_voltage = data[0] as u64 + 200; //VOLTAGE
+        let total_pack_voltage = (((data[5] as u64) << 24)
             | ((data[6] as u64) << 16)
             | ((data[3] as u64) << 8)
             | (data[4] as u64))
-            + 200); //VOLTAGE
-        let battery_voltage_dt = if (self.high_voltage) {
+            + 200; //VOLTAGE
+        let battery_voltage_dt = if self.high_voltage {
             Datatype::BatteryVoltageHigh
         } else {
             Datatype::BatteryVoltageLow
         };
-        let battery_voltage_min = if (self.high_voltage) {
+        let battery_voltage_min = if self.high_voltage {
             Datatype::BatteryMinVoltageHigh
         } else {
             Datatype::BatteryMinVoltageLow
         };
-        let battery_voltage_max = if (self.high_voltage) {
+        let battery_voltage_max = if self.high_voltage {
             Datatype::BatteryMaxVoltageHigh
         } else {
             Datatype::BatteryMaxVoltageLow
         };
-        let total_battery_voltage_dt = if (self.high_voltage) {
+        let total_battery_voltage_dt = if self.high_voltage {
             Datatype::TotalBatteryVoltageHigh
         } else {
             Datatype::TotalBatteryVoltageLow
@@ -266,7 +317,7 @@ impl BatteryController {
             .await;
     }
     pub async fn default_bms_startup_info(&mut self, data: &[u8], timestamp: u64) {
-        let dt = if (self.high_voltage) {
+        let dt = if self.high_voltage {
             Datatype::DefaultBMSHigh
         } else {
             Datatype::DefaultBMSLow
@@ -280,7 +331,7 @@ impl BatteryController {
             .await;
     }
     pub async fn diagnostic_bms(&mut self, data: &[u8], timestamp: u64) {
-        let dt = if (self.high_voltage) {
+        let dt = if self.high_voltage {
             Datatype::DiagonosticBMSHigh
         } else {
             Datatype::DiagonosticBMSLow
@@ -294,36 +345,32 @@ impl BatteryController {
             .await;
     }
     pub async fn state_of_charge_bms(&mut self, data: &[u8], timestamp: u64) {
-        let current = ((data[1] as u64) << 8 | data[0] as u64); //AMPERES scaled by 10
-        let estimated_charge = ((data[2] as u64) << 8 | data[3] as u64); //AMPERES
-        let state_of_charge = data[6]; //PERCENTAGE
-        let battery_current_dt = if (self.high_voltage) {
+        let current = (data[0] as u64) << 8 | data[1] as u64; //AMPERES scaled by 0.1
+        let estimated_charge = (data[2] as u64) << 8 | data[3] as u64; //AMPERES
+        let state_of_charge = (data[5] as u64) << 8 | data[6] as u64; //PERCENTAGE
+        let battery_current_dt = if self.high_voltage {
             Datatype::BatteryCurrentHigh
         } else {
             Datatype::BatteryCurrentLow
         };
-        let charge_state_dt = if (self.high_voltage) {
+        let charge_state_dt = if self.high_voltage {
             Datatype::ChargeStateHigh
         } else {
             Datatype::ChargeStateLow
         };
-        let estimated_charge_dt = if (self.high_voltage) {
+        let estimated_charge_dt = if self.high_voltage {
             Datatype::BatteryEstimatedChargeHigh
         } else {
             Datatype::BatteryEstimatedChargeLow
         };
 
         self.data_sender
-            .send(Datapoint::new(
-                battery_current_dt,
-                current,
-                timestamp,
-            ))
+            .send(Datapoint::new(battery_current_dt, current, timestamp))
             .await;
         self.data_sender
             .send(Datapoint::new(
                 charge_state_dt,
-                state_of_charge as u64,
+                state_of_charge,
                 timestamp,
             ))
             .await;
@@ -341,17 +388,17 @@ impl BatteryController {
         let max_temp = (data[1]) as u64; //CELSIUS
         let avg_temp = (data[2]) as u64; //CELSIUS
                                          //Take 100 out as it is base -100 so basically 115 means 15 degrees
-        let battery_temp_dt = if (self.high_voltage) {
+        let battery_temp_dt = if self.high_voltage {
             Datatype::BatteryTemperatureHigh
         } else {
             Datatype::BatteryTemperatureLow
         };
-        let battery_temp_min = if (self.high_voltage) {
+        let battery_temp_min = if self.high_voltage {
             Datatype::BatteryMinTemperatureHigh
         } else {
             Datatype::BatteryMinTemperatureLow
         };
-        let battery_temp_max = if (self.high_voltage) {
+        let battery_temp_max = if self.high_voltage {
             Datatype::BatteryMaxTemperatureHigh
         } else {
             Datatype::BatteryMaxTemperatureLow
@@ -368,11 +415,12 @@ impl BatteryController {
             .await;
     }
 
+    #[allow(dead_code)]
     pub async fn individual_temperature_bms(&mut self, data: &[u8], timestamp: u64) {
-        for (i, &x) in data.iter().enumerate() {
-            if (self.single_cell_id < 8) {
+        for &x in data.iter() {
+            if self.single_cell_id < 8 {
                 self.module_buffer[self.current_number_of_cells] = x as u64;
-                if (self.current_number_of_cells == 13) {
+                if self.current_number_of_cells == 13 {
                     self.current_number_of_cells = 0;
                     self.send_module_temp(timestamp).await;
                     info!("Module {:?} Temperature sent", self.single_cell_id + 1);
@@ -391,7 +439,7 @@ impl BatteryController {
 
     async fn send_module_temp(&mut self, timestamp: u64) {
         let module_id = self.single_cell_id;
-        let (mut min_temp, mut max_temp, mut avg_temp) =
+        let (min_temp, max_temp, avg_temp) =
             Self::module_data_calculation(self.module_buffer).await;
         // min_temp = if (min_temp - 100) < 0 { 0 } else { min_temp - 100 };
         // max_temp = if (max_temp - 100) < 0 { 0 } else { max_temp - 100 };
@@ -410,11 +458,8 @@ impl BatteryController {
 
     async fn send_module_voltage(&mut self, timestamp: u64) {
         let module_id = self.single_cell_id;
-        let (mut min_voltage, mut max_voltage, mut avg_voltage) =
+        let (min_voltage, max_voltage, avg_voltage) =
             Self::module_data_calculation(self.module_buffer).await;
-        min_voltage += 200;
-        max_voltage += 200;
-        avg_voltage += 200;
         let (avg_voltage_dt, min_voltage_dt, max_voltage_dt) = Self::match_voltage(module_id).await;
         self.data_sender
             .send(Datapoint::new(avg_voltage_dt, avg_voltage, timestamp))
@@ -531,7 +576,7 @@ impl BatteryController {
         let mut max: u64 = 0;
         let mut avg: u64 = 0;
         let mut n = 14;
-        for (i, &x) in data.iter().enumerate() {
+        for &x in data.iter() {
             if x == 0 {
                 n -= 1;
                 continue;
@@ -544,15 +589,22 @@ impl BatteryController {
             }
             avg += x;
         }
+        if n == 0 {
+            n = 1
+        }
         avg /= n;
+        if min == 1000 {
+            min = 0;
+        }
         (min, max, avg)
     }
 
+    #[allow(dead_code)]
     pub async fn individual_voltages_bms(&mut self, data: &[u8], timestamp: u64) {
-        for (i, &x) in data.iter().enumerate() {
-            if (self.single_cell_id < 8) {
+        for &x in data.iter() {
+            if self.single_cell_id < 8 {
                 self.module_buffer[self.current_number_of_cells] = x as u64;
-                if (self.current_number_of_cells == 13) {
+                if self.current_number_of_cells == 13 {
                     self.current_number_of_cells = 0;
                     self.send_module_voltage(timestamp).await;
                     self.single_cell_id += 1;
@@ -572,17 +624,17 @@ impl BatteryController {
         let min_cell_balancing = data[0] as u64 / 255 * 100; //PERCENTAGE
         let max_cell_balancing = data[1] as u64 / 255 * 100; //PERCENTAGE
         let avg_cell_balancing = data[2] as u64 / 255 * 100; //PERCENTAGE
-        let balancing_dt = if (self.high_voltage) {
+        let balancing_dt = if self.high_voltage {
             Datatype::BatteryBalanceHigh
         } else {
             Datatype::BatteryBalanceLow
         };
-        let balancing_min = if (self.high_voltage) {
+        let balancing_min = if self.high_voltage {
             Datatype::BatteryMinBalancingHigh
         } else {
             Datatype::BatteryMinBalancingLow
         };
-        let balancing_max = if (self.high_voltage) {
+        let balancing_max = if self.high_voltage {
             Datatype::BatteryMaxBalancingHigh
         } else {
             Datatype::BatteryMaxBalancingLow

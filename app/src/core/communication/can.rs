@@ -1,33 +1,30 @@
-use core::any::Any;
 use defmt::*;
+use defmt_rtt as _;
 use embassy_executor::Spawner;
-use embassy_stm32::can::frame::{Frame, Header};
-use embassy_stm32::can::{CanRx, CanTx, Instance};
-use embassy_stm32::gpio::{Level, Output, Speed};
-use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
-use embassy_stm32::{bind_interrupts, can, peripherals, rng, Config};
-use embassy_sync::blocking_mutex::raw::NoopRawMutex;
-use embassy_sync::priority_channel::{Receiver, Sender};
-use embassy_time::{Duration, Timer};
-use embedded_hal::can::Id;
-use embedded_hal::prelude::_embedded_hal_blocking_spi_Write;
-use embedded_io_async::{Read, Write};
-use static_cell::StaticCell;
-use {defmt_rtt as _, panic_probe as _};
+use embassy_stm32::can::CanRx;
+use embassy_stm32::can::CanTx;
+use embassy_stm32::can::Instance;
+use embassy_time::Timer;
+use panic_probe as _;
+
 // use embedded_hal::can::Id;
 use crate::core::communication::Datapoint;
-use crate::core::controllers::battery_controller::{
-    ground_fault_detection_isolation_details, ground_fault_detection_voltage_details,
-    BatteryController, GroundFaultDetection,
-};
+use crate::core::controllers::battery_controller::ground_fault_detection_isolation_details;
+use crate::core::controllers::battery_controller::ground_fault_detection_voltage_details;
 use crate::core::controllers::can_controller::CanTwoUtils;
-use crate::pconfig::{bytes_to_u64, id_as_value};
-use crate::{
-    CanReceiver, CanSender, DataReceiver, DataSender, Datatype, Event, EventSender,
-    BATTERY_GFD_IDS, DATA_IDS, EVENT_IDS, GFD_IDS, HV_IDS, LV_IDS,
-};
-use heapless::binary_heap::Max;
-use heapless::Vec;
+use crate::pconfig::bytes_to_u64;
+use crate::pconfig::id_as_value;
+use crate::CanReceiver;
+use crate::DataSender;
+use crate::Datatype;
+use crate::Event;
+use crate::EventSender;
+use crate::BATTERY_GFD_IDS;
+use crate::DATA_IDS;
+use crate::EVENT_IDS;
+use crate::GFD_IDS;
+use crate::HV_IDS;
+use crate::LV_IDS;
 
 #[embassy_executor::task(pool_size = 2)]
 pub async fn can_transmitter(
@@ -42,9 +39,9 @@ pub async fn can_transmitter(
 
 #[embassy_executor::task(pool_size = 2)]
 pub async fn can_receiving_handler(
-    x: Spawner,
+    _x: Spawner,
     event_sender: EventSender,
-    can_receiver: CanReceiver,
+    _can_receiver: CanReceiver,
     data_sender: DataSender,
     mut bus: CanRx<'static, impl Instance>,
     mut utils: Option<CanTwoUtils>,
@@ -53,7 +50,7 @@ pub async fn can_receiving_handler(
     info!("[CAN] Ready for bus {:?}", bus_nr);
     let mut error_counter = 0u64;
     loop {
-        #[cfg(debug_assertions)]
+        // #[cfg(debug_assertions)]
         // info!("Entering read loop on bus #{}", bus_nr);
         match bus.read().await {
             Ok(envelope) => {
@@ -92,7 +89,7 @@ pub async fn can_receiving_handler(
                                     timestamp.as_ticks(),
                                 )
                                 .await;
-                            } else if id == Datatype::IMDVoltageDetails.to_id() {
+                            } else if id == Datatype::IMDIsolationDetails.to_id() {
                                 ground_fault_detection_voltage_details(
                                     frame.data(),
                                     data_sender,
@@ -133,13 +130,13 @@ pub async fn can_receiving_handler(
                         bus_nr, error_counter, e
                     );
                 }
-                Timer::after_millis(500);
+                Timer::after_millis(500).await;
                 error_counter += 1;
             }
         }
-        /// # VERY IMPORTANT
-        /// without this, our main pcb is magically converted to an adhd CAN pcb
-        /// with no mind for anything else. Tread carefully around it
+        // # VERY IMPORTANT
+        // without this, our main pcb is magically converted to an adhd CAN pcb
+        // with no mind for anything else. Tread carefully around it
         Timer::after_millis(1).await;
     }
 }

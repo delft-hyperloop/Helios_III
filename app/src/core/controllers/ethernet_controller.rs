@@ -1,33 +1,25 @@
-use crate::core::communication::tcp::tcp_connection_handler;
-use crate::pconfig::ip_cidr_from_config;
-use crate::{try_spawn, DataReceiver, EventSender, Irqs, POD_MAC_ADDRESS};
-use crate::{Event, POD_IP_ADDRESS};
-use core::arch::asm;
-use defmt::*;
+use defmt_rtt as _;
+use defmt::info;
 use embassy_executor::Spawner;
-use embassy_net::tcp::client::{TcpClient, TcpClientState};
+use embassy_net::Stack;
 use embassy_net::StackResources;
-use embassy_net::{Ipv4Address, Ipv4Cidr};
-use embassy_net::{Stack, StaticConfigV4};
 use embassy_stm32::eth::generic_smi::GenericSMI;
-use embassy_stm32::eth::PHY;
-use embassy_stm32::eth::{Ethernet, PacketQueue};
-use embassy_stm32::gpio::Output;
-use embassy_stm32::gpio::{Level, Speed};
+use embassy_stm32::eth::Ethernet;
+use embassy_stm32::eth::PacketQueue;
 use embassy_stm32::peripherals;
-use embassy_stm32::peripherals::{ETH, RNG};
+use embassy_stm32::peripherals::ETH;
 use embassy_stm32::rng::Rng;
-use embassy_stm32::{bind_interrupts, eth, rng, Config};
-use embassy_sync::blocking_mutex::raw::NoopRawMutex;
-use embassy_sync::priority_channel::Sender;
-use embassy_time::Timer;
-use embedded_io_async::Write;
-use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
-use heapless::binary_heap::Max;
-use heapless::Vec;
+use panic_probe as _;
 use rand_core::RngCore;
 use static_cell::StaticCell;
-use {defmt_rtt as _, panic_probe as _};
+
+use crate::core::communication::tcp::tcp_connection_handler;
+use crate::try_spawn;
+use crate::DataReceiver;
+use crate::Event;
+use crate::EventSender;
+use crate::Irqs;
+use crate::POD_MAC_ADDRESS;
 
 type Device = Ethernet<'static, ETH, GenericSMI>;
 
@@ -63,12 +55,12 @@ impl EthernetController {
         let mut seed = [0; 8];
         rng.fill_bytes(&mut seed);
         let seed = u64::from_le_bytes(seed);
-
         let mac_addr = POD_MAC_ADDRESS;
 
         static PACKETS: StaticCell<PacketQueue<16, 16>> = StaticCell::new();
 
-        let mut device: Device = Ethernet::new(
+info!("eth 6");
+        let device: Device = Ethernet::new(
             PACKETS.init(PacketQueue::<16, 16>::new()),
             pins.eth_pin,
             Irqs,
@@ -85,8 +77,10 @@ impl EthernetController {
             mac_addr,
         );
 
+info!("eth 7");
         let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
         //        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
+info!("eth 8");
         //            StaticConfigV4 {
         //                address: ip_cidr_from_config(POD_IP_ADDRESS),
         //                gateway: None,
@@ -96,7 +90,9 @@ impl EthernetController {
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();
 
+info!("eth 9");
         static RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
+info!("eth 10");
         let stack: &Stack<Device> = &*STACK.init(Stack::new(
             device,
             eth_config,
@@ -104,9 +100,10 @@ impl EthernetController {
             seed,
         ));
 
-        let mut ethernet_controller = Self {};
+info!("eth 11");
+        let ethernet_controller = Self {};
 
-        try_spawn!(sender, x.spawn(net_task(stack)));
+       try_spawn!(sender, x.spawn(net_task(stack)));
 
         try_spawn!(
             sender,

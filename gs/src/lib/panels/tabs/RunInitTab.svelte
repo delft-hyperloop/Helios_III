@@ -1,5 +1,15 @@
 <script lang="ts">
-    import {south_bridge_payload, Table, TheoreticalRun, Status, inputSpeed, inputTurn, Command, Tile, TileGrid} from "$lib";
+    import {
+        Table,
+        TheoreticalRun,
+        Status,
+        inputSpeed,
+        inputTurn,
+        Command,
+        Tile,
+        TileGrid,
+        TauriCommand
+    } from "$lib";
     import {type IntervalFunction, RunMode} from "$lib/types";
     import {inputEmerg, inputPosit} from "$lib/stores/state";
 
@@ -8,15 +18,15 @@
 
     let tableArr2:any[][];
     $: tableArr2 = [
-        ["Some", $south_bridge_payload.value],
-        ["Important", $south_bridge_payload.value],
-        ["Value", $south_bridge_payload.value],
-        ["That", $south_bridge_payload.value],
-        ["Could", $south_bridge_payload.value],
-        ["stay", $south_bridge_payload.value],
-        ["as a", $south_bridge_payload.value],
-        ["table entry", $south_bridge_payload.value],
-        ["here", $south_bridge_payload.value]
+        ["Some", 0],
+        ["Important", 0],
+        ["Value", 0],
+        ["That", 0],
+        ["Could", 0],
+        ["stay", 0],
+        ["as a", 0],
+        ["table entry", 0],
+        ["here", 0]
     ]
 </script>
 
@@ -53,7 +63,7 @@
             </div>
             <div class="flex-grow"></div>
             <div class="grid grid-cols-2 gap-2">
-                <Command cmd="establish_connection" className="btn rounded-md bg-surface-700  col-span-2" />
+                <TauriCommand cmd="start_server" className="btn rounded-md bg-surface-700  col-span-2" />
                 <Command cmd="StartHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="Levitate" className="btn flex-grow rounded-md bg-surface-700 " />
@@ -69,17 +79,17 @@
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
             <p>Helios III</p>
-            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <Status status={0 % 2 === 0} />
             <p>Propulsion:</p>
-            <Status status={$south_bridge_payload.value % 2 === 1} />
+            <Status status={0 % 2 === 1} />
             <p>Levitation:</p>
-            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <Status status={0 % 2 === 0} />
             <p>PTC:</p>
-            <Status status={$south_bridge_payload.value % 2 === 0} />
+            <Status status={0 % 2 === 0} />
             <p>Localization:</p>
-            <Status status={$south_bridge_payload.value % 2 === 1} />
+            <Status status={0 % 2 === 1} />
             <p>Breaking PCB:</p>
-            <Status on="armed" off="unarmed" status={$south_bridge_payload.value % 2 === 0} />
+            <Status on="armed" off="unarmed" status={0 % 2 === 0} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>

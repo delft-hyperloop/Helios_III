@@ -4,7 +4,6 @@
         Battery,
         Table,
         FSM,
-        south_bridge_payload,
         TileGrid,
         Tile,
         Command, GrandDataDistributor
@@ -23,18 +22,18 @@
     let tableArr: any[][];
     let tableArr2: any[][];
     $: tableArr = [
-        ["Upper drawer VB", $south_bridge_payload.value],
-        ["Bottom drawer VB", $south_bridge_payload.value],
-        ["outside of VB", $south_bridge_payload.value],
-        ["HEMS", $south_bridge_payload.value],
-        ["Motor core", $south_bridge_payload.value],
+        ["Upper drawer VB", 0],
+        ["Bottom drawer VB", 0],
+        ["outside of VB", 0],
+        ["HEMS", 0],
+        ["Motor core", 0],
     ]
     $: tableArr2 = [
-        ["Current State", $south_bridge_payload.value],
-        ["Bottom drawer VB", $south_bridge_payload.value],
-        ["outside of VB", $south_bridge_payload.value],
-        ["HEMS", $south_bridge_payload.value],
-        ["Motor core", $south_bridge_payload.value]
+        ["Current State", 0],
+        ["Bottom drawer VB", 0],
+        ["outside of VB", 0],
+        ["HEMS", 0],
+        ["Motor core", 0]
     ]
 
     const toastStore = getToastStore();
@@ -60,7 +59,7 @@
                     message: "Abort operation triggered",
                     background: 'variant-filled-error',
                 });
-            }} className="bg-error-500 text-surface-100 btn py-0 border border-error-500 rounded-sm" cmd="abort"/>
+            }} className="bg-error-500 text-surface-100 btn py-0 border border-error-500 rounded-sm" cmd="EmergencyBrake"/>
         </svelte:fragment>
     </AppBar>
 
@@ -90,8 +89,8 @@
                 <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4">
-                            <p>Velocity: <span class="font-mono font-medium">{$south_bridge_payload.value}</span></p>
-                            <p>Position: <span class="font-mono font-medium">{$south_bridge_payload.value}</span></p>
+                            <p>Velocity: <span class="font-mono font-medium">{0}</span></p>
+                            <p>Position: <span class="font-mono font-medium">{0}</span></p>
                         </div>
                         <div class="flex gap-4">
                             <div class="flex gap-2">

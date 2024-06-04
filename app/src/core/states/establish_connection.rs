@@ -1,7 +1,9 @@
-use crate::core::communication::Datapoint;
-use crate::core::finite_state_machine::{State, Fsm};
-use crate::{transit, Datatype, Event};
 use defmt::info;
+
+use crate::core::finite_state_machine::Fsm;
+use crate::core::finite_state_machine::State;
+use crate::transit;
+use crate::Event;
 
 impl Fsm {
     pub fn entry_establish_connection(&mut self) {

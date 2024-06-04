@@ -3,7 +3,6 @@
         Battery,
         Chart,
         GrandDataDistributor,
-        south_bridge_payload,
         Status,
         Table,
         Tile,
@@ -91,7 +90,6 @@
 
 <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Batteries</h2>
-    {$avg1Vol}
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="auto 1fr auto">
         <Tile insideClass="flex h-full items-center gap-4">
             <div class="flex flex-col items-center">
@@ -115,8 +113,8 @@
         </Tile>
         <Tile insideClass="flex h-full items-center">
             <div class="flex flex-col ml-4">
-                <p>LV Current: {$south_bridge_payload.value}</p>
-                <p>HV Current: {$south_bridge_payload.value}</p>
+                <p>LV Current: NOT SET</p>
+                <p>HV Current: NOT SET</p>
             </div>
         </Tile>
         <Tile containerClass="col-span-4" heading="Battery stats">

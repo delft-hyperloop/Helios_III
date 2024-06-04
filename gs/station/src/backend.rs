@@ -13,14 +13,18 @@ use tokio::task::AbortHandle;
 // }
 
 pub struct Backend {
-    pub data_buffer: Vec<Message>,
-    pub command_buffer: Vec<Command>,
     pub server_handle: Option<AbortHandle>,
     pub levi_handle: Option<(AbortHandle, AbortHandle)>,
     pub message_transmitter: tokio::sync::broadcast::Sender<Message>,
     pub message_receiver: tokio::sync::broadcast::Receiver<Message>,
     pub command_transmitter: tokio::sync::broadcast::Sender<Command>,
     pub command_receiver: tokio::sync::broadcast::Receiver<Command>,
+}
+
+impl Default for Backend {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Backend {
@@ -34,8 +38,6 @@ impl Backend {
         let (command_transmitter, command_receiver) =
             tokio::sync::broadcast::channel::<Command>(128);
         Self {
-            data_buffer: Vec::new(),
-            command_buffer: Vec::new(),
             server_handle: None,
             levi_handle: None,
             message_transmitter,
@@ -47,7 +49,7 @@ impl Backend {
 
     /// # Start a TCP server
     /// ### Uses the backend's existing broadcast channels
-    pub fn start_server(&mut self) {
+    pub fn start_server(&mut self) -> bool {
         if self.server_handle.is_none() {
             let m = self.message_transmitter.clone();
             let c = self.command_receiver.resubscribe();
@@ -57,8 +59,10 @@ impl Backend {
             );
             // self.status(crate::api::Status::ServerStarted);
             self.info(format!("Server handle: {:?}", self.server_handle));
+            true
         } else {
             self.warn("Server already running".to_string());
+            false
         }
     }
 
@@ -66,11 +70,12 @@ impl Backend {
         if self.levi_handle.is_none() {
             match crate::levi::levi_main(
                 self.message_transmitter.clone(),
+                self.command_transmitter.clone(),
                 self.command_receiver.resubscribe(),
             ) {
                 Ok(lh) => {
                     self.levi_handle = Some(lh);
-                    self.status(crate::api::Status::LeviProgramStarted);
+                    self.status(crate::Info::LeviProgramStarted);
                     self.info("Levi process started".to_string());
                 }
                 Err(e) => {
@@ -97,7 +102,7 @@ impl Backend {
     pub fn err(&mut self, msg: String) {
         self.message_transmitter.send(Message::Error(msg)).unwrap();
     }
-    pub fn status(&mut self, status: crate::api::Status) {
+    pub fn status(&mut self, status: crate::Info) {
         self.message_transmitter
             .send(Message::Status(status))
             .unwrap();

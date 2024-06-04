@@ -1,5 +1,24 @@
-<script>
-    import {Command} from "$lib";
+<script lang="ts">
+    import {serverStatus, TauriCommand} from "$lib";
+    import {getToastStore} from "@skeletonlabs/skeleton";
+
+    const toastStore = getToastStore();
+
+    const handleSuccess = () => {
+        toastStore.trigger({
+            message: "Server started successfully",
+            background: "bg-primary-400",
+            timeout: 1500
+        });
+        serverStatus.set(true);
+    };
+
+    const handleFailure = (error:string) => {
+        toastStore.trigger({
+            message: `Server did not start successfully: ${error}`,
+            background: "bg-error-400"
+        });
+    };
 </script>
 
 <div class="h-full w-full p-4 flex flex-col gap-8 text-surface-50">
@@ -14,8 +33,9 @@
         </div>
     </div>
     <div>
-        <Command cmd="start_south_bridge" />
-        <Command cmd="start_north_bridge" />
+        <TauriCommand cmd="start_server" successCallback={handleSuccess} errorCallback={handleFailure} />
+        <TauriCommand cmd="start_levi" />
+        <TauriCommand cmd="quit_server" successCallback={() => serverStatus.set(false)} />
     </div>
     <p><kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">Space</kbd> + <kbd class="kbd">Enter</kbd> to launch Abort operation.</p>
     <p><kbd class="kbd">0</kbd> - <kbd class="kbd">7</kbd> to browse between the tabs of this panel</p>

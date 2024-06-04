@@ -1,13 +1,17 @@
-use crate::core::controllers::breaking_controller::BRAKE;
-use crate::core::finite_state_machine::{State, Fsm};
-use crate::{transit, Event};
 use defmt::info;
+
+use crate::core::controllers::breaking_controller::BRAKE;
+use crate::core::finite_state_machine::Fsm;
+use crate::core::finite_state_machine::State;
+use crate::transit;
+use crate::Event;
 
 impl Fsm {
     pub fn entry_exit(&mut self) {
         unsafe {
             BRAKE = true;
         }
+        self.peripherals.hv_peripherals.power_hv_off();
         info!("In exit state...");
     }
 
@@ -17,8 +21,6 @@ impl Fsm {
                 todo!();
             }
             Event::SystemResetCommand => {
-                todo!();
-
                 transit!(self, State::RunConfig);
             }
 

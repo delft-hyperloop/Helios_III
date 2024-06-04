@@ -1,15 +1,9 @@
 <script lang="ts">
     import '../app.postcss';
-    import {onDestroy, onMount} from "svelte";
-    import {emit, listen, type UnlistenFn} from "@tauri-apps/api/event";
-    import {
-        south_bridge_payload,
-        BottomBar,
-        TitleBar,
-        GrandDataDistributor, PlotBuffer, StrokePresets,
-    } from "$lib";
+    import {BottomBar, GrandDataDistributor, PlotBuffer, StrokePresets, TitleBar,} from "$lib";
     import {initializeStores, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
+    import type {dataConvFun} from "$lib/types";
 
     // CHARTS
     let emsChart = new PlotBuffer(1000, [0, 100], false);
@@ -36,99 +30,104 @@
     trr.addSeries(StrokePresets.theoretical())
     $chartStore.set('Theoretical vs Real run', trr)
 
+    let lvCurrent = new PlotBuffer(1000, [-4000, 4000], false)
+    $chartStore.set('LV Current', lvCurrent)
 
+    let hvCurrent = new PlotBuffer(1000, [-4000, 4000], false)
+    $chartStore.set('HV Current', hvCurrent)
 
     ///////////////////////////////////////////////////////
     ///// GRAND DATA DISTRIBUTOR //////////////////////////
     ///////////////////////////////////////////////////////
 
     let gdd = GrandDataDistributor.getInstance();
-    gdd.stores.registerStore<bigint>("BatteryBalanceHigh", BigInt(-1));
-    gdd.stores.registerStore<bigint>("BatteryBalanceLow", BigInt(-1));
+    gdd.stores.registerStore<number>("BatteryBalanceHigh", 0.0);
+    gdd.stores.registerStore<number>("BatteryBalanceLow", 0.0);
+    
+    const tempParse:dataConvFun<number> = (data:bigint) => {
+        return Number(data) - 100;
+    }
+    
+    const voltParse:dataConvFun<number> = (data:bigint) => {
+        return Number(data) / 100 + 2;
+    }
 
-    gdd.stores.registerStore<bigint>("Module1AvgTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module1MaxTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module1MinTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module1AvgVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module1MaxVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module1MinVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
+    gdd.stores.registerStore<number>("Module1AvgTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module1MaxTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module1MinTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module1AvgVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module1MaxVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module1MinVoltage", 0.0, voltParse);
 
-    gdd.stores.registerStore<bigint>("Module2AvgTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module2MaxTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module2MinTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
+    gdd.stores.registerStore<number>("Module2AvgTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module2MaxTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module2MinTemperature", 0.0, tempParse);
 
-    gdd.stores.registerStore<bigint>("Module3AvgTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module3MaxTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module3MinTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
+    gdd.stores.registerStore<number>("Module3AvgTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module3MaxTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module3MinTemperature", 0.0, tempParse);
 
-    gdd.stores.registerStore<bigint>("Module4AvgTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module4MaxTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module4MinTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
+    gdd.stores.registerStore<number>("Module4AvgTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module4MaxTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module4MinTemperature", 0.0, tempParse);
 
-    gdd.stores.registerStore<bigint>("Module5AvgTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module5MaxTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module5MinTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
+    gdd.stores.registerStore<number>("Module5AvgTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module5MaxTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module5MinTemperature", 0.0, tempParse);
 
-    gdd.stores.registerStore<bigint>("Module6AvgTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module6MaxTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module6MinTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
+    gdd.stores.registerStore<number>("Module6AvgTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module6MaxTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module6MinTemperature", 0.0, tempParse);
 
-    gdd.stores.registerStore<bigint>("Module7AvgTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module7MaxTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module7MinTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
+    gdd.stores.registerStore<number>("Module7AvgTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module7MaxTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module7MinTemperature", 0.0, tempParse);
 
-    gdd.stores.registerStore<bigint>("Module8AvgTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module8MaxTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
-    gdd.stores.registerStore<bigint>("Module8MinTemperature", BigInt(-1), data => BigInt(data)-BigInt(100));
+    gdd.stores.registerStore<number>("Module8AvgTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module8MaxTemperature", 0.0, tempParse);
+    gdd.stores.registerStore<number>("Module8MinTemperature", 0.0, tempParse);
 
-    gdd.stores.registerStore<bigint>("Module2AvgVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module2MaxVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module2MinVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
+    gdd.stores.registerStore<number>("Module2AvgVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module2MaxVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module2MinVoltage", 0.0, voltParse);
 
-    gdd.stores.registerStore<bigint>("Module3AvgVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module3MaxVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module3MinVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
+    gdd.stores.registerStore<number>("Module3AvgVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module3MaxVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module3MinVoltage", 0.0, voltParse);
 
-    gdd.stores.registerStore<bigint>("Module4AvgVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module4MaxVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module4MinVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
+    gdd.stores.registerStore<number>("Module4AvgVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module4MaxVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module4MinVoltage", 0.0, voltParse);
 
-    gdd.stores.registerStore<bigint>("Module5AvgVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module5MaxVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module5MinVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
+    gdd.stores.registerStore<number>("Module5AvgVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module5MaxVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module5MinVoltage", 0.0, voltParse);
 
-    gdd.stores.registerStore<bigint>("Module6AvgVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module6MaxVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module6MinVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
+    gdd.stores.registerStore<number>("Module6AvgVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module6MaxVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module6MinVoltage", 0.0, voltParse);
 
-    gdd.stores.registerStore<bigint>("Module7AvgVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module7MaxVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module7MinVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
+    gdd.stores.registerStore<number>("Module7AvgVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module7MaxVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module7MinVoltage", 0.0, voltParse);
 
-    gdd.stores.registerStore<bigint>("Module8AvgVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module8MaxVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
-    gdd.stores.registerStore<bigint>("Module8MinVoltage", BigInt(-1), data => BigInt(data)/BigInt(10) + BigInt(2));
+    gdd.stores.registerStore<number>("Module8AvgVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module8MaxVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<number>("Module8MinVoltage", 0.0, voltParse);
 
-    // gdd.stores.registerStore<BmsModuleTemperature[]>("BatteryTemperatureHigh", initTemps, (data:bigint, old:BmsModuleTemperature[]) => {
-    //     let {id, max, min, avg} = moduleTemperature(data);
-    //
-    //     let updatedArray = [...old]
-    //     updatedArray[Number(id)] = {id, max, min, avg};
-    //     return updatedArray;
-    // });
-    //
-    // gdd.stores.registerStore<BmsModuleVoltage[]>("BatteryVoltageHigh", initTemps, (data:bigint, old:BmsModuleTemperature[]) => {
-    //     let {id, max, min, avg} = moduleTemperature(data);
-    //
-    //     let updatedArray = [...old]
-    //     updatedArray[Number(id)] = {id, max, min, avg};
-    //     return updatedArray;
-    // });
+    gdd.stores.registerStore<number>("BatteryCurrentLow", 0.0, data => {
+        const curr = Number(data) / 10;
+        $chartStore.get("LV Current")?.addEntry(1, curr);
+        return curr;
+    });
 
-    gdd.stores.registerStore<bigint>("BatteryCurrentHigh", BigInt(-1), data => {
-        emit('current_hv', {x: 50, y: data})
+    gdd.stores.registerStore<number>("BatteryCurrentHigh", 0.0, data => {
+        const curr = Number(data) / 10;
+        $chartStore.get("HV Current")?.addEntry(1, curr);
+        return curr;
+    });
 
-        // TODO: REMOVE THIS, IT'S ONLY FOR TESTING
+    /*
         emit('speed', {data})
 
         $chartStore.get("EMS")?.addEntry(1, Math.random()*20);
@@ -139,32 +138,12 @@
         $chartStore.get("HEMS")?.addEntry(2, 25+Math.random()*20);
         $chartStore.get("HEMS")?.addEntry(3, 50+Math.random()*20);
         $chartStore.get("HEMS")?.addEntry(4, 75+Math.random()*20);
-
-        return data;
-    });
-
+     */
 
     gdd.start(100);
 
     initializeStores();
     // main listener - update south bridge stores
-
-    let unlisten_south: UnlistenFn;
-    onMount(async () => {
-        // DEPRECATED! USE STORES INSTEAD AND NOT THE SOUTH BRIDGE
-
-
-        unlisten_south = await listen("south_bridge", (event) => {
-            //@ts-ignore
-            south_bridge_payload.set(event.payload);
-        });
-
-
-    });
-
-    onDestroy(() => {
-        unlisten_south();
-    });
 </script>
 
 <div class="flex flex-col w-screen h-screen max-h-screen overflow-hidden">

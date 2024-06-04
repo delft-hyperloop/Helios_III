@@ -28,23 +28,24 @@ import Status from "$lib/components/generic/Status.svelte";
 import Tile from "$lib/components/generic/Tile.svelte";
 import TileGrid from "$lib/components/generic/TileGrid.svelte";
 import ToggleCommand from "$lib/components/abstract/ToggleCommand.svelte";
+import TauriCommand from "$lib/components/abstract/TauriCommand.svelte";
 
 // Utils
 import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
 import {GrandDataDistributor} from "$lib/util/GrandDataDistributor";
 import util from "$lib/util/util";
 
-import type {Payload, NamedCommand, EventChannel, Log} from "$lib/types";
+import type {NamedCommand, EventChannel, Log} from "$lib/types";
 
 // Stores
-import {south_bridge_payload} from "$lib/stores/data";
-import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn} from "$lib/stores/state";
+import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn, serverStatus} from "$lib/stores/state";
 import uPlot from "uplot";
 
 export const chartDataStore = new Map<string, uPlot.AlignedData>();
 
 // Export all
 export {
+    TauriCommand,
     ToggleCommand,
     inputTurn,
     StrokePresets,
@@ -74,11 +75,11 @@ export {
     Table,
     Command,
     PlotBuffer,
-    south_bridge_payload,
+    serverStatus,
     detailTabSet,
     inputSpeed,
     Pneumatics,
     Localiser,
     TheoreticalRun
 }
-export type {Payload, NamedCommand, EventChannel, Log}
+export type {NamedCommand, EventChannel, Log}

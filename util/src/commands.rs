@@ -31,7 +31,11 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> St
     let mut to_idx = String::new();
     for (i, command) in config.Command.iter().enumerate() {
         if command.id & 0b1111_1000_0000_0000 != 0 {
-            panic!("IDs need to be u11. Found {} > {}", command.id, 2 ^ 11);
+            panic!(
+                "IDs need to be u11. Found {} > {}",
+                command.id,
+                2u16.pow(11)
+            );
         } else {
             if id_list.contains(&command.id) {
                 panic!(
@@ -41,23 +45,26 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> St
             }
             id_list.push(command.id);
         }
-        enum_definitions.push_str(&format!("\t{}(u64),\n", command.name));
+        enum_definitions.push_str(&format!("    {}(u64),\n", command.name));
         match_to_id.push_str(&format!(
-            "\t\t\tCommand::{}(_) => {},\n",
+            "            Command::{}(_) => {},\n",
             command.name, command.id
         ));
         match_from_id.push_str(&format!(
-            "\t\t\t{} => Command::{}(val),\n",
+            "            {} => Command::{}(val),\n",
             command.id, command.name
         ));
         to_bytes.push_str(&format!(
-            "\t\t\tCommand::{}(val) => {{ buf[3..11].copy_from_slice(&val.to_be_bytes()); }}\n",
+            "            Command::{}(val) => {{ buf[3..11].copy_from_slice(&val.to_be_bytes()); }}\n",
             command.name
         ));
         ids.push(command.id.to_string());
         name_list.push(format!("\"{}\"", command.name.to_string()));
-        names.push_str(&*format!("\t\t\t\"{}\" => Command::{}(p),\n", &command.name, &command.name));
-        to_idx.push_str(&*format!("\t\t\tCommand::{}(_) => {i},\n", &command.name));
+        names.push_str(&*format!(
+            "            \"{}\" => Command::{}(p),\n",
+            &command.name, &command.name
+        ));
+        to_idx.push_str(&*format!("            Command::{}(_) => {i},\n", &command.name));
     }
 
     format!(

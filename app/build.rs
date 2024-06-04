@@ -2,12 +2,13 @@
 
 extern crate serde;
 
-use goose_utils::ip::configure_gs_ip;
-use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::Path;
 use std::sync::Mutex;
+
+use goose_utils::ip::configure_gs_ip;
+use serde::Deserialize;
 
 /*
    BUILD CONFIGURATION
@@ -29,6 +30,7 @@ struct GS {
     // udp_port: u16,
     buffer_size: usize,
     timeout: u64,
+    heartbeat: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -97,13 +99,18 @@ fn main() {
     content.push_str(&goose_utils::events::generate_events(
         &id_list,
         EVENTS_PATH,
+        true,
     ));
+    content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, false));
     // content.push_str(&*can::main(&id_list));
 
-    fs::write(dest_path.clone(), content).unwrap_or_else(|e| panic!(
-        "Couldn't write to {}! Build failed with error: {}",
-        dest_path.to_str().unwrap(), e
-    ));
+    fs::write(dest_path.clone(), content).unwrap_or_else(|e| {
+        panic!(
+            "Couldn't write to {}! Build failed with error: {}",
+            dest_path.to_str().unwrap(),
+            e
+        )
+    });
     println!("cargo:rerun-if-changed={}", CONFIG_PATH);
     println!("cargo:rerun-if-changed={}", EVENTS_PATH);
     println!("cargo:rerun-if-changed={}", COMMANDS_PATH);
@@ -148,6 +155,9 @@ fn configure_pod(config: &Config) -> String {
     ) + &*format!(
         "pub const KEEP_ALIVE: u64 = {};\n",
         config.pod.net.keep_alive
+    ) + &*format!(
+        "pub const HEARTBEAT: u64 = {};\n",
+        config.gs.heartbeat
     )
 }
 

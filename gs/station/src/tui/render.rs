@@ -18,7 +18,7 @@ impl CmdRow {
         ratatui::widgets::Row::new(vec![self.name.clone(), self.value.to_string()])
     }
     pub fn as_cmd(&self) -> Command {
-        Command::from_string(&self.name.trim(), self.value)
+        Command::from_string(self.name.trim(), self.value)
     }
 }
 
@@ -31,29 +31,35 @@ pub(crate) fn border_select(app: &App, idx: usize) -> Color {
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
+        let safety_style = if self.safe {
+            Style::default().fg(Color::Blue).bg(Color::Black)
+        } else {
+            Style::default().fg(Color::LightRed).bg(Color::Black)
+        };
         let title = Title::from(" Goose™ Ground Station ultimate ".light_green().bold());
         let instructions = Title::from(Line::from(vec![
-            "Scroll Up".light_blue().into(),
+            "Scroll Up".light_blue(),
             " <I> ".light_cyan().bold(),
-            " –– ".blue().into(),
-            "Scroll Down".light_blue().into(),
+            " –– ".set_style(safety_style),
+            "Scroll Down".light_blue(),
             " <J> ".light_cyan().bold(),
-            " –– ".blue().into(),
-            "Scroll to End".light_blue().into(),
+            " –– ".set_style(safety_style),
+            "Scroll to End".light_blue(),
             " <M, U> ".light_cyan().bold(),
-            " –– ".blue().into(),
-            "Emergency Brake".red().into(),
+            " –– ".set_style(safety_style),
+            "Emergency Brake".red(),
             " <Esc> ".light_red().bold(),
-            " –– ".blue().into(),
-            "Launch Station".light_green().into(),
+            " –– ".set_style(safety_style),
+            "Launch Station".light_green(),
             " <S> ".light_green().bold(),
-            " –– ".blue().into(),
-            "Quit".magenta().into(),
+            " –– ".set_style(safety_style),
+            "Quit".magenta(),
             " <Q> ".light_magenta().bold(),
-            " ––––––– ".blue().into(),
-            "timestamp: ".light_blue().into(),
-            format!(" <{}> ", self.time_elapsed).light_blue().into(),
+            " ––––––– ".set_style(safety_style),
+            "timestamp: ".light_blue(),
+            format!(" <{}> ", self.time_elapsed).light_blue(),
         ]));
+
         let outer_block = Block::default()
             .title(title.alignment(Alignment::Center))
             .title(
@@ -62,7 +68,7 @@ impl Widget for &App {
                     .position(Position::Bottom),
             )
             .borders(Borders::ALL)
-            .style(Style::default().fg(Color::Blue).bg(Color::Black))
+            .style(safety_style)
             .border_set(border::THICK);
 
         // Calculate inner area by subtracting the border
@@ -86,8 +92,8 @@ impl Widget for &App {
             .direction(Direction::Vertical)
             .constraints(
                 [
-                    Constraint::Percentage(80), // top side for text stream
-                    Constraint::Percentage(20), // bottom side for the table
+                    Constraint::Percentage(65), // top side for text stream
+                    Constraint::Percentage(35), // bottom side for the table
                 ]
                 .as_ref(),
             )
@@ -180,7 +186,7 @@ impl Widget for &App {
             .border_style(Style::default().fg(Color::Blue))
             .borders(Borders::ALL);
 
-        let data = vec![
+        let mut data = vec![
             Line::styled(
                 format!("Current State: {}", self.cur_state),
                 Style::default().fg(Color::White).bg(Color::Blue),
@@ -197,7 +203,20 @@ impl Widget for &App {
                 format!("Lines printed: {}", self.logs.len()),
                 Style::default().fg(Color::White),
             ),
+            Line::styled(
+                "Pod data:",
+                Style::default()
+                    .fg(Color::White)
+                    .bg(Color::Blue)
+                    .underlined(),
+            ),
         ];
+        for (k, v) in &self.special_data {
+            data.push(Line::styled(
+                format!("{:?}: {}", k, v),
+                Style::default().fg(Color::White),
+            ));
+        }
 
         let data_paragraph = Paragraph::new(data)
             .wrap(Wrap { trim: false })
