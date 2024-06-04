@@ -1,4 +1,5 @@
 use defmt_rtt as _;
+use defmt::info;
 use embassy_executor::Spawner;
 use embassy_net::Stack;
 use embassy_net::StackResources;
@@ -54,11 +55,11 @@ impl EthernetController {
         let mut seed = [0; 8];
         rng.fill_bytes(&mut seed);
         let seed = u64::from_le_bytes(seed);
-
         let mac_addr = POD_MAC_ADDRESS;
 
         static PACKETS: StaticCell<PacketQueue<16, 16>> = StaticCell::new();
 
+info!("eth 6");
         let device: Device = Ethernet::new(
             PACKETS.init(PacketQueue::<16, 16>::new()),
             pins.eth_pin,
@@ -76,8 +77,10 @@ impl EthernetController {
             mac_addr,
         );
 
+info!("eth 7");
         let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
         //        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
+info!("eth 8");
         //            StaticConfigV4 {
         //                address: ip_cidr_from_config(POD_IP_ADDRESS),
         //                gateway: None,
@@ -87,7 +90,9 @@ impl EthernetController {
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();
 
+info!("eth 9");
         static RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
+info!("eth 10");
         let stack: &Stack<Device> = &*STACK.init(Stack::new(
             device,
             eth_config,
@@ -95,9 +100,10 @@ impl EthernetController {
             seed,
         ));
 
+info!("eth 11");
         let ethernet_controller = Self {};
 
-        try_spawn!(sender, x.spawn(net_task(stack)));
+       try_spawn!(sender, x.spawn(net_task(stack)));
 
         try_spawn!(
             sender,
