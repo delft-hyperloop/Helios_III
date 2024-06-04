@@ -235,6 +235,22 @@ pub async fn tcp_connection_handler(
                                     info!("[tcp] FinishRunConfig command received");
                                     event_sender.send(Event::RunConfigCompleteEvent).await;
                                 }
+                                Command::Heartbeat(x) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] Heartbeat command received {} :)", x);
+                                    match socket.write_all(&Datapoint::new(Datatype::ResponseHeartbeat, x, embassy_time::Instant::now().as_ticks()).as_bytes()).await {
+                                        Ok(_) => {}
+                                        Err(e) => {
+                                            error!("Couldn't respond to heartbeat: {}", e);
+                                            // break 'connection;
+                                        }
+                                    }
+                                }
+                                Command::ArmBrakes(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] ArmBrakesCommand command received");
+                                    event_sender.send(Event::ArmBrakesCommand).await;
+                                }
                                 // Command::TurnAllHVRelaysOnUNSAFE(_) => {
                                 //     #[cfg(debug_assertions)]
                                 //     info!("[tcp] TurnAllHVRelaysOn command received");
@@ -261,9 +277,9 @@ pub async fn tcp_connection_handler(
                 // let cmd = Command::from_id(id);
             }
             // socket.write_all(b"trying to receive on data mpmc").await;
-            if let Err(e) = socket.flush().await {
-                error!("Could not flush TCP buffer! {:?}", e);
-            }
+            // if let Err(e) = socket.flush().await {
+            //     error!("Could not flush TCP buffer! {:?}", e);
+            // }
             match data_receiver.try_receive() {
                 Ok(data) => {
                     // socket.write(b"received on data mpmc").await;

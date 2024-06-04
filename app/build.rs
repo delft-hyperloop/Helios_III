@@ -30,6 +30,7 @@ struct GS {
     // udp_port: u16,
     buffer_size: usize,
     timeout: u64,
+    heartbeat: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -154,6 +155,9 @@ fn configure_pod(config: &Config) -> String {
     ) + &*format!(
         "pub const KEEP_ALIVE: u64 = {};\n",
         config.pod.net.keep_alive
+    ) + &*format!(
+        "pub const HEARTBEAT: u64 = {};\n",
+        config.gs.heartbeat
     )
 }
 

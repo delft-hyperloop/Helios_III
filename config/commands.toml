@@ -3,6 +3,10 @@ name = "DefaultCommand"
 id = 0x01
 
 [[Command]]
+name = "Heartbeat"
+id = 0x042
+
+[[Command]]
 name = "Levitate"
 id = 0x5a
 
@@ -100,6 +104,10 @@ id = 0x65
 [[Command]]
 name = "SystemReset"
 id = 0x66
+
+[[Command]]
+name = "ArmBrakes"
+id = 0x69
 
 [[Command]]
 name = "FinishRunConfig"

@@ -42,17 +42,17 @@ pub fn generate_datatypes(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> S
             id_list.push(dtype.id);
             data_ids.push(dtype.id);
         }
-        enum_definitions.push_str(&format!("\t{},\n", dtype.name));
+        enum_definitions.push_str(&format!("    {},\n", dtype.name));
         match_to_id.push_str(&format!(
-            "\t\t\tDatatype::{} => {},\n",
+            "            Datatype::{} => {},\n",
             dtype.name, dtype.id
         ));
         match_from_id.push_str(&format!(
-            "\t\t\t{} => Datatype::{},\n",
+            "            {} => Datatype::{},\n",
             dtype.id, dtype.name
         ));
         from_str.push_str(&format!(
-            "\t\t\t{:?} => Datatype::{},\n",
+            "            {:?} => Datatype::{},\n",
             dtype.name, dtype.name
         ));
     }

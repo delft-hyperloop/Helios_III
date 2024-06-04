@@ -62,13 +62,14 @@ impl BrakingController {
         _pd5: peripherals::PD5,
         _ptime: TIM16,
     ) -> Self {
+        info!("breaking controller started");
         // If we want to keep it alive we send a 10khz digital clock signal
         let braking_rearm: Output = Output::new(pg1, Level::High, Speed::Low); // <--- To keep the breaks not rearmed we send a 1, if we want to arm the breaks we send a 0
 
-        let mut led: Output = Output::new(pb0, Level::High, Speed::Low);
+        //let mut led: Output = Output::new(pb0, Level::High, Speed::Low);
         // let mut led2 : Output = Output::new(pd5,Level::High,Speed::Low);
-        led.set_high();
-        info!("set led on pb0 to high");
+        //led.set_high();
+        //info!("set led on pb0 to high");
         // let mut pwm = SimplePwm::new(
         //     ptime,
         //     Some(PwmPin::new_ch1(pb8, OutputType::PushPull)),
