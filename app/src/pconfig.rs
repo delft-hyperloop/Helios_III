@@ -110,6 +110,7 @@ pub fn id_as_value(id: &embedded_can::Id) -> u16 {
     }
 }
 
+
 pub fn extended_as_value(id: &ExtendedId) -> u16 {
     let temp = id.as_raw();
     let big_id = (temp & (0xFFFF000)) >> 16;
