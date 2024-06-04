@@ -11,25 +11,43 @@ internal class ControllerDiscoveryAndInit
 public static void SetRun(Levitation arcas)
 {
     // Set top-controller state to run
-    Console.WriteLine("Setting top-controller to run.");
-    arcas.TopController.Run();
-    Console.WriteLine("Initialization complete.");
+    Console.WriteLine("INFO:Setting top-controller to run.");
+            /*    arcas.TopController.Run();*/
+            try
+            {
+                arcas.TopController.Run();
+                Console.WriteLine("INFO:Initialization complete.");
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("WARNING:set_run");
+                try
+                {
+                    arcas.TopController.WaitState(TopControllerState.Run, 1);
+                    Console.WriteLine("INFO:Initialization complete.");
+                }
+                catch (Exception)
+                {
+
+                    Console.WriteLine("ERROR:run_error");
+                }
+            }
         }
 
 public static void ApplyConfig(Levitation arcas)
 {
-    Console.WriteLine("Loading configuration file {0}.", arcas.ConfigPath);
+    Console.WriteLine("INFO:Loading configuration file");
     try
     {
         ITopController topController = arcas.TopController;
         string config = arcas.ConfigPath;
         
         topController.LoadConfigurationFromFile(config);
-        Console.WriteLine("Config loaded sucessfuly");
+        Console.WriteLine("INFO:Config loaded sucessfuly");
     }
     catch (PmpException ex)
     {
-        Console.WriteLine("Error occurred when applying config {0}.", ex);
+        Console.WriteLine("WARNING:config_error");
         Thread.Sleep(2000);
     }
 }
@@ -55,7 +73,7 @@ public static ITopController DiscoveryAndInit(Levitation arcas)
 
 public static ITopController DiscoverTopController(Levitation arcas)
 {
-  Console.WriteLine("Trying to discover {0} on {1}.", arcas.Name, arcas.Address);
+  Console.WriteLine("INFO:Trying to discover {0} on {1}.", arcas.Name, arcas.Address);
   var system = new Pmp.System(arcas.Address);
 
   var controllers = system.Controllers.Values.ToArray();
@@ -67,7 +85,7 @@ public static ITopController DiscoverTopController(Levitation arcas)
   }
 
   var topController = system.Controllers[arcas.Name];
-  Console.WriteLine("Discovered controller {0} on address {1}.", topController.Name, topController.Address);
+  Console.WriteLine("INFO:Discovered controller {0} on address {1}.", topController.Name, topController.Address);
 
   // Check compatibility
   if (topController.IsSimulated)
@@ -77,10 +95,10 @@ public static ITopController DiscoverTopController(Levitation arcas)
     Console.WriteLine("Controller {0} is running backup firmware.", arcas.Name);
 
   if (!topController.IsCompatible)
-    Console.WriteLine("Controller {0} is not compatible with the current client version.", arcas.Name);
+    Console.WriteLine("ERROR:Controller {0} is not compatible with the current client version.", arcas.Name);
 
   if (topController.IsCompatible && !topController.IsBackupRunning)
-    Console.WriteLine("Controller {0} is compatible and not running backup firmware.", arcas.Name);
+    Console.WriteLine("INFO:Controller {0} is compatible and not running backup firmware.", arcas.Name);
   arcas.TopController = topController;
   return topController;
 }
@@ -119,15 +137,23 @@ public static void Reboot(Levitation arcas)
         }
 public static void Initialize(Levitation arcas, ITopController topController, bool applyModel, bool applyConfig) 
 {
-  Console.WriteLine("Wait for top-controller to reach Config.");
-  topController.WaitState(TopControllerState.Config, 10);
+
+            try
+            {
+                Console.WriteLine("INFO:trying to set state to config");
+                topController.WaitState(TopControllerState.Config, 10);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("WARNING:config_error");
+            }
 
   // Print information of subcontrollers
   var subControllers = topController.Controllers;
 
-  Console.WriteLine("Found {0} sub-controllers: {1}.", subControllers.Count(), string.Join(", ", subControllers.Keys));
+/*  Console.WriteLine("Found {0} sub-controllers: {1}.", subControllers.Count(), string.Join(", ", subControllers.Keys));
 
-
+*/
     if (applyModel)
     {
         try
@@ -137,7 +163,7 @@ public static void Initialize(Levitation arcas, ITopController topController, bo
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error occurred when applying Vertical Coupler Model {0}.", ex);
+            Console.WriteLine("WARNING:config_error");
         }
         try
         {
@@ -146,7 +172,7 @@ public static void Initialize(Levitation arcas, ITopController topController, bo
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error occurred when applying Lateral Coupler Model {0}.", ex);
+                    Console.WriteLine("WARNING:config_error");
         }
 
         try
@@ -156,7 +182,7 @@ public static void Initialize(Levitation arcas, ITopController topController, bo
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error occurred when applying Vertical Bus Model {0}.", ex);
+            Console.WriteLine("WARNING:config_error");
         }
         try
         {
@@ -165,7 +191,7 @@ public static void Initialize(Levitation arcas, ITopController topController, bo
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error occurred when applying Lateral Bus Model {0}.", ex);
+            Console.WriteLine("WARNING:config_error");
             Thread.Sleep(2000);
         } 
     }
