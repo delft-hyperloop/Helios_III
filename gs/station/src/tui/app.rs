@@ -89,8 +89,8 @@ impl App {
                         self.cur_state = state_to_string(datapoint.value).to_string();
                         self.logs.push((
                             Message::Warning(format!(
-                                "State changed to: {:?}",
-                                datapoint.value.to_be_bytes()
+                            "State changed to: {:?}",
+                            datapoint.value.to_be_bytes()
                             )),
                             timestamp(),
                         ));

@@ -6,11 +6,10 @@ use embassy_time::Instant;
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::core::fsm_status::Status;
-use crate::DataSender;
+use crate::{DataSender, Info};
 use crate::Datatype;
 use crate::Event;
 use crate::EventReceiver;
-use crate::Info;
 
 #[macro_export]
 macro_rules! transit {
