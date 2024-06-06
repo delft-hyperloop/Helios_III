@@ -19,15 +19,27 @@
     const lvBattery = storeManager.getStore("BatteryBalanceLow");
     const hvBattery = storeManager.getStore("BatteryBalanceHigh");
 
+    const speed = storeManager.getStore("Velocity");
+    const position = storeManager.getStore("Localisation");
+
+    const propTemp = storeManager.getStore("PropulsionTemperature");
+    const leviTemp = storeManager.getStore("LevitationTemperature");
+    const brakeTemp = storeManager.getStore("BrakeTemperature");
+
     let tableArr: any[][];
     let tableArr2: any[][];
+
+
     $: tableArr = [
-        ["Upper drawer VB", 0],
-        ["Bottom drawer VB", 0],
-        ["outside of VB", 0],
+        ["Upper drawer VB", $propTemp],
+        ["Bottom drawer VB", $leviTemp],
+        ["Outside of VB", $brakeTemp],
         ["HEMS", 0],
-        ["Motor core", 0],
+        ["EMS", 0],
+        ["Motor Front", 0],
+        ["Motor Back", 0],
     ]
+
     $: tableArr2 = [
         ["Current State", 0],
         ["Bottom drawer VB", 0],
@@ -89,8 +101,8 @@
                 <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4">
-                            <p>Velocity: <span class="font-mono font-medium">{0}</span></p>
-                            <p>Position: <span class="font-mono font-medium">{0}</span></p>
+                            <p>Velocity: <span class="font-mono font-medium">{$speed}</span></p>
+                            <p>Position: <span class="font-mono font-medium">{$position}</span></p>
                         </div>
                         <div class="flex gap-4">
                             <div class="flex gap-2">
