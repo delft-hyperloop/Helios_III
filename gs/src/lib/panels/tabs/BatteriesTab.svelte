@@ -79,6 +79,9 @@
     const lvCurrent = storeManager.getStore("BatteryCurrentLow");
     const hvCurrent = storeManager.getStore("BatteryCurrentHigh");
 
+    const imdV = storeManager.getStore("IMDVoltageDetails");
+    const imdI = storeManager.getStore("IMDIsolationDetails")
+
     let titles = ["Battery", "Avg cell V", "Max cell V", "Min cell V"
         , "Avg cell °C", "Max cell °C", "Min cell °C"];
     $: tableArr = [
@@ -124,6 +127,8 @@
             <div class="flex flex-col ml-4">
                 <p>LV Current: {$lvCurrent}</p>
                 <p>HV Current: {$hvCurrent}</p>
+                <p>IMD Isolat: {$imdI}</p>
+                <p>IMD Voltag: {$imdV}</p>
             </div>
         </Tile>
         <Tile containerClass="col-span-4" heading="Battery stats">
