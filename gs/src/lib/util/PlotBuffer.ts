@@ -1,5 +1,4 @@
 import uPlot from 'uplot';
-import util from './util';
 
 /**
  * This class is a wrapper around uPlot to make it easier to use.
@@ -13,13 +12,17 @@ export class PlotBuffer {
     private readonly _opts: uPlot.Options;
 
     constructor(xDataLength: number, yRange: [number, number], showLegend: boolean = false) {
-        this._data = [util.range(xDataLength)];
+        const span = 5 * 60 / xDataLength;
+
+        // Initialize the x-axis data with a sequence of timestamps
+        const currentTime = Date.now() / 1000;
+        this._data = [Array.from({length: xDataLength}, (_, i) => currentTime - (xDataLength - i) * span)];
 
         this._opts = {
             width: 500,
             height: 300,
             legend: {show: showLegend},
-            scales: { "%": { auto: false }, y: { range: yRange }, x: { time: false } },
+            scales: { "%": { auto: false }, y: { range: yRange }, x: { time: true } },
             axes: [
                 {
                     stroke: "#e4e6ee",

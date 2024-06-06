@@ -161,8 +161,8 @@
     //     return curr;
     // });
 
-
-
+    gdd.stores.registerStore<number>("IMDVoltageDetails", 0);
+    gdd.stores.registerStore<number>("IMDIsolationDetails", 0);
 
     /*
         emit('speed', {data})
