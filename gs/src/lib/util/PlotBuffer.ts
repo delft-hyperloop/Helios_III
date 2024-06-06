@@ -47,9 +47,20 @@ export class PlotBuffer {
     }
 
     public addSeries(series:uPlot.Series) {
+        const index: number = this._data.length;
+
         this._data.push(new Int32Array(this._data[0].length));
         this._opts.series.push(series);
         this._plot?.addSeries(series);
+
+        setInterval(() => {
+            this.addEntry(index, this.lastEntryOf(index))
+        }, 100)
+    }
+
+    public lastEntryOf(seriesIndex:number):number {
+        if (seriesIndex >= this._data.length) throw new Error("Series index out of bounds");
+        return this._data[seriesIndex]![this._data[0].length-1]!;
     }
 
     public updateSeries(seriesIndex:number, data:uPlot.TypedArray) {
