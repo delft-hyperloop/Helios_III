@@ -69,11 +69,20 @@
     const max8Vol = storeManager.getStore("Module8MaxVoltage");
     const min8Vol = storeManager.getStore("Module8MinVoltage");
 
+    const avgLvTemp = storeManager.getStore("BatteryMinTemperatureLow");
+    const minLvTemp = storeManager.getStore("BatteryMinTemperatureLow");
+    const maxLvTemp = storeManager.getStore("BatteryMaxTemperatureLow");
+    const avgLvVol = storeManager.getStore("BatteryMinVoltageLow");
+    const minLvVol = storeManager.getStore("BatteryMinVoltageLow");
+    const maxLvVol = storeManager.getStore("BatteryMaxVoltageLow");
+
+    const lvCurrent = storeManager.getStore("BatteryCurrentLow");
+    const hvCurrent = storeManager.getStore("BatteryCurrentHigh");
 
     let titles = ["Battery", "Avg cell V", "Max cell V", "Min cell V"
         , "Avg cell °C", "Max cell °C", "Min cell °C"];
     $: tableArr = [
-        ["LV", "12.5V", "13.5V", "10.5V", "30°C", "50°C", "20°C"],
+        ["LV", $avgLvVol, $maxLvVol, $minLvVol, $avgLvTemp, $maxLvTemp, $minLvTemp],
         ["HV mod 1", $avg1Vol, $max1Vol, $min1Vol, $avg1Temp, $max1Temp, $min1Temp],
         ["HV mod 2", $avg2Vol, $max2Vol, $min2Vol, $avg2Temp, $max2Temp, $min2Temp],
         ["HV mod 3", $avg3Vol, $max3Vol, $min3Vol, $avg3Temp, $max3Temp, $min3Temp],
@@ -113,18 +122,18 @@
         </Tile>
         <Tile insideClass="flex h-full items-center">
             <div class="flex flex-col ml-4">
-                <p>LV Current: NOT SET</p>
-                <p>HV Current: NOT SET</p>
+                <p>LV Current: {$lvCurrent}</p>
+                <p>HV Current: {$hvCurrent}</p>
             </div>
         </Tile>
         <Tile containerClass="col-span-4" heading="Battery stats">
             <Table background="bg-surface-900" {tableArr} {titles} />
         </Tile>
         <Tile containerClass="col-span-2" heading="LV Current">
-            <Chart title="LVI" background="bg-surface-900" />
+            <Chart title="LV Current" background="bg-surface-900" />
         </Tile>
         <Tile containerClass="col-span-2" heading="HV Current">
-            <Chart title="LVI" background="bg-surface-900" />
+            <Chart title="HV Current" background="bg-surface-900" />
         </Tile>
     </TileGrid>
 </div>
