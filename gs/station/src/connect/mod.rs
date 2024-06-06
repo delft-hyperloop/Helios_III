@@ -11,6 +11,7 @@ use tokio::net::{TcpListener, TcpStream};
 pub async fn connect_main(
     message_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
     command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
+    command_transmitter: tokio::sync::broadcast::Sender<crate::Command>,
 ) -> anyhow::Result<()> {
     // Bind the listener to the address
     message_transmitter.send(Message::Warning(format!(
@@ -34,6 +35,7 @@ pub async fn connect_main(
             socket,
             message_transmitter.clone(),
             command_receiver.resubscribe(),
+            command_transmitter.clone(),
         )
         .await;
     }
@@ -43,11 +45,12 @@ async fn process(
     socket: TcpStream,
     message_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
     command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
+    command_transmitter: tokio::sync::broadcast::Sender<crate::Command>,
 ) {
     let (reader, writer) = socket.into_split();
     let transmit = message_transmitter.clone();
     tokio::spawn(async move {
-        match get_messages_from_tcp(reader, transmit.clone()).await {
+        match get_messages_from_tcp(reader, transmit.clone(), command_transmitter.clone()).await {
             Ok(_) => {
                 transmit
                     .send(Message::Error(

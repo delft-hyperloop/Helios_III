@@ -64,7 +64,10 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> St
             "            \"{}\" => Command::{}(p),\n",
             &command.name, &command.name
         ));
-        to_idx.push_str(&*format!("            Command::{}(_) => {i},\n", &command.name));
+        to_idx.push_str(&*format!(
+            "            Command::{}(_) => {i},\n",
+            &command.name
+        ));
     }
 
     format!(

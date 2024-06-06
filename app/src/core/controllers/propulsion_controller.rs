@@ -16,6 +16,13 @@ pub struct PropulsionController {
 /// -
 impl PropulsionController {
 
+    /// Create a new instance of the PropulsionController
+    ///
+    /// related pins:
+    /// - PA4: DAC1 - write desired speed to propulsion
+    /// - PA5: ADC - read propulsion voltage
+    /// - PA6: ADC - read propulsion current
+    /// - PE5: GPIO - enable/disable propulsion
     pub fn new(data_sender: DataSender, pa4: PA4, dac1: DAC1, pa5: PA5, pa6: PA6, /* some gpio */) -> Self {
         let mut speed_set_pin = embassy_stm32::dac::DacCh1::new(dac1, embassy_stm32::dma::NoDma, pa4);
 
