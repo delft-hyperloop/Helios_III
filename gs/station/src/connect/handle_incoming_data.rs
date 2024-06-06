@@ -1,9 +1,10 @@
+#![allow(clippy::single_match)]
 use tokio::sync::broadcast::Sender;
 use crate::api::{Datapoint, Message};
 use crate::{Command, Datatype};
 
 pub async fn handle_incoming_data(data: Datapoint, msg_sender: Sender<Message>, cmd_sender: Sender<Command>) -> anyhow::Result<()> {
-    msg_sender.send(Message::Data(data))?;
+    msg_sender.send(Message::Data(data.clone()))?;
 
     match data.datatype {
         Datatype::FSMEvent => match &data.value {
