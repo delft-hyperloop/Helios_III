@@ -2,7 +2,7 @@ use core::cmp::Ordering;
 
 use defmt::*;
 use embassy_time::Instant;
-
+use crate::core::fsm_status::Route;
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::core::fsm_status::Status;
@@ -130,7 +130,7 @@ pub struct Fsm {
     pub event_queue: EventReceiver,
     pub data_queue: DataSender,
     pub status: Status,
-    pub route: heapless::Vec<State, 16>,
+    pub route: Route,
 }
 
 /// * Finite State Machine (FSM) for the DH08 POD -> Helios III
@@ -143,6 +143,7 @@ impl Fsm {
             event_queue: pq,
             data_queue: dq,
             status: Status::default(),
+            route: Route::default(),
         }
     }
 
