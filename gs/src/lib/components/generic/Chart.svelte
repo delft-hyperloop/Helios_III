@@ -6,10 +6,11 @@
 
     export let title: string;
     export let refreshRate: number = 100;
+    export let span: number = 5*60*1000;
 
     export let background: string = "bg-surface-800";
     export let height: number = 200;
-    export let chart: PlotBuffer = $chartStore.get(title) || new PlotBuffer(1000, [0, 100], false);
+    export let chart: PlotBuffer = $chartStore.get(title) || new PlotBuffer(refreshRate, span, [0, 100], false);
 
     let width: number;
     let resize = (width:number) => {
@@ -20,7 +21,7 @@
     let plotContainer: HTMLDivElement;
 
     onMount(async () => {
-        chart.draw(plotContainer, refreshRate);
+        chart.draw(plotContainer);
         resize(width)
     })
 
