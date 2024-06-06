@@ -7,6 +7,7 @@ use tokio::net::tcp::OwnedReadHalf;
 pub async fn get_messages_from_tcp(
     mut reader: OwnedReadHalf,
     message_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
+    command_transmitter: tokio::sync::broadcast::Sender<crate::Command>,
 ) -> anyhow::Result<()> {
     let mut buffer = [0; { NETWORK_BUFFER_SIZE }];
     let mut byte_queue: VecDeque<u8> = VecDeque::new();
@@ -29,7 +30,7 @@ pub async fn get_messages_from_tcp(
                 let _ = &buffer[..n].iter().for_each(|x| {
                     byte_queue.push_back(*x);
                 });
-                crate::connect::queueing::parse(&mut byte_queue, message_transmitter.clone())
+                crate::connect::queueing::parse(&mut byte_queue, message_transmitter.clone(), command_transmitter.clone())
                     .await?;
             }
             Err(e) => {
