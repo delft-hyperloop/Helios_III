@@ -59,7 +59,6 @@ impl EthernetController {
 
         static PACKETS: StaticCell<PacketQueue<16, 16>> = StaticCell::new();
 
-info!("eth 6");
         let device: Device = Ethernet::new(
             PACKETS.init(PacketQueue::<16, 16>::new()),
             pins.eth_pin,
@@ -77,10 +76,8 @@ info!("eth 6");
             mac_addr,
         );
 
-info!("eth 7");
         let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
         //        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
-info!("eth 8");
         //            StaticConfigV4 {
         //                address: ip_cidr_from_config(POD_IP_ADDRESS),
         //                gateway: None,
@@ -90,9 +87,7 @@ info!("eth 8");
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();
 
-info!("eth 9");
         static RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
-info!("eth 10");
         let stack: &Stack<Device> = &*STACK.init(Stack::new(
             device,
             eth_config,
@@ -100,7 +95,6 @@ info!("eth 10");
             seed,
         ));
 
-info!("eth 11");
         let ethernet_controller = Self {};
 
        try_spawn!(sender, x.spawn(net_task(stack)));
