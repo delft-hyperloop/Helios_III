@@ -34,7 +34,7 @@ pub fn handle_line_from_levi(
             )))?;
         }
         "DATA" if params.len() > 2 => {
-            if let Ok(x) = params[2].trim().parse::<f64>() {
+            if let Ok(x) = params[2].trim().replace(",", ".").parse::<f64>() {
                 msg_send.send(Message::Data(Datapoint::new(
                     Datatype::from_str(params[1]),
                     x.to_bits(),

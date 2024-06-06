@@ -1,6 +1,7 @@
 mod queueing;
 mod tcp_reader;
 mod tcp_writer;
+mod handle_incoming_data;
 
 use crate::api::{gs_socket, Message};
 use crate::connect::tcp_reader::get_messages_from_tcp;

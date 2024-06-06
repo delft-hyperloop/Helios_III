@@ -131,6 +131,7 @@ pub struct Fsm {
     pub event_queue: EventReceiver,
     pub data_queue: DataSender,
     pub status: Status,
+    pub route: heapless::Vec<State, 16>,
 }
 
 /// * Finite State Machine (FSM) for the DH08 POD -> Helios III
