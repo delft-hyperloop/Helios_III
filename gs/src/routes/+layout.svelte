@@ -6,8 +6,8 @@
     import type {dataConvFun} from "$lib/types";
 
     // CHARTS
-    let emsChart = new PlotBuffer(1000, [0, 100], false);
-    let hemsChart = new PlotBuffer(1000, [0, 100], false);
+    let emsChart = new PlotBuffer(1000, 300000, [0, 100], false);
+    let hemsChart = new PlotBuffer(1000, 300000, [0, 100], false);
     emsChart.addSeries(StrokePresets.theoretical())
     emsChart.addSeries(StrokePresets.yellow())
     emsChart.addSeries(StrokePresets.blue())
@@ -17,23 +17,23 @@
     $chartStore.set("EMS", emsChart);
     $chartStore.set("HEMS", hemsChart);
 
-    let voffChart = new PlotBuffer(1000, [0, 100], false)
-    let hoffChart = new PlotBuffer(1000, [0, 100], false)
+    let voffChart = new PlotBuffer(100, 300000, [0, 100], false)
+    let hoffChart = new PlotBuffer(100, 300000, [0, 100], false)
     hoffChart.addSeries(StrokePresets.theoretical())
-    let velChart = new PlotBuffer(1000, [0, 100], false)
+    let velChart = new PlotBuffer(100, 300000, [0, 100], false)
 
     $chartStore.set('Offset Horizontal', hoffChart);
     $chartStore.set('Offset Vertical', voffChart);
     $chartStore.set('Velocity', velChart);
 
-    let trr = new PlotBuffer(16000, [0, 50], false)
+    let trr = new PlotBuffer(1, 60000, [0, 50], false)
     trr.addSeries(StrokePresets.theoretical())
     $chartStore.set('Theoretical vs Real run', trr)
 
-    let lvCurrent = new PlotBuffer(1000, [-4000, 4000], false)
+    let lvCurrent = new PlotBuffer(100, 300000, [-4000, 4000], false)
     $chartStore.set('LV Current', lvCurrent)
 
-    let hvCurrent = new PlotBuffer(1000, [-4000, 4000], false)
+    let hvCurrent = new PlotBuffer(100, 300000, [-4000, 4000], false)
     $chartStore.set('HV Current', hvCurrent)
 
     ///////////////////////////////////////////////////////
