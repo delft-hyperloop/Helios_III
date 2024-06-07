@@ -6,8 +6,8 @@
     import type {dataConvFun} from "$lib/types";
 
     // CHARTS
-    let emsChart = new PlotBuffer(1000, 300000, [0, 100], false);
-    let hemsChart = new PlotBuffer(1000, 300000, [0, 100], false);
+    let emsChart = new PlotBuffer(100000, 300000, [0, 100], false);
+    let hemsChart = new PlotBuffer(100000, 300000, [0, 100], false);
     emsChart.addSeries(StrokePresets.theoretical())
     emsChart.addSeries(StrokePresets.yellow())
     emsChart.addSeries(StrokePresets.blue())
@@ -17,16 +17,16 @@
     $chartStore.set("EMS", emsChart);
     $chartStore.set("HEMS", hemsChart);
 
-    let voffChart = new PlotBuffer(100, 300000, [0, 100], false)
-    let hoffChart = new PlotBuffer(100, 300000, [0, 100], false)
+    let voffChart = new PlotBuffer(10000, 300000, [0, 100], false)
+    let hoffChart = new PlotBuffer(10000, 300000, [0, 100], false)
     hoffChart.addSeries(StrokePresets.theoretical())
-    let velChart = new PlotBuffer(100, 300000, [0, 100], false)
+    let velChart = new PlotBuffer(2000, 5*60*1000, [0, 100], false)
 
     $chartStore.set('Offset Horizontal', hoffChart);
     $chartStore.set('Offset Vertical', voffChart);
     $chartStore.set('Velocity', velChart);
 
-    let trr = new PlotBuffer(1, 60000, [0, 50], false)
+    let trr = new PlotBuffer(10000, 60000, [0, 50], false)
     trr.addSeries(StrokePresets.theoretical())
     $chartStore.set('Theoretical vs Real run', trr)
 
@@ -110,13 +110,13 @@
 
     gdd.stores.registerStore<number>("BatteryCurrentLow", 0.0, data => {
         const curr = Number(data) / 10;
-        $chartStore.get("LV Current")!.addEntry(1, curr);
+        lvCurrent.addEntry(1, curr + 150);
         return curr;
     });
 
     gdd.stores.registerStore<number>("BatteryCurrentHigh", 0.0, data => {
         const curr = Number(data) / 10;
-        $chartStore.get("HV Current")!.addEntry(1, curr);
+        $chartStore.get("Velocity")!.addEntry(1, curr + 10);
         return curr;
     });
 
