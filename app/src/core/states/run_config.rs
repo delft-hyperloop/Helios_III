@@ -1,4 +1,4 @@
-use defmt::error;
+use defmt::{debug, error};
 use defmt::info;
 
 use crate::core::controllers::breaking_controller::BRAKE;
@@ -33,11 +33,11 @@ impl Fsm {
     pub async fn react_run_config(&mut self, event: Event) {
         match event {
             Event::SetRunConfig(x) => {
-                let _bytes: [u8; 8] = x.to_be_bytes();
-                todo!();
-                //todo!(); // TODO: send message to propulsion to set desired speed ?
-                //self.peripherals.propulsion_controller.set_run_config(x);
-                // self.transit(State::Idle).await;
+                #[cfg(debug_assertions)]
+                debug!("Setting run config: {:?}", x);
+                self.route = x.into();
+                #[cfg(debug_assertions)]
+                debug!("Set {:?}", &self.route);
             }
             Event::ArmBrakesCommand => {
                 self.peripherals.braking_controller.arm_breaks(); // without this you cant turn on hv
