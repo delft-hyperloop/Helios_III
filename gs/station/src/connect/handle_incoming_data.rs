@@ -7,11 +7,8 @@ pub async fn handle_incoming_data(data: Datapoint, msg_sender: Sender<Message>, 
     msg_sender.send(Message::Data(data.clone()))?;
 
     match data.datatype {
-        Datatype::FSMEvent => match &data.value {
-            0x505 => {
-                cmd_sender.send(Command::ls0(0))?;
-            }
-            _ => {}
+        Datatype::LeviInstruction => {
+            cmd_sender.send(Command::from_id(data.value as u16, 0))?;
         }
         _ => {}
     }
