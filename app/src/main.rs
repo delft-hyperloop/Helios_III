@@ -1,4 +1,3 @@
-#![feature(adt_const_params)]
 #![no_std]
 #![no_main]
 #![allow(
