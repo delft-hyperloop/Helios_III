@@ -234,6 +234,14 @@ impl Fsm {
             .await;
     }
 
+    /// # Send a command to Levi
+    #[allow(unused)]
+    pub async fn send_levi_cmd(&mut self, cmd: crate::Command) {
+        self.data_queue
+            .send(Datapoint::new(crate::Datatype::LeviInstruction, cmd.to_id() as u64, Instant::now().as_ticks()))
+            .await;
+    }
+
     pub async fn log(&self, info: crate::Info) {
         self.data_queue
             .send(Datapoint::new(
