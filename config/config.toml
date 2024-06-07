@@ -13,7 +13,7 @@ error_channel = "error_channel"
 levi_exec_path = "/Users/andtsa/levitest"
 
 [pod.net]
-ip = [192, 168, 1, 69]
+ip = [192, 168, 0, 199]
 port = 17034
 udp_port = 17035
 mac_addr = [0x00, 0x1e, 0x67, 0x4c, 0x5c, 0x3e]
