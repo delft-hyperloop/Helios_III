@@ -74,7 +74,7 @@ export class GrandDataDistributor {
      * @private
      */
     private async fetchData() {
-        const data:Datapoint[] = await invoke('generate_test_data');
+        const data:Datapoint[] = await invoke('unload_buffer');
         this.processData(data);
     }
 
