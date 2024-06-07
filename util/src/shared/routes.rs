@@ -1,6 +1,12 @@
 #[cfg(target_os = "none")]
 use heapless::LinearMap;
 
+#[cfg(target_os = "none")]
+pub type LocationSpeedMap = LinearMap<Location, u8, 6>;
+
+#[cfg(not(target_os = "none"))]
+pub type LocationSpeedMap = std::collections::BTreeMap<Location, u8>;
+
 #[allow(dead_code)]
 pub trait RouteUse {
     /// Transition to the next position from the plan
@@ -20,6 +26,7 @@ pub trait RouteUse {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(target_os = "none", derive(defmt::Format))]
 pub enum Location {
     StraightStart = 0b001,
     LaneSwitchStraight = 0b010,
@@ -29,24 +36,33 @@ pub enum Location {
     StopHere = 0b110, // no next position, just stop here.
 }
 
-#[cfg(target_os = "none")]
+#[derive(Debug)]
 pub struct Route {
     pub positions: [Location; 8],
     pub current_position: usize,
-    pub speeds: heapless::LinearMap<Location, u8, 6>,
+    pub speeds: LocationSpeedMap,
 }
 
-#[cfg(not(target_os = "none"))]
-pub struct Route {
-    pub positions: [Location; 8],
-    pub current_position: usize,
-    pub speeds: std::collections::BTreeMap<Location, u8>,
+#[cfg(target_os = "none")]
+impl defmt::Format for Route {
+    fn format(&self, fmt: defmt::Formatter) {
+        defmt::write!(fmt, "Route {{\n");
+        for l in self.positions.iter() {
+            defmt::write!(fmt, " -> {}", l);
+        }
+        defmt::write!(fmt, "\n currently at: {}\n", self.current_position);
+        defmt::write!(fmt, " Speeds: \n");
+        for (key, value) in self.speeds.iter() {
+            defmt::write!(fmt, "  {}: {}\n", key, value);
+        }
+        defmt::write!(fmt, "}}");
+    }
 }
 
 impl From<u64> for Route {
     fn from(value: u64) -> Self {
         #[cfg(target_os = "none")]
-        let mut speeds = heapless::LinearMap::new();
+        let mut speeds = LocationSpeedMap::new();
 
         #[cfg(not(target_os = "none"))]
         let mut speeds = std::collections::BTreeMap::new();
