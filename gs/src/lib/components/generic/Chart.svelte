@@ -5,7 +5,7 @@
     import {chartStore} from "$lib/stores/state";
 
     export let title: string;
-    export let refreshRate: number = 100;
+    export let refreshRate: number = 1000;
     export let span: number = 5*60*1000;
 
     export let background: string = "bg-surface-800";

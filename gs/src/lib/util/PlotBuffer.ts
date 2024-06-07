@@ -10,7 +10,7 @@ export class PlotBuffer {
     private _intervalId: number | undefined;
     private readonly _data: uPlot.AlignedData;
     private readonly _opts: uPlot.Options;
-    private buffer: number[][] = [];
+    private buffer: number[][];
     private readonly updateInterval:number;
 
     /**
@@ -20,15 +20,17 @@ export class PlotBuffer {
      * @param yRange
      * @param showLegend
      */
-    constructor(updateInterval:number, span:number, yRange: [number, number], showLegend: boolean = false) {
-        this.updateInterval = updateInterval;
+    constructor(updateInterval:number, span:number, yRange: [number, number], showLegend: boolean = false) {    this.updateInterval = updateInterval;
+        this.buffer = [[]];
 
-        const xDataLength = Math.round(span / updateInterval);
+        const spanInSeconds = span / 1000;
+        const updateIntervalInSeconds = updateInterval / 1000;
+
+        const xDataLength = Math.round(spanInSeconds / updateIntervalInSeconds);
 
         const currentTime = Date.now() / 1000;
-        this._data = [Array.from({length: xDataLength}, (_, i) => currentTime - (xDataLength - i) * (span / 1000))];
-        console.log(xDataLength)
-        // this._data = [[0,2,4,6,9]]s
+        this._data = [Array.from({length: xDataLength}, (_, i) => currentTime - (xDataLength - i) * updateIntervalInSeconds)];
+
         this._opts = {
             width: 500,
             height: 300,
@@ -61,16 +63,16 @@ export class PlotBuffer {
     }
 
     public addSeries(series:uPlot.Series) {
+        const index: number = this._data.length;
         this._data.push(new Int32Array(this._data[0].length));
         this._opts.series.push(series);
         this._plot?.addSeries(series);
-
-        this.buffer.push([]);
+        this.buffer[index] = [];
     }
 
     public lastEntryOf(seriesIndex:number):number {
         if (seriesIndex >= this._data.length) throw new Error("Series index out of bounds");
-        return this._data[seriesIndex]![this._data[0].length-1]!;
+        return this._data[seriesIndex][this._data[0].length-1] || 0;
     }
 
     public updateSeries(seriesIndex:number, data:uPlot.TypedArray) {
@@ -94,6 +96,16 @@ export class PlotBuffer {
      */
     public addEntry(seriesIndex:number, value:number) {
         this.buffer[seriesIndex].push(value);
+        // let datum = this._data[seriesIndex];
+        //
+        // for (let i = 0; i < datum.length-1; i++) {
+        //     datum[i] = datum[i+1];
+        // }
+        //
+        // datum[datum.length-1] = value;
+        //
+        // // Redraw the chart with the updated data
+        // console.log("")
     }
 
     /**
@@ -111,24 +123,34 @@ export class PlotBuffer {
             return;
         }
 
-        // this._intervalId = window.setInterval(() => {
-        //     for (let i = 0; i < this.buffer.length; i++) {
-        //         const value = this.buffer[i].length > 0 ?
-        //             this.buffer[i].reduce((a, b) => a + b, 0) / this.buffer[i].length :
-        //             this.lastEntryOf(i);
-        //
-        //         this.addEntry(i, value);
-        //
-        //         this.buffer[i] = [];
-        //     }
-        //
-        //     for (let i = 0; i < this._data[0].length - 1; i++) {
-        //         this._data[0][i] = this._data[0][i + 1];
-        //     }
-        //     this._data[0][this._data[0].length - 1] = Date.now() / 1000;
-        //
-        //     this.redraw();
-        // }, this.updateInterval);
+        this._intervalId = window.setInterval(() => {
+            this.updateData();
+        }, this.updateInterval);
+    }
+
+    private updateData() {
+        for (let i = 1; i < this.buffer.length; i++) {
+            const value = this.buffer[i].length > 0 ?
+                this.buffer[i].reduce((a, b) => a + b, 0) / this.buffer[i].length :
+                this.lastEntryOf(i);
+
+            // Update the _data array
+            let datum = this._data[i];
+            for (let j = 0; j < datum.length - 1; j++) {
+                datum[j] = datum[j + 1];
+            }
+            datum[datum.length - 1] = value;
+
+
+
+            this.buffer[i] = [];
+        }
+
+        for (let i = 0; i < this._data[0].length - 1; i++) {
+            this._data[0][i] = this._data[0][i + 1];
+        }
+        this._data[0][this._data[0].length - 1] = Date.now() / 1000;
+        this.redraw();
     }
 
     /**
@@ -138,7 +160,7 @@ export class PlotBuffer {
     public redraw() {
         if (this._plot) {
             this._plot.batch(() => {
-                this._plot!.setData(this._data, false);
+                this._plot!.setData(this._data, true);
                 this._plot!.redraw(false, false);
             });
         }
