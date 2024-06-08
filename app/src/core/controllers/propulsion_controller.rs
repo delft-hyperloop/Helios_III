@@ -37,6 +37,13 @@ impl PropulsionController {
 
         // self.speed_set_pin.set_value();
     }
+    pub fn stop(&self) {
+        // self.speed_set_pin.set_value();
+    }
+
+    pub fn turn_off(&self) {
+        // self.enable_pin.set_low();
+    }
 
     // #[embassy_executor::task]
     // pub async fn read_prop_voltage(data_sender: DataSender, ) {
