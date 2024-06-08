@@ -9,7 +9,8 @@ use crate::Datatype;
 
 impl Fsm {
     pub fn entry_accelerating(&mut self) {
-
+        self.peripherals.propulsion_controller.set_speed(self.route.current_speed() as u64);
+        //We have to put a stip on the track that would define a braking point here
     }
 
     pub async fn react_mv_st(&mut self, event: Event) {
@@ -19,14 +20,14 @@ impl Fsm {
                     Location::LaneSwitchStraight => {
                         #[cfg(debug_assertions)]
                         info!("Entering a lane switch!");
-
+                        // self.peripherals.propulsion_controller.turn_off();
                         self.send_levi_cmd(crate::Command::ls1(0)).await;
                         transit!(self, State::MovingLSST);
                     }
                     Location::LaneSwitchCurved => {
                         #[cfg(debug_assertions)]
                         info!("Entering a lane switch!");
-
+                        // self.peripherals.propulsion_controller.turn_off();
                         self.send_levi_cmd(crate::Command::ls2(0)).await;
                         transit!(self, State::MovingLSCV);
                     }
@@ -41,8 +42,19 @@ impl Fsm {
                     }
                 }
             }
+            Event::DirectionChangedEvent => {
+                match self.route.current_position(){
+                    Location::StopHere => {
+                        info!("Stopping here.");
+                        transit!(self, State::Exit);
+                    }
+                    _ => {
+                        self.peripherals.propulsion_controller.set_speed(self.route.current_speed() as u64);
+                    }
+                }
+            }
             Event::BrakingPointReachedEvent => {
-                transit!(self, State::Exit);
+                transit!(self, State::EndST);
                 todo!();
             }
             _ => {
