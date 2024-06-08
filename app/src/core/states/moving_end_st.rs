@@ -8,18 +8,7 @@ use crate::Event;
 
 impl Fsm {
     pub fn entry_end_st(&mut self) {
-        // match self.route.next_position() {
-        //     Location::StopHere => {
-        //         info!("Entering a lane switch!");
-        //         self.send_levi_cmd(crate::Command::ls0(0)).await;
-        //         transit!(self, State::EndST);
-        //     }
-        //     Location::LaneSwitchCurved => {
-        //
-        //     }
-        // }
        // "self.peripherals.propulsion_controller.stop();"
-        // todo!()
 
 
     }
@@ -27,19 +16,30 @@ impl Fsm {
     pub async fn react_end_st(&mut self, event: Event) {
         match event {
             Event::DirectionChangedEvent => {
-                self.peripherals.propulsion_controller.set_speed(self.route.current_speed() as u64);
+                match self.route.current_position(){
+                    Location::StopHere => {
+                        info!("Stopping here.");
+                        transit!(self, State::Exit);
+                    }
+                    _ => {
+                        self.peripherals.propulsion_controller.set_speed(self.route.current_speed() as u64);
+                    }
+                }
             }
             Event::RunFinishedEvent => {
                 #[cfg(debug_assertions)]
                 info!("Run finished");
-
                 transit!(self, State::Exit);
             }
             Event::LaneSwitchBackwardsB => {
-                // transit!(self, State::);
+                self.send_levi_cmd(crate::Command::ls1(0)).await;
+                // self.peripherals.propulsion_controller.turn_off();
+                transit!(self, State::MovingLSST);
             }
             Event::LaneSwitchBackwardsC => {
-                todo!();
+                self.send_levi_cmd(crate::Command::ls2(0)).await;
+                // self.peripherals.propulsion_controller.turn_off();
+                transit!(self, State::MovingLSCV);
             }
             _ => {
                 info!("The current state ignores {}", event.to_str());
