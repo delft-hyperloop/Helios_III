@@ -9,12 +9,12 @@ use crate::Datatype;
 
 impl Fsm {
     pub fn entry_accelerating(&mut self) {
-        todo!();
+
     }
 
     pub async fn react_mv_st(&mut self, event: Event) {
         match event {
-            Event::LaneSwitchingPointReachedEvent => {
+            Event::LaneSwitchForward => {
                 match self.route.next_position() {
                     Location::LaneSwitchStraight => {
                         #[cfg(debug_assertions)]
