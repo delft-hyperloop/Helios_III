@@ -1,3 +1,4 @@
+// use embassy_stm32::gpio::Speed;
 #[cfg(target_os = "none")]
 use heapless::LinearMap;
 
@@ -33,12 +34,13 @@ pub enum Location {
     LaneSwitchCurved = 0b011,
     StraightEndTrack = 0b100,
     LaneSwitchEndTrack = 0b101,
+    StraightBackwards = 0b111,
     StopHere = 0b110, // no next position, just stop here.
 }
 
 #[derive(Debug)]
 pub struct Route {
-    pub positions: [Location; 8],
+    pub positions: [Location; 21],
     pub current_position: usize,
     pub speeds: LocationSpeedMap,
 }
@@ -59,18 +61,20 @@ impl defmt::Format for Route {
     }
 }
 
-impl From<u64> for Route {
-    fn from(value: u64) -> Self {
+impl From<(u64,u64)> for Route {
+    fn from(bytes: (u64,u64)) -> Self {
         #[cfg(target_os = "none")]
         let mut speeds = LocationSpeedMap::new();
-
+        let loc = bytes.0;
+        let speed = bytes.1;
         #[cfg(not(target_os = "none"))]
         let mut speeds = std::collections::BTreeMap::new();
 
-        let bytes: [u8; 8] = value.to_be_bytes();
+        let bytes: [u8; 8] = speed.to_be_bytes();
 
         let _ = (
-            speeds.insert(Location::StraightStart, bytes[3]),
+            speeds.insert(Location::StraightStart, bytes[2]),
+            speeds.insert(Location::StraightBackwards, bytes[3]),
             speeds.insert(Location::LaneSwitchStraight, bytes[4]),
             speeds.insert(Location::LaneSwitchCurved, bytes[5]),
             speeds.insert(Location::StraightEndTrack, bytes[6]),
@@ -79,26 +83,27 @@ impl From<u64> for Route {
         );
 
         Route {
-            positions: parse_locations([bytes[0], bytes[1], bytes[2]]),
+            positions: parse_locations(loc),
             current_position: 0,
             speeds,
         }
     }
 }
 
-fn parse_locations(bytes: [u8; 3]) -> [Location; 8] {
-    let mut locations = [Location::StopHere; 8];
-    let mut bit_seq: u32 = ((bytes[2] as u32) << 16) | ((bytes[1] as u32) << 8) | (bytes[0] as u32);
-
-    for i in 0..8 {
+fn parse_locations(bytes: u64) -> [Location; 21] {
+    let mut locations = [Location::StopHere; 21];
+    // let mut bit_seq: u32 = ((bytes[2] as u32) << 16) | ((bytes[1] as u32) << 8) | (bytes[0] as u32);
+    let mut bit_seq = bytes;
+    for i in 0..20 {
         let bits = (bit_seq & 0b111) as u8;
         bit_seq >>= 3;
-        locations[7 - i] = match bits {
+        locations[21 - i] = match bits {
             0b001 => Location::StraightStart,
             0b010 => Location::LaneSwitchStraight,
             0b011 => Location::LaneSwitchCurved,
             0b100 => Location::StraightEndTrack,
             0b101 => Location::LaneSwitchEndTrack,
+            0b111 => Location::StraightBackwards,
             0b110 => Location::StopHere,
             _ => Location::StopHere, // Handle invalid patterns
         };
@@ -114,16 +119,22 @@ impl From<Route> for u64 {
         // Encode the positions as a 24-bit integer
         for (i, location) in val.positions.iter().enumerate() {
             let location_bits = *location as u32;
-            bit_seq |= location_bits << (3 * (7 - i));
+            bit_seq |= location_bits << (3 * (20 - i));
         }
 
         // Start with the bit sequence and shift it into the first three bytes
-        let mut result: u64 = (bit_seq as u64) << 40;
+        let mut result: u64 = (bit_seq as u64) << 48;
 
         // Insert speed data into the remaining bytes
         result |= (val
             .speeds
             .get(&Location::StraightStart)
+            .copied()
+            .unwrap_or(0) as u64)
+            << 40;
+        result |= (val
+            .speeds
+            .get(&Location::StraightBackwards)
             .copied()
             .unwrap_or(0) as u64)
             << 32;
@@ -157,7 +168,7 @@ impl From<Route> for u64 {
 
 impl RouteUse for Route {
     fn next_position(&mut self) -> Location {
-        if self.current_position >= 7 {
+        if self.current_position >= 20 {
             Location::StopHere
         } else {
             self.current_position += 1;
@@ -166,7 +177,7 @@ impl RouteUse for Route {
     }
 
     fn current_position(&self) -> Location {
-        if self.current_position > 7 {
+        if self.current_position > 20 {
             Location::StopHere
         } else {
             self.positions[self.current_position]
@@ -188,7 +199,7 @@ impl RouteUse for Route {
     }
 
     fn peek_next_position(&mut self) -> Location {
-        if self.current_position > 7 {
+        if self.current_position > 20 {
             Location::StopHere
         } else {
             self.positions[self.current_position + 1]
@@ -224,7 +235,7 @@ impl Default for Route {
         ]
         .into();
         Self {
-            positions: [Location::StopHere; 8],
+            positions: [Location::StopHere; 21],
             current_position: 0,
             speeds,
         }

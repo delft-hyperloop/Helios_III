@@ -19,9 +19,12 @@ pub struct FSMPeripherals {
     pub eth_controller: EthernetController,
     pub can_controller: CanController,
     pub hv_peripherals: HVPeripherals,
+    pub propulsion_controller: PropulsionController,
     //  pub lv_controller: BatteryController,
     pub red_led: Output<'static>,
 }
+
+
 
 impl FSMPeripherals {
     // pub fn new(p : Peripherals, x: &Spawner, q : &PriorityChannel<NoopRawMutex, Event, Max, 16>) -> Self {
@@ -116,6 +119,7 @@ impl FSMPeripherals {
                 pin_7: Output::new(p.PG10, Level::Low, Speed::Low),
             },
             red_led: Output::new(p.PB14, Level::Low, Speed::High),
+            propulsion_controller : PropulsionController::new(i.data_sender, p.PA4, p.DAC1, p.PA5, p.PA6),
         }
     }
 }
