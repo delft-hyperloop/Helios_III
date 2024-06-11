@@ -155,10 +155,7 @@ fn configure_pod(config: &Config) -> String {
     ) + &*format!(
         "pub const KEEP_ALIVE: u64 = {};\n",
         config.pod.net.keep_alive
-    ) + &*format!(
-        "pub const HEARTBEAT: u64 = {};\n",
-        config.gs.heartbeat
-    )
+    ) + &*format!("pub const HEARTBEAT: u64 = {};\n", config.gs.heartbeat)
 }
 
 fn configure_internal(config: &Config) -> String {

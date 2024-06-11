@@ -1,5 +1,4 @@
 use defmt_rtt as _;
-use defmt::info;
 use embassy_executor::Spawner;
 use embassy_net::Stack;
 use embassy_net::StackResources;
@@ -97,7 +96,7 @@ impl EthernetController {
 
         let ethernet_controller = Self {};
 
-       try_spawn!(sender, x.spawn(net_task(stack)));
+        try_spawn!(sender, x.spawn(net_task(stack)));
 
         try_spawn!(
             sender,

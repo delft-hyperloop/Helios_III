@@ -237,7 +237,17 @@ pub async fn tcp_connection_handler(
                                 Command::Heartbeat(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Heartbeat command received {} :)", x);
-                                    match socket.write_all(&Datapoint::new(Datatype::ResponseHeartbeat, x, embassy_time::Instant::now().as_ticks()).as_bytes()).await {
+                                    match socket
+                                        .write_all(
+                                            &Datapoint::new(
+                                                Datatype::ResponseHeartbeat,
+                                                x,
+                                                embassy_time::Instant::now().as_ticks(),
+                                            )
+                                            .as_bytes(),
+                                        )
+                                        .await
+                                    {
                                         Ok(_) => {}
                                         Err(e) => {
                                             error!("Couldn't respond to heartbeat: {}", e);
