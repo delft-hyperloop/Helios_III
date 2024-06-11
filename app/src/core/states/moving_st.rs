@@ -5,7 +5,6 @@ use crate::core::finite_state_machine::State;
 use crate::core::fsm_status::Location;
 use crate::core::fsm_status::RouteUse;
 use crate::transit;
-use crate::Datatype;
 use crate::Event;
 
 impl Fsm {
