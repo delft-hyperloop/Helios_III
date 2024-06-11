@@ -2,20 +2,13 @@ use defmt::debug;
 use defmt::error;
 use defmt::info;
 
-use crate::core::controllers::breaking_controller::BRAKE;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::transit;
 use crate::Event;
 
-//use crate::core::finite_state_machine_peripherals::ARMED;
-pub static mut ROUTE: u64 = 0;
-pub static mut SPEED: u64 = 0;
 impl Fsm {
     pub fn entry_run_config(&mut self) {
-        unsafe {
-            BRAKE = false;
-        }
         // if !self.peripherals.braking_controller.brake_retraction {
         //     transit!(self, State::Exit);
         //     //LOG BECAUSE BRAKES WERE NOT ALIVE
@@ -37,35 +30,32 @@ impl Fsm {
             Event::SetRunConfig(x) => {
                 #[cfg(debug_assertions)]
                 debug!("Setting run config: {:?}", x);
-                unsafe {
-                    ROUTE = x;
-                }
+                self.route.positions_from(x);
             }
             Event::SetRunConfigSpeed(x) => {
                 #[cfg(debug_assertions)]
                 debug!("Setting run config speed: {:?}", x);
-                unsafe {
-                    SPEED = x;
-                }
+                self.route.speeds_from(x);
             }
             Event::ArmBrakesCommand => {
                 self.peripherals.braking_controller.arm_breaks(); // without this you cant turn on hv
                 #[cfg(debug_assertions)]
                 info!("[runconf] Rearmed braked!")
             }
-            Event::RunConfigCompleteEvent => unsafe {
+            Event::RunConfigCompleteEvent => {
                 // todo!(); // TODO: receive reply from propulsion that desired speed has been set
-                if ROUTE != 0 && SPEED != 0 {
-                    self.route = (ROUTE, SPEED).into();
-                    #[cfg(debug_assertions)]
-                    debug!("Set {:?}", &self.route);
-                    transit!(self, State::Idle);
-                } else {
-                    error!("Route or Speed not set");
-                    // transit!(self, State::Exit);
-                }
+                // if ROUTE!=0 && SPEED!=0{
+                //     self.route = (ROUTE,SPEED).into();
+                //     #[cfg(debug_assertions)]
+                //     debug!("Set {:?}", &self.route);
+                //     transit!(self, State::Idle);
+                // }
+                // else {
+                //     error!("Route or Speed not set");
+                //     // transit!(self, State::Exit);
+                // }
                 // todo make this a command on gs
-            },
+            }
             Event::RunConfigFailedEvent => {
                 error!("Run config failed");
 
