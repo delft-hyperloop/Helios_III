@@ -1,7 +1,7 @@
 <script lang="ts">
     import '../app.postcss';
     import {BottomBar, GrandDataDistributor, PlotBuffer, StrokePresets, TitleBar,} from "$lib";
-    import {initializeStores, Toast} from '@skeletonlabs/skeleton';
+    import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
     import type {dataConvFun} from "$lib/types";
 
@@ -184,6 +184,7 @@
 
 <div class="flex flex-col w-screen h-screen max-h-screen overflow-hidden">
     <Toast/>
+    <Modal />
     <TitleBar/>
     <slot/>
     <BottomBar/>

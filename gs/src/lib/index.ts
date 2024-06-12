@@ -29,6 +29,7 @@ import Tile from "$lib/components/generic/Tile.svelte";
 import TileGrid from "$lib/components/generic/TileGrid.svelte";
 import ToggleCommand from "$lib/components/abstract/ToggleCommand.svelte";
 import TauriCommand from "$lib/components/abstract/TauriCommand.svelte";
+import SpeedsInput from "$lib/components/SpeedsInput.svelte";
 
 // Utils
 import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
@@ -36,8 +37,8 @@ import {GrandDataDistributor} from "$lib/util/GrandDataDistributor";
 import util from "$lib/util/util";
 
 // Types
-import type {NamedCommand, Log, LogType} from "$lib/types";
-import {EventChannel} from "$lib/types";
+import type {NamedCommand, Log, LogType, IntervalFunction} from "$lib/types";
+import {EventChannel, RunMode} from "$lib/types";
 
 // Stores
 import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn, serverStatus} from "$lib/stores/state";
@@ -83,6 +84,8 @@ export {
     Pneumatics,
     Localiser,
     TheoreticalRun,
-    EventChannel
+    EventChannel,
+    SpeedsInput,
+    RunMode
 }
-export type {NamedCommand, Log, LogType}
+export type {NamedCommand, Log, LogType, IntervalFunction}
