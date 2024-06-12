@@ -8,10 +8,14 @@
         Command,
         Tile,
         TileGrid,
-        TauriCommand, util, EventChannel
+        TauriCommand,
+        type IntervalFunction,
+        RunMode,
+        SpeedsInput
     } from "$lib";
-    import {type IntervalFunction, RunMode} from "$lib/types";
     import {inputEmerg, inputPosit} from "$lib/stores/state";
+    import {getModalStore, type ModalComponent} from "@skeletonlabs/skeleton";
+
 
     let calculateTheoretical:IntervalFunction;
     let clearRuns: () => void;
@@ -29,8 +33,15 @@
         ["here", 0]
     ]
 
+    const modalStore = getModalStore();
+
+    const input:ModalComponent = {ref: SpeedsInput};
     let inputModal = () => {
-        util.log("Input Modal", EventChannel.INFO);
+        modalStore.trigger({
+            type: "component",
+            component: input,
+            title: "Run Configuration",
+        })
     }
 </script>
 
