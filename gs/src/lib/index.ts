@@ -35,7 +35,9 @@ import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
 import {GrandDataDistributor} from "$lib/util/GrandDataDistributor";
 import util from "$lib/util/util";
 
-import type {NamedCommand, EventChannel, Log} from "$lib/types";
+// Types
+import type {NamedCommand, Log, LogType} from "$lib/types";
+import {EventChannel} from "$lib/types";
 
 // Stores
 import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn, serverStatus} from "$lib/stores/state";
@@ -80,6 +82,7 @@ export {
     inputSpeed,
     Pneumatics,
     Localiser,
-    TheoreticalRun
+    TheoreticalRun,
+    EventChannel
 }
-export type {NamedCommand, EventChannel, Log}
+export type {NamedCommand, Log, LogType}
