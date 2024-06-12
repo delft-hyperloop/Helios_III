@@ -19,17 +19,12 @@ export type Datapoint = {
 /**
  * Event channels to listen on
  */
-export const EventChannels = {
+export const EventChannel = {
     STATUS: 'status_channel',
     INFO: 'info_channel',
     WARNING: 'warning_channel',
     ERROR: 'error_channel',
 }
-
-/**
- * Event to listen on.
- */
-export type EventChannel = 'north_bridge' | 'south_bridge';
 
 /**
  * Function to convert data received at DATAPOINT.value to a given type
@@ -88,8 +83,10 @@ export enum RunMode {
  * Log type to be displayed in the log tab
  */
 export type Log = {
-    log_type:string, message:string, timestamp:number
+    log_type:LogType, message:string, timestamp:number
 }
+
+export type LogType = 'INFO' | 'WARNING' | 'ERROR' | 'STATUS';
 
 // OLD TYPES
 export type IntervalFunction = () => void;

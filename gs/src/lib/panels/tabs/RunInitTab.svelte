@@ -8,7 +8,7 @@
         Command,
         Tile,
         TileGrid,
-        TauriCommand
+        TauriCommand, util, EventChannel
     } from "$lib";
     import {type IntervalFunction, RunMode} from "$lib/types";
     import {inputEmerg, inputPosit} from "$lib/stores/state";
@@ -28,6 +28,10 @@
         ["table entry", 0],
         ["here", 0]
     ]
+
+    let inputModal = () => {
+        util.log("Input Modal", EventChannel.INFO);
+    }
 </script>
 
 <div class="p-4 h-full">
@@ -61,14 +65,16 @@
                 <label for="emerg_point">Emergency Braking Location: </label>
                 <input name="emerg_point" bind:value={$inputEmerg} class="input rounded-md px-2 col-span-2" type="number" min="0" max="60000" step="1">
             </div>
-            <div class="flex-grow"></div>
+            <div class="flex-grow" />
             <div class="grid grid-cols-2 gap-2">
                 <TauriCommand cmd="start_server" className="btn rounded-md bg-surface-700  col-span-2" />
                 <Command cmd="StartHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="Levitate" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="StopLevitating" className="btn flex-grow rounded-md bg-surface-700 " />
-                <Command cmd="StartRun" className="btn rounded-md bg-primary-500 col-span-2" />
+                <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal}>
+                    Run Config
+                </button>
                 <button class="btn rounded-md col-span-2 bg-surface-700 " type="button" on:click={calculateTheoretical}>
                     Calculate theoretical run
                 </button>
