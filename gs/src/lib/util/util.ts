@@ -1,3 +1,8 @@
+import type {
+    EventChannel
+} from "$lib";
+import {emit} from "@tauri-apps/api/event";
+
 function range(count:number, start?:number, num?:number):number[] {
     return Array.from({length: count}, (_, i) => (num || i) + (start || 0));
 }
@@ -19,4 +24,8 @@ function colourCode(value: number, max: number, saturation:number = 50): string 
     return `hsl(${hue}, ${saturation}%, 50%)`;
 }
 
-export default {range, snakeToCamel, normalize, colourCode};
+function log(message: string, channel: string) {
+    emit(channel, message).then(r => console.log(r));
+}
+
+export default {range, snakeToCamel, normalize, colourCode, log};
