@@ -365,7 +365,7 @@ public static void Main()
 
   try
   {
-                /*arcas.Initialize();*/
+                arcas.Initialize();
 
                 /* Console.WriteLine("SampleCount: {0}", arcas.TopController.Signals["SampleCount"].ValueUint32);
  */
