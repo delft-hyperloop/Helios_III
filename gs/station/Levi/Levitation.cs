@@ -72,6 +72,7 @@ namespace PmpGettingStartedCs
                 case "enable_axis":
                     try
                     {
+                        Console.WriteLine("INFO:enabling_levi_HV\n");
                         EnableAndMove.EnableAxis(this);
 
                     }
@@ -84,8 +85,8 @@ namespace PmpGettingStartedCs
                 case "disable_axis":
                     try
                     {
+                        Console.WriteLine("INFO:disabling_levi_HV\n");
                         EnableAndMove.DisableAxis(this);
-
                     }
                     catch (Exception)
                     {
@@ -96,6 +97,7 @@ namespace PmpGettingStartedCs
                 case "init":
                     try
                     {
+                        Console.WriteLine("INFO:initializing\n");
                         this.Initialize();
                     }
                     catch (Exception)
@@ -107,6 +109,7 @@ namespace PmpGettingStartedCs
                 case "reboot":
                     try
                     {
+                        Console.WriteLine("INFO:rebooting\n");
                         ControllerDiscoveryAndInit.Reboot(this);
                     }
                     catch (Exception)
@@ -162,7 +165,7 @@ namespace PmpGettingStartedCs
                         Console.Write("INFO:landing\n");
                         Thread.Sleep(10000);
                         this.SetVerticalMode(2);
-
+                        Console.Write("INFO:landed\n");
                     }
                     catch (Exception)
                     {
@@ -199,7 +202,7 @@ namespace PmpGettingStartedCs
                     {
                         int time = DateTime.Now.Millisecond;
                         this.SetLaneSwitch(2);
-                        Console.Write("CRITICAL:ls_set\n");
+                        Console.Write("INFO:ls_set\n");
 
                     }
                     catch (Exception)

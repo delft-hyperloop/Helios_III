@@ -9,7 +9,6 @@ internal class EnableAndMove
 {
 public static string RunStateCommand(ICommandQueue commandQueue, List<CommandType> commandTypes)
 {
-  Console.WriteLine("Queueing a command sequence [ {0} ] on {1}.", string.Join(", ", commandTypes), commandQueue.FullName);
 
   var sequence = commandQueue.CreateCommandSequence(commandTypes);
   commandQueue.Queue(sequence);

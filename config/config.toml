@@ -1,5 +1,6 @@
 [gs]
-ip = [145,94,180,232]
+ip = [192,168,0,93]
+force = false
 port = 6942
 udp_port = 6943
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
@@ -9,7 +10,7 @@ status_channel = "status_channel"
 info_channel = "info_channel"
 warning_channel = "warning_channel"
 error_channel = "error_channel"
-levi_exec_path = "/Users/andtsa/levitest"
+levi_exec_path = "C:/Rust/Helios_III/gs/station/Levi/windows-x86_64-debug/PmpGettingStartedCs.exe"
 
 [pod.net]
 ip = [192, 168, 0, 199]
