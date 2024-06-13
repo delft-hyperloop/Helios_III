@@ -3,6 +3,7 @@ use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::Peripherals;
+
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::breaking_controller::BrakingController;
 use crate::core::controllers::can_controller::CanController;
@@ -19,6 +20,7 @@ pub struct FSMPeripherals {
     pub eth_controller: EthernetController,
     pub can_controller: CanController,
     pub hv_peripherals: HVPeripherals,
+    pub propulsion_controller: PropulsionController,
     //  pub lv_controller: BatteryController,
     pub red_led: Output<'static>,
 }
@@ -42,7 +44,6 @@ impl FSMPeripherals {
         )
         .await;
 
-
         defmt::debug!("creating hv controller");
         // the battery controllers contain functions related to interpreting the BMS CAN messages
         let hv_controller =
@@ -50,7 +51,6 @@ impl FSMPeripherals {
         defmt::debug!("creating lv controller");
         let lv_controller =
             BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, false); //TODO <------ This is just to make it build
-
 
         defmt::debug!("creating ethernet controller");
         // The ethernet controller configures IP and then spawns the ethernet task
@@ -71,7 +71,8 @@ impl FSMPeripherals {
                 pa2_pin: p.PA2,
                 pa1_pin: p.PA1,
             },
-        ).await;
+        )
+        .await;
 
         // let mut b = Output::new(p.PB0, Level::High, Speed::High);
         // b.set_high();
@@ -100,7 +101,6 @@ impl FSMPeripherals {
         )
         .await;
 
-
         // the propulsion controller spawns tasks for reading current and voltage, and holds functions for setting the speed through the DAC
         // let propulsion_controller = PropulsionController::new();
 
@@ -116,6 +116,13 @@ impl FSMPeripherals {
                 pin_7: Output::new(p.PG10, Level::Low, Speed::Low),
             },
             red_led: Output::new(p.PB14, Level::Low, Speed::High),
+            propulsion_controller: PropulsionController::new(
+                i.data_sender,
+                p.PA4,
+                p.DAC1,
+                p.PA5,
+                p.PA6,
+            ),
         }
     }
 }
