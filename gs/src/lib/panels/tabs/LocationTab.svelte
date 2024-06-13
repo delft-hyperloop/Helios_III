@@ -32,7 +32,10 @@
             <Chart title="Acceleration" background="bg-surface-900" />
         </Tile>
         <Tile containerClass="col-start-1 col-span-2">
-            <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
+            <Chart title="Localisation" background="bg-surface-900" />
         </Tile>
+<!--        <Tile containerClass="col-start-1 col-span-2">-->
+<!--            <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>-->
+<!--        </Tile>-->
     </TileGrid>
 </div>
