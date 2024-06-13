@@ -3,6 +3,7 @@ using System.Net;
 using Pmp;
 using System.Threading;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace PmpGettingStartedCs
 {
@@ -364,29 +365,46 @@ public static void Main()
 
   try
   {
-                arcas.Initialize();
+                /*arcas.Initialize();*/
 
-               /* Console.WriteLine("SampleCount: {0}", arcas.TopController.Signals["SampleCount"].ValueUint32);
-*/
+                /* Console.WriteLine("SampleCount: {0}", arcas.TopController.Signals["SampleCount"].ValueUint32);
+ */
 
                 /*    var axisControl = EnableAndMove.EnableAndMoveAxis(arcas.topController);*/
 
                 /*    Acquisition.RunAcquisition(arcas.topController);*/
+                Task.Run(() => {
+                    while (true)
+                    {
+                        try
+                        {
+                            string command = (InputsOutputs.ReadConsole());
+                            arcas.ExecuteCommand(command);
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("CRITICAL:loop_error");
+                        }
+                        // Do something with the input. Maybe switch or if/else statement?
+                    }
+                });
                 while (true)
                 {
 
                     try
                     {
-                        string command = (InputsOutputs.ReadConsole());
-                        arcas.ExecuteCommand(command);
+                        /*                        string command = (InputsOutputs.ReadConsole());
+                                                arcas.ExecuteCommand(command);*/
+                        Thread.Sleep(10);
                         arcas.getVerticalAirgaps();
                         arcas.getLateralAirgaps();
                         arcas.getCurrents();
+
                     }
                     catch (Exception)
                     {
 
-                        Console.WriteLine("CRITICAL:loop_error");
+                        Console.WriteLine("WARNING:data_error");
                     }
                 }
             }
