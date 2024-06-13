@@ -7,6 +7,7 @@
     import util from '$lib/util/util';
 
     $: focusedInput = '';
+    let invalidInputs: SpeedFormKey[] = [];
 
     export let parent: SvelteComponent;
 
@@ -29,12 +30,12 @@
             console.log(`Invalid values in form`);
             return;
         } else {
-            let val = 0;
+            let val = BigInt(0);
             for (let i = 0; i < inputs.length; i++) {
-                val |= speedForm[inputs[i]] << ((5 - i) * 8);
+                val |= BigInt(speedForm[inputs[i]]) << BigInt((5 - i) * 8);
             }
 
-            invoke('send_command', {cmdName: "RunConfiddg", val}).then(() => {
+            invoke('send_command', {cmdName: "RunConfiddg", val: Number(val)}).then(() => {
                 console.log(`Command RunConfig sent`);
                 modalStore.close();
             })
@@ -104,9 +105,18 @@
                 {#each inputs as input}
                     <label>
                         <span>{util.snakeToCamel(input)}</span>
-                        <input class="input rounded-lg px-1" type="number" max="255" min="0"
-                               bind:value={speedForm[input]} on:focus={() => focusedInput = input}
-                               on:blur={() => focusedInput = ''}/>
+                        <input class={`input rounded-lg px-1 ${invalidInputs.includes(input) ? 'text-error-400' : ''}`}
+                               type="number" max="255" min="0" bind:value={speedForm[input]}
+                               on:focus={() => focusedInput = input} on:blur={() => focusedInput = ''}
+                               on:input={() => {
+                               if (speedForm[input] < 0 || speedForm[input] > 255) {
+                                   if (!invalidInputs.includes(input)) {
+                                       invalidInputs = [...invalidInputs, input];
+                                   }
+                               } else {
+                                   invalidInputs = invalidInputs.filter(i => i !== input);
+                               }
+                        }}/>
                     </label>
                 {/each}
             </div>
