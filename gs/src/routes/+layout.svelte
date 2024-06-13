@@ -1,7 +1,7 @@
 <script lang="ts">
     import '../app.postcss';
     import {BottomBar, GrandDataDistributor, PlotBuffer, StrokePresets, TitleBar,} from "$lib";
-    import {initializeStores, Toast} from '@skeletonlabs/skeleton';
+    import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
     import type {dataConvFun} from "$lib/types";
 
@@ -22,9 +22,12 @@
     hoffChart.addSeries(StrokePresets.theoretical())
     let velChart = new PlotBuffer(2000, 5*60*1000, [0, 100], false)
 
+    let leviChart = new PlotBuffer(10000, 300000, [0, 100], false);
+
     $chartStore.set('Offset Horizontal', hoffChart);
     $chartStore.set('Offset Vertical', voffChart);
     $chartStore.set('Velocity', velChart);
+    $chartStore.set('Localisation', leviChart);
 
     let trr = new PlotBuffer(10000, 60000, [0, 50], false)
     trr.addSeries(StrokePresets.theoretical())
@@ -134,6 +137,12 @@
         return curr;
     });
 
+    gdd.stores.registerStore<number>("Localisation", 0, data => {
+        const curr = Number(data);
+        $chartStore.get("Localisation")!.addEntry(1, curr);
+        return curr;
+    });
+
     gdd.stores.registerStore<number>("Localisation", 0); // or location?
     gdd.stores.registerStore<number>("BrakePressure", 0);
 
@@ -182,8 +191,10 @@
     initializeStores();
 </script>
 
+
 <div class="flex flex-col w-screen h-screen max-h-screen overflow-hidden">
     <Toast/>
+    <Modal />
     <TitleBar/>
     <slot/>
     <BottomBar/>

@@ -6,7 +6,7 @@
     import Icon from "@iconify/svelte";
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import {EventChannels, type Log} from "$lib/types";
+    import {EventChannel, type Log, type LogType} from "$lib/types";
 
     let unlistens: UnlistenFn[] = [];
     let logContainer: HTMLElement;
@@ -28,30 +28,17 @@
         filters[type] = !filters[type];
     }
 
-    function registerChannel(channel: string, log_type: string) {
-        return listen(channel, (event) => {
-            //@ts-ignore
-            logs.push({message: event.payload, log_type, timestamp: Date.now().valueOf()})
+    function registerChannel(channel: string, log_type: LogType) {
+        return listen(channel, (event: {payload: string}) => {
+            logs = [...logs, {message: event.payload, log_type, timestamp: Date.now().valueOf()}]
         });
     }
 
     onMount(async () => {
-        unlistens[0] = await listen('status_channel', (event) => {
-            //@ts-ignore
-            logs = [...logs, {message: event.payload, status: 'STATUS', timestamp: Date.now().valueOf()}];
-        });
-        unlistens[1] = await listen(EventChannels.INFO, (event) => {
-         //@ts-ignore
-            logs = [...logs, {message: event.payload, log_type: 'INFO', timestamp: Date.now().valueOf()}];
-        });
-        unlistens[2] = await listen(EventChannels.WARNING, (event) => {
-                                         //@ts-ignore
-            logs = [...logs, {message: event.payload, log_type: 'WARNING', timestamp: Date.now().valueOf()}];
-         });
-        unlistens[3] = await listen(EventChannels.ERROR, (event) => {
-                                         //@ts-ignore
-            logs = [...logs, {message: event.payload, log_type: 'ERROR', timestamp: Date.now().valueOf()}];
-         });
+        unlistens[0] = await registerChannel(EventChannel.STATUS, 'STATUS');
+        unlistens[1] = await registerChannel(EventChannel.INFO, 'INFO');
+        unlistens[2] = await registerChannel(EventChannel.WARNING, 'WARNING')
+        unlistens[3] = await registerChannel(EventChannel.ERROR, 'ERROR');
 
         logContainer.addEventListener('scroll', () => {
             userHasScrolled = logContainer.scrollTop < logContainer.scrollHeight - logContainer.clientHeight;
