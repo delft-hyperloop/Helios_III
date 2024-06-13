@@ -56,6 +56,13 @@ namespace PmpGettingStartedCs
         public ISignal I_Back { set; get; }
         public ISignal Offset_AB { set; get; }
         public ISignal Offset_CD { set; get; }
+
+        public ISignal Pitch { set; get; }
+
+        public ISignal Roll { set; get; }
+
+        public ISignal Airgap { set; get; }
+
         public ISignal Motor_Enabled { set; get; }
 
 
@@ -276,6 +283,13 @@ namespace PmpGettingStartedCs
             this.G_C2 = LaserSensors.Signals["G_C2"];
             this.G_D2 = LaserSensors.Signals["G_D2"];
 
+            this.Offset_AB = LateralController.Signals["OffsetFront"];
+            this.Offset_CD = LateralController.Signals["OffsetBack"];
+
+            this.Airgap = VerticalController.Signals["Airgap"];
+            this.Pitch = VerticalController.Signals["Pitch"];
+            this.Roll = VerticalController.Signals["Roll"];
+
             this.I_A1 = MotA1.Signals["Ir"];
             this.I_A2 = MotA2.Signals["Ir"];
             this.I_B1 = MotB1.Signals["Ir"];
@@ -315,6 +329,20 @@ namespace PmpGettingStartedCs
         {
             double[] airgapsList = { this.G_A2.ValueDouble, this.G_B2.ValueDouble, this.G_C2.ValueDouble, this.G_D2.ValueDouble };
             string[] gapStrings = { "G_A2", "G_B2", "G_C2", "G_D2" };
+            int i = 0;
+            foreach (string gapString in gapStrings)
+            {
+                string datatype = gapString.ToLower();
+                string value = airgapsList[i].ToString();
+                sendData(datatype, value);
+                i++;
+            }
+        }
+
+        public void getDegreesOfFreedom()
+        {
+            double[] airgapsList = { this.Airgap.ValueDouble, this.Pitch.ValueDouble, this.Roll.ValueDouble, this.Offset_AB.ValueDouble, this.Offset_CD.ValueDouble};
+            string[] gapStrings = { "Airgap", "Pitch", "Roll", "EMS_Offset_AB", "EMS_Offset_CD" };
             int i = 0;
             foreach (string gapString in gapStrings)
             {
@@ -365,7 +393,7 @@ public static void Main()
 
   try
   {
-                /*arcas.Initialize();*/
+                arcas.Initialize();
 
                 /* Console.WriteLine("SampleCount: {0}", arcas.TopController.Signals["SampleCount"].ValueUint32);
  */
@@ -399,6 +427,7 @@ public static void Main()
                         arcas.getVerticalAirgaps();
                         arcas.getLateralAirgaps();
                         arcas.getCurrents();
+                        arcas.getDegreesOfFreedom();
 
                     }
                     catch (Exception)
