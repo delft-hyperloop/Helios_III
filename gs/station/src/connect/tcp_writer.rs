@@ -27,6 +27,7 @@ pub async fn transmit_commands_to_tcp(
                     }
                 }
             }
+            #[allow(clippy::single_match)]
             match command_receiver.try_recv() {
                 Ok(command) => {
                     let bytes = command.as_bytes();

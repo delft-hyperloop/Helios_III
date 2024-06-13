@@ -653,3 +653,7 @@ id = 0x4DF
 name = "ResponseHeartbeat"
 id = 0x678
 
+[[Datatype]]
+name = "LeviInstruction"
+id = 0x777
+

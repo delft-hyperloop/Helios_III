@@ -5,6 +5,10 @@ use ratatui::prelude::Color;
 use std::str::FromStr;
 use std::sync::mpsc::{Receiver, Sender};
 
+
+include!("../../../util/src/shared/routes.rs");
+
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Datapoint {
     pub datatype: Datatype,

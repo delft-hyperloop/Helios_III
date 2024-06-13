@@ -58,7 +58,7 @@ impl BrakingController {
         pb8: peripherals::PB8,
         pg1: peripherals::PG1,
         pf12: peripherals::PF12,
-        pb0: peripherals::PB0,
+        _pb0: peripherals::PB0,
         _pd5: peripherals::PD5,
         _ptime: TIM16,
     ) -> Self {
@@ -112,6 +112,7 @@ impl BrakingController {
         false
     }
 
+    #[allow(dead_code)]
     pub fn start_run_brake_precondition(&mut self) {
         // todo run this before any run
         self.braking_rearm.set_high();

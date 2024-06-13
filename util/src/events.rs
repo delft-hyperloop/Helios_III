@@ -52,13 +52,19 @@ pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> Stri
         match event.params {
             None => {
                 enum_definitions.push_str(&format!("    {},\n", event.name));
-                match_to_id.push_str(&format!("            Event::{} => {},\n", event.name, event.id));
+                match_to_id.push_str(&format!(
+                    "            Event::{} => {},\n",
+                    event.name, event.id
+                ));
                 // to_str.push_str(&format!("Event::{} => \"{}\",\n", command.name, command.name));
                 priorities.push_str(&format!(
                     "            Event::{} => {},\n",
                     event.name, event.priority
                 ));
-                match_from_id.push_str(&format!("            {} => Event::{},\n", event.id, event.name));
+                match_from_id.push_str(&format!(
+                    "            {} => Event::{},\n",
+                    event.id, event.name
+                ));
                 to_idx.push_str(&format!("            Event::{} => {},\n", event.name, i));
             }
             Some(x) => {
@@ -124,8 +130,18 @@ impl Event {{
     pub fn to_str(&self) -> &'static str {{
         EVENTS_DISPLAY[self.to_idx()]
     }}
-}}", if drv { "#[derive(Debug, PartialEq, Eq, defmt::Format)]" } else { "#[derive(Debug, PartialEq, Eq)]" },
-        enum_definitions, match_to_id, match_from_id, priorities, to_idx, event_count
+}}",
+        if drv {
+            "#[derive(Debug, PartialEq, Eq, defmt::Format)]"
+        } else {
+            "#[derive(Debug, PartialEq, Eq)]"
+        },
+        enum_definitions,
+        match_to_id,
+        match_from_id,
+        priorities,
+        to_idx,
+        event_count
     ) + &*format!(
         "\n\npub static EVENT_IDS : [u16;{}] = [{}];\n",
         event_ids.len(),

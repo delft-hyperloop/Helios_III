@@ -368,11 +368,7 @@ impl BatteryController {
             .send(Datapoint::new(battery_current_dt, current, timestamp))
             .await;
         self.data_sender
-            .send(Datapoint::new(
-                charge_state_dt,
-                state_of_charge,
-                timestamp,
-            ))
+            .send(Datapoint::new(charge_state_dt, state_of_charge, timestamp))
             .await;
         self.data_sender
             .send(Datapoint::new(
