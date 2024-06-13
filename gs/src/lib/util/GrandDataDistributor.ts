@@ -114,7 +114,7 @@ class StoreManager {
      * @param processFunction - the function to process the data
      */
     public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>) {
-        if (this.stores.has(name)) throw new Error(`Store with name ${name} already exists`);
+        // if (this.stores.has(name)) throw new Error(`Store with name ${name} already exists`);
         this.stores.set(name, new Store(initial, processFunction));
     }
 

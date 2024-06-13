@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import {GrandDataDistributor} from "$lib";
 
     let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
 
@@ -12,6 +13,9 @@
             clearInterval(interval);
         };
     });
+
+    const storeManager = GrandDataDistributor.getInstance().stores;
+    const fsmState = storeManager.getStore("FSMState");
 </script>
 
 
@@ -19,7 +23,7 @@
                justify-between px-4 gap-4 border-t border-black">
     <p>Delft Hyperloop: Helios III</p>
     <div class="flex gap-4">
-        <p>Current state: NOT SET</p>
+        <p>Current state: {$fsmState}</p>
         <p class="">{time}</p>
     </div>
 </footer>
