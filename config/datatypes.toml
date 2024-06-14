@@ -11,6 +11,29 @@ id = 0x0a
 name = "LevitationTemperature"
 id = 0x0b
 
+[[Datatype]]
+name = "AccelerationX"
+id = 0x115
+
+[[Datatype]]
+name = "Accelerationy"
+id = 0x114
+
+[[Datatype]]
+name = "AccelerationZ"
+id = 0x113
+
+[[Datatype]]
+name = "GyroscopeX"
+id = 0x112
+
+[[Datatype]]
+name = "GyroscpoeY"
+id = 0x111
+
+[[Datatype]]
+name = "GyroscopeZ"
+id = 0x110
 
 [[Datatype]]
 name = "IMDGeneralInfo"
@@ -49,7 +72,6 @@ id = 0x3A0
 [[Datatype]]
 name = "DiagonosticBMSHigh"
 id = 0x3A7
-
 
 [[Datatype]]
 name = "BatteryVoltageLow"
@@ -225,123 +247,59 @@ id = 0x7FA
 
 
 [[Datatype]]
-name = "TempPCB1"
+name = "Presure_VB"
 id = 0x210
 
 [[Datatype]]
-name = "TempPCB2"
+name = "Average_Temp_VB_Bottom"
 id = 0x211
 
-[[Datatype]]
-name = "TempPCB3"
-id = 0x212
 
 [[Datatype]]
-name = "TempPCB4"
-id = 0x213
-
-[[Datatype]]
-name = "TempPCB5"
-id = 0x214
-
-[[Datatype]]
-name = "TempPCB6"
-id = 0x215
-
-[[Datatype]]
-name = "TempPCB7"
-id = 0x216
-
-[[Datatype]]
-name = "TempPCB8"
-id = 0x217
-
-[[Datatype]]
-name = "TempPCB9"
-id = 0x218
-
-[[Datatype]]
-name = "TempPCB10"
-id = 0x219
-
-[[Datatype]]
-name = "TempPCB11"
+name = "Average_Temp_VB_top"
 id = 0x200
 
-[[Datatype]]
-name = "TempPCB12"
-id = 0x201
+
 
 [[Datatype]]
-name = "TempPCB13"
-id = 0x202
-
-[[Datatype]]
-name = "TempPCB14"
-id = 0x203
-
-[[Datatype]]
-name = "TempPCB15"
-id = 0x204
-
-[[Datatype]]
-name = "TempPCB16"
-id = 0x205
-
-[[Datatype]]
-name = "TempPCB17"
-id = 0x206
-
-[[Datatype]]
-name = "TempPCB18"
-id = 0x207
-
-[[Datatype]]
-name = "TempPCB19"
-id = 0x208
-
-[[Datatype]]
-name = "TempPCB20"
-id = 0x209
-
-[[Datatype]]
-name = "TempPCB21"
+name = "Temp_HEMS_1"
 id = 0x20a
 
 [[Datatype]]
-name = "TempPCB22"
+name = "Temp_HEMS_2"
 id = 0x20b
 
 [[Datatype]]
-name = "TempPCB23"
+name = "Temp_HEMS_3"
 id = 0x20c
 
 [[Datatype]]
-name = "TempPCB24"
+name = "Temp_HEMS_4"
 id = 0x20d
 
+
 [[Datatype]]
-name = "TempPCB25"
+name = "Temp_Motor_1"
 id = 0x20e
 
 [[Datatype]]
-name = "TempPCB26"
+name = "Temp_Motor_2"
 id = 0x20f
 
 [[Datatype]]
-name = "TempPCB27"
+name = "Ambient_presure"
 id = 0x220
 
 [[Datatype]]
-name = "TempPCB28"
+name = "Ambient_temp"
 id = 0x224
 
 [[Datatype]]
-name = "TempPCB29"
+name = "Temp_EMS_1"
 id = 0x222
 
 [[Datatype]]
-name = "TempPCB30"
+name = "Temp_EMS_2"
 id = 0x223
 
 [[Datatype]]
@@ -656,3 +614,10 @@ id = 0x678
 name = "LeviInstruction"
 id = 0x777
 
+[[Datatype]]
+name = "LowPressureSensor"
+id = 0x127
+
+[[Datatype]]
+name = "HighPressureSensor"
+id = 0x128

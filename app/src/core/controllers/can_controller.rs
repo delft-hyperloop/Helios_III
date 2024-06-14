@@ -65,7 +65,7 @@ impl CanController {
             pins.pb6_pin, /* pb6=can2 TX */
             CanTwoInterrupts,
         );
-        can1.config().protocol_exception_handling = false;
+        can1.config().protocol_exception_handling = true;
         can2.config().protocol_exception_handling = false;
 
         can1.set_bitrate(1_000_000);
@@ -80,17 +80,17 @@ impl CanController {
             .write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap())
             .await;
 
-        try_spawn!(
-            event_sender,
-            x.spawn(can_receiving_handler(
-                x,
+            try_spawn!(
                 event_sender,
-                can_one_receiver,
-                data_sender,
-                c1_rx,
-                None
-            ))
-        );
+                x.spawn(can_receiving_handler(
+                    x,
+                    event_sender,
+                    can_one_receiver,
+                    data_sender,
+                    c1_rx,
+                    None
+                ))
+            );
         try_spawn!(
             event_sender,
             x.spawn(can_receiving_handler(
