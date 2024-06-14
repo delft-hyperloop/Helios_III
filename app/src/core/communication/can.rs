@@ -101,6 +101,7 @@ pub async fn can_receiving_handler(
                             }
                         }
                     } else {
+                        info!("#{}",bytes_to_u64(frame.data()));
                         data_sender
                             .send(Datapoint::new(
                                 Datatype::from_id(id),
