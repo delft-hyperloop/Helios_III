@@ -231,6 +231,10 @@ name = "Velocity"
 id = 0x501
 
 [[Datatype]]
+name = "Acceleration"
+id = 0x506
+
+[[Datatype]]
 name = "Direction"
 id = 0x1d
 
