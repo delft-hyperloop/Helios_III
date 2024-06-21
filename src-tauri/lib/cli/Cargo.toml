@@ -1,0 +1,31 @@
+[package]
+name = "canzero-cli"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "4.4.7", features = ["derive"] }
+# git2 = { version = "0.18.0", features = ["vendored-libgit2"]}
+dirs = { version = "5.0.0" }
+canzero-config = { path = "../config/" }
+canzero-codegen = { path = "../codegen/" }
+canzero-appdata = { path = "../appdata/" }
+canzero-tcp = { path = "../tcp/" }
+canzero-udp = { path = "../udp/" }
+canzero-server = { path = "../server/" }
+canzero-common = { path = "../common/" }
+canzero-socketcan = { path = "../socketcan/", optional = true }
+serde = {version = "1.0.193", features=["derive"]}
+serde_yaml = "0.9.27"
+tokio = { version = "1.37.0", features = ["full"] }
+common-path = "1.0.0"
+color-print = "0.3.6"
+chrono = "0.4.38"
+build-time = "0.1.3"
+
+[features]
+default = []
+socket-can = ["canzero-server/socket-can", "dep:canzero-socketcan"]
+

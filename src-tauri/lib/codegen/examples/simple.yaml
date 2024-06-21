@@ -1,0 +1,10 @@
+buses:
+  can0:
+    baudrate: 1000000
+  can2:
+    baudrate: 1000000
+nodes:
+  simple:
+    object_dictionary:
+      state:
+        type: u8

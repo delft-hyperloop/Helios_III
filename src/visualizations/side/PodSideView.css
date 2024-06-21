@@ -1,0 +1,83 @@
+#side-view {
+  --position : 0px;
+  --air-gap : 0px
+}
+
+#side-view #track {
+  transition: transform 10s ease-in;
+  transform: translateX(var(--position))
+}
+
+#side-view #pod {
+  transition: transform 100ms linear;
+  transform: translateY(var(--air-gap))
+}
+
+#side-view .st0 {
+  fill: #57595B;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#side-view .st1 {
+  fill: #3F3D3B;
+}
+
+#side-view .st2 {
+  fill: #AAACAF;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#side-view .st3 {
+  fill: #838587;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#side-view .st4 {
+  fill: none;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#side-view .st5 {
+  fill: #C3C5CB;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#side-view .st6 {
+  fill: #D3B8A3;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#side-view .st7 {
+  fill: none;
+}
+
+#side-view .st8 {
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#side-view .st9 {
+  fill: #A6A8AD;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#side-view .st10 {
+  fill: #A5A5A8;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#side-view .st11 {
+  font-family: 'Impact';
+}
+
+#side-view .st12 {
+  font-size: 48px;
+}

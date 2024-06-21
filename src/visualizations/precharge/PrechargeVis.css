@@ -1,0 +1,73 @@
+
+#precharge_vis {
+  --precharge_switch : -0deg;
+  --sdc_switch : -0deg;
+  --feedthrough_switch : -0deg;
+}
+
+#precharge_vis #feedthrough_switch line {
+  transform-origin: 147px 183.56px;
+  transform: rotate(var(--feedthrough_switch));
+  transition: transform 300ms ease-out;
+}
+
+#precharge_vis #precharge_switch line {
+  transform-origin: 39px 182.56px;
+  transform: rotate(var(--precharge_switch));
+  transition: transform 300ms ease-out;
+}
+
+#precharge_vis #sdc_switch line {
+  transform-origin: 92px 82px;
+  transform: rotate(var(--sdc_switch));
+  transition: transform 300ms ease-out;
+}
+
+#precharge_vis .cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
+  stroke: #000;
+  stroke-miterlimit: 10;
+}
+
+#precharge_vis .cls-1, .cls-6, .cls-7, .cls-8, .cls-9, .cls-10 {
+  fill: #000;
+}
+
+#precharge_vis .cls-1, .cls-3, .cls-5 {
+  stroke-width: 3px;
+}
+
+#precharge_vis .cls-2 {
+  stroke-width: 2px;
+}
+
+#precharge_vis .cls-2, .cls-4, .cls-5 {
+  fill: none;
+}
+
+#precharge_vis .cls-6 {
+  stroke-width: 0px;
+}
+
+#precharge_vis .cls-7 {
+  font-size: 11px;
+}
+
+#precharge_vis .cls-7, .cls-8, .cls-9, .cls-10 {
+  font-family: MyriadPro-Regular, 'Myriad Pro';
+}
+
+#precharge_vis .cls-8 {
+  font-size: 14px;
+}
+
+#precharge_vis .cls-9 {
+  font-size: 12px;
+}
+
+#precharge_vis .cls-3 {
+  fill: #fff;
+}
+
+#precharge_vis .cls-10 {
+  font-size: 18px;
+}

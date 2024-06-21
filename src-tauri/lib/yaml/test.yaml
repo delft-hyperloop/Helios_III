@@ -1,0 +1,20 @@
+
+
+buses:
+  can0:
+    baudrate: 1000000
+
+enum_types:
+  test_enum:
+    yes: 2
+    no: 42
+
+
+
+nodes: 
+  secu: 
+    description: Sensor Electronics Control Unit
+    object_dictionary:
+      test_oe:
+        type: test_enum
+        access : global

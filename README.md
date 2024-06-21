@@ -1,22 +1,41 @@
-# Delft Hyperloop - Helios III
-*sponsored by goose*
+## Prerequisites
+##### Install npm
+Just follow the instructios on the 
+[npm website](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+for your platform
+##### Tauri prerequisites
+Just follow the instructions on the 
+[tauri website](https://tauri.app/v1/guides/getting-started/prerequisites)
+for your platform
+##### Download the project
+Use a Github Client or from the cli run
+```
+$ git clone https://github.com/mu-zero-HYPERLOOP/control-panel
+```
 
-./app ->> Main Application Source Code
-./gs  ->> Ground Station Backend Code
+##### Install npm dependencies
+```
+$ cd control-panel
+$ npm install
+```
+This will install all npm dependencies and take a while
 
-So far we have the idea of splitting ground station code into the functional backend that we can work with, 
-and the pretty frontend that maybe the design engineers can work with
+##### Run the application in developer mode
+```
+$ npm run tauri dev
+```
+This takes a while (not more than 3 min), afterwards the control-panel
+application, should open in developer mode (less performant than release
+but supports hot reloading, devtools etc.)
 
-./config has the configuration files, such as:
-- static IP address assignment for 
-	- Ground station
-	- Main PCB
-	- Levi Drives
-	- Prop drives?
-- Messaging interfaces: what do the packets sent from ground station to pod and vice versa look like?
-	- this should be a non-technical readable file, maybe we even other departments can look at it and understand
-- ...
+## Build release version
+Just run
+```
+$ npm run tauri build
+```
+Afterwards the executable app bundle can be found somewhere 
+in ```src-tauri/target/release/bundle/``` depending on your platform
 
 
-® andreas & kiko, 2024
+
 

@@ -1,0 +1,54 @@
+[package]
+name = "canzero"
+version = "0.1.0"
+description = "Control Panel for the muzero CAN protocol. Developed for mu-zero HYPERLOOP Season IV."
+authors = ["Karl Sassie", "Jakob Schmit", "Niklas Heneka", "Nicolas Fliegel"]
+repository = "https://github.com/mu-zero-HYPERLOOP/control-panel.git"
+edition = "2021"
+rust-version = "1.75"
+
+[profile.dev]
+debug = true
+codegen-units = 8
+lto = false
+
+[profile.release]
+strip = "symbols"  # Automatically strip symbols from the binary.
+lto = "fat" # Enables link time optimizations
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1.5", features = [] }
+
+[dependencies]
+tauri = { version = "1.5", features = [ "window-all", "fs-all", "shell-open", "dialog-all"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.34.0", features = ["full"] }
+canzero-config = { path = "./lib/config" }
+canzero-appdata = { path = "./lib/appdata" }
+canzero-tcp = { path = "./lib/tcp" }
+canzero-udp = { path = "./lib/udp" }
+canzero-common = { path = "./lib/common" }
+canzero-socketcan = { path = "./lib/socketcan/", optional = true}
+canzero-cli = { path = "./lib/cli/" }
+fix-path-env = { git = "https://github.com/tauri-apps/fix-path-env-rs.git"}
+bitvec = "1.0.1"
+chrono = { version = "0.4.34", features = [ "serde" ] }
+csv = "1.3.0"
+nix = { version = "0.28.0", features = ["net"], optional = true}
+color-print = "0.3.6"
+gilrs = "0.10.7"
+
+
+[features]
+default = []
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
+
+socket-can = ["dep:canzero-socketcan", "dep:nix", "canzero-cli/socket-can"]
+# Custom features!
+logging-invoke = []

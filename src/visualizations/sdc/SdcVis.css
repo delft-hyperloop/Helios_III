@@ -1,0 +1,165 @@
+#sdc_vis {
+  --pdu12 : -20deg;
+  --pdu24 : -20deg;
+  --input_board : -20deg;
+  --mlu1 : -20deg;
+  --mlu2 : -20deg;
+  --mlu3 : -20deg;
+  --mlu4 : -20deg;
+  --mlu5 : -20deg;
+  --mlu6 : -20deg;
+  --mgu1 : -20deg;
+  --mgu2 : -20deg;
+  --motor : -20deg;
+
+}
+
+#sdc_vis .pdu24 {
+  fill: none;
+  transform-origin: 355.69px 187.71px;
+  transform: rotate(var(--pdu24));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .pdu12 {
+  fill: none;
+  transform-origin: 668.26px 187.71px;
+  transform: rotate(var(--pdu12));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .input_board {
+  fill: none;
+  transform-origin: 984.38px 187.71px;
+  transform: rotate(var(--input_board));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .mlu1 {
+  fill: none;
+  transform-origin: 1296.58px 187.71px;
+  transform: rotate(var(--mlu1));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .mlu2 {
+  fill: none;
+  transform-origin: 1608.79px 187.71px;
+  transform: rotate(var(--mlu2));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .mlu3 {
+  fill: none;
+  transform-origin: 1920.99px 187.71px;
+  transform: rotate(var(--mlu3));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .mlu4 {
+  fill: none;
+  transform-origin: 2233.2px 187.71px;
+  transform: rotate(var(--mlu4));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .mlu5 {
+  fill: none;
+  transform-origin: 2545.4px 187.71px;
+  transform: rotate(var(--mlu5));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .mlu6 {
+  fill: none;
+  transform-origin: 2861.52px 187.71px;
+  transform: rotate(var(--mlu6));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .mgu1 {
+  fill: none;
+  transform-origin: 3173.72px 187.71px;
+  transform: rotate(var(--mgu1));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .mgu2 {
+  fill: none;
+  transform-origin: 3485.91px 187.71px;
+  transform: rotate(var(--mgu2));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .motor_driver {
+  fill: none;
+  transform-origin: 3798.11px 187.71px;
+  transform: rotate(var(--motor));
+  transition: transform 300ms ease-out;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .st0 {
+  fill: none;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .st1 {
+  fill-rule: evenodd;
+  clip-rule: evenodd;
+  fill: #FFFFFF;
+  stroke: #000000;
+  stroke-width: 4;
+  stroke-miterlimit: 10;
+}
+
+#sdc_vis .st2 {
+  fill: none;
+}
+
+#sdc_vis .st3 {
+  font-family: 'MyriadPro-Regular';
+}
+
+#sdc_vis .st4 {
+  font-size: 48px;
+  text-align: "center";
+  fill: #000000;
+}

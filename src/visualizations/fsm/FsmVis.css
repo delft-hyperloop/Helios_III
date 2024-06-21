@@ -1,0 +1,185 @@
+#fsm-vis {
+  --x : -200px;
+  --y : -200px;
+}
+
+#fsm-vis #view {
+  transform: translate(var(--x), var(--y));
+  transition: transform 200ms ease-out;
+}
+
+#fsm-vis .cls-1 {
+  fill: #a6a6a6;
+}
+
+#fsm-vis .cls-1,
+#fsm-vis .cls-2,
+#fsm-vis .cls-3,
+#fsm-vis .cls-4,
+#fsm-vis .cls-5,
+#fsm-vis .cls-6,
+#fsm-vis .cls-7 {
+  stroke-width: 0px;
+}
+
+#fsm-vis .cls-8 {
+  fill: #89e0f4;
+}
+
+#fsm-vis .cls-8,
+#fsm-vis .cls-9,
+#fsm-vis .cls-10,
+#fsm-vis .cls-11,
+#fsm-vis .cls-12,
+#fsm-vis .cls-13,
+#fsm-vis .cls-14,
+#fsm-vis .cls-15,
+#fsm-vis .cls-16,
+#fsm-vis .cls-17,
+#fsm-vis .cls-18,
+#fsm-vis .cls-19,
+#fsm-vis .cls-20,
+#fsm-vis .cls-21,
+#fsm-vis .cls-22,
+#fsm-vis .cls-23,
+#fsm-vis .cls-24,
+#fsm-vis .cls-25,
+#fsm-vis .cls-26,
+#fsm-vis .cls-27 {
+  stroke: #000;
+}
+
+#fsm-vis .cls-8,
+#fsm-vis .cls-9,
+#fsm-vis .cls-11,
+#fsm-vis .cls-12,
+#fsm-vis .cls-13,
+#fsm-vis .cls-15,
+#fsm-vis .cls-16,
+#fsm-vis .cls-17,
+#fsm-vis .cls-18,
+#fsm-vis .cls-19,
+#fsm-vis .cls-20,
+#fsm-vis .cls-21,
+#fsm-vis .cls-22,
+#fsm-vis .cls-23,
+#fsm-vis .cls-24,
+#fsm-vis .cls-25,
+#fsm-vis .cls-26,
+#fsm-vis .cls-27 {
+  stroke-linejoin: round;
+  stroke-width: 3px;
+}
+
+#fsm-vis .cls-9 {
+  fill: #ff9;
+}
+
+#fsm-vis .cls-10 {
+  stroke-miterlimit: 100;
+}
+
+#fsm-vis .cls-10,
+#fsm-vis .cls-2,
+#fsm-vis .cls-14 {
+  fill: none;
+}
+
+#fsm-vis .cls-10,
+#fsm-vis .cls-14 {
+  stroke-width: 2px;
+}
+
+#fsm-vis .cls-3 {
+  fill: #fcebeb;
+}
+
+#fsm-vis .cls-11 {
+  fill: #ffe54a;
+}
+
+#fsm-vis .cls-12 {
+  fill: #e5e567;
+}
+
+#fsm-vis .cls-13 {
+  fill: #69f;
+}
+
+#fsm-vis .cls-4 {
+  fill: #666;
+}
+
+#fsm-vis .cls-14 {
+  stroke-miterlimit: 10;
+}
+
+#fsm-vis .cls-15 {
+  fill: #98acea;
+}
+
+#fsm-vis .cls-5 {
+  fill: #f9dede;
+}
+
+#fsm-vis .cls-6 {
+  fill: #f9cfcf;
+}
+
+#fsm-vis .cls-16 {
+  fill: #af5bc4;
+}
+
+#fsm-vis .cls-7,
+#fsm-vis .cls-28 {
+  fill: #000;
+}
+
+#fsm-vis .cls-17 {
+  fill: #7fd3b9;
+}
+
+#fsm-vis .cls-18 {
+  fill: #3aefbb;
+}
+
+#fsm-vis .cls-28 {
+  font-family: MyriadPro-Regular, 'Myriad Pro';
+  font-size: 12px;
+}
+
+#fsm-vis .cls-19 {
+  fill: #568be8;
+}
+
+#fsm-vis .cls-20 {
+  fill: #67c1e5;
+}
+
+#fsm-vis .cls-21 {
+  fill: #f9a35d;
+}
+
+#fsm-vis .cls-22 {
+  fill: #b3ebff;
+}
+
+#fsm-vis .cls-23 {
+  fill: #bbedff;
+}
+
+#fsm-vis .cls-24 {
+  fill: #f44a3d;
+}
+
+#fsm-vis .cls-25 {
+  fill: #f7c663;
+}
+
+#fsm-vis .cls-26 {
+  fill: #d871d3;
+}
+
+#fsm-vis .cls-27 {
+  fill: #8be26f;
+}

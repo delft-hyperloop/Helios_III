@@ -1,0 +1,184 @@
+#temperature_vis {
+  --mlu1_temperature: #000000;
+  --mlu2_temperature: #000000;
+  --mlu3_temperature: #000000;
+  --mlu4_temperature: #000000;
+  --mlu5_temperature: #000000;
+  --mlu6_temperature: #000000;
+  --mgu1_starboard_temperature: #000000;
+  --mgu1_port_temperature: #000000;
+  --mgu2_starboard_temperature: #000000;
+  --mgu2_port_temperature: #000000;
+  --ebox1_temperature: #000000;
+  --ebox2_temperature: #000000;
+  --dslim_starboard_temperature: #000000;
+  --dslim_port_temperature: #000000;
+  --motor_driver_temperature: #000000;
+  --cooling_reservoir_temperature: #000000;
+}
+
+#temperature_vis .mlu1 {
+  fill: var(--mlu1_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+
+#temperature_vis .mlu2 {
+  fill: var(--mlu2_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .mlu3 {
+  fill: var(--mlu3_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .mlu4 {
+  fill: var(--mlu4_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .mlu5 {
+  fill: var(--mlu5_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .mlu6 {
+  fill: var(--mlu6_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .mgu1_starboard {
+  fill: var(--mgu1_starboard_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .mgu1_port {
+  fill: var(--mgu1_port_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .mgu2_starboard {
+  fill: var(--mgu2_starboard_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .mgu2_port {
+  fill: var(--mgu2_port_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .ebox1 {
+  fill: var(--ebox1_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .ebox2 {
+  fill: var(--ebox2_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .motor_driver_board {
+  fill: var(--motor_driver_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .cooling_reservoir {
+  fill: var(--cooling_reservoir_temperature);
+  stroke: #000000;
+  transition: fill 1s linear;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .dslim_starboard {
+  fill: var(--dslim_starboard_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .dslim_port {
+  fill: var(--dslim_port_temperature);
+  transition: fill 1s linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .st0 {
+  fill: #838587;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .st1 {
+  fill: #B9BCC1;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .st2 {
+  fill: #FFFFFF;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .st3 {
+  fill: #C3C5CB;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .st4 {
+  fill: #A6A8AD;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .st5 {
+  fill: #FFFFFF;
+}
+
+#temperature_vis .st6 {
+  fill: none;
+  stroke: #000000;
+  stroke-width: 0.25;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .st7 {
+  stroke: #000000;
+  stroke-width: 0.25;
+  stroke-miterlimit: 10;
+}
+
+#temperature_vis .st8 {
+  fill: none;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}

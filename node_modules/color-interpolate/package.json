@@ -1,0 +1,38 @@
+{
+  "name": "color-interpolate",
+  "version": "1.0.5",
+  "description": "Pick color from a given color palette by index",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colorjs/color-interpolate.git"
+  },
+  "keywords": [
+    "color",
+    "interpolate",
+    "lerp",
+    "interpolate-arrays",
+    "interpolation",
+    "lerp",
+    "smootstep",
+    "palette",
+    "colormap",
+    "gradient"
+  ],
+  "author": "ΔY <dfcreative@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/colorjs/color-interpolate/issues"
+  },
+  "homepage": "https://github.com/colorjs/color-interpolate#readme",
+  "dependencies": {
+    "clamp": "^1.0.1",
+    "color-parse": "^1.2.0",
+    "color-space": "^1.14.3",
+    "lerp": "^1.0.3"
+  }
+}

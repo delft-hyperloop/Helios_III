@@ -1,0 +1,13 @@
+import getBarLegend from '../BarChart/legend';
+import getScatterLegend from '../ScatterChart/legend';
+import getLineLegend from '../LineChart/legend';
+import getPieLegend from '../PieChart/legend';
+const legendGetter = {
+  bar: getBarLegend,
+  scatter: getScatterLegend,
+  line: getLineLegend,
+  pie: getPieLegend
+};
+export function getSeriesToDisplay(series) {
+  return Object.keys(series).flatMap(seriesType => legendGetter[seriesType](series[seriesType]));
+}

@@ -1,0 +1,82 @@
+#state_vis {
+  --mlu_state: #000000;
+  --mgu_state: #000000;
+  --dslim_state: #000000;
+  --global_state: #000000;
+  --air_gap: 0px;
+  --state-ease : 100ms;
+}
+
+#state_vis #pod {
+  transform: translateY(var(--air_gap));
+  /* transition: transform 50ms linear; */
+}
+
+
+#state_vis .global_state {
+  fill: var(--global_state);
+  transition: fill var(--state-ease) linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#state_vis .mlu {
+  fill: var(--mlu_state);
+  transition: fill var(--state-ease) linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#state_vis .motor {
+  fill: var(--dslim_state);
+  transition: fill var(--state-ease) linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#state_vis .mgu {
+  fill: var(--mgu_state);
+  transition: fill var(--state-ease) linear;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#state_vis .st0 {
+  fill: #C3C5CB;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#state_vis .st1 {
+  fill: #C3C5CB;
+  stroke: #000000;
+  stroke-width: 7;
+  stroke-miterlimit: 10;
+}
+
+#state_vis .st2 {
+  fill: #C3C5CB;
+}
+
+#state_vis .st3 {
+  fill: none;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#state_vis .st4 {
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+
+#state_vis .st5 {
+  fill: none;
+}
+
+#state_vis .st6 {
+  font-family: 'OpenSans-BoldItalic';
+}
+
+#state_vis .st7 {
+  font-size: 14px;
+}
