@@ -117,12 +117,17 @@ impl FSMPeripherals {
             },
             red_led: Output::new(p.PB14, Level::Low, Speed::High),
             propulsion_controller: PropulsionController::new(
+                *x,
                 i.data_sender,
+                i.event_sender,
                 p.PA4,
                 p.DAC1,
-                p.PA5,
-                p.PA6,
-            ),
+                p.ADC3,
+                p.PC0,
+                p.PF3,
+                p.PE5,
+            )
+            .await,
         }
     }
 }

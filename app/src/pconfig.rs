@@ -42,14 +42,14 @@ pub fn default_configuration() -> Config {
         divq: Some(PllDiv::DIV8),
         divr: Some(PllDiv::DIV8),
     });
-    // config.rcc.pll1 = Some(Pll {
-    //     source: PllSource::HSI,
-    //     prediv: PllPreDiv::DIV4,
-    //     mul: PllMul::MUL50,
-    //     divp: Some(PllDiv::DIV2),
-    //     divq: None,
-    //     divr: None,
-    // });
+    config.rcc.pll2 = Some(Pll {
+        source: PllSource::HSE,
+        prediv: PllPreDiv::DIV2,
+        mul: PllMul::MUL50,
+        divp: Some(PllDiv::DIV8),
+        divq: Some(PllDiv::DIV8),
+        divr: Some(PllDiv::DIV8),
+    });
 
     config.rcc.hsi = Some(HSIPrescaler::DIV1);
     config.rcc.csi = true;
@@ -139,7 +139,7 @@ macro_rules! try_spawn {
             Err(embassy_executor::SpawnError::Busy) => {
                 defmt::error!("Failed to spawn task because of SpawnError::Busy");
                 defmt::error!("->> Try increasing the pool_size for the task you're trying to spawn");
-                $event_sender.send(Event::BootingFailedEvent).await;
+                $event_sender.send($crate::Event::BootingFailedEvent).await;
             }
         }
     };

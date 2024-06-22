@@ -4,8 +4,16 @@ name = "DefaultDatatype"
 id = 0x00
 
 [[Datatype]]
-name = "PropulsionTemperature"
-id = 0x0a
+name = "PropulsionVoltage"
+id = 0x1b2
+
+[[Datatype]]
+name = "PropulsionCurrent"
+id = 0x1b3
+
+[[Datatype]]
+name = "PropulsionVRefInt"
+id = 0x1b4
 
 [[Datatype]]
 name = "LevitationTemperature"

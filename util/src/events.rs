@@ -42,7 +42,7 @@ pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> Stri
         } else {
             if id_list.contains(&event.id) {
                 panic!(
-                    "ID {} already taken!! {}:{} : pick a different one.",
+                    "ID {:#05x} already taken!! {}={} : pick a different one.",
                     event.id, event.name, event.id
                 );
             }
