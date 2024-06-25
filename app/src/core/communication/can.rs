@@ -66,21 +66,16 @@ pub async fn can_receiving_handler(
                     frame.data()
                 );
                 if DATA_IDS.contains(&id) {
-                    debug!("first if");
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
-                        debug!("second if");
                         let ut = utils.as_mut().unwrap();
                         if HV_IDS.contains(&id) {
-                            debug!("hv if");
-                            ut.hv_controller
+                         ut.hv_controller
                                 .bms_can_handle(id, frame.data(), data_sender, timestamp.as_ticks())
                                 .await;
                         } else if LV_IDS.contains(&id) {
-                            debug!("lv if");
                             ut.lv_controller
                                 .bms_can_handle(id, frame.data(), data_sender, timestamp.as_ticks())
                                 .await;
-                            // event_sender.send(Event::ConnectionEstablishedEvent).await;
                         } else if GFD_IDS.contains(&id) {
                             if id == Datatype::IMDVoltageDetails.to_id() {
                                 ground_fault_detection_isolation_details(
@@ -123,6 +118,7 @@ pub async fn can_receiving_handler(
                         ))
                         .await;
                 }
+
             }
             Err(e) => {
                 if error_counter < 10 || error_counter % 2500 == 0 {
@@ -138,6 +134,6 @@ pub async fn can_receiving_handler(
         // # VERY IMPORTANT
         // without this, our main pcb is magically converted to an adhd CAN pcb
         // with no mind for anything else. Tread carefully around it
-        Timer::after_millis(1).await;
+        Timer::after_millis(2).await;
     }
 }
