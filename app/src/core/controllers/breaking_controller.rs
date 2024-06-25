@@ -40,7 +40,7 @@ pub async fn control_braking_heartbeat(
         } else {
             braking_signal.set_low();
 
-            // braking_heartbeat.set_duty(Channel::Ch1, 0);
+            // braking_heartbe  at.set_duty(Channel::Ch1, 0);
             // sender.send(Event::EmergencyBrakeCommand).await;
             // info!("------------ BRAKE ! ------------");
         }

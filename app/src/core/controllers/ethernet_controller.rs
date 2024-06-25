@@ -54,9 +54,11 @@ impl EthernetController {
         let mut rng = Rng::new(pins.p_rng, Irqs);
         let mut seed = [0; 8];
         rng.fill_bytes(&mut seed);
+        info!(" here");
         let seed = u64::from_le_bytes(seed);
+        info!("Seed: {:?}", seed);
         let mac_addr = POD_MAC_ADDRESS;
-
+        info!("MAC Address: {:?}", mac_addr);
         static PACKETS: StaticCell<PacketQueue<16, 16>> = StaticCell::new();
 
         let device: Device = Ethernet::new(
@@ -75,6 +77,8 @@ impl EthernetController {
             GenericSMI::new(0),
             mac_addr,
         );
+        info!("MAC Address: {:?}", mac_addr);
+
 
         let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
         //        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
@@ -84,6 +88,7 @@ impl EthernetController {
         //                dns_servers: Default::default(),
         //            }
         //        );
+        info!("MAC Address: {:?}", mac_addr);
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();
 
