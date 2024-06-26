@@ -69,6 +69,12 @@ pub const COMMANDS_PATH: &str = "../config/commands.toml";
 pub const EVENTS_PATH: &str = "../config/events.toml";
 
 fn main() {
+    if cfg!(debug_assertions) {
+        env::set_var("DEFMT_LOG", "trace");
+    } else {
+        env::set_var("DEFMT_LOG", "off");
+    }
+
     let out_dir = env::var("OUT_DIR").unwrap();
     let id_list = Mutex::new(Vec::new());
     let dest_path = Path::new(&out_dir).join("config.rs");
@@ -155,10 +161,7 @@ fn configure_pod(config: &Config) -> String {
     ) + &*format!(
         "pub const KEEP_ALIVE: u64 = {};\n",
         config.pod.net.keep_alive
-    ) + &*format!(
-        "pub const HEARTBEAT: u64 = {};\n",
-        config.gs.heartbeat
-    )
+    ) + &*format!("pub const HEARTBEAT: u64 = {};\n", config.gs.heartbeat)
 }
 
 fn configure_internal(config: &Config) -> String {

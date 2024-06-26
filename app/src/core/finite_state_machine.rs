@@ -2,11 +2,12 @@ use core::cmp::Ordering;
 
 use defmt::*;
 use embassy_time::Instant;
-use crate::core::fsm_status::Route;
+
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
+use crate::core::fsm_status::Route;
 use crate::core::fsm_status::Status;
-use crate::{DataSender, Info};
+use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventReceiver;
@@ -238,7 +239,11 @@ impl Fsm {
     #[allow(unused)]
     pub async fn send_levi_cmd(&mut self, cmd: crate::Command) {
         self.data_queue
-            .send(Datapoint::new(crate::Datatype::LeviInstruction, cmd.to_id() as u64, Instant::now().as_ticks()))
+            .send(Datapoint::new(
+                crate::Datatype::LeviInstruction,
+                cmd.to_id() as u64,
+                Instant::now().as_ticks(),
+            ))
             .await;
     }
 

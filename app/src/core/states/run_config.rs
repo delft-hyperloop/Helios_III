@@ -1,12 +1,12 @@
-use defmt::{debug, error};
+use defmt::debug;
+use defmt::error;
 use defmt::info;
-use crate::Event;
-
 
 use crate::core::controllers::breaking_controller::BRAKE;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::transit;
+use crate::Event;
 
 //use crate::core::finite_state_machine_peripherals::ARMED;
 pub static mut ROUTE: u64 = 0;
@@ -40,9 +40,8 @@ impl Fsm {
                 unsafe {
                     ROUTE = x;
                 }
-
             }
-            Event::SetRunConfigSpeed(x) =>{
+            Event::SetRunConfigSpeed(x) => {
                 #[cfg(debug_assertions)]
                 debug!("Setting run config speed: {:?}", x);
                 unsafe {
@@ -56,18 +55,17 @@ impl Fsm {
             }
             Event::RunConfigCompleteEvent => unsafe {
                 // todo!(); // TODO: receive reply from propulsion that desired speed has been set
-                if ROUTE!=0 && SPEED!=0{
-                    self.route = (ROUTE,SPEED).into();
+                if ROUTE != 0 && SPEED != 0 {
+                    self.route = (ROUTE, SPEED).into();
                     #[cfg(debug_assertions)]
                     debug!("Set {:?}", &self.route);
                     transit!(self, State::Idle);
-                }
-                else {
+                } else {
                     error!("Route or Speed not set");
                     // transit!(self, State::Exit);
                 }
-                 // todo make this a command on gs
-            }
+                // todo make this a command on gs
+            },
             Event::RunConfigFailedEvent => {
                 error!("Run config failed");
 

@@ -2,14 +2,17 @@ use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::core::fsm_status::{Location, RouteUse};
+use crate::core::fsm_status::Location;
+use crate::core::fsm_status::RouteUse;
 use crate::transit;
-use crate::Event;
 use crate::Datatype;
+use crate::Event;
 
 impl Fsm {
     pub fn entry_accelerating(&mut self) {
-        self.peripherals.propulsion_controller.set_speed(self.route.current_speed() as u64);
+        self.peripherals
+            .propulsion_controller
+            .set_speed(self.route.current_speed() as u64);
         //We have to put a stip on the track that would define a braking point here
     }
 
@@ -42,17 +45,17 @@ impl Fsm {
                     }
                 }
             }
-            Event::DirectionChangedEvent => {
-                match self.route.current_position(){
-                    Location::StopHere => {
-                        info!("Stopping here.");
-                        transit!(self, State::Exit);
-                    }
-                    _ => {
-                        self.peripherals.propulsion_controller.set_speed(self.route.current_speed() as u64);
-                    }
+            Event::DirectionChangedEvent => match self.route.current_position() {
+                Location::StopHere => {
+                    info!("Stopping here.");
+                    transit!(self, State::Exit);
                 }
-            }
+                _ => {
+                    self.peripherals
+                        .propulsion_controller
+                        .set_speed(self.route.current_speed() as u64);
+                }
+            },
             Event::BrakingPointReachedEvent => {
                 transit!(self, State::EndST);
                 todo!();
