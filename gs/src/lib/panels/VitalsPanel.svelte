@@ -45,6 +45,9 @@
     const leviTemp = storeManager.getStore("LevitationTemperature");
     const brakeTemp = storeManager.getStore("BrakeTemperature");
 
+    const totalLVV = storeManager.getStore("TotalBatteryVoltageLow");
+    const totalHVV = storeManager.getStore("TotalBatteryVoltageHigh");
+
     const upDrawerVB = storeManager.getStore("Average_Temp_VB_top");
     const downDrawerVB = storeManager.getStore("Average_Temp_VB_Bottom");
     const outsideVB = storeManager.getStore("Ambient_temp");
@@ -130,19 +133,27 @@
                 <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4">
-                            <p>Velocity: <span class="font-mono font-medium">{$speed}</span></p>
-                            <p>Position: <span class="font-mono font-medium">{$position}</span></p>
-                            <p>HV Current: <span class="font-mono font-medium">{$currentHigh}</span></p>
-                            <p>LV Current: <span class="font-mono font-medium">{$currentLow}</span></p>
+                            <p>
+                                Velocity: <span class="font-mono font-medium">{$speed}</span>
+                                <br>
+                                Position: <span class="font-mono font-medium">{$position}</span>
+                            </p>
+                            <p>
+                                HV Current: <span class="font-mono font-medium">{$currentHigh}</span>
+                                <br>
+                                LV Current: <span class="font-mono font-medium">{$currentLow}</span>
+                            </p>
                         </div>
                         <div class="flex gap-4">
                             <div class="flex gap-2">
                                 <span>LV: </span>
                                 <Battery orientation="horizontal" perc={Number($lvBattery)}/>
+                                <span>Total LV V: {$totalLVV}</span>
                             </div>
                             <div class="flex gap-2">
                                 <span>HV: </span>
                                 <Battery orientation="horizontal" perc={Number($hvBattery)}/>
+                                <span>Total HV V: {$totalHVV}</span>
                             </div>
                         </div>
                     </div>
