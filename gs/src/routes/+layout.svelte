@@ -52,7 +52,7 @@
     }
 
     const voltParse:dataConvFun<number> = (data:bigint) => {
-        return Number(data) / 100 + 2;
+        return Number(data) / 100;
     }
 
     gdd.stores.registerStore<number>("Module1AvgTemperature", 0.0, tempParse);
@@ -111,13 +111,21 @@
     gdd.stores.registerStore<number>("Module8MaxVoltage", 0.0, voltParse);
     gdd.stores.registerStore<number>("Module8MinVoltage", 0.0, voltParse);
 
-    gdd.stores.registerStore<number>("BatteryMinVoltageHigh", 0.0);
-    gdd.stores.registerStore<number>("BatteryMaxVoltageHigh", 0.0);
-    gdd.stores.registerStore<number>("BatteryVoltageHigh", 0.0);
+    gdd.stores.registerStore<number>("BatteryMinVoltageHigh", 0.0, voltParse);
+    gdd.stores.registerStore<number>("BatteryMaxVoltageHigh", 0.0, voltParse);
+    gdd.stores.registerStore<number>("BatteryVoltageHigh", 0.0, voltParse);
 
-    gdd.stores.registerStore<number>("BatteryMinTemperatureHigh", 0.0);
-    gdd.stores.registerStore<number>("BatteryMaxTemperatureHigh", 0.0);
-    gdd.stores.registerStore<number>("BatteryTemperatureHigh", 0.0);
+    gdd.stores.registerStore<number>("BatteryMinTemperatureHigh", 0.0, tempParse);
+    gdd.stores.registerStore<number>("BatteryMaxTemperatureHigh", 0.0, tempParse);
+    gdd.stores.registerStore<number>("BatteryTemperatureHigh", 0.0, tempParse);
+
+    gdd.stores.registerStore<number>("BatteryTemperatureLow", 0.0, tempParse)
+    gdd.stores.registerStore<number>("BatteryMinTemperatureLow", 0.0, tempParse)
+    gdd.stores.registerStore<number>("BatteryMaxTemperatureLow", 0.0, tempParse)
+
+    gdd.stores.registerStore<number>("BatteryVoltageLow", 0.0, voltParse)
+    gdd.stores.registerStore<number>("BatteryMinVoltageLow", 0.0, voltParse)
+    gdd.stores.registerStore<number>("BatteryMaxVoltageLow", 0.0, voltParse)
 
     gdd.stores.registerStore<number>("BatteryCurrentLow", 0.0, data => {
         const curr = Number(data) / 10;
@@ -130,14 +138,6 @@
         hvCurrent.addEntry(1, curr + 10);
         return curr;
     });
-
-    gdd.stores.registerStore<number>("BatteryTemperatureLow", 0.0, tempParse)
-    gdd.stores.registerStore<number>("BatteryMinTemperatureLow", 0.0, tempParse)
-    gdd.stores.registerStore<number>("BatteryMaxTemperatureLow", 0.0, tempParse)
-
-    gdd.stores.registerStore<number>("BatteryVoltageLow", 0.0, voltParse)
-    gdd.stores.registerStore<number>("BatteryMinVoltageLow", 0.0, voltParse)
-    gdd.stores.registerStore<number>("BatteryMaxVoltageLow", 0.0, voltParse)
 
     gdd.stores.registerStore<number>("Velocity", 0, data => {
         const curr = Number(data);
