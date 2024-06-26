@@ -23,7 +23,7 @@
     <h2 class="text-xl font-semibold mb-4">Location & IMU</h2>
     <TileGrid columns="1fr 1fr" rows="">
         <Tile containerClass="col-span-2">
-            <Localiser loc={$location} max={50} turning={$inputTurn !== RunMode.ShortRun}/>
+            <Localiser loc={$location} max={13000} turning={$inputTurn !== RunMode.ShortRun}/>
         </Tile>
         <Tile>
             <Chart title="Velocity" background="bg-surface-900" />
@@ -32,7 +32,10 @@
             <Chart title="Acceleration" background="bg-surface-900" />
         </Tile>
         <Tile containerClass="col-start-1 col-span-2">
-            <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>
+            <Chart title="Localisation" background="bg-surface-900" />
         </Tile>
+<!--        <Tile containerClass="col-start-1 col-span-2">-->
+<!--            <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>-->
+<!--        </Tile>-->
     </TileGrid>
 </div>

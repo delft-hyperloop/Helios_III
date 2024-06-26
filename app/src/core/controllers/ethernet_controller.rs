@@ -1,5 +1,5 @@
+use defmt::{debug, trace};
 use defmt_rtt as _;
-use defmt::info;
 use embassy_executor::Spawner;
 use embassy_net::Stack;
 use embassy_net::StackResources;
@@ -16,7 +16,6 @@ use static_cell::StaticCell;
 use crate::core::communication::tcp::tcp_connection_handler;
 use crate::try_spawn;
 use crate::DataReceiver;
-use crate::Event;
 use crate::EventSender;
 use crate::Irqs;
 use crate::POD_MAC_ADDRESS;
@@ -55,11 +54,11 @@ impl EthernetController {
         let mut seed = [0; 8];
         rng.fill_bytes(&mut seed);
         let seed = u64::from_le_bytes(seed);
+        debug!("Seed: {:?}", seed);
         let mac_addr = POD_MAC_ADDRESS;
-
+        debug!("MAC Address: {:?}", mac_addr);
         static PACKETS: StaticCell<PacketQueue<16, 16>> = StaticCell::new();
 
-info!("eth 6");
         let device: Device = Ethernet::new(
             PACKETS.init(PacketQueue::<16, 16>::new()),
             pins.eth_pin,
@@ -76,23 +75,21 @@ info!("eth 6");
             GenericSMI::new(0),
             mac_addr,
         );
+        trace!("MAC Address: {:?}", mac_addr);
 
-info!("eth 7");
         let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
         //        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
-info!("eth 8");
         //            StaticConfigV4 {
         //                address: ip_cidr_from_config(POD_IP_ADDRESS),
         //                gateway: None,
         //                dns_servers: Default::default(),
         //            }
         //        );
+        trace!("MAC Address: {:?}", mac_addr);
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();
 
-info!("eth 9");
         static RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
-info!("eth 10");
         let stack: &Stack<Device> = &*STACK.init(Stack::new(
             device,
             eth_config,
@@ -100,10 +97,9 @@ info!("eth 10");
             seed,
         ));
 
-info!("eth 11");
         let ethernet_controller = Self {};
 
-       try_spawn!(sender, x.spawn(net_task(stack)));
+        try_spawn!(sender, x.spawn(net_task(stack)));
 
         try_spawn!(
             sender,

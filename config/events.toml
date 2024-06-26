@@ -200,3 +200,8 @@ name = "TurnAllHVRelaysOnEvent"
 id = 0x421
 priority = 1
 
+[[Event]]
+id = 0x422
+name = "SetRunConfigSpeed"
+priority = 0
+params = "u64"

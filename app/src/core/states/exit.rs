@@ -18,7 +18,9 @@ impl Fsm {
     pub async fn react_exit(&mut self, event: Event) {
         match event {
             Event::ArmBrakesCommand => {
-                todo!();
+                #[cfg(debug_assertions)]
+                info!("Arming brakes");
+                self.peripherals.braking_controller.arm_breaks();
             }
             Event::SystemResetCommand => {
                 transit!(self, State::RunConfig);

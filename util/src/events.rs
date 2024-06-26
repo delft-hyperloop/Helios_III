@@ -2,7 +2,6 @@
 
 use serde::Deserialize;
 use std::fs;
-use std::sync::Mutex;
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -22,7 +21,11 @@ pub fn get_events_config(path: &str) -> Config {
     toml::from_str(&config_str).unwrap()
 }
 
-pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> String {
+pub fn get_event_ids(path: &str) -> Vec<u16> {
+    get_events_config(path).Event.iter().map(|x| x.id).collect()
+}
+
+pub fn generate_events(path: &str, drv: bool) -> String {
     let config: Config = get_events_config(path);
 
     let mut enum_definitions = String::new();
@@ -33,32 +36,26 @@ pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> Stri
     let mut to_str = String::new();
 
     let event_count = config.Event.len();
-    let mut i = 0;
-    let mut id_list = id_list.lock().unwrap();
     let mut event_ids = vec![];
-    for event in config.Event {
-        if event.id & 0b1111_1000_0000_0000 != 0 {
-            panic!("IDs need to be u11. Found {} > {}", event.id, 2 ^ 11);
-        } else {
-            if id_list.contains(&event.id) {
-                panic!(
-                    "ID {} already taken!! {}:{} : pick a different one.",
-                    event.id, event.name, event.id
-                );
-            }
-            id_list.push(event.id);
-            event_ids.push(event.id);
-        }
-        match event.params {
+    for (i, event) in config.Event.iter().enumerate() {
+        event_ids.push(event.id);
+
+        match &event.params {
             None => {
                 enum_definitions.push_str(&format!("    {},\n", event.name));
-                match_to_id.push_str(&format!("            Event::{} => {},\n", event.name, event.id));
+                match_to_id.push_str(&format!(
+                    "            Event::{} => {},\n",
+                    event.name, event.id
+                ));
                 // to_str.push_str(&format!("Event::{} => \"{}\",\n", command.name, command.name));
                 priorities.push_str(&format!(
                     "            Event::{} => {},\n",
                     event.name, event.priority
                 ));
-                match_from_id.push_str(&format!("            {} => Event::{},\n", event.id, event.name));
+                match_from_id.push_str(&format!(
+                    "            {} => Event::{},\n",
+                    event.id, event.name
+                ));
                 to_idx.push_str(&format!("            Event::{} => {},\n", event.name, i));
             }
             Some(x) => {
@@ -80,7 +77,6 @@ pub fn generate_events(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> Stri
             }
         }
         to_str.push_str(&format!("\"{}\",", event.name));
-        i += 1;
     }
 
     format!(
@@ -124,8 +120,18 @@ impl Event {{
     pub fn to_str(&self) -> &'static str {{
         EVENTS_DISPLAY[self.to_idx()]
     }}
-}}", if drv { "#[derive(Debug, PartialEq, Eq, defmt::Format)]" } else { "#[derive(Debug, PartialEq, Eq)]" },
-        enum_definitions, match_to_id, match_from_id, priorities, to_idx, event_count
+}}",
+        if drv {
+            "#[derive(Debug, PartialEq, Eq, defmt::Format)]"
+        } else {
+            "#[derive(Debug, PartialEq, Eq)]"
+        },
+        enum_definitions,
+        match_to_id,
+        match_from_id,
+        priorities,
+        to_idx,
+        event_count
     ) + &*format!(
         "\n\npub static EVENT_IDS : [u16;{}] = [{}];\n",
         event_ids.len(),

@@ -1,25 +1,18 @@
-#![allow(unused)]
+#![allow(dead_code)]
 
 use defmt::info;
 use embassy_net::IpAddress::Ipv4;
 use embassy_net::IpEndpoint;
 use embassy_net::Ipv4Address;
 use embassy_net::Ipv4Cidr;
-use embassy_stm32::can::config;
 use embassy_stm32::rcc;
 use embassy_stm32::rcc::Pll;
 use embassy_stm32::rcc::*;
 use embassy_stm32::Config;
 use embedded_can::ExtendedId;
-use embedded_can::Id;
-use embedded_nal_async::AddrType::IPv4;
 use embedded_nal_async::Ipv4Addr;
 use embedded_nal_async::SocketAddr;
 use embedded_nal_async::SocketAddrV4;
-use embedded_nal_async::TcpConnect;
-
-// use embedded_hal::can::Id;
-use crate::Event;
 
 #[inline]
 pub fn default_configuration() -> Config {
@@ -31,10 +24,18 @@ pub fn default_configuration() -> Config {
     // });
     config.rcc.hse = Some(rcc::Hse {
         // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
-        freq: embassy_stm32::time::Hertz(8_000_000),
+        freq: embassy_stm32::time::Hertz(25_000_000),
         mode: rcc::HseMode::Oscillator,
     });
     config.rcc.pll1 = Some(Pll {
+        source: PllSource::HSE,
+        prediv: PllPreDiv::DIV6,
+        mul: PllMul::MUL50,
+        divp: Some(PllDiv::DIV8),
+        divq: Some(PllDiv::DIV8),
+        divr: Some(PllDiv::DIV8),
+    });
+    config.rcc.pll2 = Some(Pll {
         source: PllSource::HSE,
         prediv: PllPreDiv::DIV2,
         mul: PllMul::MUL50,
@@ -42,14 +43,6 @@ pub fn default_configuration() -> Config {
         divq: Some(PllDiv::DIV8),
         divr: Some(PllDiv::DIV8),
     });
-    // config.rcc.pll1 = Some(Pll {
-    //     source: PllSource::HSI,
-    //     prediv: PllPreDiv::DIV4,
-    //     mul: PllMul::MUL50,
-    //     divp: Some(PllDiv::DIV2),
-    //     divq: None,
-    //     divr: None,
-    // });
 
     config.rcc.hsi = Some(HSIPrescaler::DIV1);
     config.rcc.csi = true;
@@ -62,7 +55,7 @@ pub fn default_configuration() -> Config {
     config.rcc.apb3_pre = APBPrescaler::DIV2; // 100 Mhz
     config.rcc.apb4_pre = APBPrescaler::DIV2; // 100 Mhz
     config.rcc.voltage_scale = VoltageScale::Scale1;
-    config.rcc.mux.fdcansel = rcc::mux::Fdcansel::PLL1_Q;
+    config.rcc.mux.fdcansel = rcc::mux::Fdcansel::HSE;
     config
 }
 
@@ -98,7 +91,7 @@ pub fn socket_from_config(t: ([u8; 4], u16)) -> SocketAddr {
 pub fn bytes_to_u64(b: &[u8]) -> u64 {
     let mut x = 0u64;
     for i in (0..7).rev() {
-        x |= (b[i] as u64) << i;
+        x |= (b[i] as u64) << (i * 8);
     }
     x
 }
@@ -109,7 +102,6 @@ pub fn id_as_value(id: &embedded_can::Id) -> u16 {
         embedded_can::Id::Standard(x) => x.as_raw(),
     }
 }
-
 
 pub fn extended_as_value(id: &ExtendedId) -> u16 {
     let temp = id.as_raw();
@@ -140,7 +132,7 @@ macro_rules! try_spawn {
             Err(embassy_executor::SpawnError::Busy) => {
                 defmt::error!("Failed to spawn task because of SpawnError::Busy");
                 defmt::error!("->> Try increasing the pool_size for the task you're trying to spawn");
-                $event_sender.send(Event::BootingFailedEvent).await;
+                $event_sender.send($crate::Event::BootingFailedEvent).await;
             }
         }
     };

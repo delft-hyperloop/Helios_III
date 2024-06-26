@@ -14,3 +14,14 @@ pub struct Status {
 }
 
 impl Status {}
+
+include!("../../../util/src/shared/routes.rs");
+
+//
+// // pub trait State {
+// //     fn entry(&mut self);
+// //
+// //     fn check_conditions(&mut self) -> bool;
+// //
+// //     async fn react(&mut self, event: crate::Event);
+// // }

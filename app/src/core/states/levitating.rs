@@ -14,7 +14,6 @@ impl Fsm {
         match event {
             Event::StartAcceleratingCommand => {
                 transit!(self, State::MovingST);
-                todo!(); // TODO: send message to propulsion to start
             }
             Event::HVPropulsionReadyEvent => {
                 todo!();
