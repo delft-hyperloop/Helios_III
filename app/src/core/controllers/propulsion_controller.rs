@@ -6,10 +6,11 @@ use embassy_stm32::adc::VrefInt;
 use embassy_stm32::dac::Value;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
-use embassy_stm32::gpio::Speed;
-use embassy_stm32::peripherals::ADC3;
 use embassy_stm32::peripherals::DAC1;
 use embassy_stm32::peripherals::PA4;
+
+use embassy_stm32::gpio::Speed;
+use embassy_stm32::peripherals::ADC3;
 use embassy_stm32::peripherals::PC0;
 use embassy_stm32::peripherals::PE5;
 use embassy_stm32::peripherals::PF3;

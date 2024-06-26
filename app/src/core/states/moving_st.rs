@@ -1,4 +1,4 @@
-use defmt::info;
+use defmt::{error, info, warn};
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
@@ -29,23 +29,29 @@ impl Fsm {
                     Location::LaneSwitchCurved => {
                         #[cfg(debug_assertions)]
                         info!("Entering a lane switch!");
-                        // self.peripherals.propulsion_controller.turn_off();
                         self.send_levi_cmd(crate::Command::ls2(0)).await;
                         transit!(self, State::MovingLSCV);
                     }
-                    Location::StopHere => {
-                        defmt::warn!("Stopping here.");
+                    Location::StopAndWait => {
+                        #[cfg(debug_assertions)]
+                        info!("Stopping and waiting");
+                        self.peripherals.propulsion_controller.stop();
+                        self.send_levi_cmd(crate::Command::ls0(0)).await;
+                        transit!(self, State::Levitating);
+                    }
+                    Location::BrakeHere => {
+                        warn!("Stopping here.");
                         transit!(self, State::Exit);
                     }
                     _ => {
-                        defmt::error!("Invalid configuration1!");
+                        error!("Invalid configuration!");
 
                         transit!(self, State::EmergencyBraking);
                     }
                 }
             }
             Event::DirectionChangedEvent => match self.route.current_position() {
-                Location::StopHere => {
+                Location::BrakeHere => {
                     info!("Stopping here.");
                     transit!(self, State::Exit);
                 }
@@ -56,8 +62,8 @@ impl Fsm {
                 }
             },
             Event::BrakingPointReachedEvent => {
+                // TODO: ask if we need to prop brake or emergency brake
                 transit!(self, State::EndST);
-                todo!();
             }
             _ => {
                 info!("The current state ignores {}", event.to_str());
