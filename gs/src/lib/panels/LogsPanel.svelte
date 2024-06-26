@@ -13,6 +13,8 @@
     let userHasScrolled = false;
     let logs: Log[] = [];
 
+    $: logString = logs.join('')
+
     let colours = new Map([
         ['STATUS', 'text-surface-50'],
         ['WARNING', 'text-warning-400'],
@@ -30,7 +32,9 @@
 
     function registerChannel(channel: string, log_type: LogType) {
         return listen(channel, (event: {payload: string}) => {
-            logs = [...logs, {message: event.payload, log_type, timestamp: Date.now().valueOf()}]
+            // logs = [...logs, {message: event.payload, log_type, timestamp: Date.now().valueOf()}]
+            // logString += `[${Date.now().valueOf()}] ${log_type}: ${event.payload}` + "\r\n"
+            logs.push({message: event.payload, log_type, timestamp: Date.now().valueOf()});
         });
     }
 
@@ -76,11 +80,12 @@
     </AppBar>
 
     <div class="h-full p-1 pb-16 overflow-y-auto" bind:this={logContainer}>
-        {#each filteredLogs as log}
-            <div class="flex items-center">
-                <p class="{colours.get(log.log_type)}"><span class="font-mono font-light">[{log.timestamp}]</span>{log.log_type}: {log.message}</p>
-            </div>
-        {/each}
+        <!--{#each filteredLogs as log}-->
+        <!--    <div class="flex items-center">-->
+        <!--        <p class="{colours.get(log.log_type)}"><span class="font-mono font-light">[{log.timestamp}]</span>{log.log_type}: {log.message}</p>-->
+        <!--    </div>-->
+        <!--{/each}-->
+        <p class="whitespace-pre-line">{logString}</p>
         <hr>
     </div>
 </div>
