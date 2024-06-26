@@ -15,7 +15,7 @@ export class PlotBuffer {
 
     /**
      *
-     * @param updateInterval
+     * @param updateInterval in miliseconds
      * @param span
      * @param yRange
      * @param showLegend

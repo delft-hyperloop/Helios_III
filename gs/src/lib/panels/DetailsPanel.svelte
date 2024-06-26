@@ -19,7 +19,7 @@
         {name: "Run", value: i++},
         {name: "Location & IMU", value: i++},
         {name: "Batteries", value: i++},
-        {name: "Motors", value: i++},
+        {name: "Current", value: i++},
         {name: "Pneumatics", value: i++},
         {name: "Procedures", value: i++},
         {name: "Debug", value: i++}
