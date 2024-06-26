@@ -69,7 +69,7 @@ pub async fn can_receiving_handler(
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
                         let ut = utils.as_mut().unwrap();
                         if HV_IDS.contains(&id) {
-                         ut.hv_controller
+                            ut.hv_controller
                                 .bms_can_handle(id, frame.data(), data_sender, timestamp.as_ticks())
                                 .await;
                         } else if LV_IDS.contains(&id) {
@@ -96,7 +96,7 @@ pub async fn can_receiving_handler(
                             }
                         }
                     } else {
-                        info!("#{}",bytes_to_u64(frame.data()));
+                        info!("#{}", bytes_to_u64(frame.data()));
                         data_sender
                             .send(Datapoint::new(
                                 Datatype::from_id(id),
@@ -118,7 +118,6 @@ pub async fn can_receiving_handler(
                         ))
                         .await;
                 }
-
             }
             Err(e) => {
                 if error_counter < 10 || error_counter % 2500 == 0 {
