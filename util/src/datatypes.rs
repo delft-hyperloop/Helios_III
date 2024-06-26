@@ -2,7 +2,6 @@
 
 use serde::Deserialize;
 use std::fs;
-use std::sync::Mutex;
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -20,28 +19,24 @@ pub fn get_data_config(path: &str) -> Config {
     toml::from_str(&config_str).unwrap()
 }
 
-pub fn generate_datatypes(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> String {
+pub fn get_data_ids(path: &str) -> Vec<u16> {
+    get_data_config(path)
+        .Datatype
+        .iter()
+        .map(|x| x.id)
+        .collect()
+}
+
+pub fn generate_datatypes(path: &str, drv: bool) -> String {
     let config: Config = get_data_config(path);
 
     let mut enum_definitions = String::new();
     let mut match_to_id = String::new();
     let mut match_from_id = String::new();
-    let mut id_list = id_list.lock().unwrap();
     let mut data_ids = vec![];
     let mut from_str = String::new();
     for dtype in config.Datatype {
-        if dtype.id & 0b1111_1000_0000_0000 != 0 {
-            panic!("IDs need to be u11. Found {} > {}", dtype.id, 2_u16.pow(11));
-        } else {
-            if id_list.contains(&dtype.id) {
-                panic!(
-                    "ID {} already taken!! {}:{} : pick a different one.",
-                    dtype.id, dtype.name, dtype.id
-                );
-            }
-            id_list.push(dtype.id);
-            data_ids.push(dtype.id);
-        }
+        data_ids.push(dtype.id);
         enum_definitions.push_str(&format!("    {},\n", dtype.name));
         match_to_id.push_str(&format!(
             "            Datatype::{} => {},\n",

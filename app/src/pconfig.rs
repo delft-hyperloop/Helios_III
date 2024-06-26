@@ -89,7 +89,7 @@ pub fn socket_from_config(t: ([u8; 4], u16)) -> SocketAddr {
 pub fn bytes_to_u64(b: &[u8]) -> u64 {
     let mut x = 0u64;
     for i in (0..7).rev() {
-        x |= (b[i] as u64) << i * 8;
+        x |= (b[i] as u64) << (i * 8);
     }
     x
 }
