@@ -51,9 +51,10 @@ pub async fn can_receiving_handler(
     let mut error_counter = 0u64;
     loop {
         // #[cfg(debug_assertions)]
-        // info!("Entering read loop on bus #{}", bus_nr);
+        info!("Entering read loop on bus #{}", bus_nr);
         match bus.read().await {
             Ok(envelope) => {
+                info!(" got here");
                 error_counter = 0;
                 let (frame, timestamp) = envelope.parts();
                 // frame.header().format();
@@ -134,6 +135,6 @@ pub async fn can_receiving_handler(
         // # VERY IMPORTANT
         // without this, our main pcb is magically converted to an adhd CAN pcb
         // with no mind for anything else. Tread carefully around it
-        Timer::after_millis(2).await;
+        Timer::after_millis(1).await;
     }
 }
