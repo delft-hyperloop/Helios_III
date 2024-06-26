@@ -1,9 +1,9 @@
 # Delft Hyperloop - Helios III
 *sponsored by goose*
 
-./app ->> main application source code
-./gs  ->> ground station frontend code
-./gs/station ->> ground station backend code
+- `./app` → main application source code
+- `./gs` → ground station frontend code
+- `./gs/station` → ground station backend code
 
 # Running
 this project is built on `rustc 1.79.0 (129f3b996 2024-06-10)` and is needed for all components.
@@ -52,7 +52,9 @@ in the `struct Backend`.
 To implement a frontend, all you need to do is `Backend::new()`, create listeners for the `broadcast::channel`s, receive `Message`s and send `Command`s.
 
 
-```
+----------------------------------------------------------
+
+```rust
 © 2024 Andreas Tsatsanis, Fransisco Amaro, Kiril Panayotov
 ```
 
