@@ -45,6 +45,10 @@
     const leviTemp = storeManager.getStore("LevitationTemperature");
     const brakeTemp = storeManager.getStore("BrakeTemperature");
 
+    const upDrawerVB = storeManager.getStore("Average_Temp_VB_top");
+    const downDrawerVB = storeManager.getStore("Average_Temp_VB_Bottom");
+    const outsideVB = storeManager.getStore("Ambient_temp");
+
     let tableArr: any[][];
     let tableArr2: any[][];
 
@@ -56,9 +60,9 @@
     ]
 
     $: tableArr = [
-        ["Upper drawer VB", $propTemp],
-        ["Bottom drawer VB", $leviTemp],
-        ["Outside of VB", $brakeTemp],
+        ["Upper drawer VB", $upDrawerVB],
+        ["Bottom drawer VB", $downDrawerVB],
+        ["Outside of VB", $outsideVB],
         ["HEMS", 0],
         ["EMS", 0],
         ["Motor Front", 0],

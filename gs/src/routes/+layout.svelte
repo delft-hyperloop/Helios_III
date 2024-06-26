@@ -181,18 +181,25 @@
     gdd.stores.registerStore<number>("IMDVoltageDetails", 0);
     gdd.stores.registerStore<number>("IMDIsolationDetails", 0);
 
-    /*
-        emit('speed', {data})
+    gdd.stores.registerStore<number>("Average_Temp_VB_Bottom", 0.0);
+    gdd.stores.registerStore<number>("Average_Temp_VB_top", 0.0);
+    gdd.stores.registerStore<number>("Ambient_temp", 0.0);
 
-        $chartStore.get("EMS")?.addEntry(1, Math.random()*20);
-        $chartStore.get("EMS")?.addEntry(2, 25+Math.random()*20);
-        $chartStore.get("EMS")?.addEntry(3, 50+Math.random()*20);
-        $chartStore.get("EMS")?.addEntry(4, 75+Math.random()*20);
-        $chartStore.get("HEMS")?.addEntry(1, Math.random()*20);
-        $chartStore.get("HEMS")?.addEntry(2, 25+Math.random()*20);
-        $chartStore.get("HEMS")?.addEntry(3, 50+Math.random()*20);
-        $chartStore.get("HEMS")?.addEntry(4, 75+Math.random()*20);
-     */
+    gdd.stores.registerStore<number>("Temp_HEMS_1", 0.0)
+    gdd.stores.registerStore<number>("Temp_HEMS_2", 0.0)
+    gdd.stores.registerStore<number>("Temp_HEMS_3", 0.0)
+    gdd.stores.registerStore<number>("Temp_HEMS_4", 0.0)
+
+    gdd.stores.registerStore<number>("levi_hems_gap_a", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_gap_b", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_gap_c", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_gap_d", 0.0)
+
+    gdd.stores.registerStore<number>("levi_ems_gap_a", 0.0)
+    gdd.stores.registerStore<number>("levi_ems_gap_b", 0.0)
+    gdd.stores.registerStore<number>("levi_ems_gap_c", 0.0)
+    gdd.stores.registerStore<number>("levi_ems_gap_d", 0.0)
+
 
     gdd.start(100);
 
