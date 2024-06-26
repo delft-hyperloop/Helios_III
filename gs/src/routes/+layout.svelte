@@ -127,6 +127,9 @@
     gdd.stores.registerStore<number>("BatteryMinVoltageLow", 0.0, voltParse)
     gdd.stores.registerStore<number>("BatteryMaxVoltageLow", 0.0, voltParse)
 
+    gdd.stores.registerStore<number>("TotalBatteryVoltageHigh", 0.0, voltParse)
+    gdd.stores.registerStore<number>("TotalBatteryVoltageLow", 0.0, voltParse)
+
     gdd.stores.registerStore<number>("BatteryCurrentLow", 0.0, data => {
         const curr = Number(data) / 10;
         lvCurrent.addEntry(1, curr + 150);
