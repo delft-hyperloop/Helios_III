@@ -635,3 +635,131 @@ id = 0x127
 [[Datatype]]
 name = "HighPressureSensor"
 id = 0x128
+
+
+# SJOERD LEVITATION DATATYPES
+
+[[Datatype]]
+name = "levi_hems_gap_a"
+id = 0x130
+
+[[Datatype]]
+name = "levi_hems_gap_b"
+id = 0x131
+
+[[Datatype]]
+name = "levi_hems_gap_c"
+id = 0x132
+
+[[Datatype]]
+name = "levi_hems_gap_d"
+id = 0x133
+
+[[Datatype]]
+name = "levi_ems_gap_a"
+id = 0x134
+
+[[Datatype]]
+name = "levi_ems_gap_b"
+id = 0x135
+
+[[Datatype]]
+name = "levi_ems_gap_c"
+id = 0x136
+
+[[Datatype]]
+name = "levi_ems_gap_d"
+id = 0x137
+
+[[Datatype]]
+name = "levi_hems_current_a1"
+id = 0x138
+
+[[Datatype]]
+name = "levi_hems_current_a2"
+id = 0x139
+
+[[Datatype]]
+name = "levi_hems_current_b1"
+id = 0x140
+
+[[Datatype]]
+name = "levi_hems_current_b2"
+id = 0x141
+
+[[Datatype]]
+name = "levi_hems_current_c1"
+id = 0x142
+
+[[Datatype]]
+name = "levi_hems_current_c2"
+id = 0x143
+
+[[Datatype]]
+name = "levi_hems_current_d1"
+id = 0x144
+
+[[Datatype]]
+name = "levi_hems_current_d2"
+id = 0x145
+
+[[Datatype]]
+name = "levi_ems_current_ab"
+id = 0x146
+
+[[Datatype]]
+name = "levi_ems_current_cd"
+id = 0x147
+
+[[Datatype]]
+name = "levi_hems_airgap"
+id = 0x148
+
+[[Datatype]]
+name = "levi_hems_pitch"
+id = 0x149
+
+[[Datatype]]
+name = "levi_hems_roll"
+id = 0x150
+
+[[Datatype]]
+name = "levi_ems_offset_ab"
+id = 0x151
+
+[[Datatype]]
+name = "levi_ems_offset_cd"
+id = 0x152
+
+[[Datatype]]
+name = "levi_hems_power"
+id = 0x153
+
+[[Datatype]]
+name = "llevi_ems_power"
+id = 0x154
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
