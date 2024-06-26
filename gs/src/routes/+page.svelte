@@ -8,13 +8,13 @@
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {onDestroy, onMount} from "svelte";
     import {details_pane, vitals_pane} from "$lib";
-    import {EventChannels} from "$lib/types";
+    import {EventChannel} from "$lib/types";
 
     let unlisten_error: UnlistenFn;
     const toastStore = getToastStore();
 
     onMount(async () => {
-        unlisten_error = await listen(EventChannels.ERROR, (event) => {
+        unlisten_error = await listen(EventChannel.ERROR, (event) => {
             toastStore.trigger({
                 message: event.payload as string || "An error occurred",
                 background: 'variant-filled-error',

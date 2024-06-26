@@ -16,7 +16,6 @@ use static_cell::StaticCell;
 use crate::core::communication::tcp::tcp_connection_handler;
 use crate::try_spawn;
 use crate::DataReceiver;
-use crate::Event;
 use crate::EventSender;
 use crate::Irqs;
 use crate::POD_MAC_ADDRESS;

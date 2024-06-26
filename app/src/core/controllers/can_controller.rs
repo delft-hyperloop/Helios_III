@@ -20,7 +20,6 @@ use crate::CanSender;
 use crate::CanTwoInterrupts;
 use crate::DataReceiver;
 use crate::DataSender;
-use crate::Event;
 use crate::EventSender;
 
 pub struct CanPins {
