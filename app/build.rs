@@ -5,7 +5,7 @@ extern crate serde;
 use std::env;
 use std::fs;
 use std::path::Path;
-use std::sync::Mutex;
+use goose_utils::check_ids;
 
 use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
@@ -76,13 +76,14 @@ fn main() {
     }
 
     let out_dir = env::var("OUT_DIR").unwrap();
-    let id_list = Mutex::new(Vec::new());
     let dest_path = Path::new(&out_dir).join("config.rs");
 
     let ip_file = fs::read_to_string(CONFIG_PATH).unwrap();
     let config: Config = toml::from_str(&ip_file).unwrap();
 
     let mut content = String::new();
+
+    let _ = check_ids(DATATYPES_PATH, COMMANDS_PATH, EVENTS_PATH);
 
     content.push_str(&configure_ip(&config));
     content.push_str(&configure_gs_ip(
@@ -93,17 +94,14 @@ fn main() {
     content.push_str(&configure_pod(&config));
     content.push_str(&configure_internal(&config));
     content.push_str(&goose_utils::commands::generate_commands(
-        &id_list,
         COMMANDS_PATH,
         true,
     ));
     content.push_str(&goose_utils::datatypes::generate_datatypes(
-        &id_list,
         DATATYPES_PATH,
         false,
     ));
     content.push_str(&goose_utils::events::generate_events(
-        &id_list,
         EVENTS_PATH,
         true,
     ));

@@ -4,7 +4,7 @@ use heapless::LinearMap;
 
 #[cfg(target_os = "none")]
 #[derive(PartialEq, Eq, Debug, Clone)]
-pub struct LocationSpeedMap(LinearMap<Location, u8, 7>);
+pub struct LocationSpeedMap(LinearMap<Location, u8, 8>);
 
 #[cfg(not(target_os = "none"))]
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone)]
@@ -40,7 +40,8 @@ pub enum Location {
     StraightEndTrack = 0b100,
     LaneSwitchEndTrack = 0b101,
     StraightBackwards = 0b110,
-    StopHere = 0b000, // no next position, just stop here.
+    StopAndWait = 0b111,
+    BrakeHere = 0b000, // no next position, just stop here.
 }
 
 #[derive(Debug, PartialEq, Eq, Default)]
@@ -114,7 +115,8 @@ impl From<u64> for LocationSpeedMap {
             speeds.0.insert(Location::LaneSwitchCurved, bytes[5]),
             speeds.0.insert(Location::StraightEndTrack, bytes[6]),
             speeds.0.insert(Location::LaneSwitchEndTrack, bytes[7]),
-            speeds.0.insert(Location::StopHere, 0),
+            speeds.0.insert(Location::StopAndWait, 0),
+            speeds.0.insert(Location::BrakeHere, 0),
         );
 
         speeds
@@ -152,7 +154,7 @@ impl From<LocationSpeedMap> for u64 {
 }
 
 fn parse_locations(bytes: u64) -> [Location; 21] {
-    let mut locations = [Location::StopHere; 21];
+    let mut locations = [Location::BrakeHere; 21];
     // let mut bit_seq: u32 = ((bytes[2] as u32) << 16) | ((bytes[1] as u32) << 8) | (bytes[0] as u32);
     let mut bit_seq = bytes;
     for i in 0..=20 {
@@ -165,8 +167,9 @@ fn parse_locations(bytes: u64) -> [Location; 21] {
             0b100 => Location::StraightEndTrack,
             0b101 => Location::LaneSwitchEndTrack,
             0b110 => Location::StraightBackwards,
-            0b000 => Location::StopHere,
-            _ => Location::StopHere, // Handle invalid patterns
+            0b111 => Location::StopAndWait,
+            0b000 => Location::BrakeHere,
+            _ => Location::BrakeHere, // Handle invalid patterns
         };
     }
 
@@ -176,7 +179,7 @@ fn parse_locations(bytes: u64) -> [Location; 21] {
 impl RouteUse for Route {
     fn next_position(&mut self) -> Location {
         if self.current_position >= 20 {
-            Location::StopHere
+            Location::BrakeHere
         } else {
             self.current_position += 1;
             self.positions.0[self.current_position]
@@ -185,7 +188,7 @@ impl RouteUse for Route {
 
     fn current_position(&self) -> Location {
         if self.current_position > 20 {
-            Location::StopHere
+            Location::BrakeHere
         } else {
             self.positions.0[self.current_position]
         }
@@ -207,7 +210,7 @@ impl RouteUse for Route {
 
     fn peek_next_position(&mut self) -> Location {
         if self.current_position > 20 {
-            Location::StopHere
+            Location::BrakeHere
         } else {
             self.positions.0[self.current_position + 1]
         }
@@ -216,7 +219,7 @@ impl RouteUse for Route {
 
 impl Default for LocationSequence {
     fn default() -> Self {
-        LocationSequence([Location::StopHere; 21])
+        LocationSequence([Location::BrakeHere; 21])
     }
 }
 
@@ -232,7 +235,8 @@ impl Default for LocationSpeedMap {
                 (Location::LaneSwitchCurved, 0),
                 (Location::StraightEndTrack, 0),
                 (Location::LaneSwitchEndTrack, 0),
-                (Location::StopHere, 0),
+                (Location::StopAndWait, 0),
+                (Location::BrakeHere, 0),
             ])
             .iter()
             .for_each(|y| {
@@ -249,7 +253,8 @@ impl Default for LocationSpeedMap {
                 (Location::LaneSwitchCurved, 0),
                 (Location::StraightEndTrack, 0),
                 (Location::LaneSwitchEndTrack, 0),
-                (Location::StopHere, 0),
+                (Location::StopAndWait, 0),
+                (Location::BrakeHere, 0),
             ]
             .into(),
         );
@@ -418,7 +423,8 @@ mod tests {
                     (Location::LaneSwitchCurved, 40),
                     (Location::StraightEndTrack, 50),
                     (Location::LaneSwitchEndTrack, 60),
-                    (Location::StopHere, 0),
+                    (Location::StopAndWait, 0),
+                    (Location::BrakeHere, 0),
                 ]
                 .into(),
             ),

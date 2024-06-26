@@ -1,4 +1,4 @@
-use defmt::{debug, info, trace};
+use defmt::{debug, trace};
 use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_net::Stack;
