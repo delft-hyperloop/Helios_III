@@ -16,19 +16,44 @@
     let width: number;
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const lvBattery = storeManager.getStore("BatteryBalanceLow");
-    const hvBattery = storeManager.getStore("BatteryBalanceHigh");
+    const lvBattery = storeManager.getStore("BatteryEstimatedChargeLow");
+    const hvBattery = storeManager.getStore("BatteryEstimatedChargeHigh");
+
+    const minVHigh = storeManager.getStore("BatteryMinVoltageHigh");
+    const maxVHigh = storeManager.getStore("BatteryMaxVoltageHigh");
+    const avgVHigh = storeManager.getStore("BatteryVoltageHigh");
+
+    const minTempHigh = storeManager.getStore("BatteryMinTemperatureHigh");
+    const maxTempHigh = storeManager.getStore("BatteryMaxTemperatureHigh");
+    const avgTempHigh = storeManager.getStore("BatteryTemperatureHigh");
+
+    const maxVLow = storeManager.getStore("BatteryMaxVoltageLow")
+    const minVLow = storeManager.getStore("BatteryMinVoltageLow")
+    const avgVLow = storeManager.getStore("BatteryVoltageLow")
+
+    const maxTempLow = storeManager.getStore("BatteryMaxTemperatureLow")
+    const minTempLow = storeManager.getStore("BatteryMinTemperatureLow")
+    const avgTempLow = storeManager.getStore("BatteryTemperatureLow")
+
+    const currentLow = storeManager.getStore("BatteryCurrentLow")
+    const currentHigh = storeManager.getStore("BatteryCurrentHigh")
 
     const speed = storeManager.getStore("Velocity");
     const position = storeManager.getStore("Localisation");
 
-    const propTemp = storeManager.getStore("PropulsionTemperature");
+    const propTemp = storeManager.getStore("PropulsionCurrent");
     const leviTemp = storeManager.getStore("LevitationTemperature");
     const brakeTemp = storeManager.getStore("BrakeTemperature");
 
     let tableArr: any[][];
     let tableArr2: any[][];
 
+    let tableBatteryTitles = ["", "HV Voltages", "HV Temp", "LV Voltages", "LV Temp"]
+    $: tableBatteryVitals = [
+        ["Min", $minVHigh + " V", $minTempHigh + " °C", $minVLow + " V", $minTempLow + " °C"],
+        ["Max", $maxVHigh + " V", $maxTempHigh + " °C", $maxVLow + " V", $maxTempLow + " °C"],
+        ["Avg", $avgVHigh + " V", $avgTempHigh + " °C", $avgVLow + " V", $avgTempLow + " °C"]
+    ]
 
     $: tableArr = [
         ["Upper drawer VB", $propTemp],
@@ -103,6 +128,8 @@
                         <div class="flex gap-4">
                             <p>Velocity: <span class="font-mono font-medium">{$speed}</span></p>
                             <p>Position: <span class="font-mono font-medium">{$position}</span></p>
+                            <p>HV Current: <span class="font-mono font-medium">{$currentHigh}</span></p>
+                            <p>LV Current: <span class="font-mono font-medium">{$currentLow}</span></p>
                         </div>
                         <div class="flex gap-4">
                             <div class="flex gap-2">
@@ -117,6 +144,9 @@
                     </div>
                 </Tile>
                 <!--     TEMPERATURE TABLE      -->
+                <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
+                    <Table titles={tableBatteryTitles} tableArr={tableBatteryVitals}/>
+                </Tile>
                 <Tile containerClass="pt-2 pb-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
                     <Table {tableArr}/>
                 </Tile>

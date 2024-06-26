@@ -10,8 +10,8 @@
     } from "$lib";
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const lvBattery = storeManager.getStore("BatteryBalanceLow");
-    const hvBattery = storeManager.getStore("BatteryBalanceHigh");
+    const lvBattery = storeManager.getStore("BatteryEstimatedChargeLow");
+    const hvBattery = storeManager.getStore("BatteryEstimatedChargeHigh");
 
     const avg1Temp = storeManager.getStore("Module1AvgTemperature");
     const max1Temp = storeManager.getStore("Module1MaxTemperature");
@@ -69,12 +69,12 @@
     const max8Vol = storeManager.getStore("Module8MaxVoltage");
     const min8Vol = storeManager.getStore("Module8MinVoltage");
 
-    const avgLvTemp = storeManager.getStore("BatteryMinTemperatureLow");
+    const avgLvTemp = storeManager.getStore("BatteryTemperatureLow");
     const minLvTemp = storeManager.getStore("BatteryMinTemperatureLow");
     const maxLvTemp = storeManager.getStore("BatteryMaxTemperatureLow");
-    const avgLvVol = storeManager.getStore("BatteryMinVoltageLow");
+    const avgLvVol = storeManager.getStore("BatteryVoltageLow");
     const minLvVol = storeManager.getStore("BatteryMinVoltageLow");
-    const maxLvVol = storeManager.getStore("BatteryMaxVoltageLow");
+    const maxLvVol = storeManager.getStore("BatteryMaxVoltageHigh");
 
     const lvCurrent = storeManager.getStore("BatteryCurrentLow");
     const hvCurrent = storeManager.getStore("BatteryCurrentHigh");
