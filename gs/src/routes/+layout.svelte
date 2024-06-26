@@ -169,7 +169,7 @@
         return curr;
     });
 
-    gdd.stores.registerStore<number>("GyroscpoeY", 0, data => {
+    gdd.stores.registerStore<number>("GyroscopeY", 0, data => {
         const curr = Number(data);
         $chartStore.get("Offset Horizontal")?.addEntry(2, curr);
         return curr;
@@ -203,6 +203,27 @@
     gdd.stores.registerStore<number>("levi_ems_gap_c", 0.0)
     gdd.stores.registerStore<number>("levi_ems_gap_d", 0.0)
 
+    gdd.stores.registerStore<number>("levi_hems_current_a1", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_current_a2", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_current_b1", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_current_b2", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_current_c1", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_current_c2", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_current_d1", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_current_d2", 0.0)
+
+    gdd.stores.registerStore<number>("levi_ems_current_ab", 0.0)
+    gdd.stores.registerStore<number>("levi_ems_current_cd", 0.0)
+
+    gdd.stores.registerStore<number>("levi_hems_airgap", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_pitch", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_roll", 0.0)
+
+    gdd.stores.registerStore<number>("levi_ems_offset_ab", 0.0)
+    gdd.stores.registerStore<number>("levi_ems_offset_cd", 0.0)
+
+    gdd.stores.registerStore<number>("levi_hems_power", 0.0)
+    gdd.stores.registerStore<number>("levi_ems_power", 0.0)
 
     gdd.start(100);
 
