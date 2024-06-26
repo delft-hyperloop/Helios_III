@@ -44,8 +44,8 @@
     ///////////////////////////////////////////////////////
 
     let gdd = GrandDataDistributor.getInstance();
-    gdd.stores.registerStore<number>("BatteryEstimatedChargeHigh", 0.0);
-    gdd.stores.registerStore<number>("BatteryEstimatedChargeLow", 0.0);
+    gdd.stores.registerStore<number>("BatteryEstimatedChargeHigh", 0.0, data => Number(data) / 100);
+    gdd.stores.registerStore<number>("BatteryEstimatedChargeLow", 0.0, data => Number(data) / 100);
     
     const tempParse:dataConvFun<number> = (data:bigint) => {
         return Number(data) - 100;
@@ -127,35 +127,17 @@
 
     gdd.stores.registerStore<number>("BatteryCurrentHigh", 0.0, data => {
         const curr = Number(data) / 10;
-        $chartStore.get("Velocity")!.addEntry(1, curr + 10);
+        hvCurrent.addEntry(1, curr + 10);
         return curr;
     });
 
-    gdd.stores.registerStore<number>("BatteryTemperatureLow", 0.0, data => {
-        const curr = Number(data);
-        return curr/100 - 100;
-    })
-    gdd.stores.registerStore<number>("BatteryMinTemperatureLow", 0.0, data => {
-        const curr = Number(data);
-        return curr/100 - 100;
-    })
-    gdd.stores.registerStore<number>("BatteryMaxTemperatureLow", 0.0, data => {
-        const curr = Number(data);
-        return curr/100 - 100;
-    })
+    gdd.stores.registerStore<number>("BatteryTemperatureLow", 0.0, tempParse)
+    gdd.stores.registerStore<number>("BatteryMinTemperatureLow", 0.0, tempParse)
+    gdd.stores.registerStore<number>("BatteryMaxTemperatureLow", 0.0, tempParse)
 
-    gdd.stores.registerStore<number>("BatteryVoltageLow", 0.0, data => {
-        const curr = Number(data);
-        return curr/100;
-    })
-    gdd.stores.registerStore<number>("BatteryMinVoltageLow", 0.0, data => {
-        const curr = Number(data);
-        return curr/100;
-    })
-    gdd.stores.registerStore<number>("BatteryMaxVoltageLow", 0.0, data => {
-        const curr = Number(data);
-        return curr/100;
-    })
+    gdd.stores.registerStore<number>("BatteryVoltageLow", 0.0, voltParse)
+    gdd.stores.registerStore<number>("BatteryMinVoltageLow", 0.0, voltParse)
+    gdd.stores.registerStore<number>("BatteryMaxVoltageLow", 0.0, voltParse)
 
     gdd.stores.registerStore<number>("Velocity", 0, data => {
         const curr = Number(data);
@@ -169,7 +151,7 @@
         return curr;
     });
 
-    gdd.stores.registerStore<number>("Localisation", 0); // or location?
+    gdd.stores.registerStore<number>("Localisation", 0);
     gdd.stores.registerStore<number>("BrakePressure", 0);
 
     gdd.stores.registerStore<number>("Acceleration", 0)
