@@ -44,17 +44,6 @@ impl Fsm {
             }
             Event::RunConfigCompleteEvent => {
                 // todo!(); // TODO: receive reply from propulsion that desired speed has been set
-                // if ROUTE!=0 && SPEED!=0{
-                //     self.route = (ROUTE,SPEED).into();
-                //     #[cfg(debug_assertions)]
-                //     debug!("Set {:?}", &self.route);
-                //     transit!(self, State::Idle);
-                // }
-                // else {
-                //     error!("Route or Speed not set");
-                //     // transit!(self, State::Exit);
-                // }
-                // todo make this a command on gs
             }
             Event::RunConfigFailedEvent => {
                 error!("Run config failed");

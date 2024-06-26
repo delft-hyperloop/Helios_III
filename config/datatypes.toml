@@ -19,6 +19,29 @@ id = 0x1b4
 name = "LevitationTemperature"
 id = 0x0b
 
+[[Datatype]]
+name = "AccelerationX"
+id = 0x115
+
+[[Datatype]]
+name = "Accelerationy"
+id = 0x114
+
+[[Datatype]]
+name = "AccelerationZ"
+id = 0x113
+
+[[Datatype]]
+name = "GyroscopeX"
+id = 0x112
+
+[[Datatype]]
+name = "GyroscpoeY"
+id = 0x111
+
+[[Datatype]]
+name = "GyroscopeZ"
+id = 0x110
 
 [[Datatype]]
 name = "IMDGeneralInfo"
@@ -57,7 +80,6 @@ id = 0x3A0
 [[Datatype]]
 name = "DiagonosticBMSHigh"
 id = 0x3A7
-
 
 [[Datatype]]
 name = "BatteryVoltageLow"
@@ -607,3 +629,10 @@ id = 0x678
 name = "LeviInstruction"
 id = 0x777
 
+[[Datatype]]
+name = "LowPressureSensor"
+id = 0x127
+
+[[Datatype]]
+name = "HighPressureSensor"
+id = 0x128

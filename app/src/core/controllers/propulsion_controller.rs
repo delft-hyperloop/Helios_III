@@ -6,6 +6,11 @@ use embassy_stm32::adc::VrefInt;
 use embassy_stm32::dac::Value;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
+use embassy_stm32::peripherals::DAC1;
+use embassy_stm32::peripherals::PA4;
+use embassy_stm32::peripherals::PA5;
+use embassy_stm32::peripherals::PA6;
+
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::peripherals::ADC3;
 use embassy_stm32::peripherals::DAC1;
@@ -41,6 +46,7 @@ impl PropulsionController {
     /// - PA5: ADC - read propulsion voltage
     /// - PA6: ADC - read propulsion current
     /// - PE5: GPIO - enable/disable propulsion
+
     pub async fn new(
         x: Spawner,
         data_sender: DataSender,
@@ -78,7 +84,6 @@ impl PropulsionController {
         trace!("Stopping propulsion by setting speed to 0");
         self.speed_set_pin.set(Value::Bit8(0));
     }
-
     pub fn disable(&mut self) {
         self.enable_pin.set_low();
     }

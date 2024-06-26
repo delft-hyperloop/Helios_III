@@ -1,3 +1,4 @@
+use defmt::{debug, info, trace};
 use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_net::Stack;
@@ -53,8 +54,9 @@ impl EthernetController {
         let mut seed = [0; 8];
         rng.fill_bytes(&mut seed);
         let seed = u64::from_le_bytes(seed);
+        debug!("Seed: {:?}", seed);
         let mac_addr = POD_MAC_ADDRESS;
-
+        debug!("MAC Address: {:?}", mac_addr);
         static PACKETS: StaticCell<PacketQueue<16, 16>> = StaticCell::new();
 
         let device: Device = Ethernet::new(
@@ -73,6 +75,7 @@ impl EthernetController {
             GenericSMI::new(0),
             mac_addr,
         );
+        trace!("MAC Address: {:?}", mac_addr);
 
         let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
         //        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
@@ -82,6 +85,7 @@ impl EthernetController {
         //                dns_servers: Default::default(),
         //            }
         //        );
+        trace!("MAC Address: {:?}", mac_addr);
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();
 

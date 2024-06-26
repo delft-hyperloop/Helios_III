@@ -69,6 +69,12 @@ pub const COMMANDS_PATH: &str = "../config/commands.toml";
 pub const EVENTS_PATH: &str = "../config/events.toml";
 
 fn main() {
+    if cfg!(debug_assertions) {
+        env::set_var("DEFMT_LOG", "trace");
+    } else {
+        env::set_var("DEFMT_LOG", "off");
+    }
+
     let out_dir = env::var("OUT_DIR").unwrap();
     let id_list = Mutex::new(Vec::new());
     let dest_path = Path::new(&out_dir).join("config.rs");
