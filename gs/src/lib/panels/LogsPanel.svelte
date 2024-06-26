@@ -12,8 +12,7 @@
     let logContainer: HTMLElement;
     let userHasScrolled = false;
     let logs: Log[] = [];
-
-    $: logString = logs.join('')
+    $: logString = "";
 
     let colours = new Map([
         ['STATUS', 'text-surface-50'],
@@ -33,8 +32,7 @@
     function registerChannel(channel: string, log_type: LogType) {
         return listen(channel, (event: {payload: string}) => {
             // logs = [...logs, {message: event.payload, log_type, timestamp: Date.now().valueOf()}]
-            // logString += `[${Date.now().valueOf()}] ${log_type}: ${event.payload}` + "\r\n"
-            logs.push({message: event.payload, log_type, timestamp: Date.now().valueOf()});
+            logString += `[${Date.now().valueOf()}] ${log_type}: ${event.payload}` + "\r\n"
         });
     }
 
