@@ -125,9 +125,9 @@ impl FSMPeripherals {
                 i.event_sender,
                 p.PA4,
                 p.DAC1,
-                p.ADC3,
-                p.PC0,
-                p.PF3,
+                p.ADC1,
+                p.PA5,
+                p.PA6,
                 p.PE5,
             )
             .await,
