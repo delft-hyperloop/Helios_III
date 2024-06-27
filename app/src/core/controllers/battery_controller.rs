@@ -131,7 +131,7 @@ impl BatteryController {
                 self.battery_voltage_overall_bms(data, timestamp).await;
                 info!("Battery Voltage")
             }
-            Datatype::DiagonosticBMSLow | Datatype::DiagonosticBMSHigh => {
+            Datatype::DiagnosticBMSLow | Datatype::DiagnosticBMSHigh => {
                 self.diagnostic_bms(data, timestamp).await;
                 info!("Diagnostic BMS")
             }
@@ -332,9 +332,9 @@ impl BatteryController {
     }
     pub async fn diagnostic_bms(&mut self, data: &[u8], timestamp: u64) {
         let dt = if self.high_voltage {
-            Datatype::DiagonosticBMSHigh
+            Datatype::DiagnosticBMSHigh
         } else {
-            Datatype::DiagonosticBMSLow
+            Datatype::DiagnosticBMSLow
         };
         let mut msg: u64 = 0;
         for (i, &x) in data.iter().enumerate() {
