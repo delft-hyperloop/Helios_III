@@ -65,8 +65,8 @@
         return Number(data) - 100;
     }
 
-    const voltParse:dataConvFun<number> = (data:bigint) => {
-        return Number(data) / 100;
+    const voltParse:dataConvFun<string> = (data:bigint) => {
+        return Number(data) === 200 ? "INVALID" : (Number(data) / 100).toString();
     }
 
     const addEntry = (chart:PlotBuffer, data:bigint, index:number) => {
@@ -78,62 +78,62 @@
     gdd.stores.registerStore<number>("Module1AvgTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module1MaxTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module1MinTemperature", 0.0, tempParse);
-    gdd.stores.registerStore<number>("Module1AvgVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module1MaxVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module1MinVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<string>("Module1AvgVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module1MaxVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module1MinVoltage", "0.0", voltParse);
 
     gdd.stores.registerStore<number>("Module2AvgTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module2MaxTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module2MinTemperature", 0.0, tempParse);
-    gdd.stores.registerStore<number>("Module2AvgVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module2MaxVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module2MinVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<string>("Module2AvgVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module2MaxVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module2MinVoltage", "0.0", voltParse);
 
     gdd.stores.registerStore<number>("Module3AvgTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module3MaxTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module3MinTemperature", 0.0, tempParse);
-    gdd.stores.registerStore<number>("Module3AvgVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module3MaxVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module3MinVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<string>("Module3AvgVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module3MaxVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module3MinVoltage", "0.0", voltParse);
 
     gdd.stores.registerStore<number>("Module4AvgTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module4MaxTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module4MinTemperature", 0.0, tempParse);
-    gdd.stores.registerStore<number>("Module4AvgVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module4MaxVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module4MinVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<string>("Module4AvgVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module4MaxVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module4MinVoltage", "0.0", voltParse);
 
     gdd.stores.registerStore<number>("Module5AvgTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module5MaxTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module5MinTemperature", 0.0, tempParse);
-    gdd.stores.registerStore<number>("Module5AvgVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module5MaxVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module5MinVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<string>("Module5AvgVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module5MaxVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module5MinVoltage", "0.0", voltParse);
 
     gdd.stores.registerStore<number>("Module6AvgTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module6MaxTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module6MinTemperature", 0.0, tempParse);
-    gdd.stores.registerStore<number>("Module6AvgVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module6MaxVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module6MinVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<string>("Module6AvgVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module6MaxVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module6MinVoltage", "0.0", voltParse);
 
     gdd.stores.registerStore<number>("Module7AvgTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module7MaxTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module7MinTemperature", 0.0, tempParse)
-    gdd.stores.registerStore<number>("Module7AvgVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module7MaxVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module7MinVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<string>("Module7AvgVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module7MaxVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module7MinVoltage", "0.0", voltParse);
 
     gdd.stores.registerStore<number>("Module8AvgTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module8MaxTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module8MinTemperature", 0.0, tempParse);
-    gdd.stores.registerStore<number>("Module8AvgVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module8MaxVoltage", 0.0, voltParse);
-    gdd.stores.registerStore<number>("Module8MinVoltage", 0.0, voltParse);
+    gdd.stores.registerStore<string>("Module8AvgVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module8MaxVoltage", "0.0", voltParse);
+    gdd.stores.registerStore<string>("Module8MinVoltage", "0.0", voltParse);
 
-    gdd.stores.registerStore<number>("BatteryMinVoltageHigh", 0.0, voltParse);
-    gdd.stores.registerStore<number>("BatteryMaxVoltageHigh", 0.0, voltParse);
-    gdd.stores.registerStore<number>("BatteryVoltageHigh", 0.0, voltParse);
+    gdd.stores.registerStore<string>("BatteryMinVoltageHigh", "0.0", voltParse);
+    gdd.stores.registerStore<string>("BatteryMaxVoltageHigh", "0.0", voltParse);
+    gdd.stores.registerStore<string>("BatteryVoltageHigh", "0.0", voltParse);
 
     gdd.stores.registerStore<number>("BatteryMinTemperatureHigh", 0.0, tempParse);
     gdd.stores.registerStore<number>("BatteryMaxTemperatureHigh", 0.0, tempParse);
@@ -143,12 +143,16 @@
     gdd.stores.registerStore<number>("BatteryMinTemperatureLow", 0.0, tempParse)
     gdd.stores.registerStore<number>("BatteryMaxTemperatureLow", 0.0, tempParse)
 
-    gdd.stores.registerStore<number>("BatteryVoltageLow", 0.0, voltParse)
-    gdd.stores.registerStore<number>("BatteryMinVoltageLow", 0.0, voltParse)
-    gdd.stores.registerStore<number>("BatteryMaxVoltageLow", 0.0, voltParse)
+    gdd.stores.registerStore<string>("BatteryVoltageLow", "0.0", voltParse)
+    gdd.stores.registerStore<string>("BatteryMinVoltageLow", "0.0", voltParse)
+    gdd.stores.registerStore<string>("BatteryMaxVoltageLow", "0.0", voltParse)
 
-    gdd.stores.registerStore<number>("TotalBatteryVoltageHigh", 0.0, voltParse)
-    gdd.stores.registerStore<number>("TotalBatteryVoltageLow", 0.0, voltParse)
+    gdd.stores.registerStore<number>("TotalBatteryVoltageHigh", 0.0, data => {
+        return Number(data) / 100 - 2;
+    })
+    gdd.stores.registerStore<number>("TotalBatteryVoltageLow", 0.0, data => {
+        return Number(data) / 100 - 2;
+    })
 
     gdd.stores.registerStore<number>("BatteryCurrentLow", 0.0, data => {
         const curr = Number(data) / 10;
