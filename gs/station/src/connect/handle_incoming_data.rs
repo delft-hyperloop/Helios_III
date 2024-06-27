@@ -1,9 +1,13 @@
 #![allow(clippy::single_match)]
-use tokio::sync::broadcast::Sender;
 use crate::api::{Datapoint, Message};
 use crate::{Command, Datatype};
+use tokio::sync::broadcast::Sender;
 
-pub async fn handle_incoming_data(data: Datapoint, msg_sender: Sender<Message>, cmd_sender: Sender<Command>) -> anyhow::Result<()> {
+pub async fn handle_incoming_data(
+    data: Datapoint,
+    msg_sender: Sender<Message>,
+    cmd_sender: Sender<Command>,
+) -> anyhow::Result<()> {
     msg_sender.send(Message::Data(data.clone()))?;
 
     match data.datatype {

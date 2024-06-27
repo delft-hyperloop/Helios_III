@@ -1,3 +1,4 @@
+use defmt::info;
 use defmt::trace;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Adc;
@@ -6,11 +7,10 @@ use embassy_stm32::adc::VrefInt;
 use embassy_stm32::dac::Value;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
-use embassy_stm32::peripherals::DAC1;
-use embassy_stm32::peripherals::PA4;
-
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::peripherals::ADC3;
+use embassy_stm32::peripherals::DAC1;
+use embassy_stm32::peripherals::PA4;
 use embassy_stm32::peripherals::PC0;
 use embassy_stm32::peripherals::PE5;
 use embassy_stm32::peripherals::PF3;
@@ -101,6 +101,11 @@ pub async fn read_prop_adc(
         let v_ref_int = adc.read_internal(&mut v_ref_int_channel);
         let v = adc.read(&mut pc0) as u64;
         let i = adc.read(&mut pf3) as u64;
+        #[cfg(debug_assertions)]
+        info!(
+            "Propulsion:\n\t voltage (pc0): {} \n\t current (pf3): {} \n\t reference: {}\n",
+            v, i, v_ref_int
+        );
         data_sender
             .send(Datapoint::new(
                 Datatype::PropulsionVoltage,
