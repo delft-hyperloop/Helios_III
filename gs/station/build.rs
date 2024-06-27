@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
 extern crate serde;
+use goose_utils::check_ids;
 use goose_utils::commands::generate_commands;
 use goose_utils::datatypes::generate_datatypes;
 use goose_utils::events::generate_events;
@@ -9,7 +10,6 @@ use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
-use goose_utils::check_ids;
 
 #[derive(Debug, Deserialize)]
 struct Config {

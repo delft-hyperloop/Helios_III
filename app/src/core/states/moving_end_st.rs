@@ -37,11 +37,8 @@ impl Fsm {
                         // self.peripherals.propulsion_controller.turn_off();
                         transit!(self, State::MovingLSST);
                     }
-                    _ => {
-
-                    }
+                    _ => {}
                 }
-
             }
             Event::LaneSwitchBackwardsC => {
                 self.send_levi_cmd(crate::Command::ls2(0)).await;
