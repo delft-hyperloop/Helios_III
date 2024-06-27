@@ -13,7 +13,8 @@ use crate::core::controllers::ethernet_controller::EthernetController;
 use crate::core::controllers::ethernet_controller::EthernetPins;
 use crate::core::controllers::hv_controller::HVPeripherals;
 use crate::core::controllers::propulsion_controller::PropulsionController;
-use crate::{DataSender, InternalMessaging};
+use crate::DataSender;
+use crate::InternalMessaging;
 
 #[allow(dead_code)]
 pub struct FSMPeripherals {

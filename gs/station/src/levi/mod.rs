@@ -13,6 +13,10 @@ pub fn levi_main(
     command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
 ) -> anyhow::Result<(AbortHandle, AbortHandle)> {
     let mut lcmd = tokio::process::Command::new(LEVI_EXEC_PATH);
+    message_transmitter.send(Message::Info(format!(
+        "starting levi at {}",
+        LEVI_EXEC_PATH
+    )))?;
     lcmd.stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped());

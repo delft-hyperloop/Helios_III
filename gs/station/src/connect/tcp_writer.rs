@@ -17,9 +17,11 @@ pub async fn transmit_commands_to_tcp(
                     .await
                 {
                     Ok(_) => {
-                        status_transmitter.send(crate::api::Message::Info(
-                            "[TRACE][tcp] Sent keepalive".to_string(),
-                        )).expect("messaging channel closed, cannot recover");
+                        status_transmitter
+                            .send(crate::api::Message::Info(
+                                "[TRACE][tcp] Sent keepalive".to_string(),
+                            ))
+                            .expect("messaging channel closed, cannot recover");
                     }
                     Err(e) => {
                         eprintln!("Error sending keepalive over tcp: {:?}", e);
@@ -34,10 +36,12 @@ pub async fn transmit_commands_to_tcp(
                     match writer.write_all(&bytes).await {
                         Ok(_) => {
                             last_send_timestamp = std::time::Instant::now();
-                            status_transmitter.send(crate::api::Message::Info(format!(
-                                "[tcp] Sent command: {:?}",
-                                command
-                            ))).expect("messaging channel closed, cannot recover");
+                            status_transmitter
+                                .send(crate::api::Message::Info(format!(
+                                    "[tcp] Sent command: {:?}",
+                                    command
+                                )))
+                                .expect("messaging channel closed, cannot recover");
                         }
                         Err(e) => {
                             eprintln!("Error sending command over tcp: {:?}", e);

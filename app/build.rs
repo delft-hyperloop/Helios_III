@@ -5,8 +5,8 @@ extern crate serde;
 use std::env;
 use std::fs;
 use std::path::Path;
-use goose_utils::check_ids;
 
+use goose_utils::check_ids;
 use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
 
@@ -69,11 +69,11 @@ pub const COMMANDS_PATH: &str = "../config/commands.toml";
 pub const EVENTS_PATH: &str = "../config/events.toml";
 
 fn main() {
-    if cfg!(debug_assertions) {
-        env::set_var("DEFMT_LOG", "trace");
-    } else {
-        env::set_var("DEFMT_LOG", "off");
-    }
+    // if cfg!(debug_assertions) {
+    //     env::set_var("DEFMT_LOG", "trace");
+    // } else {
+    //     env::set_var("DEFMT_LOG", "off");
+    // }
 
     let out_dir = env::var("OUT_DIR").unwrap();
     let dest_path = Path::new(&out_dir).join("config.rs");
@@ -101,10 +101,7 @@ fn main() {
         DATATYPES_PATH,
         false,
     ));
-    content.push_str(&goose_utils::events::generate_events(
-        EVENTS_PATH,
-        true,
-    ));
+    content.push_str(&goose_utils::events::generate_events(EVENTS_PATH, true));
     content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, false));
     // content.push_str(&*can::main(&id_list));
 
