@@ -113,6 +113,14 @@ id = 0x69
 name = "FinishRunConfig"
 id = 0x67
 
+[[Command]]
+name = "LeviPropulsionStart"
+id = 0x68
+
+[[Command]]
+name = "LeviPropulsionStop"
+id = 0x70 
+
 #[[Command]]
 #name = "TurnAllHVRelaysOnUNSAFE"
 #id = 0x68
