@@ -1,4 +1,6 @@
-use defmt::{error, info, warn};
+use defmt::error;
+use defmt::info;
+use defmt::warn;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;

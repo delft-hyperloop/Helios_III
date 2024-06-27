@@ -31,7 +31,7 @@ pub fn tauri_main(backend: Backend) {
             }
             tokio::spawn(async move {
                 loop {
-                    match message_rcv.recv().await {
+                    match message_rcv.try_recv() {
                         Ok(msg) => match msg {
                             Message::Data(dp) => {
                                 println!("Received datapoint: {:?}", dp);
@@ -55,8 +55,8 @@ pub fn tauri_main(backend: Backend) {
                                 app_handle.emit_all(ERROR_CHANNEL, e.to_string()).unwrap()
                             }
                         },
-                        Err(e) => {
-                            eprintln!("Error receiving message: {:?}", e);
+                        Err(_e) => {
+                            // eprintln!("Error receiving message: {:?}", e);
                         }
                     }
                 }
