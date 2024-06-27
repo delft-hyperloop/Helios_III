@@ -5,7 +5,9 @@
     import {chartStore} from "$lib/stores/state";
     import type {dataConvFun} from "$lib/types";
 
-    // CHARTS
+    //////////////////////////////
+    /////////// CHARTS ///////////
+    //////////////////////////////
     let emsChart = new PlotBuffer(1000, 300000, [0, 100], false);
     let hemsChart = new PlotBuffer(1000, 300000, [0, 100], false);
     emsChart.addSeries(StrokePresets.theoretical())
@@ -14,6 +16,7 @@
     hemsChart.addSeries(StrokePresets.theoretical())
     hemsChart.addSeries(StrokePresets.yellow())
     hemsChart.addSeries(StrokePresets.blue())
+
     $chartStore.set("EMS", emsChart);
     $chartStore.set("HEMS", hemsChart);
 
@@ -40,7 +43,7 @@
     $chartStore.set('HV Current', hvCurrent)
 
     ///////////////////////////////////////////////////////
-    ///// GRAND DATA DISTRIBUTOR //////////////////////////
+    //////////////// BMS REGISTER /////////////////////////
     ///////////////////////////////////////////////////////
 
     let gdd = GrandDataDistributor.getInstance();
@@ -142,6 +145,13 @@
         return curr;
     });
 
+    gdd.stores.registerStore<number>("BatteryEnergyParamsHigh", 0);
+    gdd.stores.registerStore<number>("BatteryEnergyParamsLow", 0);
+
+    ////////////////////////////////////////////////////////////////
+    ///////////////// PROPULSION REGISTER //////////////////////////
+    ////////////////////////////////////////////////////////////////
+
     gdd.stores.registerStore<number>("Velocity", 0, data => {
         const curr = Number(data);
         $chartStore.get("Velocity")!.addEntry(1, curr);
@@ -155,13 +165,20 @@
     });
 
     gdd.stores.registerStore<number>("Localisation", 0);
+    gdd.stores.registerStore<number>("Acceleration", 0);
+    gdd.stores.registerStore<number>("Direction", 0);
+
+    gdd.stores.registerStore<number>("PropulsionCurrent", 0);
+    gdd.stores.registerStore<number>("PropulsionSpeed", 0);
+    gdd.stores.registerStore<number>("PropulsionVoltage", 0);
+    gdd.stores.registerStore<number>("PropulsionVRefInt", 0);
+
+    gdd.stores.registerStore<number>("BrakeTemperature", 0);
     gdd.stores.registerStore<number>("BrakePressure", 0);
 
-    gdd.stores.registerStore<number>("Acceleration", 0)
-    gdd.stores.registerStore<number>("FSMState", 0);
-    gdd.stores.registerStore<number>("PropulsionCurrent", 0);
-    gdd.stores.registerStore<number>("LevitationTemperature", 0);
-    gdd.stores.registerStore<number>("BrakeTemperature", 0);
+    ///////////////////////////////////////////////////////////////
+    //////////////////// REGISTER GYROSCOPE ///////////////////////
+    ///////////////////////////////////////////////////////////////
 
     gdd.stores.registerStore<number>("GyroscopeX", 0, data => {
         const curr:number = Number(data);
@@ -184,6 +201,12 @@
     gdd.stores.registerStore<number>("IMDVoltageDetails", 0);
     gdd.stores.registerStore<number>("IMDIsolationDetails", 0);
 
+    ///////////////////////////////////////////////////////////////
+    /////////////////// REGISTER TEMPERATURES /////////////////////
+    ///////////////////////////////////////////////////////////////
+
+    gdd.stores.registerStore<number>("LevitationTemperature", 0);
+
     gdd.stores.registerStore<number>("Average_Temp_VB_Bottom", 0.0);
     gdd.stores.registerStore<number>("Average_Temp_VB_top", 0.0);
     gdd.stores.registerStore<number>("Ambient_temp", 0.0);
@@ -192,6 +215,10 @@
     gdd.stores.registerStore<number>("Temp_HEMS_2", 0.0)
     gdd.stores.registerStore<number>("Temp_HEMS_3", 0.0)
     gdd.stores.registerStore<number>("Temp_HEMS_4", 0.0)
+
+    ///////////////////////////////////////////////////////////////
+    ///////////////////// REGISTER LEVI DATA //////////////////////
+    ///////////////////////////////////////////////////////////////
 
     gdd.stores.registerStore<number>("levi_hems_gap_a", 0.0)
     gdd.stores.registerStore<number>("levi_hems_gap_b", 0.0)
@@ -224,6 +251,19 @@
 
     gdd.stores.registerStore<number>("levi_hems_power", 0.0)
     gdd.stores.registerStore<number>("levi_ems_power", 0.0)
+
+    gdd.stores.registerStore<number>("levi_voltage_a", 0.0)
+    gdd.stores.registerStore<number>("levi_voltage_b", 0.0)
+    gdd.stores.registerStore<number>("levi_voltage_c", 0.0)
+    gdd.stores.registerStore<number>("levi_voltage_d", 0.0)
+    gdd.stores.registerStore<number>("levi_voltage_e", 0.0)
+
+    ///////////////////////////////////////////////////////////////
+    ///////////////// REGISTER META & ADDITIONAL //////////////////
+    ///////////////////////////////////////////////////////////////
+
+    gdd.stores.registerStore<number>("FSMState", 0);
+
 
     gdd.start(100);
 
