@@ -335,6 +335,12 @@
     ///////////////////////////////////////////////////////////////
 
     gdd.stores.registerStore<number>("FSMState", 0);
+    gdd.stores.registerStore<number>("InsulationOriginal", 0);
+    gdd.stores.registerStore<number>("InsulationPositive", 0);
+    gdd.stores.registerStore<number>("InsulationNegative", 0);
+    gdd.stores.registerStore<number>("IMDVoltageDetails", 0);
+    gdd.stores.registerStore<number>("IMDIsolationDetails", 0);
+    gdd.stores.registerStore<number>("IMDGeneralInfo", 0);
 
 
     gdd.start(100);
