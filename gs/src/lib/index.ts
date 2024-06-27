@@ -5,7 +5,7 @@ import DetailsPanel from "$lib/panels/DetailsPanel.svelte";
 
 // Tabs
 import BatteriesTab from "$lib/panels/tabs/BatteriesTab.svelte";
-import MotorsTab from "$lib/panels/tabs/MotorsTab.svelte";
+import LeviTab from "$lib/panels/tabs/LeviTab.svelte";
 import HomeTab from "$lib/panels/tabs/HomeTab.svelte";
 import LocationTab from "$lib/panels/tabs/LocationTab.svelte";
 import ProceduresTab from "$lib/panels/tabs/ProceduresTab.svelte";
@@ -65,7 +65,7 @@ export {
     LogsPanel,
     DetailsPanel,
     BatteriesTab,
-    MotorsTab,
+    LeviTab,
     HomeTab,
     LocationTab,
     ProceduresTab,

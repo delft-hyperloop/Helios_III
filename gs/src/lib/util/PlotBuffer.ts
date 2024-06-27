@@ -10,7 +10,7 @@ export class PlotBuffer {
     private _intervalId: number | undefined;
     private readonly _data: uPlot.AlignedData;
     private readonly _opts: uPlot.Options;
-    private buffer: number[][];
+    private readonly buffer: number[][];
     private readonly updateInterval:number;
 
     /**
@@ -19,8 +19,9 @@ export class PlotBuffer {
      * @param span
      * @param yRange
      * @param showLegend
+     * @param label
      */
-    constructor(updateInterval:number, span:number, yRange: [number, number], showLegend: boolean = false) {    this.updateInterval = updateInterval;
+    constructor(updateInterval:number, span:number, yRange: [number, number], showLegend: boolean = false, label: string = "y") {    this.updateInterval = updateInterval;
         this.buffer = [[]];
 
         const spanInSeconds = span / 1000;
@@ -59,7 +60,7 @@ export class PlotBuffer {
             }],
         };
 
-        this.addSeries(StrokePresets.hyperLoopGreen());
+        this.addSeries(StrokePresets.hyperLoopGreen(label));
     }
 
     public addSeries(series:uPlot.Series) {
@@ -191,36 +192,72 @@ export class PlotBuffer {
 }
 
 export class StrokePresets {
-    public static hyperLoopGreen(): uPlot.Series {
+    public static hyperLoopGreen(label: string = "y"): uPlot.Series {
         return {
             fill: "rgba(159,227,205,0.1)",
-            label: "y",
+            label,
             spanGaps: false,
             stroke: "#0ea774"
         }
     }
 
-    public static theoretical(): uPlot.Series {
+    public static theoretical(label: string = "y"): uPlot.Series {
         return {
-            label: "y",
+            label,
             spanGaps: false,
             stroke: "#ff0a43"
         }
     }
 
-    public static yellow(): uPlot.Series {
+    public static yellow(label: string = "y"): uPlot.Series {
         return {
-            label: "y",
+            label,
             spanGaps: false,
             stroke: "#ffde0a"
         }
     }
 
-    public static blue(): uPlot.Series {
+    public static blue(label: string = "y"): uPlot.Series {
         return {
-            label: "y",
+            label,
             spanGaps: false,
             stroke: "#0a85ff"
+        }
+    }
+
+    public static hyperloopGreenDashed(label: string = "y"): uPlot.Series {
+        return {
+            label,
+            spanGaps: false,
+            stroke: "#0ea774",
+            dash: [10, 5]
+        }
+    }
+
+    public static theoreticalDashed(label: string = "y"): uPlot.Series {
+        return {
+            label,
+            spanGaps: false,
+            stroke: "#ff0a43",
+            dash: [10, 5]
+        }
+    }
+
+    public static yellowDashed(label: string = "y"): uPlot.Series {
+        return {
+            label,
+            spanGaps: false,
+            stroke: "#ffde0a",
+            dash: [10, 5]
+        }
+    }
+
+    public static blueDashed(label: string = "y"): uPlot.Series {
+        return {
+            label,
+            spanGaps: false,
+            stroke: "#0a85ff",
+            dash: [10, 5]
         }
     }
 }
