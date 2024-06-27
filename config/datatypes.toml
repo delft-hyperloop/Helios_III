@@ -739,7 +739,23 @@ id = 0x153
 name = "levi_ems_power"
 id = 0x154
 
+[[Datatype]]
+name = "levi_voltage_a"
+id = 0x155
 
+[[Datatype]]
+name = "levi_voltage_b"
+id = 0x156
 
+[[Datatype]]
+name = "levi_voltage_c"
+id = 0x157
 
+[[Datatype]]
+name = "levi_voltage_d"
+id = 0x158
+
+[[Datatype]]
+name = "levi_voltage_e"
+id = 0x159
 
