@@ -8,23 +8,34 @@
     //////////////////////////////
     /////////// CHARTS ///////////
     //////////////////////////////
-    let emsChart = new PlotBuffer(1000, 300000, [0, 100], false);
-    let hemsChart = new PlotBuffer(1000, 300000, [0, 100], false);
-    emsChart.addSeries(StrokePresets.theoretical())
-    emsChart.addSeries(StrokePresets.yellow())
-    emsChart.addSeries(StrokePresets.blue())
-    hemsChart.addSeries(StrokePresets.theoretical())
-    hemsChart.addSeries(StrokePresets.yellow())
-    hemsChart.addSeries(StrokePresets.blue())
+    let emsTempChart = new PlotBuffer(1000, 300000, [0, 100], true, "EMS 1");
+    emsTempChart.addSeries(StrokePresets.theoretical("EMS 2"))
+    $chartStore.set("EMS Temperature", emsTempChart);
 
-    $chartStore.set("EMS", emsChart);
-    $chartStore.set("HEMS", hemsChart);
+    let hemsTempChart = new PlotBuffer(1000, 300000, [0, 100], true, "HEMS 1");
+    hemsTempChart.addSeries(StrokePresets.theoretical("HEMS 2"))
+    hemsTempChart.addSeries(StrokePresets.yellow("HEMS 3"))
+    hemsTempChart.addSeries(StrokePresets.blue("HEMS 4"))
+    $chartStore.set("HEMS Temperature", hemsTempChart);
+
+    let hemsCurrentChart = new PlotBuffer(1000, 300000, [-4000, 4000], true, "a1");
+    hemsCurrentChart.addSeries(StrokePresets.hyperloopGreenDashed("a2"))
+    hemsCurrentChart.addSeries(StrokePresets.theoretical("b1"))
+    hemsCurrentChart.addSeries(StrokePresets.theoreticalDashed("b2"))
+    hemsCurrentChart.addSeries(StrokePresets.yellow("c1"))
+    hemsCurrentChart.addSeries(StrokePresets.yellowDashed("c2"))
+    hemsCurrentChart.addSeries(StrokePresets.blue("d1"))
+    hemsCurrentChart.addSeries(StrokePresets.blueDashed("d2"))
+    $chartStore.set("HEMS Current", hemsCurrentChart);
+
+    let emsCurrentChart = new PlotBuffer(1000, 300000, [-4000, 4000], true);
+    emsCurrentChart.addSeries(StrokePresets.theoretical("cd"))
+    $chartStore.set("EMS Current", emsCurrentChart);
 
     let voffChart = new PlotBuffer(1000, 300000, [0, 100], false)
     let hoffChart = new PlotBuffer(1000, 300000, [0, 100], false)
     hoffChart.addSeries(StrokePresets.theoretical())
     let velChart = new PlotBuffer(1000, 5*60*1000, [0, 100], false)
-
     let leviChart = new PlotBuffer(1000, 300000, [0, 100], false);
 
     $chartStore.set('Offset Horizontal', hoffChart);
@@ -56,6 +67,12 @@
 
     const voltParse:dataConvFun<number> = (data:bigint) => {
         return Number(data) / 100;
+    }
+
+    const addEntry = (chart:PlotBuffer, data:bigint, index:number) => {
+        const curr = Number(data);
+        chart.addEntry(index, curr);
+        return curr;
     }
 
     gdd.stores.registerStore<number>("Module1AvgTemperature", 0.0, tempParse);
@@ -211,10 +228,41 @@
     gdd.stores.registerStore<number>("Average_Temp_VB_top", 0.0);
     gdd.stores.registerStore<number>("Ambient_temp", 0.0);
 
-    gdd.stores.registerStore<number>("Temp_HEMS_1", 0.0)
-    gdd.stores.registerStore<number>("Temp_HEMS_2", 0.0)
-    gdd.stores.registerStore<number>("Temp_HEMS_3", 0.0)
-    gdd.stores.registerStore<number>("Temp_HEMS_4", 0.0)
+    gdd.stores.registerStore<number>("Temp_HEMS_1", 0.0, data => {
+        const curr = Number(data);
+        hemsTempChart.addEntry(1, curr);
+        return curr;
+    });
+
+    gdd.stores.registerStore<number>("Temp_HEMS_2", 0.0, data => {
+        const curr = Number(data);
+        hemsTempChart.addEntry(2, curr);
+        return curr;
+    })
+
+    gdd.stores.registerStore<number>("Temp_HEMS_3", 0.0, data => {
+        const curr = Number(data);
+        hemsTempChart.addEntry(3, curr);
+        return curr;
+    })
+
+    gdd.stores.registerStore<number>("Temp_HEMS_4", 0.0, data => {
+        const curr = Number(data);
+        hemsTempChart.addEntry(4, curr);
+        return curr;
+    })
+
+    gdd.stores.registerStore<number>("Temp_EMS_1", 0.0, data => {
+        const curr = Number(data);
+        emsTempChart.addEntry(1, curr);
+        return curr;
+    })
+
+    gdd.stores.registerStore<number>("Temp_EMS_2", 0.0, data => {
+        const curr = Number(data);
+        emsTempChart.addEntry(2, curr);
+        return curr;
+    })
 
     ///////////////////////////////////////////////////////////////
     ///////////////////// REGISTER LEVI DATA //////////////////////
@@ -230,17 +278,37 @@
     gdd.stores.registerStore<number>("levi_ems_gap_c", 0.0)
     gdd.stores.registerStore<number>("levi_ems_gap_d", 0.0)
 
-    gdd.stores.registerStore<number>("levi_hems_current_a1", 0.0)
-    gdd.stores.registerStore<number>("levi_hems_current_a2", 0.0)
-    gdd.stores.registerStore<number>("levi_hems_current_b1", 0.0)
-    gdd.stores.registerStore<number>("levi_hems_current_b2", 0.0)
-    gdd.stores.registerStore<number>("levi_hems_current_c1", 0.0)
-    gdd.stores.registerStore<number>("levi_hems_current_c2", 0.0)
-    gdd.stores.registerStore<number>("levi_hems_current_d1", 0.0)
-    gdd.stores.registerStore<number>("levi_hems_current_d2", 0.0)
+    gdd.stores.registerStore<number>("levi_hems_current_a1", 0.0, data =>
+        addEntry(hemsCurrentChart, data, 1)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_a2", 0.0, data =>
+        addEntry(hemsCurrentChart, data, 2)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_b1", 0.0, data =>
+        addEntry(hemsCurrentChart, data, 3)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_b2", 0.0, data =>
+        addEntry(hemsCurrentChart, data, 4)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_c1", 0.0, data =>
+        addEntry(hemsCurrentChart, data, 5)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_c2", 0.0, data =>
+        addEntry(hemsCurrentChart, data, 6)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_d1", 0.0, data =>
+        addEntry(hemsCurrentChart, data, 7)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_d2", 0.0, data =>
+        addEntry(hemsCurrentChart, data, 8)
+    )
 
-    gdd.stores.registerStore<number>("levi_ems_current_ab", 0.0)
-    gdd.stores.registerStore<number>("levi_ems_current_cd", 0.0)
+    gdd.stores.registerStore<number>("levi_ems_current_ab", 0.0, data =>
+        addEntry(emsCurrentChart, data, 1)
+    )
+    gdd.stores.registerStore<number>("levi_ems_current_cd", 0.0, data =>
+        addEntry(emsCurrentChart, data, 2)
+    )
 
     gdd.stores.registerStore<number>("levi_hems_airgap", 0.0)
     gdd.stores.registerStore<number>("levi_hems_pitch", 0.0)
