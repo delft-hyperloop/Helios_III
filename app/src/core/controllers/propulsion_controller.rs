@@ -8,12 +8,12 @@ use embassy_stm32::dac::Value;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Speed;
-use embassy_stm32::peripherals::ADC3;
+use embassy_stm32::peripherals::ADC1;
 use embassy_stm32::peripherals::DAC1;
 use embassy_stm32::peripherals::PA4;
-use embassy_stm32::peripherals::PC0;
+use embassy_stm32::peripherals::PA5;
+use embassy_stm32::peripherals::PA6;
 use embassy_stm32::peripherals::PE5;
-use embassy_stm32::peripherals::PF3;
 use embassy_time::Instant;
 use embassy_time::Timer;
 
@@ -48,20 +48,20 @@ impl PropulsionController {
         event_sender: EventSender,
         pa4: PA4,
         dac1: DAC1,
-        adc3: ADC3,
-        pc0: PC0,
-        pf3: PF3,
+        adc1: ADC1,
+        pa5: PA5,
+        pa6: PA6,
         pe5: PE5,
     ) -> Self {
         let speed_set_pin = embassy_stm32::dac::DacCh1::new(dac1, embassy_stm32::dma::NoDma, pa4);
 
-        let mut adc = Adc::new(adc3);
+        let mut adc = Adc::new(adc1);
         adc.set_sample_time(SampleTime::CYCLES32_5);
         let v_ref_int_channel = adc.enable_vrefint();
 
         try_spawn!(
             event_sender,
-            x.spawn(read_prop_adc(data_sender, v_ref_int_channel, adc, pc0, pf3))
+            x.spawn(read_prop_adc(data_sender, v_ref_int_channel, adc, pa5, pa6))
         );
 
         Self {
@@ -93,14 +93,14 @@ impl PropulsionController {
 pub async fn read_prop_adc(
     data_sender: DataSender,
     mut v_ref_int_channel: VrefInt,
-    mut adc: Adc<'static, ADC3>,
-    mut pc0: PC0,
-    mut pf3: PF3,
+    mut adc: Adc<'static, ADC1>,
+    mut pa5: PA5,
+    mut pa6: PA6,
 ) {
     loop {
         let v_ref_int = adc.read_internal(&mut v_ref_int_channel);
-        let v = adc.read(&mut pc0) as u64;
-        let i = adc.read(&mut pf3) as u64;
+        let v = adc.read(&mut pa5) as u64;
+        let i = adc.read(&mut pa6) as u64;
         #[cfg(debug_assertions)]
         info!(
             "Propulsion:\n\t voltage (pc0): {} \n\t current (pf3): {} \n\t reference: {}\n",
