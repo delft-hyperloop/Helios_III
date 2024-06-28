@@ -16,15 +16,16 @@ const addEntryToChart = (chart:PlotBuffer, data:bigint, index:number) => {
 }
 
 const u64ToDouble = (u64: bigint): number => {
-    const buffer = Buffer.alloc(8);
+    const buffer = new ArrayBuffer(8);
+    const view = new DataView(buffer);
 
     const high = Number(u64 / BigInt(2**32));
     const low = Number(u64 % BigInt(2**32));
 
-    buffer.writeUInt32LE(low, 0);
-    buffer.writeUInt32LE(high, 4);
+    view.setUint32(0, low, true);
+    view.setUint32(4, high, true);
 
-    return buffer.readDoubleLE(0);
+    return view.getFloat64(0, true);
 }
 
 export {tempParse, voltParse, addEntryToChart, u64ToDouble};
