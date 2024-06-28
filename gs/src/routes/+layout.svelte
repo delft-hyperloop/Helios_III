@@ -8,7 +8,7 @@
         TitleBar,
         tempParse,
         voltParse,
-        addEntryToChart
+        addEntryToChart, u64ToDouble
     } from "$lib";
     import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
@@ -289,62 +289,33 @@
     gdd.stores.registerStore<number>("levi_ems_gap_c", 0.0, u64ToDouble)
     gdd.stores.registerStore<number>("levi_ems_gap_d", 0.0, u64ToDouble)
 
-    gdd.stores.registerStore<number>("levi_hems_current_a1", 0.0, data => {
-        const curr = Number(data);
-        hemsCurrentChart.addEntry(1, curr);
-        return curr;
-    })
+    gdd.stores.registerStore<number>("levi_hems_current_a1", 0.0, data => addEntryToChart(hemsCurrentChart, data, 1))
+    gdd.stores.registerStore<number>("levi_hems_current_a2", 0.0, data => addEntryToChart(hemsCurrentChart, data, 2))
+    gdd.stores.registerStore<number>("levi_hems_current_b1", 0.0, data => addEntryToChart(hemsCurrentChart, data, 3))
+    gdd.stores.registerStore<number>("levi_hems_current_b2", 0.0, data => addEntryToChart(hemsCurrentChart, data, 4))
+    gdd.stores.registerStore<number>("levi_hems_current_c1", 0.0, data => addEntryToChart(hemsCurrentChart, data, 5))
+    gdd.stores.registerStore<number>("levi_hems_current_c2", 0.0, data => addEntryToChart(hemsCurrentChart, data, 6))
+    gdd.stores.registerStore<number>("levi_hems_current_d1", 0.0, data => addEntryToChart(hemsCurrentChart, data, 7))
+    gdd.stores.registerStore<number>("levi_hems_current_d2", 0.0, data => addEntryToChart(hemsCurrentChart, data, 8))
 
-    gdd.stores.registerStore<number>("levi_hems_current_a2", 0.0, data =>
-        addEntryToChart(hemsCurrentChart, data, 2)
-    )
-    gdd.stores.registerStore<number>("levi_hems_current_b1", 0.0, data =>
-        addEntryToChart(hemsCurrentChart, data, 3)
-    )
-    gdd.stores.registerStore<number>("levi_hems_current_b2", 0.0, data =>
-        addEntryToChart(hemsCurrentChart, data, 4)
-    )
-    gdd.stores.registerStore<number>("levi_hems_current_c1", 0.0, data =>
-        addEntryToChart(hemsCurrentChart, data, 5)
-    )
-    gdd.stores.registerStore<number>("levi_hems_current_c2", 0.0, data =>
-        addEntryToChart(hemsCurrentChart, data, 6)
-    )
-    gdd.stores.registerStore<number>("levi_hems_current_d1", 0.0, data =>
-        addEntryToChart(hemsCurrentChart, data, 7)
-    )
-    gdd.stores.registerStore<number>("levi_hems_current_d2", 0.0, data =>
-        addEntryToChart(hemsCurrentChart, data, 8)
-    )
+    gdd.stores.registerStore<number>("levi_ems_current_ab", 0.0, data => addEntryToChart(emsCurrentChart, data, 1))
+    gdd.stores.registerStore<number>("levi_ems_current_cd", 0.0, data => addEntryToChart(emsCurrentChart, data, 2))
 
-    gdd.stores.registerStore<number>("levi_ems_current_ab", 0.0, data =>
-        addEntryToChart(emsCurrentChart, data, 1)
-    )
-    gdd.stores.registerStore<number>("levi_ems_current_cd", 0.0, data =>
-        addEntryToChart(emsCurrentChart, data, 2)
-    )
+    gdd.stores.registerStore<number>("levi_hems_airgap", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_hems_pitch", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_hems_roll", 0.0, u64ToDouble)
 
-    gdd.stores.registerStore<number>("levi_hems_airgap", 0.0, data => addEntryToChart(voffChart, data, 1))
-    gdd.stores.registerStore<number>("levi_hems_roll", 0.0, data => addEntryToChart(rolPitchChart, data, 1))
-    gdd.stores.registerStore<number>("levi_hems_pitch", 0.0, data => addEntryToChart(rolPitchChart, data, 2))
-
-    gdd.stores.registerStore<number>("levi_ems_offset_ab", 0.0, data => {
-        const curr: number = u64ToDouble(data);
-        hoffChart.addEntry(1, curr);
-        return curr;
-    })
-    gdd.stores.registerStore<number>("levi_ems_offset_cd", 0.0, data => {
-        const curr = u64ToDouble(data);
-        hoffChart.addEntry(2, curr);
-        return curr;
-    })
+    gdd.stores.registerStore<number>("levi_ems_offset_ab", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_ems_offset_cd", 0.0, u64ToDouble)
 
     gdd.stores.registerStore<number>("levi_hems_power", 0.0, u64ToDouble)
     gdd.stores.registerStore<number>("levi_ems_power", 0.0, u64ToDouble)
 
-    gdd.stores.registerStore<number>("levi_volt_min", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_volt_max", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_volt_avg", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_voltage_a", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_voltage_b", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_voltage_c", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_voltage_d", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_voltage_e", 0.0, u64ToDouble)
 
     ///////////////////////////////////////////////////////////////
     ///////////////////////// PNEUMATICS //////////////////////////
