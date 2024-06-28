@@ -202,10 +202,10 @@
     ///////////////////////////////////////////////////////////////
 
     gdd.stores.registerStore<number>("GyroscopeX", 0);
-
     gdd.stores.registerStore<number>("GyroscopeY", 0);
-
     gdd.stores.registerStore<number>("GyroscopeZ", 0);
+    gdd.stores.registerStore<number>("AccelerationX", 0);
+    gdd.stores.registerStore<number>("AccelerationY", 0);
 
     gdd.stores.registerStore<number>("IMDVoltageDetails", 0);
     gdd.stores.registerStore<number>("IMDIsolationDetails", 0);
