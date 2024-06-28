@@ -16,17 +16,17 @@
     //////////////////////////////
     /////////// CHARTS ///////////
     //////////////////////////////
-    let emsTempChart = new PlotBuffer(500, 300000, [0, 120], true, "EMS 1");
+    let emsTempChart = new PlotBuffer(500, 60000, [0, 120], true, "EMS 1");
     emsTempChart.addSeries(StrokePresets.theoretical("EMS 2"))
-    $chartStore.set("EMS Temperature", emsTempChart);
+    $chartStore.set("EMS Temperatures", emsTempChart);
 
-    let hemsTempChart = new PlotBuffer(500, 300000, [0, 120], true, "HEMS 1");
+    let hemsTempChart = new PlotBuffer(500, 60000, [0, 120], true, "HEMS 1");
     hemsTempChart.addSeries(StrokePresets.theoretical("HEMS 2"))
     hemsTempChart.addSeries(StrokePresets.yellow("HEMS 3"))
     hemsTempChart.addSeries(StrokePresets.blue("HEMS 4"))
-    $chartStore.set("HEMS Temperature", hemsTempChart);
+    $chartStore.set("HEMS Temperatures", hemsTempChart);
 
-    let hemsCurrentChart = new PlotBuffer(500, 300000, [-11.3, 11.3], true, "a1");
+    let hemsCurrentChart = new PlotBuffer(500, 60000, [-11.3, 11.3], true, "a1");
     hemsCurrentChart.addSeries(StrokePresets.hyperloopGreenDashed("a2"))
     hemsCurrentChart.addSeries(StrokePresets.theoretical("b1"))
     hemsCurrentChart.addSeries(StrokePresets.theoreticalDashed("b2"))
@@ -36,35 +36,35 @@
     hemsCurrentChart.addSeries(StrokePresets.blueDashed("d2"))
     $chartStore.set("HEMS Current", hemsCurrentChart);
 
-    let emsCurrentChart = new PlotBuffer(500, 300000, [-11.3, 11.3], true);
+    let emsCurrentChart = new PlotBuffer(500, 60000, [-11.3, 11.3], true);
     emsCurrentChart.addSeries(StrokePresets.theoretical("cd"))
     $chartStore.set("EMS Current", emsCurrentChart);
 
-    let voffChart = new PlotBuffer(500, 300000, [8, 25], false)
+    let voffChart = new PlotBuffer(500, 60000, [8, 25], false)
     $chartStore.set('Offset Vertical', voffChart);
 
-    let rolPitchChart = new PlotBuffer(500, 300000, [-0.8, 0.8], true, "roll")
+    let rolPitchChart = new PlotBuffer(500, 60000, [-0.8, 0.8], true, "roll")
     rolPitchChart.addSeries(StrokePresets.theoretical("pitch"))
     $chartStore.set("Roll Pitch", rolPitchChart)
 
-    let hoffChart = new PlotBuffer(500, 300000, [-8, 8], true, "ab")
+    let hoffChart = new PlotBuffer(500, 60000, [-8, 8], true, "ab")
     hoffChart.addSeries(StrokePresets.theoretical("cd"))
     $chartStore.set('Offset Horizontal', hoffChart);
 
     let velChart = new PlotBuffer(500, 5*60*1000, [0, 100], false)
     $chartStore.set('Velocity', velChart);
 
-    let leviChart = new PlotBuffer(500, 300000, [0, 13000], false);
+    let leviChart = new PlotBuffer(500, 60000, [0, 13000], false);
     $chartStore.set('Localisation', leviChart);
 
     let trr = new PlotBuffer(500, 60000, [0, 50], false)
     trr.addSeries(StrokePresets.theoretical())
     $chartStore.set('Theoretical vs Real run', trr)
 
-    let lvCurrent = new PlotBuffer(500, 300000, [-15, 15], false)
+    let lvCurrent = new PlotBuffer(500, 60000, [-15, 15], false)
     $chartStore.set('LV Current', lvCurrent)
 
-    let hvCurrent = new PlotBuffer(500, 300000, [-15, 15], false)
+    let hvCurrent = new PlotBuffer(500, 60000, [-15, 15], false)
     $chartStore.set('HV Current', hvCurrent)
 
     ///////////////////////////////////////////////////////

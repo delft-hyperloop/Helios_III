@@ -19,8 +19,8 @@ const u64ToDouble = (u64: bigint): number => {
     const buffer = new ArrayBuffer(8);
     const view = new DataView(buffer);
 
-    const high = Number(u64 / BigInt(2**32));
-    const low = Number(u64 % BigInt(2**32));
+    const high = Number(BigInt(u64) / BigInt(2**32));
+    const low = Number(BigInt(u64) % BigInt(2**32));
 
     view.setUint32(0, low, true);
     view.setUint32(4, high, true);
