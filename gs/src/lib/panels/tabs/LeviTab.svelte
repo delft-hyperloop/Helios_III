@@ -18,18 +18,16 @@
         ["D", $emsGapD, $hemsGapD],
     ]
 
-    const leviVA = gdd.getStore("levi_voltage_a");
-    const leviVB = gdd.getStore("levi_voltage_b");
-    const leviVC = gdd.getStore("levi_voltage_c");
-    const leviVD = gdd.getStore("levi_voltage_d");
-    const leviVE = gdd.getStore("levi_voltage_e");
+    const leviVA = gdd.getStore("levi_volt_min");
+    const leviVB = gdd.getStore("levi_volt_max");
+    const leviVC = gdd.getStore("levi_volt_avg");
 
     const leviHemsAG = gdd.getStore("levi_hems_airgap");
     const leviHemsPT = gdd.getStore("levi_hems_pitch");
     const leviHemsRL = gdd.getStore("levi_hems_roll");
 
     $: tableVoltages = [
-        [$leviVA, $leviVB, $leviVC, $leviVD, $leviVE]
+        [$leviVA, $leviVB, $leviVC]
     ]
 </script>
 
@@ -51,12 +49,10 @@
         <Tile heading="Gaps">
             <Table background="bg-surface-900" titles={["Gap", "EMS", "HEMS"]} tableArr={tableGaps} />
         </Tile>
-        <Tile heading="Voltages" insideClass="flex flex-col justify-center">
-            <p>Voltage A: {$leviVA}</p>
-            <p>Voltage B: {$leviVB}</p>
-            <p>Voltage C: {$leviVC}</p>
-            <p>Voltage D: {$leviVD}</p>
-            <p>Voltage E: {$leviVE}</p>
+        <Tile heading="Levi Voltages" insideClass="flex flex-col justify-center">
+            <p>Min: {$leviVA}</p>
+            <p>Max: {$leviVB}</p>
+            <p>Avg: {$leviVC}</p>
         </Tile>
         <Tile heading="Gaps">
             <Table background="bg-surface-900" titles={["Gap", "EMS", "HEMS"]} tableArr={tableGaps} />

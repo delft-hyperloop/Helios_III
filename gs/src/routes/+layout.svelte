@@ -16,17 +16,17 @@
     //////////////////////////////
     /////////// CHARTS ///////////
     //////////////////////////////
-    let emsTempChart = new PlotBuffer(1000, 300000, [0, 100], true, "EMS 1");
+    let emsTempChart = new PlotBuffer(500, 300000, [0, 120], true, "EMS 1");
     emsTempChart.addSeries(StrokePresets.theoretical("EMS 2"))
     $chartStore.set("EMS Temperature", emsTempChart);
 
-    let hemsTempChart = new PlotBuffer(1000, 300000, [0, 100], true, "HEMS 1");
+    let hemsTempChart = new PlotBuffer(500, 300000, [0, 120], true, "HEMS 1");
     hemsTempChart.addSeries(StrokePresets.theoretical("HEMS 2"))
     hemsTempChart.addSeries(StrokePresets.yellow("HEMS 3"))
     hemsTempChart.addSeries(StrokePresets.blue("HEMS 4"))
     $chartStore.set("HEMS Temperature", hemsTempChart);
 
-    let hemsCurrentChart = new PlotBuffer(1000, 300000, [-4000, 4000], true, "a1");
+    let hemsCurrentChart = new PlotBuffer(500, 300000, [-11.3, 11.3], true, "a1");
     hemsCurrentChart.addSeries(StrokePresets.hyperloopGreenDashed("a2"))
     hemsCurrentChart.addSeries(StrokePresets.theoretical("b1"))
     hemsCurrentChart.addSeries(StrokePresets.theoreticalDashed("b2"))
@@ -36,29 +36,29 @@
     hemsCurrentChart.addSeries(StrokePresets.blueDashed("d2"))
     $chartStore.set("HEMS Current", hemsCurrentChart);
 
-    let emsCurrentChart = new PlotBuffer(1000, 300000, [-4000, 4000], true);
+    let emsCurrentChart = new PlotBuffer(500, 300000, [-11.3, 11.3], true);
     emsCurrentChart.addSeries(StrokePresets.theoretical("cd"))
     $chartStore.set("EMS Current", emsCurrentChart);
 
-    let voffChart = new PlotBuffer(1000, 300000, [0, 100], false)
-    let hoffChart = new PlotBuffer(1000, 300000, [0, 100], false)
+    let voffChart = new PlotBuffer(500, 300000, [0, 100], false)
+    let hoffChart = new PlotBuffer(500, 300000, [0, 100], false)
     hoffChart.addSeries(StrokePresets.theoretical())
-    let velChart = new PlotBuffer(1000, 5 * 60 * 1000, [0, 100], false)
-    let leviChart = new PlotBuffer(1000, 300000, [0, 100], false);
+    let velChart = new PlotBuffer(500, 5*60*1000, [0, 100], false)
+    let leviChart = new PlotBuffer(500, 300000, [0, 13000], false);
 
     $chartStore.set('Offset Horizontal', hoffChart);
     $chartStore.set('Offset Vertical', voffChart);
     $chartStore.set('Velocity', velChart);
     $chartStore.set('Localisation', leviChart);
 
-    let trr = new PlotBuffer(1000, 60000, [0, 50], false)
+    let trr = new PlotBuffer(500, 60000, [0, 50], false)
     trr.addSeries(StrokePresets.theoretical())
     $chartStore.set('Theoretical vs Real run', trr)
 
-    let lvCurrent = new PlotBuffer(1000, 300000, [-4000, 4000], false)
+    let lvCurrent = new PlotBuffer(500, 300000, [-15, 15], false)
     $chartStore.set('LV Current', lvCurrent)
 
-    let hvCurrent = new PlotBuffer(1000, 300000, [-4000, 4000], false)
+    let hvCurrent = new PlotBuffer(500, 300000, [-15, 15], false)
     $chartStore.set('HV Current', hvCurrent)
 
     ///////////////////////////////////////////////////////
@@ -68,7 +68,6 @@
     let gdd = GrandDataDistributor.getInstance();
     gdd.stores.registerStore<number>("BatteryEstimatedChargeHigh", 0.0, data => Number(data) / 100);
     gdd.stores.registerStore<number>("BatteryEstimatedChargeLow", 0.0, data => Number(data) / 100);
-
 
     gdd.stores.registerStore<number>("Module1AvgTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module1MaxTemperature", 0.0, tempParse);
@@ -299,11 +298,9 @@
     gdd.stores.registerStore<number>("levi_hems_power", 0.0, u64ToDouble)
     gdd.stores.registerStore<number>("levi_ems_power", 0.0, u64ToDouble)
 
-    gdd.stores.registerStore<number>("levi_voltage_a", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_voltage_b", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_voltage_c", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_voltage_d", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_voltage_e", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_volt_min", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_volt_max", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_volt_avg", 0.0, u64ToDouble)
 
     ///////////////////////////////////////////////////////////////
     ///////////////// REGISTER META & ADDITIONAL //////////////////
