@@ -11,26 +11,29 @@
         TauriCommand,
         type IntervalFunction,
         RunMode,
-        SpeedsInput
+        SpeedsInput, GrandDataDistributor
     } from "$lib";
     import {inputEmerg, inputPosit} from "$lib/stores/state";
     import {getModalStore, type ModalComponent} from "@skeletonlabs/skeleton";
 
+    const storeManager = GrandDataDistributor.getInstance().stores;
+
+    const accelX = storeManager.getStore("AccelerationX")
+    const accelY = storeManager.getStore("AccelerationY")
+    const gyroX = storeManager.getStore("GyroscopeX")
+    const gyroY = storeManager.getStore("GyroscopeY")
+    const gyroZ = storeManager.getStore("GyroscopeZ")
 
     let calculateTheoretical:IntervalFunction;
     let clearRuns: () => void;
 
     let tableArr2:any[][];
     $: tableArr2 = [
-        ["Some", 0],
-        ["Important", 0],
-        ["Value", 0],
-        ["That", 0],
-        ["Could", 0],
-        ["stay", 0],
-        ["as a", 0],
-        ["table entry", 0],
-        ["here", 0]
+        ["Acceleration X", $accelX],
+        ["Acceleration Y", $accelY],
+        ["Gyroscope X", $gyroX],
+        ["Gyroscope Y", $gyroY],
+        ["Gyroscope Z", $gyroZ],
     ]
 
     const modalStore = getModalStore();
