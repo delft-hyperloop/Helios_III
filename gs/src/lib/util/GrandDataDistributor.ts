@@ -84,7 +84,7 @@ export class GrandDataDistributor {
      */
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
-            emit(EventChannel.INFO, `Datapoint received: ${datapoint.datatype} - ${datapoint.value}`);
+            // emit(EventChannel.INFO, `Datapoint received: ${datapoint.datatype} - ${datapoint.value}`);
             this.StoreManager.updateStore(datapoint.datatype, datapoint.value);
         });
     }
