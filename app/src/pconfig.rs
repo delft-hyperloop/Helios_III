@@ -104,6 +104,15 @@ pub fn id_as_value(id: &embedded_can::Id) -> u16 {
 }
 
 pub fn extended_as_value(id: &ExtendedId) -> u16 {
+    if id.as_raw() == 0x18FF01F4 {
+        return 0x37;
+    }
+    if id.as_raw() == 0x18FF02F4 {
+        return 0x38;
+    }
+    if id.as_raw() == 0x18FF03F4 {
+        return 0x39;
+    }
     let temp = id.as_raw();
     let big_id = (temp & (0xFFFF000)) >> 16;
     info!("big_id {:?}", big_id);
