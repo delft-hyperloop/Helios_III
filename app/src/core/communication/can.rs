@@ -1,7 +1,7 @@
 use defmt::*;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
-use embassy_stm32::can::CanRx;
+use embassy_stm32::can::{CanRx, Frame};
 use embassy_stm32::can::CanTx;
 use embassy_stm32::can::Instance;
 use embassy_time::Timer;
@@ -14,7 +14,7 @@ use crate::core::controllers::battery_controller::ground_fault_detection_voltage
 use crate::core::controllers::can_controller::CanTwoUtils;
 use crate::pconfig::bytes_to_u64;
 use crate::pconfig::id_as_value;
-use crate::CanReceiver;
+use crate::{CanReceiver, CanSender};
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
@@ -41,7 +41,7 @@ pub async fn can_transmitter(
 pub async fn can_receiving_handler(
     _x: Spawner,
     event_sender: EventSender,
-    _can_receiver: CanReceiver,
+    can_sender: CanSender,
     data_sender: DataSender,
     mut bus: CanRx<'static, impl Instance>,
     mut utils: Option<CanTwoUtils>,
@@ -49,9 +49,9 @@ pub async fn can_receiving_handler(
     let bus_nr = if utils.is_none() { 1 } else { 2 };
     info!("[CAN] Ready for bus {:?}", bus_nr);
     let mut error_counter = 0u64;
+    let mut gfd_counter = 0u64;
     loop {
         // #[cfg(debug_assertions)]
-        info!("Entering read loop on bus #{}", bus_nr);
         match bus.read().await {
             Ok(envelope) => {
                 info!(" got here");
@@ -93,7 +93,13 @@ pub async fn can_receiving_handler(
                                 )
                                 .await;
                             } else {
-                                debug!("GFD is not using id #{}", &id);
+                                if (gfd_counter > 5){
+                                    gfd_counter = 0;
+                                    can_sender.send(Frame::new_extended(0x18EAFF17, &[0x03u8, 0xFFu8, 0x00u8]).unwrap()).await;
+                                    can_sender.send(Frame::new_extended(0x18EAFF17, &[0x02u8, 0xFFu8, 0x00u8]).unwrap()).await;
+                                } else {
+                                    gfd_counter += 1;
+                                }
                             }
                         }
                     } else {
