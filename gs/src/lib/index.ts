@@ -35,6 +35,7 @@ import SpeedsInput from "$lib/components/SpeedsInput.svelte";
 import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
 import {GrandDataDistributor} from "$lib/util/GrandDataDistributor";
 import util from "$lib/util/util";
+import {tempParse, voltParse, addEntryToChart, u64ToDouble} from "$lib/util/parsers";
 
 // Types
 import type {NamedCommand, Log, LogType, IntervalFunction} from "$lib/types";
@@ -48,6 +49,10 @@ export const chartDataStore = new Map<string, uPlot.AlignedData>();
 
 // Export all
 export {
+    tempParse,
+    voltParse,
+    addEntryToChart,
+    u64ToDouble,
     TauriCommand,
     ToggleCommand,
     inputTurn,

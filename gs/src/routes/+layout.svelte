@@ -1,9 +1,17 @@
 <script lang="ts">
     import '../app.postcss';
-    import {BottomBar, GrandDataDistributor, PlotBuffer, StrokePresets, TitleBar,} from "$lib";
+    import {
+        BottomBar,
+        GrandDataDistributor,
+        PlotBuffer,
+        StrokePresets,
+        TitleBar,
+        tempParse,
+        voltParse,
+        addEntryToChart
+    } from "$lib";
     import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
-    import type {dataConvFun} from "$lib/types";
 
     //////////////////////////////
     /////////// CHARTS ///////////
@@ -35,7 +43,7 @@
     let voffChart = new PlotBuffer(1000, 300000, [0, 100], false)
     let hoffChart = new PlotBuffer(1000, 300000, [0, 100], false)
     hoffChart.addSeries(StrokePresets.theoretical())
-    let velChart = new PlotBuffer(1000, 5*60*1000, [0, 100], false)
+    let velChart = new PlotBuffer(1000, 5 * 60 * 1000, [0, 100], false)
     let leviChart = new PlotBuffer(1000, 300000, [0, 100], false);
 
     $chartStore.set('Offset Horizontal', hoffChart);
@@ -60,20 +68,7 @@
     let gdd = GrandDataDistributor.getInstance();
     gdd.stores.registerStore<number>("BatteryEstimatedChargeHigh", 0.0, data => Number(data) / 100);
     gdd.stores.registerStore<number>("BatteryEstimatedChargeLow", 0.0, data => Number(data) / 100);
-    
-    const tempParse:dataConvFun<number> = (data:bigint) => {
-        return Number(data) - 100;
-    }
 
-    const voltParse:dataConvFun<string> = (data:bigint) => {
-        return Number(data) === 200 ? "INVALID" : (Number(data) / 100).toString();
-    }
-
-    const addEntry = (chart:PlotBuffer, data:bigint, index:number) => {
-        const curr = Number(data);
-        chart.addEntry(index, curr);
-        return curr;
-    }
 
     gdd.stores.registerStore<number>("Module1AvgTemperature", 0.0, tempParse);
     gdd.stores.registerStore<number>("Module1MaxTemperature", 0.0, tempParse);
@@ -202,7 +197,7 @@
     ///////////////////////////////////////////////////////////////
 
     gdd.stores.registerStore<number>("GyroscopeX", 0, data => {
-        const curr:number = Number(data);
+        const curr: number = Number(data);
         $chartStore.get("Offset Horizontal")?.addEntry(1, curr);
         return curr;
     });
@@ -282,36 +277,39 @@
     gdd.stores.registerStore<number>("levi_ems_gap_c", 0.0)
     gdd.stores.registerStore<number>("levi_ems_gap_d", 0.0)
 
-    gdd.stores.registerStore<number>("levi_hems_current_a1", 0.0, data =>
-        addEntry(hemsCurrentChart, data, 1)
-    )
+    gdd.stores.registerStore<number>("levi_hems_current_a1", 0.0, data => {
+        const curr = Number(data);
+        hemsCurrentChart.addEntry(1, curr);
+        return curr;
+    })
+
     gdd.stores.registerStore<number>("levi_hems_current_a2", 0.0, data =>
-        addEntry(hemsCurrentChart, data, 2)
+        addEntryToChart(hemsCurrentChart, data, 2)
     )
     gdd.stores.registerStore<number>("levi_hems_current_b1", 0.0, data =>
-        addEntry(hemsCurrentChart, data, 3)
+        addEntryToChart(hemsCurrentChart, data, 3)
     )
     gdd.stores.registerStore<number>("levi_hems_current_b2", 0.0, data =>
-        addEntry(hemsCurrentChart, data, 4)
+        addEntryToChart(hemsCurrentChart, data, 4)
     )
     gdd.stores.registerStore<number>("levi_hems_current_c1", 0.0, data =>
-        addEntry(hemsCurrentChart, data, 5)
+        addEntryToChart(hemsCurrentChart, data, 5)
     )
     gdd.stores.registerStore<number>("levi_hems_current_c2", 0.0, data =>
-        addEntry(hemsCurrentChart, data, 6)
+        addEntryToChart(hemsCurrentChart, data, 6)
     )
     gdd.stores.registerStore<number>("levi_hems_current_d1", 0.0, data =>
-        addEntry(hemsCurrentChart, data, 7)
+        addEntryToChart(hemsCurrentChart, data, 7)
     )
     gdd.stores.registerStore<number>("levi_hems_current_d2", 0.0, data =>
-        addEntry(hemsCurrentChart, data, 8)
+        addEntryToChart(hemsCurrentChart, data, 8)
     )
 
     gdd.stores.registerStore<number>("levi_ems_current_ab", 0.0, data =>
-        addEntry(emsCurrentChart, data, 1)
+        addEntryToChart(emsCurrentChart, data, 1)
     )
     gdd.stores.registerStore<number>("levi_ems_current_cd", 0.0, data =>
-        addEntry(emsCurrentChart, data, 2)
+        addEntryToChart(emsCurrentChart, data, 2)
     )
 
     gdd.stores.registerStore<number>("levi_hems_airgap", 0.0)
@@ -351,7 +349,7 @@
 
 <div class="flex flex-col w-screen h-screen max-h-screen overflow-hidden">
     <Toast/>
-    <Modal />
+    <Modal/>
     <TitleBar/>
     <slot/>
     <BottomBar/>
