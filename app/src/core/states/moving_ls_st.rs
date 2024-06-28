@@ -2,7 +2,8 @@ use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::core::fsm_status::{Location, RouteUse};
+use crate::core::fsm_status::Location;
+use crate::core::fsm_status::RouteUse;
 use crate::transit;
 use crate::Event;
 
@@ -28,7 +29,6 @@ impl Fsm {
                         info!("Entering straight track backwards");
                         self.send_levi_cmd(crate::Command::ls0(0)).await;
                         transit!(self, State::MovingST);
-
                     }
                     _ => {
                         info!("Invalid configuration1!");

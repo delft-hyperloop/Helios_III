@@ -1,8 +1,10 @@
+use defmt::debug;
 use embassy_executor::Spawner;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::Peripherals;
+
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::breaking_controller::BrakingController;
 use crate::core::controllers::can_controller::CanController;
@@ -11,7 +13,7 @@ use crate::core::controllers::ethernet_controller::EthernetController;
 use crate::core::controllers::ethernet_controller::EthernetPins;
 use crate::core::controllers::hv_controller::HVPeripherals;
 use crate::core::controllers::propulsion_controller::PropulsionController;
-use crate::InternalMessaging;
+use crate::{DataSender, InternalMessaging};
 
 #[allow(dead_code)]
 pub struct FSMPeripherals {
@@ -20,11 +22,9 @@ pub struct FSMPeripherals {
     pub can_controller: CanController,
     pub hv_peripherals: HVPeripherals,
     pub propulsion_controller: PropulsionController,
-    //  pub lv_controller: BatteryController,
+    pub data_send_line: DataSender,
     pub red_led: Output<'static>,
 }
-
-
 
 impl FSMPeripherals {
     // pub fn new(p : Peripherals, x: &Spawner, q : &PriorityChannel<NoopRawMutex, Event, Max, 16>) -> Self {
@@ -45,17 +45,15 @@ impl FSMPeripherals {
         )
         .await;
 
-
-        defmt::debug!("creating hv controller");
+        debug!("creating hv controller");
         // the battery controllers contain functions related to interpreting the BMS CAN messages
         let hv_controller =
             BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, true); //TODO <------ This is just to make it build
-        defmt::debug!("creating lv controller");
+        debug!("creating lv controller");
         let lv_controller =
             BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, false); //TODO <------ This is just to make it build
 
-
-        defmt::debug!("creating ethernet controller");
+        debug!("creating ethernet controller");
         // The ethernet controller configures IP and then spawns the ethernet task
         let eth_controller = EthernetController::new(
             *x,
@@ -74,12 +72,13 @@ impl FSMPeripherals {
                 pa2_pin: p.PA2,
                 pa1_pin: p.PA1,
             },
-        ).await;
+        )
+        .await;
 
         // let mut b = Output::new(p.PB0, Level::High, Speed::High);
         // b.set_high();
 
-        defmt::debug!("creating can controller");
+        debug!("creating can controller");
         // the can controller configures both buses and then spawns all 4 read/write tasks.
         let can_controller = CanController::new(
             *x,
@@ -103,13 +102,13 @@ impl FSMPeripherals {
         )
         .await;
 
-
         // the propulsion controller spawns tasks for reading current and voltage, and holds functions for setting the speed through the DAC
         // let propulsion_controller = PropulsionController::new();
 
-        defmt::debug!("peripherals initialised.");
+        debug!("peripherals initialised.");
         // return this struct back to the FSM
         Self {
+            data_send_line: i.data_sender,
             braking_controller,
             eth_controller,
             can_controller,
@@ -119,7 +118,18 @@ impl FSMPeripherals {
                 pin_7: Output::new(p.PG10, Level::Low, Speed::Low),
             },
             red_led: Output::new(p.PB14, Level::Low, Speed::High),
-            propulsion_controller : PropulsionController::new(i.data_sender, p.PA4, p.DAC1, p.PA5, p.PA6),
+            propulsion_controller: PropulsionController::new(
+                *x,
+                i.data_sender,
+                i.event_sender,
+                p.PA4,
+                p.DAC1,
+                p.ADC3,
+                p.PC0,
+                p.PF3,
+                p.PE5,
+            )
+            .await,
         }
     }
 }

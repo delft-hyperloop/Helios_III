@@ -1,4 +1,3 @@
-
 #[allow(unused, dead_code)]
 #[derive(Debug, Default)]
 pub struct Status {

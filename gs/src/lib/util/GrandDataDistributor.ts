@@ -1,6 +1,6 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import {get, type Writable, writable} from "svelte/store";
-import {type dataConvFun, type Datapoint, EventChannels, type NamedDatatype} from "$lib/types";
+import {type dataConvFun, type Datapoint, EventChannel, type NamedDatatype} from "$lib/types";
 import {emit} from "@tauri-apps/api/event";
 
 /**
@@ -84,7 +84,7 @@ export class GrandDataDistributor {
      */
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
-            emit(EventChannels.INFO, `Datapoint received: ${datapoint.datatype} - ${datapoint.value}`);
+            emit(EventChannel.INFO, `Datapoint received: ${datapoint.datatype} - ${datapoint.value}`);
             this.StoreManager.updateStore(datapoint.datatype, datapoint.value);
         });
     }
@@ -114,7 +114,7 @@ class StoreManager {
      * @param processFunction - the function to process the data
      */
     public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>) {
-        if (this.stores.has(name)) throw new Error(`Store with name ${name} already exists`);
+        // if (this.stores.has(name)) throw new Error(`Store with name ${name} already exists`);
         this.stores.set(name, new Store(initial, processFunction));
     }
 

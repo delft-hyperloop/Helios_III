@@ -1,13 +1,31 @@
+use defmt::trace;
+use embassy_executor::Spawner;
+use embassy_stm32::adc::Adc;
+use embassy_stm32::adc::SampleTime;
+use embassy_stm32::adc::VrefInt;
 use embassy_stm32::dac::Value;
+use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
-use embassy_stm32::peripherals::{DAC1, PA4, PA5, PA6};
-use crate::DataSender;
+use embassy_stm32::peripherals::DAC1;
+use embassy_stm32::peripherals::PA4;
 
-#[allow(dead_code)]
+use embassy_stm32::gpio::Speed;
+use embassy_stm32::peripherals::ADC3;
+use embassy_stm32::peripherals::PC0;
+use embassy_stm32::peripherals::PE5;
+use embassy_stm32::peripherals::PF3;
+use embassy_time::Instant;
+use embassy_time::Timer;
+
+use crate::core::communication::Datapoint;
+use crate::try_spawn;
+use crate::DataSender;
+use crate::Datatype;
+use crate::EventSender;
+
 pub struct PropulsionController {
     pub speed_set_pin: embassy_stm32::dac::DacCh1<'static, DAC1>,
-    // pub enable_pin: Output<'static>,
-
+    pub enable_pin: Output<'static>,
 }
 
 /// Functions related to controlling the propulsion subsystem
@@ -15,8 +33,8 @@ pub struct PropulsionController {
 /// - fn to convert desired speed to analog out voltage
 /// - something to store which direction we're going in ?
 /// -
+#[allow(dead_code)]
 impl PropulsionController {
-
     /// Create a new instance of the PropulsionController
     ///
     /// related pins:
@@ -24,37 +42,87 @@ impl PropulsionController {
     /// - PA5: ADC - read propulsion voltage
     /// - PA6: ADC - read propulsion current
     /// - PE5: GPIO - enable/disable propulsion
-    pub fn new(data_sender: DataSender, pa4: PA4, dac1: DAC1, pa5: PA5, pa6: PA6, /* some gpio */) -> Self {
-        let mut speed_set_pin = embassy_stm32::dac::DacCh1::new(dac1, embassy_stm32::dma::NoDma, pa4);
+
+    pub async fn new(
+        x: Spawner,
+        data_sender: DataSender,
+        event_sender: EventSender,
+        pa4: PA4,
+        dac1: DAC1,
+        adc3: ADC3,
+        pc0: PC0,
+        pf3: PF3,
+        pe5: PE5,
+    ) -> Self {
+        let speed_set_pin = embassy_stm32::dac::DacCh1::new(dac1, embassy_stm32::dma::NoDma, pa4);
+
+        let mut adc = Adc::new(adc3);
+        adc.set_sample_time(SampleTime::CYCLES32_5);
+        let v_ref_int_channel = adc.enable_vrefint();
+
+        try_spawn!(
+            event_sender,
+            x.spawn(read_prop_adc(data_sender, v_ref_int_channel, adc, pc0, pf3))
+        );
 
         Self {
-            speed_set_pin
+            speed_set_pin,
+            enable_pin: Output::new(pe5, Level::Low, Speed::Low),
         }
     }
 
     /// Write to the DAC to set the desired speed
-    pub fn set_speed(&self, speed: u64) {
-
-        // self.speed_set_pin.set_value();
+    pub fn set_speed(&mut self, speed: u64) {
+        trace!("Setting speed to {}", speed);
+        self.speed_set_pin.set(Value::Bit8(speed as u8));
     }
-    pub fn stop(&self) {
-        // self.speed_set_pin.set_value();
+    pub fn stop(&mut self) {
+        trace!("Stopping propulsion by setting speed to 0");
+        self.speed_set_pin.set(Value::Bit8(0));
+    }
+    pub fn disable(&mut self) {
+        self.enable_pin.set_low();
     }
 
-    pub fn turn_off(&self) {
-        // self.enable_pin.set_low();
+    pub fn enable(&mut self) {
+        self.enable_pin.set_high();
     }
+}
 
-    // #[embassy_executor::task]
-    // pub async fn read_prop_voltage(data_sender: DataSender, ) {
-    //     loop {
-    //
-    //     }
-    //     todo!()
-    // }
+#[embassy_executor::task]
+pub async fn read_prop_adc(
+    data_sender: DataSender,
+    mut v_ref_int_channel: VrefInt,
+    mut adc: Adc<'static, ADC3>,
+    mut pc0: PC0,
+    mut pf3: PF3,
+) {
+    loop {
+        let v_ref_int = adc.read_internal(&mut v_ref_int_channel);
+        let v = adc.read(&mut pc0) as u64;
+        let i = adc.read(&mut pf3) as u64;
+        data_sender
+            .send(Datapoint::new(
+                Datatype::PropulsionVoltage,
+                v,
+                Instant::now().as_ticks(),
+            ))
+            .await;
+        data_sender
+            .send(Datapoint::new(
+                Datatype::PropulsionCurrent,
+                i,
+                Instant::now().as_ticks(),
+            ))
+            .await;
+        data_sender
+            .send(Datapoint::new(
+                Datatype::PropulsionVRefInt,
+                v_ref_int as u64,
+                Instant::now().as_ticks(),
+            ))
+            .await;
 
-    // #[embassy_executor::task]
-    // pub async fn read_prop_current(data_sender: DataSender) {
-    //     todo!();
-    // }
+        Timer::after_millis(250).await;
+    }
 }

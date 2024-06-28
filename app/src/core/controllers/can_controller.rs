@@ -20,7 +20,6 @@ use crate::CanSender;
 use crate::CanTwoInterrupts;
 use crate::DataReceiver;
 use crate::DataSender;
-use crate::Event;
 use crate::EventSender;
 
 pub struct CanPins {
@@ -80,9 +79,9 @@ impl CanController {
             .write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap())
             .await;
         try_spawn!(
-                event_sender,
-                x.spawn(can_receiving_handler(
-                    x,
+            event_sender,
+            x.spawn(can_receiving_handler(
+                x,
                     event_sender,
                     _can_one_sender,
                     data_sender,
