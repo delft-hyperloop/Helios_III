@@ -72,9 +72,9 @@ impl PropulsionController {
     }
 
     /// Write to the DAC to set the desired speed
-    pub fn set_speed(&mut self, speed: u64) {
+    pub fn set_speed(&mut self, speed: u8) {
         trace!("Setting speed to {}", speed);
-        self.speed_set_pin.set(Value::Bit8(speed as u8));
+        self.speed_set_pin.set(Value::Bit8(speed));
     }
     pub fn stop(&mut self) {
         trace!("Stopping propulsion by setting speed to 0");
