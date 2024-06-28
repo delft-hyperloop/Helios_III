@@ -1,9 +1,11 @@
 use defmt::debug;
 use embassy_executor::Spawner;
+use embassy_stm32::adc::Adc;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::Peripherals;
+use embassy_stm32::peripherals::ADC1;
 
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::breaking_controller::BrakingController;
@@ -40,6 +42,7 @@ impl FSMPeripherals {
             p.PB8,
             p.PG1,
             p.PF12,
+            Adc::new(p.ADC1),
             p.PB0,
             p.PD5,
             p.TIM16,
@@ -125,7 +128,7 @@ impl FSMPeripherals {
                 i.event_sender,
                 p.PA4,
                 p.DAC1,
-                p.ADC1,
+                p.ADC2,
                 p.PA5,
                 p.PA6,
                 p.PE5,

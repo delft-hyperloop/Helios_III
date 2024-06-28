@@ -1,6 +1,6 @@
 [gs]
 ip = [192,168,0,93]
-force = false
+force = true
 port = 6942
 udp_port = 6943
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
@@ -82,3 +82,6 @@ colour = "green"
 label = "Unsafe"
 colour = "magenta"
 
+[[Info]]
+label = "SetPropulsionSpeed"
+colour = "yellow"

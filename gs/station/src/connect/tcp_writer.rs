@@ -1,3 +1,4 @@
+use crate::api::Message::Error;
 use crate::Command;
 use tokio::io::AsyncWriteExt;
 use tokio::net::tcp::OwnedWriteHalf;
@@ -24,7 +25,10 @@ pub async fn transmit_commands_to_tcp(
                             .expect("messaging channel closed, cannot recover");
                     }
                     Err(e) => {
-                        eprintln!("Error sending keepalive over tcp: {:?}", e);
+                        //eprintln!("Error sending keepalive over tcp: {:?}", e);
+                        status_transmitter
+                            .send(Error(format!("Error sending keepalive over tcp: {:?}", e)))
+                            .unwrap();
                         break;
                     }
                 }

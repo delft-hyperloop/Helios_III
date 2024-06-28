@@ -1,12 +1,13 @@
 use defmt::info;
 use embassy_executor::Spawner;
+use embassy_stm32::adc::Adc;
 use embassy_stm32::gpio::Input;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Pull;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::peripherals;
-use embassy_stm32::peripherals::TIM16;
+use embassy_stm32::peripherals::{ADC1, PF12, TIM16};
 use embassy_time::Duration;
 use embassy_time::Instant;
 use embassy_time::Timer;
@@ -20,21 +21,26 @@ pub static mut BRAKE: bool = false;
 pub struct BrakingController {
     pub braking_rearm: Output<'static>,
     // pub braking_signal: Output<'static>,
-    pub braking_communication: Input<'static>,
+    // pub braking_communication: Input<'static>,
     pub brakes_extended: bool,
 }
 
 #[embassy_executor::task]
 pub async fn control_braking_heartbeat(
     sender: EventSender,
-    mut braking_signal: Output<'static>, /*mut braking_status: Input*/
+    mut braking_signal: Output<'static>,
+    mut adc: Adc<'static, ADC1>,
+    mut pf12: PF12,
 ) {
     // pub async fn control_braking_heartbeat(sender: EventSender, mut braking_heartbeat: SimplePwm<'static, TIM16>) {
     info!("----------------- Start Braking Heartbeat! -----------------");
     let mut booting = true;
     loop {
-        Timer::after_micros(200).await;
-        if unsafe { !BRAKE } {
+        Timer::after_micros(10).await;
+        if adc.read(&mut pf12) > 30000 {
+            braking_signal.set_low();
+            info!("------------ BRAKE ! ------------");
+        } else if unsafe { !BRAKE } {
             braking_signal.set_high();
             // braking_heartbeat.set_duty(Channel::Ch1, braking_heartbeat.get_max_duty()/2);
         } else {
@@ -58,6 +64,7 @@ impl BrakingController {
         pb8: peripherals::PB8,
         pg1: peripherals::PG1,
         pf12: peripherals::PF12,
+        adc: Adc<'static, ADC1>,
         _pb0: peripherals::PB0,
         _pd5: peripherals::PD5,
         _ptime: TIM16,
@@ -79,7 +86,7 @@ impl BrakingController {
         //     khz(30),
         //     Default::default(),
         // );
-        let braking_communication = Input::new(pf12, Pull::None); // <--- If its HIGH it means that breaks are rearmed, if its low it , means we are breaking
+        // let braking_communication = Input::new(pf12, Pull::None); // <--- If its HIGH it means that breaks are rearmed, if its low it , means we are breaking
                                                                   // Finally if we set the heartbeat to LOW, and we still receive a 1 is basically means we are crashing so lets actually make use of the crashing state
 
         // let mut braking_communication = Adc::new();
@@ -90,26 +97,26 @@ impl BrakingController {
 
         try_spawn!(
             braking_sender,
-            x.spawn(control_braking_heartbeat(braking_sender, braking_signal))
+            x.spawn(control_braking_heartbeat(braking_sender, braking_signal, adc, pf12))
         );
 
         BrakingController {
             braking_rearm,
-            braking_communication,
+            // braking_communication,
             brakes_extended: false,
         }
     }
 
-    pub fn arm_breaks(&mut self) -> bool {
+    pub fn arm_breaks(&mut self) {
         self.braking_rearm.set_low();
-        let time_stamp = Instant::now();
-        while (Instant::now() - time_stamp) < Duration::from_millis(100) {
-            if self.braking_communication.is_high() {
-                self.brakes_extended = true;
-                return true;
-            }
-        }
-        false
+        // let time_stamp = Instant::now();
+        // while (Instant::now() - time_stamp) < Duration::from_millis(100) {
+        //     if self.braking_communication.is_high() {
+        //         self.brakes_extended = true;
+        //         return true;
+        //     }
+        // }
+        // false
     }
 
     #[allow(dead_code)]
