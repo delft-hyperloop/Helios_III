@@ -31,6 +31,7 @@ impl Fsm {
                 #[cfg(debug_assertions)]
                 debug!("Setting run config: {:?}", x);
                 self.route.positions_from(x);
+                self.route.current_position = 0;
             }
             Event::SetRunConfigSpeed(x) => {
                 #[cfg(debug_assertions)]

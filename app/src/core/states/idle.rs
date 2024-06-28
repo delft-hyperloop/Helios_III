@@ -24,7 +24,7 @@ impl Fsm {
                     .hv_peripherals
                     .power_on_hv_procedure()
                     .await;
-                transit!(self, State::HVSystemChecking);
+                transit!(self, State::HVOn);
             }
             Event::ArmBrakesCommand => {
                 #[cfg(debug_assertions)]

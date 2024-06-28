@@ -191,10 +191,15 @@ pub async fn tcp_connection_handler(
                                     info!("[tcp] StopLevitating command received");
                                     // event_sender.send(Event::).await; // TODO: theres no stop levitating event??
                                 }
-                                Command::Configure(x) => {
+                                Command::SetRoute(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Configure command received");
                                     event_sender.send(Event::SetRunConfig(x)).await;
+                                }
+                                Command::SetSpeeds(x) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] Configure command received");
+                                    event_sender.send(Event::SetRunConfigSpeed(x)).await;
                                 }
                                 Command::StartRun(_) => {
                                     #[cfg(debug_assertions)]

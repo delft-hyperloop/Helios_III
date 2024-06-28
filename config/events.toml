@@ -125,8 +125,18 @@ id = 0xb8
 priority = 0
 
 [[Event]]
-name = "BrakingPointReachedEvent"
-id = 0xb9
+name = "BrakingPointReachedA"
+id = 0x509
+priority = 0
+
+[[Event]]
+name = "BrakingPointReachedB"
+id = 0x510
+priority = 0
+
+[[Event]]
+name = "BrakingPointReachedC"
+id = 0x511
 priority = 0
 
 [[Event]]
@@ -186,8 +196,13 @@ id = 0x504
 priority = 0
 
 [[Event]]
-name = "LaneSwitchEnded"
+name = "LaneSwitchEndedB"
 id = 0x505
+priority = 0
+
+[[Event]]
+name = "LaneSwitchEndedC"
+id = 0x507
 priority = 0
 
 [[Event]]
