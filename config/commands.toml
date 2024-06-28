@@ -57,10 +57,6 @@ name = "land"
 id = 0x410
 
 [[Command]]
-name = "land"
-id = 0x411
-
-[[Command]]
 name = "vert_mode_normal"
 id = 0x412
 
