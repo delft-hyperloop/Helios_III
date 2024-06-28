@@ -127,7 +127,7 @@ impl App {
                     }
                     Datatype::PropulsionVoltage => {
                         self.special_data
-                            .insert(Datatype::PropulsionCurrent, datapoint.value / 340);
+                            .insert(Datatype::PropulsionVoltage, datapoint.value / 340);
                     }
                     x if self
                         .special_data

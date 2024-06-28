@@ -39,7 +39,7 @@ pub async fn control_braking_heartbeat(
         Timer::after_micros(10).await;
         if adc.read(&mut pf12) > 30000 {
             braking_signal.set_low();
-            info!("------------ BRAKE ! ------------");
+            // info!("------------ BRAKE ! ------------");
         } else if unsafe { !BRAKE } {
             braking_signal.set_high();
             // braking_heartbeat.set_duty(Channel::Ch1, braking_heartbeat.get_max_duty()/2);
