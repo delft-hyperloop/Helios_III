@@ -8,7 +8,7 @@
         TitleBar,
         tempParse,
         voltParse,
-        addEntryToChart, u64ToDouble
+        addEntryToChart
     } from "$lib";
     import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
@@ -40,7 +40,13 @@
     emsCurrentChart.addSeries(StrokePresets.theoretical("cd"))
     $chartStore.set("EMS Current", emsCurrentChart);
 
-    let voffChart = new PlotBuffer(500, 60000, [8, 25], false)
+    let voffChart = new PlotBuffer(1000, 300000, [0, 100], false)
+    let hoffChart = new PlotBuffer(1000, 300000, [0, 100], false)
+    hoffChart.addSeries(StrokePresets.theoretical())
+    let velChart = new PlotBuffer(1000, 5 * 60 * 1000, [0, 100], false)
+    let leviChart = new PlotBuffer(1000, 300000, [0, 100], false);
+
+    $chartStore.set('Offset Horizontal', hoffChart);
     $chartStore.set('Offset Vertical', voffChart);
 
     let rolPitchChart = new PlotBuffer(500, 60000, [-0.8, 0.8], true, "roll")
@@ -201,11 +207,23 @@
     //////////////////// REGISTER GYROSCOPE ///////////////////////
     ///////////////////////////////////////////////////////////////
 
-    gdd.stores.registerStore<number>("GyroscopeX", 0);
-    gdd.stores.registerStore<number>("GyroscopeY", 0);
-    gdd.stores.registerStore<number>("GyroscopeZ", 0);
-    gdd.stores.registerStore<number>("AccelerationX", 0);
-    gdd.stores.registerStore<number>("AccelerationY", 0);
+    gdd.stores.registerStore<number>("GyroscopeX", 0, data => {
+        const curr: number = Number(data);
+        $chartStore.get("Offset Horizontal")?.addEntry(1, curr);
+        return curr;
+    });
+
+    gdd.stores.registerStore<number>("GyroscopeY", 0, data => {
+        const curr = Number(data);
+        $chartStore.get("Offset Horizontal")?.addEntry(2, curr);
+        return curr;
+    });
+
+    gdd.stores.registerStore<number>("GyroscopeZ", 0, data => {
+        const curr = Number(data);
+        $chartStore.get("Offset Vertical")?.addEntry(1, curr);
+        return curr;
+    });
 
     gdd.stores.registerStore<number>("IMDVoltageDetails", 0);
     gdd.stores.registerStore<number>("IMDIsolationDetails", 0);
@@ -271,17 +289,40 @@
     gdd.stores.registerStore<number>("levi_ems_gap_c", 0.0, u64ToDouble)
     gdd.stores.registerStore<number>("levi_ems_gap_d", 0.0, u64ToDouble)
 
-    gdd.stores.registerStore<number>("levi_hems_current_a1", 0.0, data => addEntryToChart(hemsCurrentChart, data, 1))
-    gdd.stores.registerStore<number>("levi_hems_current_a2", 0.0, data => addEntryToChart(hemsCurrentChart, data, 2))
-    gdd.stores.registerStore<number>("levi_hems_current_b1", 0.0, data => addEntryToChart(hemsCurrentChart, data, 3))
-    gdd.stores.registerStore<number>("levi_hems_current_b2", 0.0, data => addEntryToChart(hemsCurrentChart, data, 4))
-    gdd.stores.registerStore<number>("levi_hems_current_c1", 0.0, data => addEntryToChart(hemsCurrentChart, data, 5))
-    gdd.stores.registerStore<number>("levi_hems_current_c2", 0.0, data => addEntryToChart(hemsCurrentChart, data, 6))
-    gdd.stores.registerStore<number>("levi_hems_current_d1", 0.0, data => addEntryToChart(hemsCurrentChart, data, 7))
-    gdd.stores.registerStore<number>("levi_hems_current_d2", 0.0, data => addEntryToChart(hemsCurrentChart, data, 8))
+    gdd.stores.registerStore<number>("levi_hems_current_a1", 0.0, data => {
+        const curr = Number(data);
+        hemsCurrentChart.addEntry(1, curr);
+        return curr;
+    })
 
-    gdd.stores.registerStore<number>("levi_ems_current_ab", 0.0, data => addEntryToChart(emsCurrentChart, data, 1))
-    gdd.stores.registerStore<number>("levi_ems_current_cd", 0.0, data => addEntryToChart(emsCurrentChart, data, 2))
+    gdd.stores.registerStore<number>("levi_hems_current_a2", 0.0, data =>
+        addEntryToChart(hemsCurrentChart, data, 2)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_b1", 0.0, data =>
+        addEntryToChart(hemsCurrentChart, data, 3)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_b2", 0.0, data =>
+        addEntryToChart(hemsCurrentChart, data, 4)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_c1", 0.0, data =>
+        addEntryToChart(hemsCurrentChart, data, 5)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_c2", 0.0, data =>
+        addEntryToChart(hemsCurrentChart, data, 6)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_d1", 0.0, data =>
+        addEntryToChart(hemsCurrentChart, data, 7)
+    )
+    gdd.stores.registerStore<number>("levi_hems_current_d2", 0.0, data =>
+        addEntryToChart(hemsCurrentChart, data, 8)
+    )
+
+    gdd.stores.registerStore<number>("levi_ems_current_ab", 0.0, data =>
+        addEntryToChart(emsCurrentChart, data, 1)
+    )
+    gdd.stores.registerStore<number>("levi_ems_current_cd", 0.0, data =>
+        addEntryToChart(emsCurrentChart, data, 2)
+    )
 
     gdd.stores.registerStore<number>("levi_hems_airgap", 0.0, data => addEntryToChart(voffChart, data, 1))
     gdd.stores.registerStore<number>("levi_hems_roll", 0.0, data => addEntryToChart(rolPitchChart, data, 1))
