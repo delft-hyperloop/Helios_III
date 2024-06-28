@@ -1,6 +1,3 @@
-import type {
-    EventChannel
-} from "$lib";
 import {emit} from "@tauri-apps/api/event";
 
 function range(count:number, start?:number, num?:number):number[] {
