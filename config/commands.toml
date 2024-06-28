@@ -56,6 +56,37 @@ id = 0x409
 name = "land"
 id = 0x410
 
+[[Command]]
+name = "land"
+id = 0x411
+
+[[Command]]
+name = "vert_mode_normal"
+id = 0x412
+
+[[Command]]
+name = "lat_mode_normal"
+id = 0x413
+
+[[Command]]
+name = "vert_mode_offsets"
+id = 0x414
+
+[[Command]]
+name = "vert_mode_dance"
+id = 0x415
+
+[[Command]]
+name = "vert_mode_sine"
+id = 0x416
+
+[[Command]]
+name = "vert0_reset"
+id = 0x417
+
+[[Command]]
+name = "lat0_reset"
+id = 0x418
 
 [[Command]]
 name = "StopLevitating"

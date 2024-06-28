@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Linq;
 using Pmp;
 using System.Threading;
 using System.IO;
@@ -73,6 +74,9 @@ namespace PmpGettingStartedCs
         public ISignal Volt_C { set; get; }
         public ISignal Volt_D { set; get; }
         public ISignal Volt_E { set; get; }
+
+        public ISignal VerticalZeroResetSignal { set; get; }
+        public ISignal LateralZeroResetSignal { set; get; }
 
 
 
@@ -152,9 +156,58 @@ namespace PmpGettingStartedCs
                     }
                     break;
 
+                case "vert_mode_normal":
+                    try
+                    {
+                        this.SetVerticalMode(0);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "vert_mode_offsets":
+                    try
+                    {
+                        this.SetVerticalMode(5);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "vert_mode_dance":
+                    try
+                    {
+                        this.SetVerticalMode(6);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "vert_mode_sine":
+                    try
+                    {
+                        this.SetVerticalMode(7);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
                 case "vert0":
                     try
                     {
+                        this.SetVerticalZeroReset(0);
                         this.SetVerticalMode(-1);
                         Console.Write("INFO:mode_set\n");
                     }
@@ -168,6 +221,44 @@ namespace PmpGettingStartedCs
                     try
                     {
                         this.SetLateralMode(-1);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "vert0_reset":
+                    try
+                    {
+                        this.SetVerticalZeroReset(1);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "lat0_reset":
+                    try
+                    {
+                        this.SetLateralZeroReset(1);
+                        Thread.Sleep(50);
+                        this.SetLateralZeroReset(0);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "lat_mode_normal":
+                    try
+                    {
+                        this.SetLateralMode(1);
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -326,6 +417,10 @@ namespace PmpGettingStartedCs
             this.Power_Vert = VerticalController.Signals["Power_avg"];
             this.Power_Lat = LateralController.Signals["Power_Lat_avg"];
 
+            this.VerticalZeroResetSignal = VerticalController.Signals["Undo_0current"];
+            this.LateralZeroResetSignal = LateralController.Signals["lat_zero_reset"];
+
+
             this.Volt_A = CygnusA.Sensors["VBus"].Signals["Voltage"];
             this.Volt_B = CygnusB.Sensors["VBus"].Signals["Voltage"];
             this.Volt_C = CygnusC.Sensors["VBus"].Signals["Voltage"];
@@ -348,6 +443,18 @@ namespace PmpGettingStartedCs
         Acquisition.ChangeSignalFromSignal(this.LaneSwitchSignal, value);
         return true;
     }
+
+        public bool SetVerticalZeroReset(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.VerticalZeroResetSignal, value);
+            return true;
+        }
+
+        public bool SetLateralZeroReset(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.LateralZeroResetSignal, value);
+            return true;
+        }
 
         public bool SetPropulsion(double value)
         {
@@ -403,13 +510,29 @@ namespace PmpGettingStartedCs
 
         public void getCurrents()
         {
-            double[] currentList = { this.I_A1.ValueDouble, this.I_A2.ValueDouble, this.I_B1.ValueDouble, this.I_B2.ValueDouble, this.I_C1.ValueDouble, this.I_C2.ValueDouble, this.I_D1.ValueDouble, this.I_D2.ValueDouble, this.I_Front.ValueDouble, this.I_Back.ValueDouble, this.Power_Vert.ValueDouble, this.Power_Lat.ValueDouble, this.Volt_A.ValueDouble, this.Volt_B.ValueDouble, this.Volt_C.ValueDouble, this.Volt_D.ValueDouble, this.Volt_E.ValueDouble };
-            string[] currentStrings = { "levi_hems_current_a1", "levi_hems_current_a2", "levi_hems_current_b1", "levi_hems_current_b2", "levi_hems_current_c1", "levi_hems_current_c2", "levi_hems_current_d1", "levi_hems_current_d2", "levi_ems_current_ab", "levi_ems_current_cd", "levi_hems_power", "levi_ems_power", "levi_voltage_a", "levi_voltage_b", "levi_voltage_c", "levi_voltage_d", "levi_voltage_e" };
+            double[] currentList = { this.I_A1.ValueDouble, this.I_A2.ValueDouble, this.I_B1.ValueDouble, this.I_B2.ValueDouble, this.I_C1.ValueDouble, this.I_C2.ValueDouble, this.I_D1.ValueDouble, this.I_D2.ValueDouble, this.I_Front.ValueDouble, this.I_Back.ValueDouble, this.Power_Vert.ValueDouble, this.Power_Lat.ValueDouble};
+            string[] currentStrings = { "levi_hems_current_a1", "levi_hems_current_a2", "levi_hems_current_b1", "levi_hems_current_b2", "levi_hems_current_c1", "levi_hems_current_c2", "levi_hems_current_d1", "levi_hems_current_d2", "levi_ems_current_ab", "levi_ems_current_cd", "levi_hems_power", "levi_ems_power"};
             int i = 0;
             foreach (string currentString in currentStrings)
             {
+
                 string datatype = currentString.ToLower();
                 string value = currentList[i].ToString();
+                sendData(datatype, value);
+                i++;
+            }
+        }
+
+        public void getVoltages()
+        {
+            double[] voltageList = { this.Volt_A.ValueDouble, this.Volt_B.ValueDouble, this.Volt_C.ValueDouble, this.Volt_D.ValueDouble, this.Volt_E.ValueDouble, };
+            double[] editedVoltageList = { voltageList.Average(), voltageList.Min(), voltageList.Max() };
+            string[] voltageStrings = { "levi_volt_avg", "levi_volt_min", "levi_volt_max" };
+            int i = 0;
+            foreach (string voltageString in voltageStrings)
+            {
+                string datatype = voltageString.ToLower();
+                string value = editedVoltageList[i].ToString();
                 sendData(datatype, value);
                 i++;
             }
@@ -476,6 +599,7 @@ public static void Main()
                         arcas.getLateralAirgaps();
                         arcas.getCurrents();
                         arcas.getDegreesOfFreedom();
+                       arcas.getVoltages();
 
                     }
                     catch (Exception)
