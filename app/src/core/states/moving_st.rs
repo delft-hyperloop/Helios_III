@@ -13,7 +13,7 @@ impl Fsm {
     pub fn entry_accelerating(&mut self) {
         self.peripherals
             .propulsion_controller
-            .set_speed(self.route.current_speed() as u64);
+            .set_speed(self.route.current_speed());
         //We have to put a stip on the track that would define a braking point here
     }
 
@@ -60,7 +60,7 @@ impl Fsm {
                 _ => {
                     self.peripherals
                         .propulsion_controller
-                        .set_speed(self.route.current_speed() as u64);
+                        .set_speed(self.route.current_speed());
                 }
             },
             Event::BrakingPointReachedEvent => {

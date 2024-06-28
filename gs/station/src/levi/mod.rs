@@ -42,8 +42,8 @@ pub fn levi_main(
         {
             Ok(_) => {
                 transmitter
-                    .send(Message::Error(
-                        "[write_to_levi_child_stdin] finished without any errors.".to_string(),
+                    .send(Message::Warning(
+                        "[write_to_levi_child_stdin] closed without any errors.".to_string(),
                     ))
                     .expect("messaging channel closed... this is irrecoverable");
             }
@@ -72,8 +72,8 @@ pub fn levi_main(
         {
             Ok(_) => {
                 msg_transmitter
-                    .send(Message::Error(
-                        "[read_from_levi_child_stdout] finished without any errors.".to_string(),
+                    .send(Message::Warning(
+                        "[read_from_levi_child_stdout] closed without any errors.".to_string(),
                     ))
                     .expect("messaging channel closed... this is irrecoverable");
             }
