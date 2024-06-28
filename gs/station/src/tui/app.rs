@@ -52,6 +52,10 @@ impl App {
                 (Datatype::SingleCellVoltageLow, 0),
                 (Datatype::BatteryMaxBalancingLow, 0),
                 (Datatype::Localisation, 0),
+                (Datatype::PropulsionCurrent, 0),
+                (Datatype::PropulsionVoltage, 0),
+                (Datatype::PropulsionSpeed, 0),
+                (Datatype::PropulsionVRefInt, 0),
             ]),
             backend,
             safe: true,
@@ -119,9 +123,27 @@ impl App {
                             self.logs.push((Message::Data(datapoint), timestamp()))
                         }
                     }
+                    Datatype::PropulsionCurrent => {
+                        self.special_data
+                            .insert(Datatype::PropulsionCurrent, datapoint.value / 680);
+                    }
+                    Datatype::PropulsionVoltage => {
+                        self.special_data
+                            .insert(Datatype::PropulsionCurrent, datapoint.value / 340);
+                    }
+                    x if self
+                        .special_data
+                        .keys()
+                        .collect::<Vec<&Datatype>>()
+                        .contains(&&x) =>
+                    {
+                        self.special_data.insert(x, datapoint.value);
+                    }
                     _ => {
                         self.logs.push((Message::Data(datapoint), timestamp()));
-                        if self.logs.len() > 42 {
+                        if self.logs.len() > 42
+                            && self.logs.len().abs_diff(self.scroll as usize) < 35
+                        {
                             self.scroll += 1;
                         }
                     }

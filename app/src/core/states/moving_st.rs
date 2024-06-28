@@ -63,7 +63,7 @@ impl Fsm {
                         .set_speed(self.route.current_speed());
                 }
             },
-            Event::BrakingPointReachedEvent => {
+            Event::BrakingPointReachedA => {
                 // TODO: ask if we need to prop brake or emergency brake
                 transit!(self, State::EndST);
             }

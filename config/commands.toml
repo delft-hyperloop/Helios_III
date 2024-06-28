@@ -88,8 +88,12 @@ name = "StopLevitating"
 id = 0x5b
 
 [[Command]]
-name = "Configure"
+name = "SetRoute"
 id = 0x5c
+
+[[Command]]
+name = "SetSpeeds"
+id = 0x59
 
 [[Command]]
 name = "StartRun"

@@ -14,11 +14,11 @@ impl Fsm {
 
     pub async fn react_mv_ls_st(&mut self, event: Event) {
         match event {
-            Event::BrakingPointReachedEvent => {
+            Event::BrakingPointReachedB => {
                 transit!(self, State::EndST);
                 todo!();
             }
-            Event::LaneSwitchEnded => {
+            Event::LaneSwitchEndedB => {
                 match self.route.next_position() {
                     Location::LaneSwitchEndTrack => {
                         info!("Entering a lane switch!");
