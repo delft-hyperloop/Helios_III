@@ -51,7 +51,6 @@ id = 0x408
 name = "lat0"
 id = 0x409
 
-
 [[Command]]
 name = "land"
 id = 0x410
