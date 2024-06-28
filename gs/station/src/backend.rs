@@ -110,12 +110,15 @@ impl Backend {
     }
     pub fn quit_levi(&mut self) {
         if let Some((lh1, lh2)) = self.levi_handle.take() {
+            self.info("Quitting levi_handle_1".into());
             lh1.abort();
+            self.info("Quitting levi_handle_2".into());
             lh2.abort();
         }
     }
     pub fn quit_server(&mut self) {
         if let Some(sh) = self.server_handle.take() {
+            self.info("Quitting server_handle".into());
             sh.abort();
         }
     }

@@ -52,6 +52,6 @@ pub fn handle_line_from_levi(
             return Ok(());
         }
     }
-    msg_send.send(Message::Info(format!("[TRACE] Levi: {:?}", line)))?;
+    // msg_send.send(Message::Info(format!("[TRACE] Levi: {:?}", line)))?;
     Ok(())
 }

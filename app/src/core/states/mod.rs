@@ -5,6 +5,7 @@ mod exit;
 mod hv_system_checking;
 mod idle;
 mod levitating;
+mod moving_end_ls;
 mod moving_end_st;
 mod moving_ls_cv;
 mod moving_ls_st;

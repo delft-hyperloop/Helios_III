@@ -19,10 +19,10 @@ pub async fn read_from_levi_child_stdout(
                 break;
             }
             Ok(n) => {
-                message_transmitter.send(Message::Info(format!(
-                    "[TRACE] RECEIVED LEVI: ({}), {:?}",
-                    n, &line
-                )))?;
+                // message_transmitter.send(Message::Info(format!(
+                //     "[TRACE] RECEIVED LEVI: ({}), {:?}",
+                //     n, &line
+                // )))?;
                 handle_line_from_levi(
                     &line,
                     message_transmitter.clone(),
