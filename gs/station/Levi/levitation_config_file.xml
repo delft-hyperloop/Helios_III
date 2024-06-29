@@ -10,9 +10,6 @@
   <NamedMutation FromDefault="EK1100-12" To="ECATStart"/>
   <NamedMutation FromDefault="EL3104-11" To="ECATSensorVer"/>
   <NamedMutation FromDefault="EL3104-13" To="ECATSensorLat"/>
-  <NamedMutation FromDefault="EK1100-10" To="ECATStart2"/>
-  <NamedMutation FromDefault="EL3104-0-1" To="ECATSensorIMU1"/>
-  <NamedMutation FromDefault="EL3104-0" To="ECATSensorIMU2"/>
 
 	<Controller Name="Cygnus A">
 	  <NamedMutation FromDefault="AxisControl1" To="AxisControl A1"/>
@@ -70,19 +67,19 @@
 
   <Template Name="TemplateLaserSensors" TemplateType="ProcessingBlock">
     <Updatable Name="Updatable">
-      <FilePath>\Levi\BinaryControllers\TemplateLaserSensorsFull_prodrive_rtw\libTemplateLaserSensorsFull-bb-armv8a_64.bin</FilePath>
+      <FilePath>C:\Users\kikoa\RustroverProjects\Helios_III\gs\station\Levi\BinaryControllers\TemplateLaserSensorsFull_prodrive_rtw\libTemplateLaserSensorsFull-bb-armv8a_64.bin</FilePath>
     </Updatable>
   </Template>
 
   <Template Name="TemplateAirgapControllers" TemplateType="ProcessingBlock">
 	  <Updatable Name="Updatable">
-	    <FilePath>\Levi\BinaryControllers\PIDcontroller4CoreCentralizedTestReadyMotor_prodrive_rtw\libPIDcontroller4CoreCentralizedTestReadyMotor-bb-armv8a_64.bin</FilePath>
+	    <FilePath>C:\Users\kikoa\RustroverProjects\Helios_III\gs\station\Levi\BinaryControllers\PIDcontroller4CoreCentralizedTestReadyMotor_prodrive_rtw\libPIDcontroller4CoreCentralizedTestReadyMotor-bb-armv8a_64.bin</FilePath>
 	  </Updatable>
   </Template>
 
   <Template Name="TemplateLateralController" TemplateType="ProcessingBlock">
 	  <Updatable Name="Updatable">
-	    <FilePath>\Levi\BinaryControllers\ControllerLateral_prodrive_rtw\libControllerLateral-bb-armv8a_64.bin</FilePath>
+	    <FilePath>C:\Users\kikoa\RustroverProjects\Helios_III\gs\station\Levi\BinaryControllers\ControllerLateral_prodrive_rtw\libControllerLateral-bb-armv8a_64.bin</FilePath>
 	  </Updatable>
   </Template>
 
@@ -98,15 +95,15 @@
 	  <Input Name="Voltage_C2" Source="ECATSensorLat/Receive/AI Inputs2_Value"/>
 	  <Input Name="Voltage_D2" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
 
-    	  <Input Name="IMU1" Source="ECATSensorIMU1/Receive/AI Inputs1_Value"/>
-	  <Input Name="IMU2" Source="ECATSensorIMU1/Receive/AI Inputs2_Value"/>
-	  <Input Name="IMU3" Source="ECATSensorIMU1/Receive/AI Inputs3_Value"/>
-	  <Input Name="IMU4" Source="ECATSensorIMU1/Receive/AI Inputs4_Value"/>
+    	  <Input Name="IMU1" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
+	  <Input Name="IMU2" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
+	  <Input Name="IMU3" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
+	  <Input Name="IMU4" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
 
-    	  <Input Name="IMU5" Source="ECATSensorIMU2/Receive/AI Inputs1_Value"/>
-	  <Input Name="IMU6" Source="ECATSensorIMU2/Receive/AI Inputs2_Value"/>
-	  <Input Name="IMU7" Source="ECATSensorIMU2/Receive/AI Inputs3_Value"/>
-          <Input Name="IMU8" Source="ECATSensorIMU2/Receive/AI Inputs4_Value"/>
+    	  <Input Name="IMU5" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
+	  <Input Name="IMU6" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
+	  <Input Name="IMU7" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
+          <Input Name="IMU8" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
 
           <Input Name="VerticalAxisControllerState_In" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
 	  <Input Name="LateralAxisControllerState_In" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>

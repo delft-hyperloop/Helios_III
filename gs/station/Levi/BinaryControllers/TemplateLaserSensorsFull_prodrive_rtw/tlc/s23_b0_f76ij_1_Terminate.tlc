@@ -1,0 +1,52 @@
+%implements s23_b0_f76ij_1_Terminate "C"
+
+%function Terminate(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+c_dsp_private_ExponentialMovingAverage_TemplateLaserSensorsFull_T *obj;
+%closefile localVarDecl
+/* {S!d2804}Terminate for MATLABSystem: '<S17>/Moving Average6' */
+if (!(int32_T)localDW->obj.matlabCodegenIsDeleted) {
+    localDW->obj.matlabCodegenIsDeleted = true;
+    if ((localDW->obj.isInitialized == 1) && ((int32_T)localDW->obj.isSetupComplete)) {
+        obj = localDW->obj.pStatistic;
+        if (obj->isInitialized == 1) {
+            obj->isInitialized = 2;
+        }
+        localDW->obj.NumChannels = -1;
+    }
+}
+/* {E!d2804}End of Terminate for MATLABSystem: '<S17>/Moving Average6' */
+%closefile cfgTxt
+%<cfgTxt>
+%assign rtmArgSys = ::CompiledModel.System[::CompiledModel.System[::CompiledModel.RTWCGModules.RTWCGModule[1].CGSystemIdx].NonInlinedParentSystemIdx]
+%if SysFcnArgNeeded("Terminate", rtmArgSys.Interface.RTMArgDef, rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Terminate"))
+%<SLibCG_AccessArg(1, 3, 0)>
+%endif
+%if SLibCG_ArgAccessed(1, 3, 0)
+%<SLibAccessArg(rtmArgSys.Interface.RTMArgDef, "Terminate", rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Terminate"))>
+%endif
+%if (IsModelReferenceBaseSys(rtmArgSys) && (IsModelRefScalableBuild() || GenerateClassInterface)) ||...
+(GenerateClassInterface && SLibIsMultiInstanceServer(rtmArgSys))
+%<SLibCG_UndoAccessArg(1, 3, 0)>
+%endif
+%<LibSetSystemField(system, "CachedTerminateLocalVars", localVarDecl)>
+%endfunction
+%function TerminateFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void TemplateLaserSensorsFull_MovingAverage6_Term(\
+%assign comma = ""
+%if SLibCG_ArgAccessed(1, 3, 0)
+%<comma>%<::tSimStructType> * const %<::tSimStruct>\
+%assign comma = ", "
+%<SLibUpdateSymbolForFunction("TemplateLaserSensorsFull_MovingAverage6_Term", SLibGetFcnDefinitionRTMSymbolName(), TLC_FALSE)>\
+%endif
+%<comma>DW_MovingAverage6_TemplateLaserSensorsFull_T *localDW\
+%assign comma = ", "
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(1, 3, fcnProtoType)>
+%endfunction

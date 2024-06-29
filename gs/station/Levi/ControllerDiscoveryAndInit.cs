@@ -23,7 +23,7 @@ public static void SetRun(Levitation arcas)
                 Console.WriteLine("WARNING:set_run");
                 try
                 {
-                    arcas.TopController.WaitState(TopControllerState.Run, 1);
+                    arcas.TopController.WaitState(TopControllerState.Run, 10);
                     Console.WriteLine("INFO:Initialization complete.");
                 }
                 catch (Exception)
@@ -158,8 +158,8 @@ public static void Initialize(Levitation arcas, ITopController topController, bo
     {
         try
         {
-            ISubController CouplerVert = subControllers["Unknown-slave-EtherCAT:0.5"];
-            CouplerVert.ApplyModelFromFile(arcas.CouplerPath);
+            ISubController CouplerLas = subControllers["Unknown-slave-EtherCAT:0.5"];
+            CouplerLas.ApplyModelFromFile(arcas.CouplerPath);
         }
         catch (Exception ex)
         {
@@ -167,8 +167,8 @@ public static void Initialize(Levitation arcas, ITopController topController, bo
         }
         try
         {
-            ISubController CouplerLat = subControllers["Unknown-slave-EtherCAT:0.7"];
-            CouplerLat.ApplyModelFromFile(arcas.CouplerPath);
+            ISubController CouplerIMU = subControllers["Unknown-slave-EtherCAT:0.8"];
+            CouplerIMU.ApplyModelFromFile(arcas.CouplerPath);
         }
         catch (Exception ex)
         {
@@ -186,15 +186,34 @@ public static void Initialize(Levitation arcas, ITopController topController, bo
         }
         try
         {
-            ISubController BusLat = subControllers["Unknown-slave-EtherCAT:0.8"];
+            ISubController BusLat = subControllers["Unknown-slave-EtherCAT:0.7"];
             BusLat.ApplyModelFromFile(arcas.BusPath);
         }
         catch (Exception ex)
         {
             Console.WriteLine("WARNING:config_error");
-            Thread.Sleep(2000);
-        } 
-    }
+        }
+
+                try
+                {
+                    ISubController BusIMU1 = subControllers["Unknown-slave-EtherCAT:0.9"];
+                    BusIMU1.ApplyModelFromFile(arcas.BusPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("WARNING:config_error");
+                }
+                try
+                {
+                    ISubController BusIMU2 = subControllers["Unknown-slave-EtherCAT:0.10"];
+                    BusIMU2.ApplyModelFromFile(arcas.BusPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("WARNING:config_error");
+                    Thread.Sleep(2000);
+                }
+            }
     if (applyConfig)
     {
         ApplyConfig(arcas);

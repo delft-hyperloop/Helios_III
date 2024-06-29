@@ -1,0 +1,91 @@
+%implements s23_b0_f76ij_2_Outputs "C"
+
+%function Outputs(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+c_dsp_private_ExponentialMovingAverage_TemplateLaserSensorsFull_T *obj;
+real_T lambda;
+real_T pmLocal;
+real_T pwLocal;
+boolean_T flag;
+%closefile localVarDecl
+/* {S!d2810}MATLABSystem: '<S17>/Moving Average7' */
+if (localDW->obj.ForgettingFactor != rtp_IMU_SecondFilter) {
+    flag = (boolean_T)(localDW->obj.isInitialized == 1);
+    if (flag) {
+        localDW->obj.TunablePropsChanged = true;
+    }
+    localDW->obj.ForgettingFactor = rtp_IMU_SecondFilter;
+}
+if (localDW->obj.TunablePropsChanged) {
+    localDW->obj.TunablePropsChanged = false;
+    obj = localDW->obj.pStatistic;
+    flag = (boolean_T)(obj->isInitialized == 1);
+    if (flag) {
+        obj->TunablePropsChanged = true;
+    }
+    localDW->obj.pStatistic->ForgettingFactor = localDW->obj.ForgettingFactor;
+}
+obj = localDW->obj.pStatistic;
+if (obj->isInitialized != 1) {
+    obj->isSetupComplete = false;
+    obj->isInitialized = 1;
+    obj->pwN = 1.0;
+    obj->pmN = 0.0;
+    obj->plambda = obj->ForgettingFactor;
+    obj->isSetupComplete = true;
+    obj->TunablePropsChanged = false;
+    obj->pwN = 1.0;
+    obj->pmN = 0.0;
+}
+if (obj->TunablePropsChanged) {
+    obj->TunablePropsChanged = false;
+    obj->plambda = obj->ForgettingFactor;
+}
+pwLocal = obj->pwN;
+pmLocal = obj->pmN;
+lambda = obj->plambda;
+pmLocal = (1.0 - 1.0 / pwLocal) * pmLocal + 1.0 / pwLocal * rtu_0;
+obj->pwN = lambda * pwLocal + 1.0;
+obj->pmN = pmLocal;
+/* {S!d2812}MATLABSystem: '<S17>/Moving Average7' */
+localB->MovingAverage7 = pmLocal;
+%closefile cfgTxt
+%<cfgTxt>
+%assign rtmArgSys = ::CompiledModel.System[::CompiledModel.System[::CompiledModel.RTWCGModules.RTWCGModule[2].CGSystemIdx].NonInlinedParentSystemIdx]
+%if SysFcnArgNeeded("Output", rtmArgSys.Interface.RTMArgDef, rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Output"))
+%<SLibCG_AccessArg(2, 2, 0)>
+%endif
+%if SLibCG_ArgAccessed(2, 2, 0)
+%<SLibAccessArg(rtmArgSys.Interface.RTMArgDef, "Output", rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Output"))>
+%endif
+%if (IsModelReferenceBaseSys(rtmArgSys) && (IsModelRefScalableBuild() || GenerateClassInterface)) ||...
+(GenerateClassInterface && SLibIsMultiInstanceServer(rtmArgSys))
+%<SLibCG_UndoAccessArg(2, 2, 0)>
+%endif
+%<LibSetSystemField(system, "CachedOutputLocalVars", localVarDecl)>
+%endfunction
+%function OutputsFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void TemplateLaserSensorsFull_MovingAverage7(\
+%assign comma = ""
+%if SLibCG_ArgAccessed(2, 2, 0)
+%<comma>%<::tSimStructType> * const %<::tSimStruct>\
+%assign comma = ", "
+%<SLibUpdateSymbolForFunction("TemplateLaserSensorsFull_MovingAverage7", SLibGetFcnDefinitionRTMSymbolName(), TLC_FALSE)>\
+%endif
+%<comma>real_T rtu_0\
+%assign comma = ", "
+%<comma>real_T rtp_IMU_SecondFilter\
+%assign comma = ", "
+%<comma>B_MovingAverage7_TemplateLaserSensorsFull_T *localB\
+%assign comma = ", "
+%<comma>DW_MovingAverage7_TemplateLaserSensorsFull_T *localDW\
+%assign comma = ", "
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(2, 2, fcnProtoType)>
+%endfunction

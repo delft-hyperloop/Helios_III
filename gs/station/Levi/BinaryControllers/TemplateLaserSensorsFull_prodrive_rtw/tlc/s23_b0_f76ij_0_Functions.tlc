@@ -1,0 +1,60 @@
+%implements s23_b0_f76ij_0_Functions "C"
+
+%function TemplateLaserSensorsFull_SlidingWindowAverageCG_stepImpl_Fcn0(block) void
+%assign fcnBuff = ""
+%openfile fcnBuff
+%assign cfgTxt = ""
+%openfile cfgTxt
+real_T csum;
+real_T cumRevIndex;
+real_T y;
+real_T z;
+int32_T k;
+csum = obj->pCumSum + u;
+z = obj->pCumSumRev[(int32_T)obj->pCumRevIndex - 1] + csum;
+obj->pCumSumRev[(int32_T)obj->pCumRevIndex - 1] = u;
+if (obj->pCumRevIndex != 1999.0) {
+    cumRevIndex = obj->pCumRevIndex + 1.0;
+} else {
+    cumRevIndex = 1.0;
+    csum = 0.0;
+    for (k = 1997; k >= 0; k--) {
+        obj->pCumSumRev[k] += obj->pCumSumRev[k + 1];
+    }
+}
+y = z / 2000.0;
+obj->pCumSum = csum;
+obj->pCumRevIndex = cumRevIndex;
+return y;
+%closefile cfgTxt
+%<cfgTxt>
+%closefile fcnBuff
+%assign rtmArgSys = ::CompiledModel.System[::CompiledModel.System[::CompiledModel.RTWCGModules.RTWCGModule[0].CGSystemIdx].NonInlinedParentSystemIdx]
+%if SysFcnArgNeeded("TemplateLaserSensorsFull_SlidingWindowAverageCG_stepImpl", rtmArgSys.Interface.RTMArgDef, rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "TemplateLaserSensorsFull_SlidingWindowAverageCG_stepImpl"))
+%<SLibCG_AccessArg(0, 0, 2)>
+%endif
+%if SLibCG_ArgAccessed(0, 0, 2)
+%<SLibAccessArg(rtmArgSys.Interface.RTMArgDef, "TemplateLaserSensorsFull_SlidingWindowAverageCG_stepImpl", rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "TemplateLaserSensorsFull_SlidingWindowAverageCG_stepImpl"))>
+%endif
+%if (IsModelReferenceBaseSys(rtmArgSys) && (IsModelRefScalableBuild() || GenerateClassInterface)) ||...
+(GenerateClassInterface && SLibIsMultiInstanceServer(rtmArgSys))
+%<SLibCG_UndoAccessArg(0, 0, 2)>
+%endif
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static real_T TemplateLaserSensorsFull_SlidingWindowAverageCG_stepImpl(\
+%assign comma = ""
+%<comma>c_dsp_private_SlidingWindowAverageCG_TemplateLaserSensorsFull_T *obj\
+%assign comma = ", "
+%<comma>real_T u\
+%assign comma = ", "
+%if SLibCG_ArgAccessed(0, 0, 2)
+%<comma>%<::tSimStructType> * const %<::tSimStruct>\
+%assign comma = ", "
+%<SLibUpdateSymbolForFunction("TemplateLaserSensorsFull_SlidingWindowAverageCG_stepImpl", SLibGetFcnDefinitionRTMSymbolName(), TLC_FALSE)>\
+%endif
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 0, fcnProtoType)>
+%return fcnBuff
+%endfunction
+

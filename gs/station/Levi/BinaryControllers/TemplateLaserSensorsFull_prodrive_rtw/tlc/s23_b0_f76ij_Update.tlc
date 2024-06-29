@@ -1,0 +1,49 @@
+%implements s23_b0_f76ij_Update "C"
+
+%function Update(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%<SLibCG_TrackDW(3)>\
+%<SLibCG_TrackBlockIO(3)>\
+/* Update for Memory: '<S1>/Memory' */
+TemplateLaserSensorsFull_DW->Memory_PreviousInput = TemplateLaserSensorsFull_B->Switch;
+/* Update for Memory: '<S2>/Memory' */
+TemplateLaserSensorsFull_DW->Memory_PreviousInput_m = TemplateLaserSensorsFull_B->Switch4;
+/* Update for Memory: '<S3>/Memory' */
+TemplateLaserSensorsFull_DW->Memory_PreviousInput_mw = TemplateLaserSensorsFull_B->Switch4_d;
+/* Update for Memory: '<S4>/Memory' */
+TemplateLaserSensorsFull_DW->Memory_PreviousInput_g = TemplateLaserSensorsFull_B->Switch4_g;
+/* Update for Memory: '<S5>/Memory' */
+TemplateLaserSensorsFull_DW->Memory_PreviousInput_d = TemplateLaserSensorsFull_B->Switch4_d5;
+/* Update for Memory: '<S6>/Memory' */
+TemplateLaserSensorsFull_DW->Memory_PreviousInput_j = TemplateLaserSensorsFull_B->Switch4_n;
+/* Update for Memory: '<S7>/Memory' */
+TemplateLaserSensorsFull_DW->Memory_PreviousInput_p = TemplateLaserSensorsFull_B->Switch4_nk;
+%closefile cfgTxt
+%<cfgTxt>
+%assign rtmArgSys = ::CompiledModel.System[::CompiledModel.System[::CompiledModel.RTWCGModules.RTWCGModule[3].CGSystemIdx].NonInlinedParentSystemIdx]
+%if SysFcnArgNeeded("Update", rtmArgSys.Interface.RTMArgDef, rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Update"))
+%<SLibCG_AccessArg(3, 3, 0)>
+%endif
+%if SLibCG_ArgAccessed(3, 3, 0)
+%<SLibAccessArg(rtmArgSys.Interface.RTMArgDef, "Update", rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Update"))>
+%endif
+%if (IsModelReferenceBaseSys(rtmArgSys) && (IsModelRefScalableBuild() || GenerateClassInterface)) ||...
+(GenerateClassInterface && SLibIsMultiInstanceServer(rtmArgSys))
+%<SLibCG_UndoAccessArg(3, 3, 0)>
+%endif
+%endfunction
+%function UpdateFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Update(\
+%assign comma = ""
+%if SLibCG_ArgAccessed(3, 3, 0)
+%<comma>%<::tSimStructType> * const TemplateLaserSensorsFull_M\
+%assign comma = ", "
+%<SLibUpdateSymbolForFunction("Update", SLibGetFcnDefinitionRTMSymbolName(), TLC_FALSE)>\
+%endif
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(3, 3, fcnProtoType)>
+%endfunction
