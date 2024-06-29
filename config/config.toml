@@ -1,5 +1,5 @@
 [gs]
-ip = [192,168,0,93]
+ip = [192,168,0,232]
 force = true
 port = 6942
 udp_port = 6943

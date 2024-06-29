@@ -8,7 +8,7 @@
         TitleBar,
         tempParse,
         voltParse,
-        addEntryToChart, u64ToDouble
+        addEntryToChart, u64ToDouble, pressureParse, sensorParse
     } from "$lib";
     import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
@@ -197,19 +197,19 @@
     gdd.stores.registerStore<number>("PropulsionVoltage", 0);
     gdd.stores.registerStore<number>("PropulsionVRefInt", 0);
 
-    gdd.stores.registerStore<number>("BrakeTemperature", 0);
-    gdd.stores.registerStore<number>("BrakePressure", 0);
+    gdd.stores.registerStore<number>("BrakeTemperature", 0, pressureParse);
+    gdd.stores.registerStore<number>("BrakePressure", 0,pressureParse);
 
     ///////////////////////////////////////////////////////////////
     //////////////////// REGISTER GYROSCOPE ///////////////////////
     ///////////////////////////////////////////////////////////////
 
-    gdd.stores.registerStore<number>("GyroscopeX", 0);
-    gdd.stores.registerStore<number>("GyroscopeY", 0);
-    gdd.stores.registerStore<number>("GyroscopeZ", 0);
-    gdd.stores.registerStore<number>("AccelerationX", 0);
-    gdd.stores.registerStore<number>("AccelerationY", 0);
-    gdd.stores.registerStore<number>("AccelerationZ", 0);
+    gdd.stores.registerStore<number>("GyroscopeX", 0, sensorParse);
+    gdd.stores.registerStore<number>("GyroscopeY", 0, sensorParse);
+    gdd.stores.registerStore<number>("GyroscopeZ", 0, sensorParse);
+    gdd.stores.registerStore<number>("AccelerationX", 0, sensorParse);
+    gdd.stores.registerStore<number>("AccelerationY", 0, sensorParse);
+    gdd.stores.registerStore<number>("AccelerationZ", 0, sensorParse);
 
     ///////////////////////////////////////////////////////////////
     /////////////////// REGISTER TEMPERATURES /////////////////////
