@@ -14,7 +14,7 @@ impl Fsm {
 
     pub async fn react_mv_ls_cv(&mut self, event: Event) {
         match event {
-            Event::LaneSwitchEnded => match self.route.next_position() {
+            Event::LaneSwitchEndedC => match self.route.next_position() {
                 Location::LaneSwitchEndTrack => {
                     info!("Entering straight track after curved lane-switch!");
                     self.send_levi_cmd(crate::Command::ls0(0)).await;

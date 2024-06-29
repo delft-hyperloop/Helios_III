@@ -2,7 +2,7 @@ mod boot;
 mod emergency_braking;
 mod establish_connection;
 mod exit;
-mod hv_system_checking;
+mod hv_on;
 mod idle;
 mod levitating;
 mod moving_end_ls;

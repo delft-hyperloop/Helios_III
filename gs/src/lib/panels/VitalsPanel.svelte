@@ -48,9 +48,7 @@
     const ins = storeManager.getStore("InsulationOriginal")
     const insp = storeManager.getStore("InsulationPositive")
     const insn = storeManager.getStore("InsulationNegative")
-    const imdg = storeManager.getStore("IMDGeneralInfo")
     const imdv = storeManager.getStore("IMDVoltageDetails")
-    const imdi = storeManager.getStore("IMDIsolationDetails")
 
     const totalLVV = storeManager.getStore("TotalBatteryVoltageLow");
     const totalHVV = storeManager.getStore("TotalBatteryVoltageHigh");
@@ -82,9 +80,7 @@
         ["Insulation", $ins],
         ["Insulation+", $insp],
         ["Insulation-", $insn],
-        ["IMD General", $imdg],
         ["IMD Voltage", $imdv],
-        ["IMD Isolation", $imdi],
     ]
 
     const toastStore = getToastStore();

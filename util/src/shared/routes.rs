@@ -436,4 +436,52 @@ mod tests {
         println!("{:0>64b}\n{:0>64b}", bytes, other_bytes);
         assert_eq!(route.speeds, new_speeds);
     }
+
+    #[test]
+    fn printing_speed_values() {
+        let route = Route {
+            positions: LocationSequence {
+                0: [
+                    Location::StraightStart,
+                    Location::StraightBackwards,
+                    Location::LaneSwitchStraight,
+                    Location::LaneSwitchCurved,
+                    Location::StraightEndTrack,
+                    Location::LaneSwitchEndTrack,
+                    Location::StraightStart,
+                    Location::LaneSwitchStraight,
+                    Location::LaneSwitchCurved,
+                    Location::StraightEndTrack,
+                    Location::LaneSwitchEndTrack,
+                    Location::StraightBackwards,
+                    Location::StraightStart,
+                    Location::LaneSwitchStraight,
+                    Location::LaneSwitchCurved,
+                    Location::StraightStart,
+                    Location::LaneSwitchStraight,
+                    Location::LaneSwitchCurved,
+                    Location::StraightEndTrack,
+                    Location::LaneSwitchEndTrack,
+                    Location::StraightBackwards,
+                ],
+            },
+            current_position: 0,
+            speeds: LocationSpeedMap(
+                [
+                    (Location::StraightStart, 50),
+                    (Location::StraightBackwards, 100),
+                    (Location::LaneSwitchStraight, 150),
+                    (Location::LaneSwitchCurved, 200),
+                    (Location::StraightEndTrack, 250),
+                    (Location::LaneSwitchEndTrack, 185),
+                    (Location::StopAndWait, 0),
+                    (Location::BrakeHere, 0),
+                ]
+                    .into(),
+            ),
+        };
+        let s_bytes: u64 = route.speeds.clone().into();
+        let r_bytes: u64 = route.positions.clone().into();
+        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+    }
 }

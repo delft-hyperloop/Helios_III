@@ -1,4 +1,5 @@
 use crate::tui::app::App;
+use crate::Command;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use std::cmp::min;
 
@@ -90,6 +91,12 @@ impl App {
             }
             KeyCode::Backspace => {
                 self.cmds[self.selected_row].value /= 10;
+            }
+            KeyCode::Char('p') => {
+                self.backend
+                    .send_command(Command::SetRoute(2061704395561412398));
+                self.backend
+                    .send_command(Command::SetSpeeds(55407607872185));
             }
             _ => {}
         }

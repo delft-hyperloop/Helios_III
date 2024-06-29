@@ -21,12 +21,14 @@
     $chartStore.set("EMS Temperatures", emsTempChart);
 
     let hemsTempChart = new PlotBuffer(500, 60000, [0, 120], true, "HEMS 1");
+
     hemsTempChart.addSeries(StrokePresets.theoretical("HEMS 2"))
     hemsTempChart.addSeries(StrokePresets.yellow("HEMS 3"))
     hemsTempChart.addSeries(StrokePresets.blue("HEMS 4"))
     $chartStore.set("HEMS Temperatures", hemsTempChart);
 
     let hemsCurrentChart = new PlotBuffer(500, 60000, [-11.3, 11.3], true, "a1");
+
     hemsCurrentChart.addSeries(StrokePresets.hyperloopGreenDashed("a2"))
     hemsCurrentChart.addSeries(StrokePresets.theoretical("b1"))
     hemsCurrentChart.addSeries(StrokePresets.theoreticalDashed("b2"))
@@ -65,6 +67,7 @@
     $chartStore.set('LV Current', lvCurrent)
 
     let hvCurrent = new PlotBuffer(500, 60000, [-15, 15], false)
+
     $chartStore.set('HV Current', hvCurrent)
 
     ///////////////////////////////////////////////////////
@@ -206,9 +209,7 @@
     gdd.stores.registerStore<number>("GyroscopeZ", 0);
     gdd.stores.registerStore<number>("AccelerationX", 0);
     gdd.stores.registerStore<number>("AccelerationY", 0);
-
-    gdd.stores.registerStore<number>("IMDVoltageDetails", 0);
-    gdd.stores.registerStore<number>("IMDIsolationDetails", 0);
+    gdd.stores.registerStore<number>("AccelerationZ", 0);
 
     ///////////////////////////////////////////////////////////////
     /////////////////// REGISTER TEMPERATURES /////////////////////
@@ -309,8 +310,8 @@
     ///////////////////////// PNEUMATICS //////////////////////////
     ///////////////////////////////////////////////////////////////
 
-    gdd.stores.registerStore<number>("LowPressureSensor", 0);
-    gdd.stores.registerStore<number>("HighPressureSensor", 0);
+    gdd.stores.registerStore<number>("LowPressureSensor", 0, data => Number(data)/100);
+    gdd.stores.registerStore<number>("HighPressureSensor", 0, data => Number(data)/100);
 
     ///////////////////////////////////////////////////////////////
     /////////////////// GROUND FAULT DETECTION ////////////////////
@@ -319,9 +320,10 @@
     gdd.stores.registerStore<number>("InsulationOriginal", 0);
     gdd.stores.registerStore<number>("InsulationPositive", 0);
     gdd.stores.registerStore<number>("InsulationNegative", 0);
-    gdd.stores.registerStore<number>("IMDVoltageDetails", 0);
-    gdd.stores.registerStore<number>("IMDIsolationDetails", 0);
-    gdd.stores.registerStore<number>("IMDGeneralInfo", 0);
+    gdd.stores.registerStore<string>("IMDVoltageDetails", "0.0", data => {
+        const curr = Number(data);
+        return curr === 65535 ? "0" : (curr * 0.05).toString();
+    });
 
     ///////////////////////////////////////////////////////////////
     ///////////////// REGISTER META & ADDITIONAL //////////////////

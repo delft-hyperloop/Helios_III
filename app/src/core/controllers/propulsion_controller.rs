@@ -8,7 +8,7 @@ use embassy_stm32::dac::Value;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Speed;
-use embassy_stm32::peripherals::ADC1;
+use embassy_stm32::peripherals::{ADC1, ADC2};
 use embassy_stm32::peripherals::DAC1;
 use embassy_stm32::peripherals::PA4;
 use embassy_stm32::peripherals::PA5;
@@ -49,14 +49,14 @@ impl PropulsionController {
         event_sender: EventSender,
         pa4: PA4,
         dac1: DAC1,
-        adc1: ADC1,
+        adc2: ADC2,
         pa5: PA5,
         pa6: PA6,
         pe5: PE5,
     ) -> Self {
         let speed_set_pin = embassy_stm32::dac::DacCh1::new(dac1, embassy_stm32::dma::NoDma, pa4);
 
-        let mut adc = Adc::new(adc1);
+        let mut adc = Adc::new(adc2);
         adc.set_sample_time(SampleTime::CYCLES32_5);
         let v_ref_int_channel = adc.enable_vrefint();
 
@@ -93,7 +93,7 @@ impl PropulsionController {
 pub async fn read_prop_adc(
     data_sender: DataSender,
     mut v_ref_int_channel: VrefInt,
-    mut adc: Adc<'static, ADC1>,
+    mut adc: Adc<'static, ADC2>,
     mut pa5: PA5,
     mut pa6: PA6,
 ) {
