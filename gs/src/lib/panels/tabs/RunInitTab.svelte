@@ -20,6 +20,7 @@
 
     const accelX = storeManager.getStore("AccelerationX")
     const accelY = storeManager.getStore("AccelerationY")
+    const accelZ = storeManager.getStore("AccelerationZ")
     const gyroX = storeManager.getStore("GyroscopeX")
     const gyroY = storeManager.getStore("GyroscopeY")
     const gyroZ = storeManager.getStore("GyroscopeZ")
@@ -31,6 +32,7 @@
     $: tableArr2 = [
         ["Acceleration X", $accelX],
         ["Acceleration Y", $accelY],
+        ["Acceleration Z", $accelZ],
         ["Gyroscope X", $gyroX],
         ["Gyroscope Y", $gyroY],
         ["Gyroscope Z", $gyroZ],
