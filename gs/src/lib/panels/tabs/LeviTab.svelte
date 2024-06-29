@@ -46,7 +46,7 @@
         <Tile containerClass="col-span-2">
             <Chart title="EMS Temperatures" background="bg-surface-900" />
         </Tile>
-        <Tile heading="Gaps">
+        <Tile heading="Gaps" containerClass="col-span-2">
             <Table background="bg-surface-900" titles={["Gap", "EMS", "HEMS"]} tableArr={tableGaps} />
         </Tile>
         <Tile heading="Levi Voltages" insideClass="flex flex-col justify-center">
