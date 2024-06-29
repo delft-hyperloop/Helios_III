@@ -109,6 +109,7 @@ impl Widget for &App {
         let styled_logs: Vec<Line> = self
             .logs
             .iter()
+            .skip(self.scroll.saturating_sub(10) as usize)
             .map(|(msg, t)| match msg {
                 Message::Data(d) => Line::styled(
                     format!("[{}] {:?}={} at {}", t, d.datatype, d.value, d.timestamp),
@@ -135,7 +136,7 @@ impl Widget for &App {
         // Render the text stream
         let paragraph = Paragraph::new(styled_logs)
             .wrap(Wrap { trim: false })
-            .scroll((self.scroll, 0))
+            // .scroll((self.scroll, 0))
             .style(Style::new().fg(Color::White).bg(Color::Black))
             .block(text_block);
         // text stream goes top left

@@ -139,9 +139,7 @@ impl App {
                     }
                     _ => {
                         self.logs.push((Message::Data(datapoint), timestamp()));
-                        if self.logs.len() > 42
-                            && self.logs.len().abs_diff(self.scroll as usize) < 35
-                        {
+                        if self.logs.len() > 42 {
                             self.scroll += 1;
                         }
                     }
