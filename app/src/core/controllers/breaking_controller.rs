@@ -1,15 +1,13 @@
 use defmt::info;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Adc;
-use embassy_stm32::gpio::Input;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
-use embassy_stm32::gpio::Pull;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::peripherals;
-use embassy_stm32::peripherals::{ADC1, PF12, TIM16};
-use embassy_time::Duration;
-use embassy_time::Instant;
+use embassy_stm32::peripherals::ADC1;
+use embassy_stm32::peripherals::PF12;
+use embassy_stm32::peripherals::TIM16;
 use embassy_time::Timer;
 
 use crate::try_spawn;
@@ -87,7 +85,7 @@ impl BrakingController {
         //     Default::default(),
         // );
         // let braking_communication = Input::new(pf12, Pull::None); // <--- If its HIGH it means that breaks are rearmed, if its low it , means we are breaking
-                                                                  // Finally if we set the heartbeat to LOW, and we still receive a 1 is basically means we are crashing so lets actually make use of the crashing state
+        // Finally if we set the heartbeat to LOW, and we still receive a 1 is basically means we are crashing so lets actually make use of the crashing state
 
         // let mut braking_communication = Adc::new();
         // braking_communication
@@ -97,7 +95,12 @@ impl BrakingController {
 
         try_spawn!(
             braking_sender,
-            x.spawn(control_braking_heartbeat(braking_sender, braking_signal, adc, pf12))
+            x.spawn(control_braking_heartbeat(
+                braking_sender,
+                braking_signal,
+                adc,
+                pf12
+            ))
         );
 
         BrakingController {

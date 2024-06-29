@@ -5,7 +5,6 @@ use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::Peripherals;
-use embassy_stm32::peripherals::ADC1;
 
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::breaking_controller::BrakingController;
