@@ -86,8 +86,8 @@
                 <TauriCommand cmd="start_server" className="btn rounded-md bg-surface-700  col-span-2" />
                 <Command cmd="StartHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
-                <Command cmd="Levitate" className="btn flex-grow rounded-md bg-surface-700 " />
-                <Command cmd="StopLevitating" className="btn flex-grow rounded-md bg-surface-700 " />
+<!--                <Command cmd="Levitate" className="btn flex-grow rounded-md bg-surface-700 " />-->
+<!--                <Command cmd="StopLevitating" className="btn flex-grow rounded-md bg-surface-700 " />-->
                 <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal}>
                     Run Config
                 </button>
@@ -97,6 +97,8 @@
                 <button class="btn rounded-md col-span-2 bg-surface-700 " type="button" on:click={clearRuns} >
                     Clear runs
                 </button>
+                <Command cmd="SystemReset" className="btn flex-grow rounded-md bg-surface-700" />
+                <Command cmd="ArmBrakes" className="btn flex-grow rounded-md bg-surface-700" />
             </div>
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
