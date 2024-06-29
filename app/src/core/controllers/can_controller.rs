@@ -68,7 +68,7 @@ impl CanController {
         can2.config().protocol_exception_handling = false;
 
         can1.set_bitrate(1_000_000);
-        can2.set_bitrate(1_000_000);
+        can2.set_bitrate(500_000);
 
         let can1 = can1.into_normal_mode();
         let can2 = can2.into_normal_mode();
@@ -82,21 +82,23 @@ impl CanController {
             event_sender,
             x.spawn(can_receiving_handler(
                 x,
-                event_sender,
-                can_one_receiver,
-                data_sender,
-                c2_rx,
-                None
-            ))
-        );
-        try_spawn!(
+                    event_sender,
+                    _can_one_sender,
+                    data_sender,
+                    c1_rx,
+                    None
+                ))
+            );
+        try_spawn!
+
+        (
             event_sender,
             x.spawn(can_receiving_handler(
                 x,
                 event_sender,
-                can_two_receiver,
+                can_two_sender,
                 data_sender,
-                c1_rx,
+                c2_rx,
                 Some(CanTwoUtils {
                     can_sender: can_two_sender,
                     hv_controller,

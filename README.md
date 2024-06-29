@@ -55,6 +55,6 @@ To implement a frontend, all you need to do is `Backend::new()`, create listener
 ----------------------------------------------------------
 
 ```rust
-© 2024 Andreas Tsatsanis, Fransisco Amaro, Kiril Panayotov
+© 2024 Andreas Tsatsanis, Francisco Amaro, Kiril Panayotov
 ```
 
