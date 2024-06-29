@@ -30,12 +30,19 @@
             console.log(`Invalid values in form`);
             return;
         } else {
-            let val = BigInt(0);
+            let speeds_u64 = BigInt(0);
             for (let i = 0; i < inputs.length; i++) {
-                val |= BigInt(speedForm[inputs[i]]) << BigInt((5 - i) * 8);
+                speeds_u64 |= BigInt(speedForm[inputs[i]]) << BigInt((5 - i) * 8);
             }
 
-            invoke('send_command', {cmdName: "RunConfiddg", val: Number(val)}).then(() => {
+            invoke('send_command', {cmdName: "SetSpeeds", val: Number(speeds_u64)}).then(() => {
+                console.log(`Command RunConfig sent`);
+                modalStore.close();
+            })
+
+            let route_u64 = BigInt(0);
+
+            invoke('send_command', {cmdName: "SetRoute", val: Number(route_u64)}).then(() => {
                 console.log(`Command RunConfig sent`);
                 modalStore.close();
             })

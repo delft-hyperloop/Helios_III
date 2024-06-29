@@ -16,17 +16,19 @@
     //////////////////////////////
     /////////// CHARTS ///////////
     //////////////////////////////
-    let emsTempChart = new PlotBuffer(500, 300000, [0, 120], true, "EMS 1");
+    let emsTempChart = new PlotBuffer(500, 60000, [0, 120], true, "EMS 1");
     emsTempChart.addSeries(StrokePresets.theoretical("EMS 2"))
-    $chartStore.set("EMS Temperature", emsTempChart);
+    $chartStore.set("EMS Temperatures", emsTempChart);
 
-    let hemsTempChart = new PlotBuffer(500, 300000, [0, 120], true, "HEMS 1");
+    let hemsTempChart = new PlotBuffer(500, 60000, [0, 120], true, "HEMS 1");
+
     hemsTempChart.addSeries(StrokePresets.theoretical("HEMS 2"))
     hemsTempChart.addSeries(StrokePresets.yellow("HEMS 3"))
     hemsTempChart.addSeries(StrokePresets.blue("HEMS 4"))
-    $chartStore.set("HEMS Temperature", hemsTempChart);
+    $chartStore.set("HEMS Temperatures", hemsTempChart);
 
-    let hemsCurrentChart = new PlotBuffer(500, 300000, [-11.3, 11.3], true, "a1");
+    let hemsCurrentChart = new PlotBuffer(500, 60000, [-11.3, 11.3], true, "a1");
+
     hemsCurrentChart.addSeries(StrokePresets.hyperloopGreenDashed("a2"))
     hemsCurrentChart.addSeries(StrokePresets.theoretical("b1"))
     hemsCurrentChart.addSeries(StrokePresets.theoreticalDashed("b2"))
@@ -36,29 +38,36 @@
     hemsCurrentChart.addSeries(StrokePresets.blueDashed("d2"))
     $chartStore.set("HEMS Current", hemsCurrentChart);
 
-    let emsCurrentChart = new PlotBuffer(500, 300000, [-11.3, 11.3], true);
+    let emsCurrentChart = new PlotBuffer(500, 60000, [-11.3, 11.3], true);
     emsCurrentChart.addSeries(StrokePresets.theoretical("cd"))
     $chartStore.set("EMS Current", emsCurrentChart);
 
-    let voffChart = new PlotBuffer(500, 300000, [0, 100], false)
-    let hoffChart = new PlotBuffer(500, 300000, [0, 100], false)
-    hoffChart.addSeries(StrokePresets.theoretical())
-    let velChart = new PlotBuffer(500, 5*60*1000, [0, 100], false)
-    let leviChart = new PlotBuffer(500, 300000, [0, 13000], false);
-
-    $chartStore.set('Offset Horizontal', hoffChart);
+    let voffChart = new PlotBuffer(500, 60000, [8, 25], false)
     $chartStore.set('Offset Vertical', voffChart);
+
+    let rolPitchChart = new PlotBuffer(500, 60000, [-0.8, 0.8], true, "roll")
+    rolPitchChart.addSeries(StrokePresets.theoretical("pitch"))
+    $chartStore.set("Roll Pitch", rolPitchChart)
+
+    let hoffChart = new PlotBuffer(500, 60000, [-8, 8], true, "ab")
+    hoffChart.addSeries(StrokePresets.theoretical("cd"))
+    $chartStore.set('Offset Horizontal', hoffChart);
+
+    let velChart = new PlotBuffer(500, 5*60*1000, [0, 100], false)
     $chartStore.set('Velocity', velChart);
+
+    let leviChart = new PlotBuffer(500, 60000, [0, 13000], false);
     $chartStore.set('Localisation', leviChart);
 
     let trr = new PlotBuffer(500, 60000, [0, 50], false)
     trr.addSeries(StrokePresets.theoretical())
     $chartStore.set('Theoretical vs Real run', trr)
 
-    let lvCurrent = new PlotBuffer(500, 300000, [-15, 15], false)
+    let lvCurrent = new PlotBuffer(500, 60000, [-15, 15], false)
     $chartStore.set('LV Current', lvCurrent)
 
-    let hvCurrent = new PlotBuffer(500, 300000, [-15, 15], false)
+    let hvCurrent = new PlotBuffer(500, 60000, [-15, 15], false)
+
     $chartStore.set('HV Current', hvCurrent)
 
     ///////////////////////////////////////////////////////
@@ -195,23 +204,11 @@
     //////////////////// REGISTER GYROSCOPE ///////////////////////
     ///////////////////////////////////////////////////////////////
 
-    gdd.stores.registerStore<number>("GyroscopeX", 0, data => {
-        const curr: number = Number(data);
-        $chartStore.get("Offset Horizontal")?.addEntry(1, curr);
-        return curr;
-    });
-
-    gdd.stores.registerStore<number>("GyroscopeY", 0, data => {
-        const curr = Number(data);
-        $chartStore.get("Offset Horizontal")?.addEntry(2, curr);
-        return curr;
-    });
-
-    gdd.stores.registerStore<number>("GyroscopeZ", 0, data => {
-        const curr = Number(data);
-        $chartStore.get("Offset Vertical")?.addEntry(1, curr);
-        return curr;
-    });
+    gdd.stores.registerStore<number>("GyroscopeX", 0);
+    gdd.stores.registerStore<number>("GyroscopeY", 0);
+    gdd.stores.registerStore<number>("GyroscopeZ", 0);
+    gdd.stores.registerStore<number>("AccelerationX", 0);
+    gdd.stores.registerStore<number>("AccelerationY", 0);
 
     gdd.stores.registerStore<number>("IMDVoltageDetails", 0);
     gdd.stores.registerStore<number>("IMDIsolationDetails", 0);
@@ -249,6 +246,7 @@
         hemsTempChart.addEntry(4, curr);
         return curr;
     })
+
 
     gdd.stores.registerStore<number>("Temp_EMS_1", 0.0, data => {
         const curr = Number(data);
@@ -288,12 +286,20 @@
     gdd.stores.registerStore<number>("levi_ems_current_ab", 0.0, data => addEntryToChart(emsCurrentChart, data, 1))
     gdd.stores.registerStore<number>("levi_ems_current_cd", 0.0, data => addEntryToChart(emsCurrentChart, data, 2))
 
-    gdd.stores.registerStore<number>("levi_hems_airgap", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_hems_pitch", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_hems_roll", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_hems_airgap", 0.0, data => addEntryToChart(voffChart, data, 1))
+    gdd.stores.registerStore<number>("levi_hems_roll", 0.0, data => addEntryToChart(rolPitchChart, data, 1))
+    gdd.stores.registerStore<number>("levi_hems_pitch", 0.0, data => addEntryToChart(rolPitchChart, data, 2))
 
-    gdd.stores.registerStore<number>("levi_ems_offset_ab", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_ems_offset_cd", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_ems_offset_ab", 0.0, data => {
+        const curr: number = u64ToDouble(data);
+        hoffChart.addEntry(1, curr);
+        return curr;
+    })
+    gdd.stores.registerStore<number>("levi_ems_offset_cd", 0.0, data => {
+        const curr = u64ToDouble(data);
+        hoffChart.addEntry(2, curr);
+        return curr;
+    })
 
     gdd.stores.registerStore<number>("levi_hems_power", 0.0, u64ToDouble)
     gdd.stores.registerStore<number>("levi_ems_power", 0.0, u64ToDouble)
@@ -303,10 +309,16 @@
     gdd.stores.registerStore<number>("levi_volt_avg", 0.0, u64ToDouble)
 
     ///////////////////////////////////////////////////////////////
-    ///////////////// REGISTER META & ADDITIONAL //////////////////
+    ///////////////////////// PNEUMATICS //////////////////////////
     ///////////////////////////////////////////////////////////////
 
-    gdd.stores.registerStore<number>("FSMState", 0);
+    gdd.stores.registerStore<number>("LowPressureSensor", 0);
+    gdd.stores.registerStore<number>("HighPressureSensor", 0);
+
+    ///////////////////////////////////////////////////////////////
+    /////////////////// GROUND FAULT DETECTION ////////////////////
+    ///////////////////////////////////////////////////////////////
+
     gdd.stores.registerStore<number>("InsulationOriginal", 0);
     gdd.stores.registerStore<number>("InsulationPositive", 0);
     gdd.stores.registerStore<number>("InsulationNegative", 0);
@@ -314,6 +326,11 @@
     gdd.stores.registerStore<number>("IMDIsolationDetails", 0);
     gdd.stores.registerStore<number>("IMDGeneralInfo", 0);
 
+    ///////////////////////////////////////////////////////////////
+    ///////////////// REGISTER META & ADDITIONAL //////////////////
+    ///////////////////////////////////////////////////////////////
+
+    gdd.stores.registerStore<number>("FSMState", 0);
 
     gdd.start(100);
 
