@@ -5,7 +5,8 @@ use embassy_time::Instant;
 
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
-use crate::core::fsm_status::{Route, RouteUse};
+use crate::core::fsm_status::Route;
+use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
 use crate::DataSender;
 use crate::Datatype;
@@ -38,6 +39,7 @@ pub enum State {
     MovingLSST,
     MovingLSCV,
     EndST,
+    EndLS,
     EmergencyBraking,
     Exit,
     Crashing,
@@ -172,6 +174,7 @@ impl Fsm {
             State::MovingLSST => self.entry_cruising(),
             State::MovingLSCV => self.entry_ls_cv(),
             State::EndST => self.entry_end_st(),
+            State::EndLS => self.entry_end_ls(),
             State::EmergencyBraking => {
                 self.entry_emergency_braking();
                 self.pod_safe().await;
@@ -226,10 +229,11 @@ impl Fsm {
             State::MovingLSST => self.react_mv_ls_st(event).await,
             State::MovingLSCV => self.react_mv_ls_cv(event).await,
             State::EndST => self.react_end_st(event).await,
+            State::EndLS => self.react_end_ls(event).await,
             State::Exit => self.react_exit(event).await,
             State::EmergencyBraking => self.react_emergency_braking(event).await,
             State::Crashing => {
-                self.log(crate::Info::Crashed).await;
+                self.log(Info::Crashed).await;
                 info!("TRYING TO REACT WHILE CRASHING!!!!!!");
             }
         }

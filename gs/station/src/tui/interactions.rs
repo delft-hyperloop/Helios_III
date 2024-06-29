@@ -94,9 +94,9 @@ impl App {
             }
             KeyCode::Char('p') => {
                 self.backend
-                    .send_command(Command::SetRoute(2061704395561412398));
+                    .send_command(Command::SetRoute(8328165916070586159));
                 self.backend
-                    .send_command(Command::SetSpeeds(55407607872185));
+                    .send_command(Command::SetSpeeds(46542390612732));
             }
             _ => {}
         }
