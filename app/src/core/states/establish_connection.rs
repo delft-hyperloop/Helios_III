@@ -1,8 +1,10 @@
 use defmt::info;
+use embassy_time::Instant;
+use crate::core::communication::Datapoint;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::transit;
+use crate::{Datatype, transit};
 use crate::Event;
 
 impl Fsm {
@@ -15,9 +17,10 @@ impl Fsm {
     pub async fn react_establish_connection(&mut self, event: Event) {
         match event {
             Event::ConnectionEstablishedEvent => {
+                self.send_data(Datatype::BrakingRearmDebug, 1).await;
                 transit!(self, State::RunConfig);
             }
-            Event::ConnectionEstablishmentFailedEvent => {
+            Event::ConnectionEstablishFailed => {
                 transit!(self, State::Exit);
             }
             _ => {

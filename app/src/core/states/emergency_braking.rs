@@ -5,7 +5,7 @@ use defmt::warn;
 use crate::core::controllers::breaking_controller::BRAKE;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::transit;
+use crate::{Datatype, transit};
 use crate::Event;
 
 impl Fsm {
@@ -16,11 +16,11 @@ impl Fsm {
 
         self.peripherals.hv_peripherals.power_hv_off();
         self.peripherals.red_led.set_high();
-        error!("Emergency Braking!!");
+        error!("------ Emergency Braking!! ------");
         warn!("Emergency Braking!!!");
         error!("Emergency Braking!!");
         warn!("Emergency Braking!!!");
-        error!("Emergency Braking!!");
+        error!("------ Emergency Braking!! ------");
 
         // transit!(self, State::Exit);
     }
@@ -28,6 +28,7 @@ impl Fsm {
     pub async fn react_emergency_braking(&mut self, event: Event) {
         match event {
             Event::SystemResetCommand => {
+                self.send_data(Datatype::BrakingRearmDebug, 1).await;
                 transit!(self, State::RunConfig);
             }
             _ => {

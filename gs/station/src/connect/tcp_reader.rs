@@ -14,18 +14,19 @@ pub async fn get_messages_from_tcp(
     loop {
         match reader.read(&mut buffer).await {
             Ok(0) => {
-                message_transmitter.send(crate::api::Message::Status(
+                message_transmitter.send(Message::Status(
                     crate::Info::ConnectionClosedByClient,
                 ))?;
-                message_transmitter.send(crate::api::Message::Warning(
+                message_transmitter.send(Message::Warning(
                     "Connection closed by client".to_string(),
                 ))?;
-                message_transmitter.send(crate::api::Message::Error(
+                message_transmitter.send(Message::Error(
                     "Connection closed by client".to_string(),
                 ))?;
                 break;
             }
             Ok(n) => {
+                #[cfg(debug_assertions)]
                 message_transmitter.send(Message::Info(format!("[TRACE] received {} bytes", n)))?;
                 let _ = &buffer[..n].iter().for_each(|x| {
                     byte_queue.push_back(*x);
@@ -38,7 +39,7 @@ pub async fn get_messages_from_tcp(
                 .await?;
             }
             Err(e) => {
-                message_transmitter.send(crate::api::Message::Error(format!(
+                message_transmitter.send(Message::Error(format!(
                     "Error reading from socket: {}",
                     e
                 )))?;
