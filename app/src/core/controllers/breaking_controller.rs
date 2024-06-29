@@ -1,4 +1,5 @@
 use core::fmt::Debug;
+
 use defmt::info;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Adc;
@@ -9,10 +10,14 @@ use embassy_stm32::peripherals;
 use embassy_stm32::peripherals::ADC1;
 use embassy_stm32::peripherals::PF12;
 use embassy_stm32::peripherals::TIM16;
-use embassy_time::{Duration, Instant, Timer};
+use embassy_time::Duration;
+use embassy_time::Instant;
+use embassy_time::Timer;
 
-use crate::{DataSender, Datatype, try_spawn};
 use crate::core::communication::Datapoint;
+use crate::try_spawn;
+use crate::DataSender;
+use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
 
@@ -57,18 +62,42 @@ pub async fn control_braking_heartbeat(
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(1000) {
             match braking_signal.get_output_level() {
                 Level::Low => {
-                    data_sender.send(Datapoint::new(Datatype::BrakingSignalDebug, 0, Instant::now().as_ticks())).await;
+                    data_sender
+                        .send(Datapoint::new(
+                            Datatype::BrakingSignalDebug,
+                            0,
+                            Instant::now().as_ticks(),
+                        ))
+                        .await;
                 }
                 Level::High => {
-                    data_sender.send(Datapoint::new(Datatype::BrakingSignalDebug, 1, Instant::now().as_ticks())).await;
+                    data_sender
+                        .send(Datapoint::new(
+                            Datatype::BrakingSignalDebug,
+                            1,
+                            Instant::now().as_ticks(),
+                        ))
+                        .await;
                 }
             }
             match unsafe { BRAKE } {
                 true => {
-                    data_sender.send(Datapoint::new(Datatype::BrakingBoolDebug, 1, Instant::now().as_ticks())).await;
+                    data_sender
+                        .send(Datapoint::new(
+                            Datatype::BrakingBoolDebug,
+                            1,
+                            Instant::now().as_ticks(),
+                        ))
+                        .await;
                 }
                 false => {
-                    data_sender.send(Datapoint::new(Datatype::BrakingBoolDebug, 0, Instant::now().as_ticks())).await;
+                    data_sender
+                        .send(Datapoint::new(
+                            Datatype::BrakingBoolDebug,
+                            0,
+                            Instant::now().as_ticks(),
+                        ))
+                        .await;
                 }
             }
             last_timestamp = Instant::now();
@@ -98,7 +127,13 @@ async fn read_braking_communication(
         }
         Timer::after_micros(10).await;
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(500) {
-            data_sender.send(Datapoint::new(Datatype::BrakingCommDebug, v as u64, Instant::now().as_ticks())).await;
+            data_sender
+                .send(Datapoint::new(
+                    Datatype::BrakingCommDebug,
+                    v as u64,
+                    Instant::now().as_ticks(),
+                ))
+                .await;
             last_timestamp = Instant::now();
         }
     }
@@ -171,10 +206,22 @@ impl BrakingController {
 
     pub async fn arm_breaks(&mut self) {
         self.braking_rearm.set_low();
-        self.data_sender.send(Datapoint::new(Datatype::BrakingRearmDebug, 0, Instant::now().as_ticks())).await;
+        self.data_sender
+            .send(Datapoint::new(
+                Datatype::BrakingRearmDebug,
+                0,
+                Instant::now().as_ticks(),
+            ))
+            .await;
         Timer::after_micros(10).await;
         self.braking_rearm.set_high();
-        self.data_sender.send(Datapoint::new(Datatype::BrakingRearmDebug, 1, Instant::now().as_ticks())).await;
+        self.data_sender
+            .send(Datapoint::new(
+                Datatype::BrakingRearmDebug,
+                1,
+                Instant::now().as_ticks(),
+            ))
+            .await;
 
         // let time_stamp = Instant::now();
         // while (Instant::now() - time_stamp) < Duration::from_millis(100) {
