@@ -119,6 +119,7 @@ impl Backend {
     pub fn quit_server(&mut self) {
         if let Some(sh) = self.server_handle.take() {
             self.info("Quitting server_handle".into());
+            self.command_transmitter.send(Command::Shutdown(0)).unwrap();
             sh.abort();
         }
     }
