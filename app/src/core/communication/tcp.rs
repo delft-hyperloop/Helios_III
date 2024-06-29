@@ -62,7 +62,7 @@ pub async fn tcp_connection_handler(
                 let d = embassy_time::Instant::now().as_millis() - last_valid_timestamp;
                 error!("[tcp:stack] error connecting to gs: {:?} (diff={})", e, d);
                 if d > IP_TIMEOUT {
-                    event_sender.send(Event::EmergencyBrakeCommand).await;
+                    event_sender.send(Event::ConnectionLossEvent).await;
                 }
                 Timer::after_millis(500).await;
                 continue 'netstack;

@@ -27,7 +27,7 @@ impl Fsm {
                 }
 
                 _ => {
-                    info!("Invalid configuration1!");
+                    info!("Invalid configuration!");
                     transit!(self, State::EndST);
                 }
             },

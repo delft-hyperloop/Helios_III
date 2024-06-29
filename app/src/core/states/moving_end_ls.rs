@@ -14,17 +14,6 @@ impl Fsm {
 
     pub async fn react_end_ls(&mut self, event: Event) {
         match event {
-            Event::DirectionChangedEvent => match self.route.current_position() {
-                Location::BrakeHere => {
-                    info!("Stopping here.");
-                    transit!(self, State::Exit);
-                }
-                _ => {
-                    self.peripherals
-                        .propulsion_controller
-                        .set_speed(self.route.current_speed());
-                }
-            },
             Event::RunFinishedEvent => {
                 #[cfg(debug_assertions)]
                 info!("Run finished");
