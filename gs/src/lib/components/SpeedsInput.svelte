@@ -3,8 +3,8 @@
 
     import { getModalStore } from '@skeletonlabs/skeleton';
     import {invoke} from "@tauri-apps/api/tauri";
-
     import util from '$lib/util/util';
+    import {metersPerMinuteToByte} from "$lib/util/parsers";
 
     $: focusedInput = '';
     let invalidInputs: SpeedFormKey[] = [];
@@ -26,13 +26,17 @@
     const inputs: SpeedFormKey[] = Object.keys(speedForm) as SpeedFormKey[];
 
     function onFormSubmit(): void {
-        if (Object.values(speedForm).some(v => v < 0 || v > 255)) {
+        if (Object.values(speedForm).some(v => v < -500 || v > 500)) {
             console.log(`Invalid values in form`);
             return;
         } else {
             let speeds_u64 = BigInt(0);
+
+
+
             for (let i = 0; i < inputs.length; i++) {
-                speeds_u64 |= BigInt(speedForm[inputs[i]]) << BigInt((5 - i) * 8);
+                const input = metersPerMinuteToByte(speedForm[inputs[i]]);
+                speeds_u64 |= BigInt(input) << BigInt((5 - i) * 8);
             }
 
             invoke('send_command', {cmdName: "SetSpeeds", val: Number(speeds_u64)}).then(() => {
@@ -113,10 +117,10 @@
                     <label>
                         <span>{util.snakeToCamel(input)}</span>
                         <input class={`input rounded-lg px-1 ${invalidInputs.includes(input) ? 'text-error-400' : ''}`}
-                               type="number" max="255" min="0" bind:value={speedForm[input]}
+                               type="number" max="500" min="-500" bind:value={speedForm[input]}
                                on:focus={() => focusedInput = input} on:blur={() => focusedInput = ''}
                                on:input={() => {
-                               if (speedForm[input] < 0 || speedForm[input] > 255) {
+                               if (speedForm[input] < -500 || speedForm[input] > 500) {
                                    if (!invalidInputs.includes(input)) {
                                        invalidInputs = [...invalidInputs, input];
                                    }
