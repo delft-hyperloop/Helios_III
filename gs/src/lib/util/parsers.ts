@@ -15,8 +15,9 @@ const addEntryToChart = (chart:PlotBuffer, data:bigint, index:number) => {
     return curr;
 }
 
-const u64ToDouble = (u64: bigint): number => {
-    const buffer = Buffer.alloc(8);
+const u64ToDouble= (u64: bigint): number => {
+    const buffer = new ArrayBuffer(8);
+    const view = new DataView(buffer);
 
     const high = Number(u64 / BigInt(2**32));
     const low = Number(u64 % BigInt(2**32));
@@ -27,4 +28,12 @@ const u64ToDouble = (u64: bigint): number => {
     return buffer.readDoubleLE(0);
 }
 
-export {tempParse, voltParse, addEntryToChart, u64ToDouble};
+const sensorParse = (u64 : bigint) : number =>{
+    return u64>MAX_VALUE-100000 ? -(MAX_VALUE-Number(u64)+1)/100 : Number(u64)/100;
+}
+
+const pressureParse = (u64 : bigint) : number => {
+    return u64>-MAX_VALUE-100000 ? 0 : Number(u64)/100;
+}
+
+export {tempParse, voltParse, addEntryToChart, u64ToDouble, sensorParse, pressureParse};
