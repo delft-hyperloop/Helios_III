@@ -44,7 +44,7 @@ impl Fsm {
                 // self.peripherals.propulsion_controller.turn_off();
                 transit!(self, State::MovingLSCV);
             }
-            Event::BrakingPointReachedEvent => {
+            Event::BrakingPointReachedC => {
                 info!("Braking point reached");
                 self.peripherals.propulsion_controller.stop();
             }

@@ -6,7 +6,7 @@ use crate::transit;
 use crate::Event;
 
 impl Fsm {
-    pub fn entry_hv_system_checking(&mut self) {
+    pub fn entry_hv_on(&mut self) {
         #[cfg(debug_assertions)]
         info!("Entering HV System Checking");
         // self.peripherals.hv_peripherals.enable_pin.set_high();
@@ -14,7 +14,7 @@ impl Fsm {
         warn!("HV SYSTEM IS ON!");
     }
 
-    pub async fn react_hv_system_checking(&mut self, event: Event) {
+    pub async fn react_hv_on(&mut self, event: Event) {
         match event {
             Event::TurnOffHVCommand => {
                 self.peripherals.hv_peripherals.power_hv_off();
