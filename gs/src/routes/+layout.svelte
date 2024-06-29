@@ -28,7 +28,6 @@
     $chartStore.set("HEMS Temperatures", hemsTempChart);
 
     let hemsCurrentChart = new PlotBuffer(500, 60000, [-11.3, 11.3], true, "a1");
-
     hemsCurrentChart.addSeries(StrokePresets.hyperloopGreenDashed("a2"))
     hemsCurrentChart.addSeries(StrokePresets.theoretical("b1"))
     hemsCurrentChart.addSeries(StrokePresets.theoreticalDashed("b2"))
@@ -67,7 +66,6 @@
     $chartStore.set('LV Current', lvCurrent)
 
     let hvCurrent = new PlotBuffer(500, 60000, [-15, 15], false)
-
     $chartStore.set('HV Current', hvCurrent)
 
     ///////////////////////////////////////////////////////
