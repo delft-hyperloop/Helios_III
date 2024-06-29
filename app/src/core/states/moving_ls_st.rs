@@ -25,11 +25,7 @@ impl Fsm {
                         self.send_levi_cmd(crate::Command::ls0(0)).await;
                         transit!(self, State::EndST);
                     }
-                    Location::StraightBackwards => {
-                        info!("Entering straight track backwards");
-                        self.send_levi_cmd(crate::Command::ls0(0)).await;
-                        transit!(self, State::MovingST);
-                    }
+
                     _ => {
                         info!("Invalid configuration1!");
                         transit!(self, State::Exit);

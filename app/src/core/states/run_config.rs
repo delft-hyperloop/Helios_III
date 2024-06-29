@@ -1,8 +1,8 @@
 use defmt::debug;
 use defmt::error;
 use defmt::info;
-use crate::core::controllers::breaking_controller::BRAKE;
 
+use crate::core::controllers::breaking_controller::BRAKE;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::transit;
@@ -15,7 +15,9 @@ impl Fsm {
         //     transit!(self, State::Exit);
         //     //LOG BECAUSE BRAKES WERE NOT ALIVE
         // }
-        self.peripherals.braking_controller.start_run_brake_precondition();
+        self.peripherals
+            .braking_controller
+            .start_run_brake_precondition();
 
         //ASK THE GROUND STATION FOR THE CONFIGURATION FILE
         // self.data_queue

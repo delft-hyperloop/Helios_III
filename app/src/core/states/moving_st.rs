@@ -39,7 +39,8 @@ impl Fsm {
                         info!("Stopping and waiting");
                         self.peripherals.propulsion_controller.stop();
                         self.send_levi_cmd(crate::Command::ls0(0)).await;
-                        self.send_levi_cmd(crate::Command::LeviPropulsionStop(0)).await;
+                        self.send_levi_cmd(crate::Command::LeviPropulsionStop(0))
+                            .await;
                         transit!(self, State::Levitating);
                     }
                     Location::BrakeHere => {

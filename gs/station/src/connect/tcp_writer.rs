@@ -1,3 +1,4 @@
+use crate::api::Message;
 use crate::api::Message::Error;
 use crate::Command;
 use tokio::io::AsyncWriteExt;
@@ -36,6 +37,12 @@ pub async fn transmit_commands_to_tcp(
             #[allow(clippy::single_match)]
             match command_receiver.try_recv() {
                 Ok(command) => {
+                    if matches!(command, Command::Shutdown(_)) {
+                        status_transmitter
+                            .send(Message::Warning("Closing connection...".into()))?;
+                        writer.shutdown().await?;
+                        break;
+                    }
                     let bytes = command.as_bytes();
                     match writer.write_all(&bytes).await {
                         Ok(_) => {
