@@ -7,10 +7,12 @@
   <NamedMutation FromDefault="Cygnus D3-400-4-48" To="Cygnus C"/>
   <NamedMutation FromDefault="Cygnus D3-400-4-64" To="Cygnus D"/>
   <NamedMutation FromDefault="Cygnus D3-400-4-0" To="Cygnus E"/>
-  <NamedMutation FromDefault="EK1100-10" To="ECATStartVer"/>
+  <NamedMutation FromDefault="EK1100-12" To="ECATStart"/>
   <NamedMutation FromDefault="EL3104-11" To="ECATSensorVer"/>
-  <NamedMutation FromDefault="EK1100-12" To="ECATStartLat"/>
   <NamedMutation FromDefault="EL3104-13" To="ECATSensorLat"/>
+  <NamedMutation FromDefault="EK1100-10" To="ECATStart2"/>
+  <NamedMutation FromDefault="EL3104-0-1" To="ECATSensorIMU1"/>
+  <NamedMutation FromDefault="EL3104-0" To="ECATSensorIMU2"/>
 
 	<Controller Name="Cygnus A">
 	  <NamedMutation FromDefault="AxisControl1" To="AxisControl A1"/>
@@ -35,7 +37,7 @@
 	<AxisControlGroup Name="AxisControlGroup">
 		<AxisControl Name="Cygnus A/AxisControl A1" />
 	  <AxisControl Name="Cygnus A/AxisControl A2" />
-		<AxisControl Name="Cygnus B/AxisControl B1" />
+	  <AxisControl Name="Cygnus B/AxisControl B1" />
 	  <AxisControl Name="Cygnus B/AxisControl B2" />
     <AxisControl Name="Cygnus C/AxisControl C1" />
 	  <AxisControl Name="Cygnus C/AxisControl C2" />
@@ -68,33 +70,43 @@
 
   <Template Name="TemplateLaserSensors" TemplateType="ProcessingBlock">
     <Updatable Name="Updatable">
-      <FilePath>C:\Rust\Helios_III\gs\station\Levi\Flushed\TemplateLaserSensorsFull_prodrive_rtw\libTemplateLaserSensorsFull-bb-armv8a_64.bin</FilePath>
+      <FilePath>\Levi\BinaryControllers\TemplateLaserSensorsFull_prodrive_rtw\libTemplateLaserSensorsFull-bb-armv8a_64.bin</FilePath>
     </Updatable>
   </Template>
 
   <Template Name="TemplateAirgapControllers" TemplateType="ProcessingBlock">
 	  <Updatable Name="Updatable">
-	    <FilePath>C:\Rust\Helios_III\gs\station\Levi\Flushed\PIDcontroller4CoreCentralizedTestReadyMotor_prodrive_rtw\libPIDcontroller4CoreCentralizedTestReadyMotor-bb-armv8a_64.bin</FilePath>
+	    <FilePath>\Levi\BinaryControllers\PIDcontroller4CoreCentralizedTestReadyMotor_prodrive_rtw\libPIDcontroller4CoreCentralizedTestReadyMotor-bb-armv8a_64.bin</FilePath>
 	  </Updatable>
   </Template>
 
   <Template Name="TemplateLateralController" TemplateType="ProcessingBlock">
 	  <Updatable Name="Updatable">
-	    <FilePath>C:\Rust\Helios_III\gs\station\Levi\Flushed\ControllerLateral_prodrive_rtw\libControllerLateral-bb-armv8a_64.bin</FilePath>
+	    <FilePath>\Levi\BinaryControllers\ControllerLateral_prodrive_rtw\libControllerLateral-bb-armv8a_64.bin</FilePath>
 	  </Updatable>
   </Template>
 
  
 	<ProcessingBlock Name="LaserSensors" Template="TemplateLaserSensors" CalculationStart="True">
-    	  <Input Name="Voltage_A" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
-	  <Input Name="Voltage_B" Source="ECATSensorVer/Receive/AI Inputs2_Value"/>
-	  <Input Name="Voltage_C" Source="ECATSensorVer/Receive/AI Inputs3_Value"/>
-	  <Input Name="Voltage_D" Source="ECATSensorVer/Receive/AI Inputs4_Value"/>
+    	  <Input Name="Voltage_A" Source="ECATSensorVer/Receive/AI Inputs4_Value"/>
+	  <Input Name="Voltage_B" Source="ECATSensorVer/Receive/AI Inputs3_Value"/>
+	  <Input Name="Voltage_C" Source="ECATSensorVer/Receive/AI Inputs2_Value"/>
+	  <Input Name="Voltage_D" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
 
-    	  <Input Name="Voltage_A2" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
-	  <Input Name="Voltage_B2" Source="ECATSensorLat/Receive/AI Inputs2_Value"/>
-	  <Input Name="Voltage_C2" Source="ECATSensorLat/Receive/AI Inputs3_Value"/>
-	  <Input Name="Voltage_D2" Source="ECATSensorLat/Receive/AI Inputs4_Value"/>
+    	  <Input Name="Voltage_A2" Source="ECATSensorLat/Receive/AI Inputs4_Value"/>
+	  <Input Name="Voltage_B2" Source="ECATSensorLat/Receive/AI Inputs3_Value"/>
+	  <Input Name="Voltage_C2" Source="ECATSensorLat/Receive/AI Inputs2_Value"/>
+	  <Input Name="Voltage_D2" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
+
+    	  <Input Name="IMU1" Source="ECATSensorIMU1/Receive/AI Inputs1_Value"/>
+	  <Input Name="IMU2" Source="ECATSensorIMU1/Receive/AI Inputs2_Value"/>
+	  <Input Name="IMU3" Source="ECATSensorIMU1/Receive/AI Inputs3_Value"/>
+	  <Input Name="IMU4" Source="ECATSensorIMU1/Receive/AI Inputs4_Value"/>
+
+    	  <Input Name="IMU5" Source="ECATSensorIMU2/Receive/AI Inputs1_Value"/>
+	  <Input Name="IMU6" Source="ECATSensorIMU2/Receive/AI Inputs2_Value"/>
+	  <Input Name="IMU7" Source="ECATSensorIMU2/Receive/AI Inputs3_Value"/>
+          <Input Name="IMU8" Source="ECATSensorIMU2/Receive/AI Inputs4_Value"/>
 
           <Input Name="VerticalAxisControllerState_In" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
 	  <Input Name="LateralAxisControllerState_In" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
@@ -107,7 +119,7 @@
     <Input Name="G_D" Source="LaserSensors/G_D"/>
 
     <Input Name="I_A_m" Source="Cygnus A/Mot1/Ir"/>
-    <Input Name="I_B_m" Source="Cygnus B/Mot1/Ir"/>
+    <Input Name="I_B_m" Source="Cygnus B/Mot2/Ir"/>
     <Input Name="I_C_m" Source="Cygnus C/Mot1/Ir"/>
     <Input Name="I_D_m" Source="Cygnus D/Mot1/Ir"/>
 
@@ -123,6 +135,12 @@
 
     <Input Name="EMS_F_Front" Source="LateralController/EMS_F_Front"/>
     <Input Name="EMS_F_Back" Source="LateralController/EMS_F_Back"/>
+
+    <Input Name="LS_mode" Source="LateralController/LS_mode_vert"/>
+
+    <Input Name="IMU_z" Source="LaserSensors/IMU_z"/>
+    <Input Name="IMU_pitch" Source="LaserSensors/IMU_pitch"/>
+    <Input Name="IMU_roll" Source="LaserSensors/IMU_roll"/>
 
     <Input Name="VerticalAxisState" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
 
@@ -141,6 +159,8 @@
     <Input Name="hems3" Source="Airgap_controllers/HEMSForces_2"/>
     <Input Name="hems4" Source="Airgap_controllers/HEMSForces_3"/>
 
+    <Input Name="PropulsionOn" Source="Airgap_controllers/PropulsionOn"/>
+
      <Input Name="I_Front_m" Source="Cygnus E/Mot_E1_Front/I_E1_Front"/>
      <Input Name="I_Back_m" Source="Cygnus E/Mot_E2_Back/I_E2_Back"/>
 
@@ -149,6 +169,10 @@
 
      <Input Name="VtF" Source="Cygnus E/Mot_E1_Front/Vt"/>
      <Input Name="VtB" Source="Cygnus E/Mot_E2_Back/Vt"/>
+
+    <Input Name="IMU_y" Source="LaserSensors/IMU_y"/>
+    <Input Name="IMU_yaw" Source="LaserSensors/IMU_yaw"/>
+    <Input Name="IMU_x" Source="LaserSensors/IMU_x"/>
 
     <Input Name="LateralAxisState" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
 	</ProcessingBlock> 
@@ -285,8 +309,8 @@
         <Actuator Name="Mot_E1_Front">
             <Input Name ="I_demand_Front" Source ="LateralController/I_Demand_Front"/>
             <Input Name ="I_demand_Front">
-                <Signal Name="LowerSaturation">-5.6</Signal>
-                <Signal Name="UpperSaturation">5.6</Signal>
+                <Signal Name="LowerSaturation">-8</Signal>
+                <Signal Name="UpperSaturation">8</Signal>
             </Input>
             <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>  
             <Signal Name="BiQuadParameter0">59.0619</Signal>
@@ -300,8 +324,8 @@
         <Actuator Name="Mot_E2_Back">
             <Input Name ="I_demand_Back" Source ="LateralController/I_Demand_Back"/>
             <Input Name ="I_demand_Back">
-                <Signal Name="LowerSaturation">-5.6</Signal>
-                <Signal Name="UpperSaturation">5.6</Signal>
+                <Signal Name="LowerSaturation">-8</Signal>
+                <Signal Name="UpperSaturation">8</Signal>
             </Input>
             <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>  
             <Signal Name="BiQuadParameter0">59.0619</Signal>
