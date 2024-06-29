@@ -181,20 +181,20 @@ pub async fn tcp_connection_handler(
                                         .await;
                                     let _ = socket.flush().await;
                                 }
-                                Command::Levitate(_) => {
+                                Command::launch(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Levitate command received");
-                                    event_sender.send(Event::StartLevitatingCommand).await;
+                                    event_sender.send(Event::LeviLaunchingEvent).await;
                                 }
-                                Command::StopLevitating(_) => {
+                                Command::land(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] StopLevitating command received");
-                                    // event_sender.send(Event::).await; // TODO: theres no stop levitating event??
+                                    event_sender.send(Event::LeviLandingEvent).await;
                                 }
                                 Command::SetRoute(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Configure command received");
-                                    event_sender.send(Event::SetRunConfig(x)).await;
+                                    event_sender.send(Event::SetRoute(x)).await;
                                 }
                                 Command::SetSpeeds(x) => {
                                     #[cfg(debug_assertions)]
@@ -204,7 +204,6 @@ pub async fn tcp_connection_handler(
                                 Command::StartRun(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Start Run command received");
-                                    event_sender.send(Event::StartLevitatingCommand).await;
                                     event_sender.send(Event::StartAcceleratingCommand).await;
                                 }
                                 Command::Shutdown(_) => {

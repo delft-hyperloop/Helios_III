@@ -7,10 +7,6 @@ name = "Heartbeat"
 id = 0x042
 
 [[Command]]
-name = "Levitate"
-id = 0x5a
-
-[[Command]]
 name = "ls0"
 id = 0x400
 
@@ -45,7 +41,6 @@ id = 0x407
 [[Command]]
 name = "vert0"
 id = 0x408
-
 
 [[Command]]
 name = "lat0"
@@ -82,10 +77,6 @@ id = 0x417
 [[Command]]
 name = "lat0_reset"
 id = 0x418
-
-[[Command]]
-name = "StopLevitating"
-id = 0x5b
 
 [[Command]]
 name = "SetRoute"

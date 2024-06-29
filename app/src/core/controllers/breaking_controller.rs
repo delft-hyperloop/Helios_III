@@ -1,3 +1,4 @@
+use core::fmt::Debug;
 use defmt::info;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Adc;
@@ -8,9 +9,10 @@ use embassy_stm32::peripherals;
 use embassy_stm32::peripherals::ADC1;
 use embassy_stm32::peripherals::PF12;
 use embassy_stm32::peripherals::TIM16;
-use embassy_time::Timer;
+use embassy_time::{Duration, Instant, Timer};
 
-use crate::try_spawn;
+use crate::{DataSender, Datatype, try_spawn};
+use crate::core::communication::Datapoint;
 use crate::Event;
 use crate::EventSender;
 
@@ -18,27 +20,27 @@ pub static mut BRAKE: bool = false;
 
 pub struct BrakingController {
     pub braking_rearm: Output<'static>,
-    // pub braking_signal: Output<'static>,
-    // pub braking_communication: Input<'static>,
+    pub data_sender: DataSender,
     pub brakes_extended: bool,
 }
 
 #[embassy_executor::task]
 pub async fn control_braking_heartbeat(
     sender: EventSender,
+    data_sender: DataSender,
     mut braking_signal: Output<'static>,
-    mut adc: Adc<'static, ADC1>,
-    mut pf12: PF12,
 ) {
     // pub async fn control_braking_heartbeat(sender: EventSender, mut braking_heartbeat: SimplePwm<'static, TIM16>) {
     info!("----------------- Start Braking Heartbeat! -----------------");
     let mut booting = true;
+    let mut last_timestamp = Instant::now();
     loop {
         Timer::after_micros(10).await;
-        if adc.read(&mut pf12) > 30000 {
-            braking_signal.set_low();
-            // info!("------------ BRAKE ! ------------");
-        } else if unsafe { !BRAKE } {
+        // if adc.read(&mut pf12) > 30000 {
+        //     braking_signal.set_low();
+        //     // info!("------------ BRAKE ! ------------");
+        // } else
+        if unsafe { !BRAKE } {
             braking_signal.set_high();
             // braking_heartbeat.set_duty(Channel::Ch1, braking_heartbeat.get_max_duty()/2);
         } else {
@@ -52,6 +54,53 @@ pub async fn control_braking_heartbeat(
             sender.send(Event::BootingCompleteEvent).await;
             booting = false;
         }
+        if Instant::now().duration_since(last_timestamp) > Duration::from_millis(1000) {
+            match braking_signal.get_output_level() {
+                Level::Low => {
+                    data_sender.send(Datapoint::new(Datatype::BrakingSignalDebug, 0, Instant::now().as_ticks())).await;
+                }
+                Level::High => {
+                    data_sender.send(Datapoint::new(Datatype::BrakingSignalDebug, 1, Instant::now().as_ticks())).await;
+                }
+            }
+            match unsafe { BRAKE } {
+                true => {
+                    data_sender.send(Datapoint::new(Datatype::BrakingBoolDebug, 1, Instant::now().as_ticks())).await;
+                }
+                false => {
+                    data_sender.send(Datapoint::new(Datatype::BrakingBoolDebug, 0, Instant::now().as_ticks())).await;
+                }
+            }
+            last_timestamp = Instant::now();
+        }
+    }
+}
+
+#[embassy_executor::task]
+async fn read_braking_communication(
+    event_sender: EventSender,
+    data_sender: DataSender,
+    mut adc: Adc<'static, ADC1>,
+    mut pf12: PF12,
+) {
+    let mut edge = true;
+    let mut last_timestamp = Instant::now();
+    loop {
+        let v = adc.read(&mut pf12);
+        let is_activated = v < 25000;
+        if edge && is_activated {
+            edge = false;
+            event_sender.send(Event::EmergencyBrakeCommand).await;
+            Timer::after_millis(1000).await;
+        }
+        if !edge && !is_activated {
+            edge = true;
+        }
+        Timer::after_micros(10).await;
+        if Instant::now().duration_since(last_timestamp) > Duration::from_millis(500) {
+            data_sender.send(Datapoint::new(Datatype::BrakingCommDebug, v as u64, Instant::now().as_ticks())).await;
+            last_timestamp = Instant::now();
+        }
     }
 }
 
@@ -59,6 +108,7 @@ impl BrakingController {
     pub async fn new(
         x: &Spawner,
         braking_sender: EventSender,
+        data_sender: DataSender,
         pb8: peripherals::PB8,
         pg1: peripherals::PG1,
         pf12: peripherals::PF12,
@@ -97,7 +147,16 @@ impl BrakingController {
             braking_sender,
             x.spawn(control_braking_heartbeat(
                 braking_sender,
+                data_sender,
                 braking_signal,
+            ))
+        );
+
+        try_spawn!(
+            braking_sender,
+            x.spawn(read_braking_communication(
+                braking_sender,
+                data_sender,
                 adc,
                 pf12
             ))
@@ -105,13 +164,18 @@ impl BrakingController {
 
         BrakingController {
             braking_rearm,
-            // braking_communication,
+            data_sender,
             brakes_extended: false,
         }
     }
 
-    pub fn arm_breaks(&mut self) {
+    pub async fn arm_breaks(&mut self) {
         self.braking_rearm.set_low();
+        self.data_sender.send(Datapoint::new(Datatype::BrakingRearmDebug, 0, Instant::now().as_ticks())).await;
+        Timer::after_micros(10).await;
+        self.braking_rearm.set_high();
+        self.data_sender.send(Datapoint::new(Datatype::BrakingRearmDebug, 1, Instant::now().as_ticks())).await;
+
         // let time_stamp = Instant::now();
         // while (Instant::now() - time_stamp) < Duration::from_millis(100) {
         //     if self.braking_communication.is_high() {
