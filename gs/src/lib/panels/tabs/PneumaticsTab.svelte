@@ -19,7 +19,7 @@
                         pressure_right={$lowPressure} max_pressure_right={100}/>
         </Tile>
         <Tile>
-            <Table background="bg-surface-900" titles={["Value", "V"]} tableArr={pressureTable}/>
+            <Table background="bg-surface-900" titles={["Section", "Bars"]} tableArr={pressureTable}/>
         </Tile>
     </TileGrid>
 </div>
