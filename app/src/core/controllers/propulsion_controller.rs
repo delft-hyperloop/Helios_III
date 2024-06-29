@@ -1,4 +1,3 @@
-use defmt::info;
 use defmt::trace;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Adc;
@@ -101,11 +100,11 @@ pub async fn read_prop_adc(
         let v_ref_int = adc.read_internal(&mut v_ref_int_channel);
         let v = adc.read(&mut pa5) as u64;
         let i = adc.read(&mut pa6) as u64;
-        #[cfg(debug_assertions)]
-        info!(
-            "Propulsion:\n\t voltage (pc0): {} \n\t current (pf3): {} \n\t reference: {}\n",
-            v, i, v_ref_int
-        );
+        // #[cfg(debug_assertions)]
+        // defmt::info!(
+        //     "Propulsion:\n\t voltage (pc0): {} \n\t current (pf3): {} \n\t reference: {}\n",
+        //     v, i, v_ref_int
+        // );
         data_sender
             .send(Datapoint::new(
                 Datatype::PropulsionVoltage,

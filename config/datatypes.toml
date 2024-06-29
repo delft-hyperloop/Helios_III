@@ -752,3 +752,19 @@ id = 0x156
 name = "levi_volt_avg"
 id = 0x157
 
+[[Datatype]]
+name = "BrakingCommDebug"
+id = 0x158
+
+[[Datatype]]
+name = "BrakingSignalDebug"
+id = 0x159
+
+[[Datatype]]
+name = "BrakingBoolDebug"
+id = 0x160
+
+[[Datatype]]
+name = "BrakingRearmDebug"
+id = 0x161
+

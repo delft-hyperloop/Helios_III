@@ -38,6 +38,7 @@ impl FSMPeripherals {
         let braking_controller = BrakingController::new(
             x,
             i.event_sender,
+            i.data_sender,
             p.PB8,
             p.PG1,
             p.PF12,

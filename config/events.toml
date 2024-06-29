@@ -19,12 +19,12 @@ id = 0xa3
 priority = 0
 
 [[Event]]
-name = "ConnectionEstablishmentFailedEvent"
+name = "ConnectionEstablishFailed"
 id = 0xa4
 priority = 0
 
 [[Event]]
-name = "SetRunConfig"
+name = "SetRoute"
 id = 0xa5
 priority = 0
 params = "u64"
@@ -220,3 +220,20 @@ id = 0x422
 name = "SetRunConfigSpeed"
 priority = 0
 params = "u64"
+
+[[Event]]
+id = 0x423
+name = "LeviLaunchingEvent"
+priority = 0 
+
+[[Event]]
+id = 0x424
+name = "LeviLandingEvent"
+priority = 0 
+
+[[Event]]
+id = 0x426
+name = "LeviEvent"
+priority = 0 
+
+

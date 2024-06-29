@@ -30,7 +30,7 @@ impl Fsm {
             Event::ArmBrakesCommand => {
                 #[cfg(debug_assertions)]
                 info!("[fsm] arming brakes");
-                self.peripherals.braking_controller.arm_breaks();
+                self.peripherals.braking_controller.arm_breaks().await;
             }
             _ => {
                 info!("The current state ignores {}", event.to_str());
