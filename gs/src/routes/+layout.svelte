@@ -305,8 +305,8 @@
     ///////////////////////// PNEUMATICS //////////////////////////
     ///////////////////////////////////////////////////////////////
 
-    gdd.stores.registerStore<number>("LowPressureSensor", 0, data => Number(data)/100);
-    gdd.stores.registerStore<number>("HighPressureSensor", 0, data => Number(data)/100);
+    gdd.stores.registerStore<number>("LowPressureSensor", 0, pressureParse);
+    gdd.stores.registerStore<number>("HighPressureSensor", 0,  pressureParse);
 
     ///////////////////////////////////////////////////////////////
     /////////////////// GROUND FAULT DETECTION ////////////////////
@@ -317,7 +317,7 @@
     gdd.stores.registerStore<number>("InsulationNegative", 0);
     gdd.stores.registerStore<string>("IMDVoltageDetails", "0.0", data => {
         const curr = Number(data);
-        return curr === 65535 ? "0" : (curr * 0.05).toString();
+        return curr === 65535 ? "0" : (curr * 0.005*110/250).toString();
     });
 
     ///////////////////////////////////////////////////////////////
