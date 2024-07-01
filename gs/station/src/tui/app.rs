@@ -60,6 +60,7 @@ impl App {
                 (Datatype::BrakingSignalDebug, 42),
                 (Datatype::BrakingBoolDebug, 42),
                 (Datatype::BrakingRearmDebug, 42),
+                (Datatype::PropGPIODebug, 42),
             ]),
             backend,
             safe: true,
