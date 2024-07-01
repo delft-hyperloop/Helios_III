@@ -1,7 +1,7 @@
 use defmt::*;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
-use embassy_stm32::can::CanRx;
+use embassy_stm32::can::{CanRx, Frame};
 use embassy_stm32::can::CanTx;
 use embassy_stm32::can::Instance;
 use embassy_time::Timer;
@@ -14,7 +14,7 @@ use crate::core::controllers::battery_controller::ground_fault_detection_voltage
 use crate::core::controllers::can_controller::CanTwoUtils;
 use crate::pconfig::bytes_to_u64;
 use crate::pconfig::id_as_value;
-use crate::CanReceiver;
+use crate::{CanReceiver, CanSender};
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
@@ -41,7 +41,7 @@ pub async fn can_transmitter(
 pub async fn can_receiving_handler(
     _x: Spawner,
     event_sender: EventSender,
-    _can_receiver: CanReceiver,
+    can_sender: CanSender,
     data_sender: DataSender,
     mut bus: CanRx<'static, impl Instance>,
     mut utils: Option<CanTwoUtils>,
@@ -49,9 +49,9 @@ pub async fn can_receiving_handler(
     let bus_nr = if utils.is_none() { 1 } else { 2 };
     info!("[CAN] Ready for bus {:?}", bus_nr);
     let mut error_counter = 0u64;
+    let mut gfd_counter = 0u64;
     loop {
         // #[cfg(debug_assertions)]
-        info!("Entering read loop on bus #{}", bus_nr);
         match bus.read().await {
             Ok(envelope) => {
                 info!(" got here");
@@ -70,7 +70,7 @@ pub async fn can_receiving_handler(
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
                         let ut = utils.as_mut().unwrap();
                         if HV_IDS.contains(&id) {
-                         ut.hv_controller
+                            ut.hv_controller
                                 .bms_can_handle(id, frame.data(), data_sender, timestamp.as_ticks())
                                 .await;
                         } else if LV_IDS.contains(&id) {
@@ -84,20 +84,26 @@ pub async fn can_receiving_handler(
                                     data_sender,
                                     timestamp.as_ticks(),
                                 )
-                                .await;
+                                    .await;
                             } else if id == Datatype::IMDIsolationDetails.to_id() {
                                 ground_fault_detection_voltage_details(
                                     frame.data(),
                                     data_sender,
                                     timestamp.as_ticks(),
                                 )
-                                .await;
+                                    .await;
                             } else {
-                                debug!("GFD is not using id #{}", &id);
+                                if gfd_counter > 2 {
+                                    gfd_counter = 0;
+                                    can_sender.send(Frame::new_extended(0x18EAFF17, &[0x03u8, 0xFFu8, 0x00u8]).unwrap()).await;
+                                    can_sender.send(Frame::new_extended(0x18EAFF17, &[0x02u8, 0xFFu8, 0x00u8]).unwrap()).await;
+                                } else {
+                                    gfd_counter += 1;
+                                }
                             }
                         }
                     } else {
-                        info!("#{}",bytes_to_u64(frame.data()));
+                        info!("#{}", bytes_to_u64(frame.data()));
                         data_sender
                             .send(Datapoint::new(
                                 Datatype::from_id(id),
@@ -119,7 +125,6 @@ pub async fn can_receiving_handler(
                         ))
                         .await;
                 }
-
             }
             Err(e) => {
                 if error_counter < 10 || error_counter % 2500 == 0 {
@@ -135,6 +140,6 @@ pub async fn can_receiving_handler(
         // # VERY IMPORTANT
         // without this, our main pcb is magically converted to an adhd CAN pcb
         // with no mind for anything else. Tread carefully around it
-        Timer::after_millis(1).await;
+        Timer::after_micros(500).await;
     }
 }
