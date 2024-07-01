@@ -32,6 +32,9 @@ impl Fsm {
                 self.send_data(Datatype::BrakingRearmDebug, 1).await;
                 transit!(self, State::RunConfig);
             }
+            Event::ConnectionEstablishedEvent => {
+                self.send_data(Datatype::FSMState, self.state as u64).await;
+            }
             _ => {
                 #[cfg(debug_assertions)]
                 info!("[fsm] EmergencyBrake state ignores {:?}", event);
