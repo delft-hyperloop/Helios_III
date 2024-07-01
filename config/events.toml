@@ -232,6 +232,12 @@ priority = 0
 params = "u64"
 
 [[Event]]
+id = 0x428
+name = "SetCurrentSpeedCommand"
+priority = 0 
+params = "u64"
+
+[[Event]]
 id = 0x423
 name = "LeviLaunchingEvent"
 priority = 0 

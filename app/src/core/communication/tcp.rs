@@ -201,6 +201,11 @@ pub async fn tcp_connection_handler(
                                     info!("[tcp] Configure command received");
                                     event_sender.send(Event::SetRunConfigSpeed(x)).await;
                                 }
+                                Command::SetCurrentSpeed(x) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] SetCurrentSpeed command received");
+                                    event_sender.send(Event::SetCurrentSpeedCommand(x)).await;
+                                }
                                 Command::StartRun(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Start Run command received");

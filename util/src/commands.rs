@@ -118,7 +118,7 @@ impl Command {{
 pub const COMMAND_IDS: [u16; {}] = [{}];
 pub const COMMANDS_LIST: [&str; {}] = [{}];
 ",
-        if drv { "#[derive(Debug, Clone, Copy, defmt::Format, PartialEq)]" } else { "#[derive(Debug, Clone, Copy, PartialEq)]" },
+        if drv { "#[derive(Debug, Clone, Copy, defmt::Format, PartialEq)]" } else { "#[derive(Debug, Clone, Copy, PartialEq, serde::Serialize, serde::Deserialize)]" },
         enum_definitions, match_to_id, match_from_id, to_bytes, names,
         to_idx,
         ids.len(), ids.join(", "), name_list.len(), name_list.join(", ")

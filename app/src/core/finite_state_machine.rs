@@ -214,8 +214,25 @@ impl Fsm {
                 self.send_data(Datatype::PropulsionSpeed, s as u64).await;
             }
 
+            // TODO: delete these two
+            Event::DisablePropulsionCommand => {
+                self.peripherals.propulsion_controller.disable();
+                self.log(Info::DisablePropulsionGpio).await;
+                self.send_data(crate::Datatype::PropGPIODebug, 0).await;
+            }
+            Event::EnablePropulsionCommand => {
+                self.peripherals.propulsion_controller.enable();
+                self.log(Info::EnablePropulsionGpio).await;
+                self.send_data(crate::Datatype::PropGPIODebug, 1).await;
+            }
+
+            Event::SetCurrentSpeedCommand(x) => {
+                self.peripherals.propulsion_controller.set_speed(x as u8);
+                self.send_data(Datatype::PropulsionSpeed, x).await;
+            }
+
             _ => {
-                trace!("Event was not emergency brake, continuing...");
+                trace!("Event has no override, continuing...");
             }
         }
         match self.state {
