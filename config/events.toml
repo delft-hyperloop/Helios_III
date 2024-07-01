@@ -71,7 +71,17 @@ priority = 0
 
 [[Event]]
 name = "LVPropulsionReadyEvent"
-id = 0xaE
+id = 0x3e1
+priority = 0
+
+[[Event]]
+name = "EnablePropulsionCommand"
+id = 0x3e2
+priority = 0
+
+[[Event]]
+name = "DisablePropulsionCommand"
+id = 0x3e3
 priority = 0
 
 [[Event]]

@@ -39,8 +39,8 @@ pub async fn transmit_commands_to_tcp(
                 Ok(command) => {
                     if matches!(command, Command::Shutdown(_)) {
                         status_transmitter
-                            .send(Message::Warning("Closing connection...".into()))?;
-                        writer.shutdown().await?;
+                            .send(Message::Warning("Closing connection...".into())).unwrap();
+                        writer.shutdown().await.unwrap();
                         break;
                     }
                     let bytes = command.as_bytes();
