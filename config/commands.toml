@@ -7,10 +7,6 @@ name = "Heartbeat"
 id = 0x042
 
 [[Command]]
-name = "Levitate"
-id = 0x5a
-
-[[Command]]
 name = "ls0"
 id = 0x400
 
@@ -46,24 +42,49 @@ id = 0x407
 name = "vert0"
 id = 0x408
 
-
 [[Command]]
 name = "lat0"
 id = 0x409
-
 
 [[Command]]
 name = "land"
 id = 0x410
 
+[[Command]]
+name = "vert_mode_normal"
+id = 0x412
 
 [[Command]]
-name = "StopLevitating"
-id = 0x5b
+name = "lat_mode_normal"
+id = 0x413
 
 [[Command]]
-name = "Configure"
+name = "vert_mode_offsets"
+id = 0x414
+
+[[Command]]
+name = "vert_mode_dance"
+id = 0x415
+
+[[Command]]
+name = "vert_mode_sine"
+id = 0x416
+
+[[Command]]
+name = "vert0_reset"
+id = 0x417
+
+[[Command]]
+name = "lat0_reset"
+id = 0x418
+
+[[Command]]
+name = "SetRoute"
 id = 0x5c
+
+[[Command]]
+name = "SetSpeeds"
+id = 0x59
 
 [[Command]]
 name = "StartRun"
@@ -112,6 +133,14 @@ id = 0x69
 [[Command]]
 name = "FinishRunConfig"
 id = 0x67
+
+[[Command]]
+name = "LeviPropulsionStart"
+id = 0x68
+
+[[Command]]
+name = "LeviPropulsionStop"
+id = 0x70 
 
 #[[Command]]
 #name = "TurnAllHVRelaysOnUNSAFE"

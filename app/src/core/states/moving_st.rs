@@ -1,4 +1,6 @@
-use defmt::{error, info, warn};
+use defmt::error;
+use defmt::info;
+use defmt::warn;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
@@ -11,7 +13,7 @@ impl Fsm {
     pub fn entry_accelerating(&mut self) {
         self.peripherals
             .propulsion_controller
-            .set_speed(self.route.current_speed() as u64);
+            .set_speed(self.route.current_speed());
         //We have to put a stip on the track that would define a braking point here
     }
 
@@ -37,6 +39,8 @@ impl Fsm {
                         info!("Stopping and waiting");
                         self.peripherals.propulsion_controller.stop();
                         self.send_levi_cmd(crate::Command::ls0(0)).await;
+                        self.send_levi_cmd(crate::Command::LeviPropulsionStop(0))
+                            .await;
                         transit!(self, State::Levitating);
                     }
                     Location::BrakeHere => {
@@ -58,10 +62,10 @@ impl Fsm {
                 _ => {
                     self.peripherals
                         .propulsion_controller
-                        .set_speed(self.route.current_speed() as u64);
+                        .set_speed(self.route.current_speed());
                 }
             },
-            Event::BrakingPointReachedEvent => {
+            Event::BrakingPointReachedA => {
                 // TODO: ask if we need to prop brake or emergency brake
                 transit!(self, State::EndST);
             }

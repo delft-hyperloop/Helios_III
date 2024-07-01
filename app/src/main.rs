@@ -100,10 +100,7 @@ pub struct InternalMessaging {
 /// # Main Function: program entry point
 #[embassy_executor::main]
 async fn main(spawner: Spawner) -> ! {
-    info!(
-        "------------ Main App\
-    lication Started! ------------"
-    );
+    info!("------------ Main Application Started! ------------");
 
     // Configuration
     // `p` is the most important object in our code; treat it with respect and caution

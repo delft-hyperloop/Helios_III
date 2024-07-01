@@ -1,5 +1,6 @@
 use defmt::debug;
 use embassy_executor::Spawner;
+use embassy_stm32::adc::Adc;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Speed;
@@ -13,7 +14,8 @@ use crate::core::controllers::ethernet_controller::EthernetController;
 use crate::core::controllers::ethernet_controller::EthernetPins;
 use crate::core::controllers::hv_controller::HVPeripherals;
 use crate::core::controllers::propulsion_controller::PropulsionController;
-use crate::{DataSender, InternalMessaging};
+use crate::DataSender;
+use crate::InternalMessaging;
 
 #[allow(dead_code)]
 pub struct FSMPeripherals {
@@ -36,9 +38,11 @@ impl FSMPeripherals {
         let braking_controller = BrakingController::new(
             x,
             i.event_sender,
+            i.data_sender,
             p.PB8,
             p.PG1,
             p.PF12,
+            Adc::new(p.ADC1),
             p.PB0,
             p.PD5,
             p.TIM16,
@@ -124,10 +128,10 @@ impl FSMPeripherals {
                 i.event_sender,
                 p.PA4,
                 p.DAC1,
-                p.ADC3,
-                p.PC0,
-                p.PF3,
-                p.PE5,
+                p.ADC2,
+                p.PA5,
+                p.PA6,
+                p.PB1,
             )
             .await,
         }

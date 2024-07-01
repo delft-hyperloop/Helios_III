@@ -52,6 +52,15 @@ impl App {
                 (Datatype::SingleCellVoltageLow, 0),
                 (Datatype::BatteryMaxBalancingLow, 0),
                 (Datatype::Localisation, 0),
+                (Datatype::PropulsionCurrent, 0),
+                (Datatype::PropulsionVoltage, 0),
+                (Datatype::PropulsionSpeed, 0),
+                (Datatype::PropulsionVRefInt, 0),
+                (Datatype::BrakingCommDebug, 0),
+                (Datatype::BrakingSignalDebug, 42),
+                (Datatype::BrakingBoolDebug, 42),
+                (Datatype::BrakingRearmDebug, 42),
+                (Datatype::PropGPIODebug, 42),
             ]),
             backend,
             safe: true,
@@ -89,8 +98,8 @@ impl App {
                         self.cur_state = state_to_string(datapoint.value).to_string();
                         self.logs.push((
                             Message::Warning(format!(
-                            "State changed to: {:?}",
-                            datapoint.value.to_be_bytes()
+                                "State changed to: {:?}",
+                                datapoint.value.to_be_bytes()
                             )),
                             timestamp(),
                         ));
@@ -116,6 +125,22 @@ impl App {
                                 self.scroll += 1;
                             }
                         }
+                    }
+                    Datatype::PropulsionCurrent => {
+                        self.special_data
+                            .insert(Datatype::PropulsionCurrent, datapoint.value / 680);
+                    }
+                    Datatype::PropulsionVoltage => {
+                        self.special_data
+                            .insert(Datatype::PropulsionVoltage, datapoint.value / 340);
+                    }
+                    x if self
+                        .special_data
+                        .keys()
+                        .collect::<Vec<&Datatype>>()
+                        .contains(&&x) =>
+                    {
+                        self.special_data.insert(x, datapoint.value);
                     }
                     _ => {
                         self.logs.push((Message::Data(datapoint), timestamp()));

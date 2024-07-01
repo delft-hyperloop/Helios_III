@@ -45,6 +45,18 @@
     const leviTemp = storeManager.getStore("LevitationTemperature");
     const brakeTemp = storeManager.getStore("BrakeTemperature");
 
+    const ins = storeManager.getStore("InsulationOriginal")
+    const insp = storeManager.getStore("InsulationPositive")
+    const insn = storeManager.getStore("InsulationNegative")
+    const imdv = storeManager.getStore("IMDVoltageDetails")
+
+    const totalLVV = storeManager.getStore("TotalBatteryVoltageLow");
+    const totalHVV = storeManager.getStore("TotalBatteryVoltageHigh");
+
+    const upDrawerVB = storeManager.getStore("Average_Temp_VB_top");
+    const downDrawerVB = storeManager.getStore("Average_Temp_VB_Bottom");
+    const outsideVB = storeManager.getStore("Ambient_temp");
+
     let tableArr: any[][];
     let tableArr2: any[][];
 
@@ -56,21 +68,19 @@
     ]
 
     $: tableArr = [
-        ["Upper drawer VB", $propTemp],
-        ["Bottom drawer VB", $leviTemp],
-        ["Outside of VB", $brakeTemp],
-        ["HEMS", 0],
-        ["EMS", 0],
-        ["Motor Front", 0],
-        ["Motor Back", 0],
+        ["Upper drawer VB", $upDrawerVB],
+        ["Bottom drawer VB", $downDrawerVB],
+        ["Outside of VB", $outsideVB],
+        ["Propulsion", $propTemp],
+        ["Levitation", $leviTemp],
+        ["Brake", $brakeTemp],
     ]
 
     $: tableArr2 = [
-        ["Current State", 0],
-        ["Bottom drawer VB", 0],
-        ["outside of VB", 0],
-        ["HEMS", 0],
-        ["Motor core", 0]
+        ["Insulation", $ins],
+        ["Insulation+", $insp],
+        ["Insulation-", $insn],
+        ["IMD Voltage", $imdv],
     ]
 
     const toastStore = getToastStore();
@@ -94,7 +104,7 @@
                 toastStore.trigger({
                     //@ts-ignore
                     message: "Abort operation triggered",
-                    background: 'variant-filled-error',
+                    background: 'variant-filled-error'
                 });
             }} className="bg-error-500 text-surface-100 btn py-0 border border-error-500 rounded-sm" cmd="EmergencyBrake"/>
         </svelte:fragment>
@@ -126,20 +136,24 @@
                 <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4">
-                            <p>Velocity: <span class="font-mono font-medium">{$speed}</span></p>
-                            <p>Position: <span class="font-mono font-medium">{$position}</span></p>
-                            <p>HV Current: <span class="font-mono font-medium">{$currentHigh}</span></p>
-                            <p>LV Current: <span class="font-mono font-medium">{$currentLow}</span></p>
+                            <p>
+                                Velocity: <span class="font-mono font-medium">{$speed}</span>
+                                <br>
+                                Position: <span class="font-mono font-medium">{$position}</span>
+                            </p>
+                            <p>
+                                HV Current: <span class="font-mono font-medium">{$currentHigh}</span>
+                                <br>
+                                LV Current: <span class="font-mono font-medium">{$currentLow}</span>
+                            </p>
                         </div>
-                        <div class="flex gap-4">
-                            <div class="flex gap-2">
-                                <span>LV: </span>
-                                <Battery orientation="horizontal" perc={Number($lvBattery)}/>
-                            </div>
-                            <div class="flex gap-2">
-                                <span>HV: </span>
-                                <Battery orientation="horizontal" perc={Number($hvBattery)}/>
-                            </div>
+                        <div style="grid-template-columns: 1fr 2fr 2fr;" class="grid gap-y-2">
+                            <span>LV: </span>
+                            <Battery orientation="horizontal" perc={Number($lvBattery)}/>
+                            <span>Total: <span class="font-mono font-medium">{$totalLVV} V</span></span>
+                            <span>HV: </span>
+                            <Battery orientation="horizontal" perc={Number($hvBattery)}/>
+                            <span>Total: <span class="font-mono font-medium">{$totalHVV} V</span></span>
                         </div>
                     </div>
                 </Tile>

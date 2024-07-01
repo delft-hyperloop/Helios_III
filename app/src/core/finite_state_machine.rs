@@ -6,6 +6,7 @@ use embassy_time::Instant;
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::core::fsm_status::Route;
+use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
 use crate::DataSender;
 use crate::Datatype;
@@ -32,12 +33,13 @@ pub enum State {
     EstablishConnection,
     RunConfig,
     Idle,
-    HVSystemChecking,
+    HVOn,
     Levitating,
     MovingST,
     MovingLSST,
     MovingLSCV,
     EndST,
+    EndLS,
     EmergencyBraking,
     Exit,
     Crashing,
@@ -166,12 +168,13 @@ impl Fsm {
             State::EstablishConnection => self.entry_establish_connection(),
             State::Idle => self.entry_idle(),
             State::RunConfig => self.entry_run_config(),
-            State::HVSystemChecking => self.entry_hv_system_checking(),
+            State::HVOn => self.entry_hv_on(),
             State::Levitating => self.entry_levitating(),
             State::MovingST => self.entry_accelerating(),
             State::MovingLSST => self.entry_cruising(),
             State::MovingLSCV => self.entry_ls_cv(),
             State::EndST => self.entry_end_st(),
+            State::EndLS => self.entry_end_ls(),
             State::EmergencyBraking => {
                 self.entry_emergency_braking();
                 self.pod_safe().await;
@@ -203,6 +206,14 @@ impl Fsm {
                 self.peripherals.hv_peripherals.pin_6.set_high();
                 self.peripherals.hv_peripherals.pin_7.set_high();
             }
+
+            Event::LVPropulsionReadyEvent => {
+                let p = self.route.next_position();
+                let s = self.route.speed_at(p);
+                self.peripherals.propulsion_controller.set_speed(s);
+                self.send_data(Datatype::PropulsionSpeed, s as u64).await;
+            }
+
             _ => {
                 trace!("Event was not emergency brake, continuing...");
             }
@@ -212,16 +223,17 @@ impl Fsm {
             State::EstablishConnection => self.react_establish_connection(event).await,
             State::Idle => self.react_idle(event).await,
             State::RunConfig => self.react_run_config(event).await,
-            State::HVSystemChecking => self.react_hv_system_checking(event).await,
+            State::HVOn => self.react_hv_on(event).await,
             State::Levitating => self.react_levitating(event).await,
             State::MovingST => self.react_mv_st(event).await,
             State::MovingLSST => self.react_mv_ls_st(event).await,
             State::MovingLSCV => self.react_mv_ls_cv(event).await,
             State::EndST => self.react_end_st(event).await,
+            State::EndLS => self.react_end_ls(event).await,
             State::Exit => self.react_exit(event).await,
             State::EmergencyBraking => self.react_emergency_braking(event).await,
             State::Crashing => {
-                self.log(crate::Info::Crashed).await;
+                self.log(Info::Crashed).await;
                 info!("TRYING TO REACT WHILE CRASHING!!!!!!");
             }
         }

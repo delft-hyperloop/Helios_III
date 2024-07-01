@@ -436,4 +436,52 @@ mod tests {
         println!("{:0>64b}\n{:0>64b}", bytes, other_bytes);
         assert_eq!(route.speeds, new_speeds);
     }
+
+    #[test]
+    fn printing_speed_values() {
+        let route = Route {
+            positions: LocationSequence { // 0 210 0 180 0
+                0: [
+                    Location::StopAndWait,
+                    Location::StraightStart,
+                    Location::StopAndWait,
+                    Location::StraightBackwards,
+                    Location::StopAndWait,
+                    Location::StopAndWait,
+                    Location::StraightStart,
+                    Location::StopAndWait,
+                    Location::StraightBackwards,
+                    Location::StopAndWait,
+                    Location::StopAndWait,
+                    Location::StraightStart,
+                    Location::StopAndWait,
+                    Location::StraightBackwards,
+                    Location::StopAndWait,
+                    Location::StopAndWait,
+                    Location::StraightStart,
+                    Location::StopAndWait,
+                    Location::StraightBackwards,
+                    Location::StopAndWait,
+                    Location::StopAndWait,
+                ],
+            },
+            current_position: 0,
+            speeds: LocationSpeedMap(
+                [
+                    (Location::StraightStart, 195),
+                    (Location::StraightBackwards, 185),
+                    (Location::LaneSwitchStraight, 0),
+                    (Location::LaneSwitchCurved, 0),
+                    (Location::StraightEndTrack, 0),
+                    (Location::LaneSwitchEndTrack, 0),
+                    (Location::StopAndWait, 0),
+                    (Location::BrakeHere, 0),
+                ]
+                    .into(),
+            ),
+        };
+        let s_bytes: u64 = route.speeds.clone().into();
+        let r_bytes: u64 = route.positions.clone().into();
+        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+    }
 }

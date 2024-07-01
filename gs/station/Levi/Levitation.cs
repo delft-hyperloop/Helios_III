@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Linq;
 using Pmp;
 using System.Threading;
 using System.IO;
@@ -64,6 +65,19 @@ namespace PmpGettingStartedCs
         public ISignal Airgap { set; get; }
 
         public ISignal Motor_Enabled { set; get; }
+
+        public ISignal Power_Vert { set; get; }
+        public ISignal Power_Lat { set; get; }
+
+        public ISignal Volt_A { set; get; }
+        public ISignal Volt_B { set; get; }
+        public ISignal Volt_C { set; get; }
+        public ISignal Volt_D { set; get; }
+        public ISignal Volt_E { set; get; }
+
+        public ISignal VerticalZeroResetSignal { set; get; }
+        public ISignal LateralZeroResetSignal { set; get; }
+
 
 
 
@@ -131,8 +145,9 @@ namespace PmpGettingStartedCs
                     {
                         this.SetVerticalMode(0);
                         Console.Write("INFO:launching\n");
-                        Thread.Sleep(7000);
+                        Thread.Sleep(3000);
                         this.SetLateralMode(1);
+                        Thread.Sleep(1000);
                         Console.Write("INFO:launch_complete\n");
                     }
                     catch (Exception)
@@ -141,9 +156,58 @@ namespace PmpGettingStartedCs
                     }
                     break;
 
+                case "vert_mode_normal":
+                    try
+                    {
+                        this.SetVerticalMode(0);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "vert_mode_offsets":
+                    try
+                    {
+                        this.SetVerticalMode(5);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "vert_mode_dance":
+                    try
+                    {
+                        this.SetVerticalMode(6);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "vert_mode_sine":
+                    try
+                    {
+                        this.SetVerticalMode(7);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
                 case "vert0":
                     try
                     {
+                        this.SetVerticalZeroReset(0);
                         this.SetVerticalMode(-1);
                         Console.Write("INFO:mode_set\n");
                     }
@@ -165,13 +229,52 @@ namespace PmpGettingStartedCs
                     }
                     break;
 
+                case "vert0_reset":
+                    try
+                    {
+                        this.SetVerticalZeroReset(1);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "lat0_reset":
+                    try
+                    {
+                        this.SetLateralZeroReset(1);
+                        Thread.Sleep(50);
+                        this.SetLateralZeroReset(0);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "lat_mode_normal":
+                    try
+                    {
+                        this.SetLateralMode(1);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
                 case "land":
                     try
                     {
-                        this.SetLateralMode(2);
                         this.SetVerticalMode(3);
                         Console.Write("INFO:landing\n");
-                        Thread.Sleep(10000);
+                        Thread.Sleep(5000);
+                        this.SetLateralMode(2);
+                        Thread.Sleep(5000);
                         this.SetVerticalMode(2);
                         Console.Write("INFO:landed\n");
                     }
@@ -216,6 +319,28 @@ namespace PmpGettingStartedCs
                     catch (Exception)
                     {
                         Console.WriteLine("CRITICAL:ls_error\n");
+                    }
+                    break;
+
+                case "LeviPropulsionStart":
+                    try
+                    {
+                        this.SetPropulsion(1);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:set_signal_error\n");
+                    }
+                    break;
+
+                case "LeviPropulsionStop":
+                    try
+                    {
+                        this.SetPropulsion(0);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:set_signal_error\n");
                     }
                     break;
 
@@ -289,6 +414,18 @@ namespace PmpGettingStartedCs
             this.Airgap = VerticalController.Signals["Airgap"];
             this.Pitch = VerticalController.Signals["Pitch"];
             this.Roll = VerticalController.Signals["Roll"];
+            this.Power_Vert = VerticalController.Signals["Power_avg"];
+            this.Power_Lat = LateralController.Signals["Power_Lat_avg"];
+
+            this.VerticalZeroResetSignal = VerticalController.Signals["Undo_0current"];
+            this.LateralZeroResetSignal = LateralController.Signals["lat_zero_reset"];
+
+
+            this.Volt_A = CygnusA.Sensors["VBus"].Signals["Voltage"];
+            this.Volt_B = CygnusB.Sensors["VBus"].Signals["Voltage"];
+            this.Volt_C = CygnusC.Sensors["VBus"].Signals["Voltage"];
+            this.Volt_D = CygnusD.Sensors["VBus"].Signals["Voltage"];
+            this.Volt_E = CygnusE.Sensors["VBus"].Signals["Voltage"];
 
             this.I_A1 = MotA1.Signals["Ir"];
             this.I_A2 = MotA2.Signals["Ir"];
@@ -307,14 +444,32 @@ namespace PmpGettingStartedCs
         return true;
     }
 
+        public bool SetVerticalZeroReset(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.VerticalZeroResetSignal, value);
+            return true;
+        }
+
+        public bool SetLateralZeroReset(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.LateralZeroResetSignal, value);
+            return true;
+        }
+
+        public bool SetPropulsion(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.Motor_Enabled, value);
+            return true;
+        }
+
         public static void sendData (string dataType, string value)
         {
             Console.WriteLine("DATA:{0}:{1}", dataType, value);
         }
         public void getVerticalAirgaps ()
         {
-            double[] airgapsList = { this.G_A.ValueDouble, this.G_B.ValueDouble, this.G_C.ValueDouble, this.G_D.ValueDouble };
-            string[] gapStrings = { "G_A", "G_B", "G_C", "G_D" };
+            double[] airgapsList = { this.G_A.ValueDouble*1000, this.G_B.ValueDouble*1000, this.G_C.ValueDouble * 1000, this.G_D.ValueDouble * 1000 };
+            string[] gapStrings = { "levi_hems_gap_a", "levi_hems_gap_b", "levi_hems_gap_c", "levi_hems_gap_d" };
             int i = 0;
             foreach (string gapString in gapStrings)
             {
@@ -327,8 +482,8 @@ namespace PmpGettingStartedCs
 
         public void getLateralAirgaps()
         {
-            double[] airgapsList = { this.G_A2.ValueDouble, this.G_B2.ValueDouble, this.G_C2.ValueDouble, this.G_D2.ValueDouble };
-            string[] gapStrings = { "G_A2", "G_B2", "G_C2", "G_D2" };
+            double[] airgapsList = { this.G_A2.ValueDouble * 1000, this.G_B2.ValueDouble * 1000, this.G_C2.ValueDouble * 1000, this.G_D2.ValueDouble * 1000 };
+            string[] gapStrings = { "levi_ems_gap_a", "levi_ems_gap_b", "levi_ems_gap_c", "levi_ems_gap_d" };
             int i = 0;
             foreach (string gapString in gapStrings)
             {
@@ -342,7 +497,7 @@ namespace PmpGettingStartedCs
         public void getDegreesOfFreedom()
         {
             double[] airgapsList = { this.Airgap.ValueDouble, this.Pitch.ValueDouble, this.Roll.ValueDouble, this.Offset_AB.ValueDouble, this.Offset_CD.ValueDouble};
-            string[] gapStrings = { "Airgap", "Pitch", "Roll", "EMS_Offset_AB", "EMS_Offset_CD" };
+            string[] gapStrings = { "levi_hems_airgap", "levi_hems_pitch", "levi_hems_roll", "levi_ems_offset_ab", "levi_ems_offset_cd" };
             int i = 0;
             foreach (string gapString in gapStrings)
             {
@@ -355,13 +510,29 @@ namespace PmpGettingStartedCs
 
         public void getCurrents()
         {
-            double[] currentList = { this.I_A1.ValueDouble, this.I_A2.ValueDouble, this.I_B1.ValueDouble, this.I_B2.ValueDouble, this.I_C1.ValueDouble, this.I_C2.ValueDouble, this.I_D1.ValueDouble, this.I_D2.ValueDouble, this.I_Front.ValueDouble, this.I_Back.ValueDouble};
-            string[] currentStrings = { "I_A1", "I_A2", "I_B1", "I_B2", "I_C1", "I_C2", "I_D1", "I_D2", "I_EMS_AB", "I_EMS_CD"};
+            double[] currentList = { this.I_A1.ValueDouble, this.I_A2.ValueDouble, this.I_B1.ValueDouble, this.I_B2.ValueDouble, this.I_C1.ValueDouble, this.I_C2.ValueDouble, this.I_D1.ValueDouble, this.I_D2.ValueDouble, this.I_Front.ValueDouble, this.I_Back.ValueDouble, this.Power_Vert.ValueDouble, this.Power_Lat.ValueDouble};
+            string[] currentStrings = { "levi_hems_current_a1", "levi_hems_current_a2", "levi_hems_current_b1", "levi_hems_current_b2", "levi_hems_current_c1", "levi_hems_current_c2", "levi_hems_current_d1", "levi_hems_current_d2", "levi_ems_current_ab", "levi_ems_current_cd", "levi_hems_power", "levi_ems_power"};
             int i = 0;
             foreach (string currentString in currentStrings)
             {
+
                 string datatype = currentString.ToLower();
                 string value = currentList[i].ToString();
+                sendData(datatype, value);
+                i++;
+            }
+        }
+
+        public void getVoltages()
+        {
+            double[] voltageList = { this.Volt_A.ValueDouble, this.Volt_B.ValueDouble, this.Volt_C.ValueDouble, this.Volt_D.ValueDouble, this.Volt_E.ValueDouble, };
+            double[] editedVoltageList = { voltageList.Average(), voltageList.Min(), voltageList.Max() };
+            string[] voltageStrings = { "levi_volt_avg", "levi_volt_min", "levi_volt_max" };
+            int i = 0;
+            foreach (string voltageString in voltageStrings)
+            {
+                string datatype = voltageString.ToLower();
+                string value = editedVoltageList[i].ToString();
                 sendData(datatype, value);
                 i++;
             }
@@ -423,11 +594,12 @@ public static void Main()
                     {
                         /*                        string command = (InputsOutputs.ReadConsole());
                                                 arcas.ExecuteCommand(command);*/
-                        Thread.Sleep(10);
+                        Thread.Sleep(20);
                         arcas.getVerticalAirgaps();
                         arcas.getLateralAirgaps();
                         arcas.getCurrents();
                         arcas.getDegreesOfFreedom();
+                       arcas.getVoltages();
 
                     }
                     catch (Exception)
@@ -439,7 +611,7 @@ public static void Main()
             }
   catch (PmpException ex)
   {
-    Console.WriteLine("ERROR: {0}", ex.Message);
+    Console.WriteLine("CRITICAL:broke_loop");
                 Thread.Sleep(10000);
 
   }

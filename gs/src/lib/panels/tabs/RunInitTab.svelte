@@ -11,26 +11,31 @@
         TauriCommand,
         type IntervalFunction,
         RunMode,
-        SpeedsInput
+        SpeedsInput, GrandDataDistributor
     } from "$lib";
     import {inputEmerg, inputPosit} from "$lib/stores/state";
     import {getModalStore, type ModalComponent} from "@skeletonlabs/skeleton";
 
+    const storeManager = GrandDataDistributor.getInstance().stores;
+
+    const accelX = storeManager.getStore("AccelerationX")
+    const accelY = storeManager.getStore("AccelerationY")
+    const accelZ = storeManager.getStore("AccelerationZ")
+    const gyroX = storeManager.getStore("GyroscopeX")
+    const gyroY = storeManager.getStore("GyroscopeY")
+    const gyroZ = storeManager.getStore("GyroscopeZ")
 
     let calculateTheoretical:IntervalFunction;
     let clearRuns: () => void;
 
     let tableArr2:any[][];
     $: tableArr2 = [
-        ["Some", 0],
-        ["Important", 0],
-        ["Value", 0],
-        ["That", 0],
-        ["Could", 0],
-        ["stay", 0],
-        ["as a", 0],
-        ["table entry", 0],
-        ["here", 0]
+        ["Acceleration X", $accelX],
+        ["Acceleration Y", $accelY],
+        ["Acceleration Z", $accelZ],
+        ["Gyroscope X", $gyroX],
+        ["Gyroscope Y", $gyroY],
+        ["Gyroscope Z", $gyroZ],
     ]
 
     const modalStore = getModalStore();
@@ -81,8 +86,8 @@
                 <TauriCommand cmd="start_server" className="btn rounded-md bg-surface-700  col-span-2" />
                 <Command cmd="StartHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
-                <Command cmd="Levitate" className="btn flex-grow rounded-md bg-surface-700 " />
-                <Command cmd="StopLevitating" className="btn flex-grow rounded-md bg-surface-700 " />
+<!--                <Command cmd="Levitate" className="btn flex-grow rounded-md bg-surface-700 " />-->
+<!--                <Command cmd="StopLevitating" className="btn flex-grow rounded-md bg-surface-700 " />-->
                 <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal}>
                     Run Config
                 </button>
@@ -92,6 +97,8 @@
                 <button class="btn rounded-md col-span-2 bg-surface-700 " type="button" on:click={clearRuns} >
                     Clear runs
                 </button>
+                <Command cmd="SystemReset" className="btn flex-grow rounded-md bg-surface-700" />
+                <Command cmd="ArmBrakes" className="btn flex-grow rounded-md bg-surface-700" />
             </div>
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >

@@ -1,4 +1,5 @@
 use crate::tui::app::App;
+use crate::Command;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use std::cmp::min;
 
@@ -28,7 +29,10 @@ impl App {
         self.scroll = self.scroll.saturating_sub(val);
     }
     fn scroll_down(&mut self, val: u16) {
-        self.scroll = min(self.scroll.saturating_add(val), 2 * self.logs.len() as u16);
+        self.scroll = min(
+            self.scroll.saturating_add(val),
+            (1.1 * self.logs.len() as f64) as u16,
+        );
     }
 
     /// Keyboard shortcuts!
@@ -90,6 +94,12 @@ impl App {
             }
             KeyCode::Backspace => {
                 self.cmds[self.selected_row].value /= 10;
+            }
+            KeyCode::Char('p') => {
+                self.backend
+                    .send_command(Command::SetRoute(8328165916070586159));
+                self.backend
+                    .send_command(Command::SetSpeeds(46542390612732));
             }
             _ => {}
         }

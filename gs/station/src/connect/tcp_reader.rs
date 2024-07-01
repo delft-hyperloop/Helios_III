@@ -14,30 +14,29 @@ pub async fn get_messages_from_tcp(
     loop {
         match reader.read(&mut buffer).await {
             Ok(0) => {
-                message_transmitter.send(crate::api::Message::Status(
-                    crate::Info::ConnectionClosedByClient,
-                ))?;
-                message_transmitter.send(crate::api::Message::Warning(
-                    "Connection closed by client".to_string(),
-                ))?;
-                message_transmitter.send(crate::api::Message::Error(
-                    "Connection closed by client".to_string(),
-                ))?;
+                message_transmitter.send(Message::Status(crate::Info::ConnectionClosedByClient))?;
+                message_transmitter
+                    .send(Message::Warning("Connection closed by client".to_string()))?;
+                message_transmitter
+                    .send(Message::Error("Connection closed by client".to_string()))?;
                 break;
             }
             Ok(n) => {
-                message_transmitter.send(Message::Info(format!("[TRACE] received {} bytes", n)))?;
+                #[cfg(debug_assertions)]
+                // message_transmitter.send(Message::Info(format!("[TRACE] received {} bytes", n)))?;
                 let _ = &buffer[..n].iter().for_each(|x| {
                     byte_queue.push_back(*x);
                 });
-                crate::connect::queueing::parse(&mut byte_queue, message_transmitter.clone(), command_transmitter.clone())
-                    .await?;
+                crate::connect::queueing::parse(
+                    &mut byte_queue,
+                    message_transmitter.clone(),
+                    command_transmitter.clone(),
+                )
+                .await?;
             }
             Err(e) => {
-                message_transmitter.send(crate::api::Message::Error(format!(
-                    "Error reading from socket: {}",
-                    e
-                )))?;
+                message_transmitter
+                    .send(Message::Error(format!("Error reading from socket: {}", e)))?;
                 break;
             }
         }

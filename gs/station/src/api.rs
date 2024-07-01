@@ -2,11 +2,11 @@ use crate::GS_IP_ADDRESS;
 use crate::{Command, Datatype, Info};
 #[cfg(feature = "tui")]
 use ratatui::prelude::Color;
+#[cfg(feature = "tui")]
+use std::str::FromStr;
 use std::sync::mpsc::{Receiver, Sender};
 
-
 include!("../../../util/src/shared/routes.rs");
-
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Datapoint {

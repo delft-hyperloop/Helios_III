@@ -1,7 +1,7 @@
+mod handle_incoming_data;
 mod queueing;
 mod tcp_reader;
 mod tcp_writer;
-mod handle_incoming_data;
 
 use crate::api::{gs_socket, Message};
 use crate::connect::tcp_reader::get_messages_from_tcp;
@@ -53,8 +53,8 @@ async fn process(
         match get_messages_from_tcp(reader, transmit.clone(), command_transmitter.clone()).await {
             Ok(_) => {
                 transmit
-                    .send(Message::Error(
-                        "[get_messages_from_tcp] exited with no errors.".to_string(),
+                    .send(Message::Warning(
+                        "[get_messages_from_tcp] finished with no errors.".to_string(),
                     ))
                     .expect("messaging channel closed... this is irrecoverable");
             }
@@ -73,8 +73,8 @@ async fn process(
         match transmit_commands_to_tcp(command_receiver, transmit.clone(), writer).await {
             Ok(_) => {
                 transmit
-                    .send(Message::Error(
-                        "[transmit_commands_to_tcp] exited with no errors.".to_string(),
+                    .send(Message::Warning(
+                        "[transmit_commands_to_tcp] finished with no errors.".to_string(),
                     ))
                     .expect("messaging channel closed... this is irrecoverable");
             }
