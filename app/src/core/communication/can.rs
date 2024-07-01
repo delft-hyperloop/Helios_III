@@ -94,7 +94,7 @@ pub async fn can_receiving_handler(
                                     .await;
                             } else {
                                 if gfd_counter > 2 {
-                                    gfd_counter = 0;
+                                  gfd_counter = 0;
                                     can_sender.send(Frame::new_extended(0x18EAFF17, &[0x03u8, 0xFFu8, 0x00u8]).unwrap()).await;
                                     can_sender.send(Frame::new_extended(0x18EAFF17, &[0x02u8, 0xFFu8, 0x00u8]).unwrap()).await;
                                 } else {

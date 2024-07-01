@@ -131,7 +131,7 @@ impl BatteryController {
                 self.battery_voltage_overall_bms(data, timestamp).await;
                 info!("Battery Voltage")
             }
-            Datatype::DiagonosticBMSLow | Datatype::DiagonosticBMSHigh => {
+            Datatype::DiagnosticBMSLow | Datatype::DiagnosticBMSHigh => {
                 self.diagnostic_bms(data, timestamp).await;
                 info!("Diagnostic BMS")
             }
@@ -204,7 +204,8 @@ impl BatteryController {
                     let mut i = 0;
                     while i < 8 {
                         self.single_cell_id = i;
-                        let a = &self.voltage_buffer[(i * 14) as usize..((i + 1) * 14) as usize];
+                        let a = &self.voltage_buffer
+                            [(i * 14) as usize..((i + 1) * 14) as usize];
                         // Initialize a new fixed-size array
                         let mut temp: [u64; 14] = [0; 14];
 
@@ -332,9 +333,9 @@ impl BatteryController {
     }
     pub async fn diagnostic_bms(&mut self, data: &[u8], timestamp: u64) {
         let dt = if self.high_voltage {
-            Datatype::DiagonosticBMSHigh
+            Datatype::DiagnosticBMSHigh
         } else {
-            Datatype::DiagonosticBMSLow
+            Datatype::DiagnosticBMSLow
         };
         let mut msg: u64 = 0;
         for (i, &x) in data.iter().enumerate() {
@@ -368,11 +369,7 @@ impl BatteryController {
             .send(Datapoint::new(battery_current_dt, current, timestamp))
             .await;
         self.data_sender
-            .send(Datapoint::new(
-                charge_state_dt,
-                state_of_charge,
-                timestamp,
-            ))
+            .send(Datapoint::new(charge_state_dt, state_of_charge, timestamp))
             .await;
         self.data_sender
             .send(Datapoint::new(
@@ -462,13 +459,13 @@ impl BatteryController {
             Self::module_data_calculation(self.module_buffer).await;
         let (avg_voltage_dt, min_voltage_dt, max_voltage_dt) = Self::match_voltage(module_id).await;
         self.data_sender
-            .send(Datapoint::new(avg_voltage_dt, avg_voltage, timestamp))
+            .send(Datapoint::new(avg_voltage_dt, avg_voltage+200, timestamp))
             .await;
         self.data_sender
-            .send(Datapoint::new(min_voltage_dt, min_voltage, timestamp))
+            .send(Datapoint::new(min_voltage_dt, min_voltage+200, timestamp))
             .await;
         self.data_sender
-            .send(Datapoint::new(max_voltage_dt, max_voltage, timestamp))
+            .send(Datapoint::new(max_voltage_dt, max_voltage+200, timestamp))
             .await;
     }
 

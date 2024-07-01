@@ -7,7 +7,7 @@
         RunInitTab,
         detailTabSet,
         LocationTab,
-        MotorsTab,
+        LeviTab,
         PneumaticsTab,
         BatteriesTab,
         DebugTab, details_pane
@@ -19,7 +19,7 @@
         {name: "Run", value: i++},
         {name: "Location & IMU", value: i++},
         {name: "Batteries", value: i++},
-        {name: "Motors", value: i++},
+        {name: "Levitation", value: i++},
         {name: "Pneumatics", value: i++},
         {name: "Procedures", value: i++},
         {name: "Debug", value: i++}
@@ -51,7 +51,7 @@
                 {:else if $detailTabSet === 3}
                     <BatteriesTab />
                 {:else if $detailTabSet === 4}
-                    <MotorsTab />
+                    <LeviTab />
                 {:else if $detailTabSet === 5}
                     <PneumaticsTab />
                 {:else if $detailTabSet === 6}

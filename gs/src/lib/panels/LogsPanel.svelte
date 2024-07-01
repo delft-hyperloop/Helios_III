@@ -6,12 +6,13 @@
     import Icon from "@iconify/svelte";
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {afterUpdate, onDestroy, onMount} from "svelte";
-    import {EventChannels, type Log} from "$lib/types";
+    import {EventChannel, type Log, type LogType} from "$lib/types";
 
     let unlistens: UnlistenFn[] = [];
     let logContainer: HTMLElement;
     let userHasScrolled = false;
     let logs: Log[] = [];
+    $: logString = "";
 
     let colours = new Map([
         ['STATUS', 'text-surface-50'],
@@ -23,39 +24,23 @@
     let filters: Record<string, boolean> = { 'STATUS': true, 'WARNING': true, 'INFO': true, 'ERROR': true }; // filter variable
 
     $: filteredLogs = logs.filter(log => filters[log.log_type]);
-``
+
     function toggleFilter(type: string) {
         filters[type] = !filters[type];
     }
 
-    function registerChannel(channel: string, log_type: string) {
-        return listen(channel, (event) => {
-            //@ts-ignore
-            logs.push({message: event.payload, log_type, timestamp: Date.now().valueOf()})
+    function registerChannel(channel: string, log_type: LogType) {
+        return listen(channel, (event: {payload: string}) => {
+            // logs = [...logs, {message: event.payload, log_type, timestamp: Date.now().valueOf()}]
+            logString += `[${Date.now().valueOf()}] ${log_type}: ${event.payload}` + "\r\n"
         });
     }
 
     onMount(async () => {
-        unlistens[0] = await listen('status_channel', (event) => {
-            console.log(event)
-            //@ts-ignore
-            logs = [...logs, {message: event.payload, status: 'STATUS', timestamp: Date.now().valueOf()}];
-        });
-        unlistens[1] = await listen(EventChannels.INFO, (event) => {
-            console.log(event)
-         //@ts-ignore
-            logs = [...logs, {message: event.payload, log_type: 'INFO', timestamp: Date.now().valueOf()}];
-        });
-        unlistens[2] = await listen(EventChannels.WARNING, (event) => {
-            console.log(event)
-                                         //@ts-ignore
-            logs = [...logs, {message: event.payload, log_type: 'WARNING', timestamp: Date.now().valueOf()}];
-         });
-        unlistens[3] = await listen(EventChannels.ERROR, (event) => {
-            console.log(event)
-                                         //@ts-ignore
-            logs = [...logs, {message: event.payload, log_type: 'ERROR', timestamp: Date.now().valueOf()}];
-         });
+        unlistens[0] = await registerChannel(EventChannel.STATUS, 'STATUS');
+        unlistens[1] = await registerChannel(EventChannel.INFO, 'INFO');
+        unlistens[2] = await registerChannel(EventChannel.WARNING, 'WARNING')
+        unlistens[3] = await registerChannel(EventChannel.ERROR, 'ERROR');
 
         logContainer.addEventListener('scroll', () => {
             userHasScrolled = logContainer.scrollTop < logContainer.scrollHeight - logContainer.clientHeight;
@@ -93,11 +78,12 @@
     </AppBar>
 
     <div class="h-full p-1 pb-16 overflow-y-auto" bind:this={logContainer}>
-        {#each filteredLogs as log}
-            <div class="flex items-center">
-                <p class="{colours.get(log.log_type)}"><span class="font-mono font-light">[{log.timestamp}]</span>{log.log_type}: {log.message}</p>
-            </div>
-        {/each}
+        <!--{#each filteredLogs as log}-->
+        <!--    <div class="flex items-center">-->
+        <!--        <p class="{colours.get(log.log_type)}"><span class="font-mono font-light">[{log.timestamp}]</span>{log.log_type}: {log.message}</p>-->
+        <!--    </div>-->
+        <!--{/each}-->
+        <p class="whitespace-pre-line">{logString}</p>
         <hr>
     </div>
 </div>

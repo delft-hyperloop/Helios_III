@@ -18,11 +18,11 @@ pub async fn read_from_levi_child_stdout(
                 message_transmitter.send(Message::Error("Levi stdout closed.".to_string()))?;
                 break;
             }
-            Ok(n) => {
-                message_transmitter.send(Message::Info(format!(
-                    "[TRACE] RECEIVED LEVI: ({}), {:?}",
-                    n, &line
-                )))?;
+            Ok(_n) => {
+                // message_transmitter.send(Message::Info(format!(
+                //     "[TRACE] RECEIVED LEVI: ({}), {:?}",
+                //     n, &line
+                // )))?;
                 handle_line_from_levi(
                     &line,
                     message_transmitter.clone(),

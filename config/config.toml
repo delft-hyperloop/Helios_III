@@ -10,7 +10,7 @@ status_channel = "status_channel"
 info_channel = "info_channel"
 warning_channel = "warning_channel"
 error_channel = "error_channel"
-levi_exec_path = "/Users/andtsa/levitest"
+levi_exec_path = "C:/Users/kikoa/RustroverProjects/Helios_III/gs/station/Levi/windows-x86_64-debug/PmpGettingStartedCs.exe"
 
 [pod.net]
 ip = [192, 168, 0, 199]
@@ -81,4 +81,19 @@ colour = "green"
 [[Info]]
 label = "Unsafe"
 colour = "magenta"
+
+[[Info]]
+label = "EnablePropulsionGpio"
+colour = "yellow"
+
+
+[[Info]]
+label = "DisablePropulsionGpio"
+colour = "yellow"
+
+
+[[Info]]
+label = "SetPropulsionSpeed"
+colour = "yellow"
+
 

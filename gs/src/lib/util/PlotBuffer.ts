@@ -1,5 +1,4 @@
 import uPlot from 'uplot';
-import util from './util';
 
 /**
  * This class is a wrapper around uPlot to make it easier to use.
@@ -11,15 +10,33 @@ export class PlotBuffer {
     private _intervalId: number | undefined;
     private readonly _data: uPlot.AlignedData;
     private readonly _opts: uPlot.Options;
+    private readonly buffer: number[][];
+    private readonly updateInterval:number;
 
-    constructor(xDataLength: number, yRange: [number, number], showLegend: boolean = false) {
-        this._data = [util.range(xDataLength)];
+    /**
+     *
+     * @param updateInterval in miliseconds
+     * @param span
+     * @param yRange
+     * @param showLegend
+     * @param label
+     */
+    constructor(updateInterval:number, span:number, yRange: [number, number], showLegend: boolean = false, label: string = "y") {    this.updateInterval = updateInterval;
+        this.buffer = [[]];
+
+        const spanInSeconds = span / 1000;
+        const updateIntervalInSeconds = updateInterval / 1000;
+
+        const xDataLength = Math.round(spanInSeconds / updateIntervalInSeconds);
+
+        const currentTime = Date.now() / 1000;
+        this._data = [Array.from({length: xDataLength}, (_, i) => currentTime - (xDataLength - i) * updateIntervalInSeconds)];
 
         this._opts = {
             width: 500,
             height: 300,
             legend: {show: showLegend},
-            scales: { "%": { auto: false }, y: { range: yRange }, x: { time: false } },
+            scales: { "%": { auto: false }, y: { range: yRange }, x: { time: true } },
             axes: [
                 {
                     stroke: "#e4e6ee",
@@ -43,13 +60,20 @@ export class PlotBuffer {
             }],
         };
 
-        this.addSeries(StrokePresets.hyperLoopGreen());
+        this.addSeries(StrokePresets.hyperLoopGreen(label));
     }
 
     public addSeries(series:uPlot.Series) {
+        const index: number = this._data.length;
         this._data.push(new Int32Array(this._data[0].length));
         this._opts.series.push(series);
         this._plot?.addSeries(series);
+        this.buffer[index] = [];
+    }
+
+    public lastEntryOf(seriesIndex:number):number {
+        if (seriesIndex >= this._data.length) throw new Error("Series index out of bounds");
+        return this._data[seriesIndex][this._data[0].length-1] || 0;
     }
 
     public updateSeries(seriesIndex:number, data:uPlot.TypedArray) {
@@ -72,34 +96,62 @@ export class PlotBuffer {
      * @param value
      */
     public addEntry(seriesIndex:number, value:number) {
-        let datum = this._data[seriesIndex];
-
-        for (let i = 0; i < datum.length-1; i++) {
-            datum[i] = datum[i+1];
-        }
-
-        datum[datum.length-1] = value;
+        this.buffer[seriesIndex].push(value);
+        // let datum = this._data[seriesIndex];
+        //
+        // for (let i = 0; i < datum.length-1; i++) {
+        //     datum[i] = datum[i+1];
+        // }
+        //
+        // datum[datum.length-1] = value;
+        //
+        // // Redraw the chart with the updated data
+        // console.log("")
     }
 
     /**
      * Draw the graph in the specified container.
      * @param plotContainer The HTML element in which the graph should be drawn.
-     * @param updateInterval The interval in milliseconds at which the graph should be updated.
-     * If 0 is passed, the graph will not be updated automatically!
      * This function should not take any arguments and return void.
      * @see [uPlot library](https://leeoniya.github.io/uPlot/) for more information on uPlot.
      * Documentation is severely lacking, but the examples should be helpful.
      */
-    public draw(plotContainer: HTMLDivElement,
-                updateInterval:number) {
+    public draw(plotContainer: HTMLDivElement) {
         this._plot = new uPlot(this._opts, this._data, plotContainer);
 
-        if (updateInterval === 0) {
+        if (this.updateInterval === 0) {
             this.redraw();
             return;
         }
 
-        this._intervalId = window.setInterval(() => this.redraw(), updateInterval);
+        this._intervalId = window.setInterval(() => {
+            this.updateData();
+        }, this.updateInterval);
+    }
+
+    private updateData() {
+        for (let i = 1; i < this.buffer.length; i++) {
+            const value = this.buffer[i].length > 0 ?
+                this.buffer[i].reduce((a, b) => a + b, 0) / this.buffer[i].length :
+                this.lastEntryOf(i);
+
+            // Update the _data array
+            let datum = this._data[i];
+            for (let j = 0; j < datum.length - 1; j++) {
+                datum[j] = datum[j + 1];
+            }
+            datum[datum.length - 1] = value;
+
+
+
+            this.buffer[i] = [];
+        }
+
+        for (let i = 0; i < this._data[0].length - 1; i++) {
+            this._data[0][i] = this._data[0][i + 1];
+        }
+        this._data[0][this._data[0].length - 1] = Date.now() / 1000;
+        this.redraw();
     }
 
     /**
@@ -109,7 +161,7 @@ export class PlotBuffer {
     public redraw() {
         if (this._plot) {
             this._plot.batch(() => {
-                this._plot!.setData(this._data, false);
+                this._plot!.setData(this._data, true);
                 this._plot!.redraw(false, false);
             });
         }
@@ -140,36 +192,72 @@ export class PlotBuffer {
 }
 
 export class StrokePresets {
-    public static hyperLoopGreen(): uPlot.Series {
+    public static hyperLoopGreen(label: string = "y"): uPlot.Series {
         return {
             fill: "rgba(159,227,205,0.1)",
-            label: "y",
+            label,
             spanGaps: false,
             stroke: "#0ea774"
         }
     }
 
-    public static theoretical(): uPlot.Series {
+    public static theoretical(label: string = "y"): uPlot.Series {
         return {
-            label: "y",
+            label,
             spanGaps: false,
             stroke: "#ff0a43"
         }
     }
 
-    public static yellow(): uPlot.Series {
+    public static yellow(label: string = "y"): uPlot.Series {
         return {
-            label: "y",
+            label,
             spanGaps: false,
             stroke: "#ffde0a"
         }
     }
 
-    public static blue(): uPlot.Series {
+    public static blue(label: string = "y"): uPlot.Series {
         return {
-            label: "y",
+            label,
             spanGaps: false,
             stroke: "#0a85ff"
+        }
+    }
+
+    public static hyperloopGreenDashed(label: string = "y"): uPlot.Series {
+        return {
+            label,
+            spanGaps: false,
+            stroke: "#0ea774",
+            dash: [10, 5]
+        }
+    }
+
+    public static theoreticalDashed(label: string = "y"): uPlot.Series {
+        return {
+            label,
+            spanGaps: false,
+            stroke: "#ff0a43",
+            dash: [10, 5]
+        }
+    }
+
+    public static yellowDashed(label: string = "y"): uPlot.Series {
+        return {
+            label,
+            spanGaps: false,
+            stroke: "#ffde0a",
+            dash: [10, 5]
+        }
+    }
+
+    public static blueDashed(label: string = "y"): uPlot.Series {
+        return {
+            label,
+            spanGaps: false,
+            stroke: "#0a85ff",
+            dash: [10, 5]
         }
     }
 }

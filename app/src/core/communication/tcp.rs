@@ -62,7 +62,7 @@ pub async fn tcp_connection_handler(
                 let d = embassy_time::Instant::now().as_millis() - last_valid_timestamp;
                 error!("[tcp:stack] error connecting to gs: {:?} (diff={})", e, d);
                 if d > IP_TIMEOUT {
-                    event_sender.send(Event::EmergencyBrakeCommand).await;
+                    event_sender.send(Event::ConnectionLossEvent).await;
                 }
                 Timer::after_millis(500).await;
                 continue 'netstack;
@@ -181,25 +181,29 @@ pub async fn tcp_connection_handler(
                                         .await;
                                     let _ = socket.flush().await;
                                 }
-                                Command::Levitate(_) => {
+                                Command::launch(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Levitate command received");
-                                    event_sender.send(Event::StartLevitatingCommand).await;
+                                    event_sender.send(Event::LeviLaunchingEvent).await;
                                 }
-                                Command::StopLevitating(_) => {
+                                Command::land(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] StopLevitating command received");
-                                    // event_sender.send(Event::).await; // TODO: theres no stop levitating event??
+                                    event_sender.send(Event::LeviLandingEvent).await;
                                 }
-                                Command::Configure(x) => {
+                                Command::SetRoute(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Configure command received");
-                                    event_sender.send(Event::SetRunConfig(x)).await;
+                                    event_sender.send(Event::SetRoute(x)).await;
+                                }
+                                Command::SetSpeeds(x) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] Configure command received");
+                                    event_sender.send(Event::SetRunConfigSpeed(x)).await;
                                 }
                                 Command::StartRun(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Start Run command received");
-                                    event_sender.send(Event::StartLevitatingCommand).await;
                                     event_sender.send(Event::StartAcceleratingCommand).await;
                                 }
                                 Command::Shutdown(_) => {
@@ -237,7 +241,17 @@ pub async fn tcp_connection_handler(
                                 Command::Heartbeat(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Heartbeat command received {} :)", x);
-                                    match socket.write_all(&Datapoint::new(Datatype::ResponseHeartbeat, x, embassy_time::Instant::now().as_ticks()).as_bytes()).await {
+                                    match socket
+                                        .write_all(
+                                            &Datapoint::new(
+                                                Datatype::ResponseHeartbeat,
+                                                x,
+                                                embassy_time::Instant::now().as_ticks(),
+                                            )
+                                            .as_bytes(),
+                                        )
+                                        .await
+                                    {
                                         Ok(_) => {}
                                         Err(e) => {
                                             error!("Couldn't respond to heartbeat: {}", e);

@@ -1,3 +1,5 @@
+use crate::api::Message;
+use crate::api::Message::Error;
 use crate::Command;
 use tokio::io::AsyncWriteExt;
 use tokio::net::tcp::OwnedWriteHalf;
@@ -17,12 +19,17 @@ pub async fn transmit_commands_to_tcp(
                     .await
                 {
                     Ok(_) => {
-                        status_transmitter.send(crate::api::Message::Info(
-                            "[TRACE][tcp] Sent keepalive".to_string(),
-                        )).expect("messaging channel closed, cannot recover");
+                        status_transmitter
+                            .send(crate::api::Message::Info(
+                                "[TRACE][tcp] Sent keepalive".to_string(),
+                            ))
+                            .expect("messaging channel closed, cannot recover");
                     }
                     Err(e) => {
-                        eprintln!("Error sending keepalive over tcp: {:?}", e);
+                        //eprintln!("Error sending keepalive over tcp: {:?}", e);
+                        status_transmitter
+                            .send(Error(format!("Error sending keepalive over tcp: {:?}", e)))
+                            .unwrap();
                         break;
                     }
                 }
@@ -30,14 +37,22 @@ pub async fn transmit_commands_to_tcp(
             #[allow(clippy::single_match)]
             match command_receiver.try_recv() {
                 Ok(command) => {
+                    if matches!(command, Command::Shutdown(_)) {
+                        status_transmitter
+                            .send(Message::Warning("Closing connection...".into())).unwrap();
+                        writer.shutdown().await.unwrap();
+                        break;
+                    }
                     let bytes = command.as_bytes();
                     match writer.write_all(&bytes).await {
                         Ok(_) => {
                             last_send_timestamp = std::time::Instant::now();
-                            status_transmitter.send(crate::api::Message::Info(format!(
-                                "[tcp] Sent command: {:?}",
-                                command
-                            ))).expect("messaging channel closed, cannot recover");
+                            status_transmitter
+                                .send(crate::api::Message::Info(format!(
+                                    "[tcp] Sent command: {:?}",
+                                    command
+                                )))
+                                .expect("messaging channel closed, cannot recover");
                         }
                         Err(e) => {
                             eprintln!("Error sending command over tcp: {:?}", e);

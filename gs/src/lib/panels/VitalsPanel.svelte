@@ -16,24 +16,71 @@
     let width: number;
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const lvBattery = storeManager.getStore("BatteryBalanceLow");
-    const hvBattery = storeManager.getStore("BatteryBalanceHigh");
+    const lvBattery = storeManager.getStore("BatteryEstimatedChargeLow");
+    const hvBattery = storeManager.getStore("BatteryEstimatedChargeHigh");
+
+    const minVHigh = storeManager.getStore("BatteryMinVoltageHigh");
+    const maxVHigh = storeManager.getStore("BatteryMaxVoltageHigh");
+    const avgVHigh = storeManager.getStore("BatteryVoltageHigh");
+
+    const minTempHigh = storeManager.getStore("BatteryMinTemperatureHigh");
+    const maxTempHigh = storeManager.getStore("BatteryMaxTemperatureHigh");
+    const avgTempHigh = storeManager.getStore("BatteryTemperatureHigh");
+
+    const maxVLow = storeManager.getStore("BatteryMaxVoltageLow")
+    const minVLow = storeManager.getStore("BatteryMinVoltageLow")
+    const avgVLow = storeManager.getStore("BatteryVoltageLow")
+
+    const maxTempLow = storeManager.getStore("BatteryMaxTemperatureLow")
+    const minTempLow = storeManager.getStore("BatteryMinTemperatureLow")
+    const avgTempLow = storeManager.getStore("BatteryTemperatureLow")
+
+    const currentLow = storeManager.getStore("BatteryCurrentLow")
+    const currentHigh = storeManager.getStore("BatteryCurrentHigh")
+
+    const speed = storeManager.getStore("Velocity");
+    const position = storeManager.getStore("Localisation");
+
+    const propTemp = storeManager.getStore("PropulsionCurrent");
+    const leviTemp = storeManager.getStore("LevitationTemperature");
+    const brakeTemp = storeManager.getStore("BrakeTemperature");
+
+    const ins = storeManager.getStore("InsulationOriginal")
+    const insp = storeManager.getStore("InsulationPositive")
+    const insn = storeManager.getStore("InsulationNegative")
+    const imdv = storeManager.getStore("IMDVoltageDetails")
+
+    const totalLVV = storeManager.getStore("TotalBatteryVoltageLow");
+    const totalHVV = storeManager.getStore("TotalBatteryVoltageHigh");
+
+    const upDrawerVB = storeManager.getStore("Average_Temp_VB_top");
+    const downDrawerVB = storeManager.getStore("Average_Temp_VB_Bottom");
+    const outsideVB = storeManager.getStore("Ambient_temp");
 
     let tableArr: any[][];
     let tableArr2: any[][];
-    $: tableArr = [
-        ["Upper drawer VB", 0],
-        ["Bottom drawer VB", 0],
-        ["outside of VB", 0],
-        ["HEMS", 0],
-        ["Motor core", 0],
+
+    let tableBatteryTitles = ["", "HV Voltages", "HV Temp", "LV Voltages", "LV Temp"]
+    $: tableBatteryVitals = [
+        ["Min", $minVHigh + " V", $minTempHigh + " °C", $minVLow + " V", $minTempLow + " °C"],
+        ["Max", $maxVHigh + " V", $maxTempHigh + " °C", $maxVLow + " V", $maxTempLow + " °C"],
+        ["Avg", $avgVHigh + " V", $avgTempHigh + " °C", $avgVLow + " V", $avgTempLow + " °C"]
     ]
+
+    $: tableArr = [
+        ["Upper drawer VB", $upDrawerVB],
+        ["Bottom drawer VB", $downDrawerVB],
+        ["Outside of VB", $outsideVB],
+        ["Propulsion", $propTemp],
+        ["Levitation", $leviTemp],
+        ["Brake", $brakeTemp],
+    ]
+
     $: tableArr2 = [
-        ["Current State", 0],
-        ["Bottom drawer VB", 0],
-        ["outside of VB", 0],
-        ["HEMS", 0],
-        ["Motor core", 0]
+        ["Insulation", $ins],
+        ["Insulation+", $insp],
+        ["Insulation-", $insn],
+        ["IMD Voltage", $imdv],
     ]
 
     const toastStore = getToastStore();
@@ -57,7 +104,7 @@
                 toastStore.trigger({
                     //@ts-ignore
                     message: "Abort operation triggered",
-                    background: 'variant-filled-error',
+                    background: 'variant-filled-error'
                 });
             }} className="bg-error-500 text-surface-100 btn py-0 border border-error-500 rounded-sm" cmd="EmergencyBrake"/>
         </svelte:fragment>
@@ -89,22 +136,31 @@
                 <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4">
-                            <p>Velocity: <span class="font-mono font-medium">{0}</span></p>
-                            <p>Position: <span class="font-mono font-medium">{0}</span></p>
+                            <p>
+                                Velocity: <span class="font-mono font-medium">{$speed}</span>
+                                <br>
+                                Position: <span class="font-mono font-medium">{$position}</span>
+                            </p>
+                            <p>
+                                HV Current: <span class="font-mono font-medium">{$currentHigh}</span>
+                                <br>
+                                LV Current: <span class="font-mono font-medium">{$currentLow}</span>
+                            </p>
                         </div>
-                        <div class="flex gap-4">
-                            <div class="flex gap-2">
-                                <span>LV: </span>
-                                <Battery orientation="horizontal" perc={Number($lvBattery)}/>
-                            </div>
-                            <div class="flex gap-2">
-                                <span>HV: </span>
-                                <Battery orientation="horizontal" perc={Number($hvBattery)}/>
-                            </div>
+                        <div style="grid-template-columns: 1fr 2fr 2fr;" class="grid gap-y-2">
+                            <span>LV: </span>
+                            <Battery orientation="horizontal" perc={Number($lvBattery)}/>
+                            <span>Total: <span class="font-mono font-medium">{$totalLVV} V</span></span>
+                            <span>HV: </span>
+                            <Battery orientation="horizontal" perc={Number($hvBattery)}/>
+                            <span>Total: <span class="font-mono font-medium">{$totalHVV} V</span></span>
                         </div>
                     </div>
                 </Tile>
                 <!--     TEMPERATURE TABLE      -->
+                <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
+                    <Table titles={tableBatteryTitles} tableArr={tableBatteryVitals}/>
+                </Tile>
                 <Tile containerClass="pt-2 pb-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
                     <Table {tableArr}/>
                 </Tile>

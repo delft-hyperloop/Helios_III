@@ -2,7 +2,6 @@
 
 use serde::Deserialize;
 use std::fs;
-use std::sync::Mutex;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -15,7 +14,17 @@ pub struct Command {
     pub id: u16,
 }
 
-pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> String {
+pub fn get_command_ids(path: &str) -> Vec<u16> {
+    let config_str = fs::read_to_string(path).unwrap();
+    let config: Config = toml::from_str(&config_str).unwrap();
+    let mut ids = Vec::new();
+    for command in config.Command {
+        ids.push(command.id);
+    }
+    ids
+}
+
+pub fn generate_commands(path: &str, drv: bool) -> String {
     let config_str = fs::read_to_string(path).unwrap();
     let config: Config = toml::from_str(&config_str).unwrap();
     // println!("{:?}", config);
@@ -24,27 +33,11 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> St
     let mut match_to_id = String::new();
     let mut match_from_id = String::new();
     let mut to_bytes = String::new();
-    let mut id_list = id_list.lock().unwrap();
     let mut ids = Vec::new();
     let mut names = String::new();
     let mut name_list = Vec::new();
     let mut to_idx = String::new();
     for (i, command) in config.Command.iter().enumerate() {
-        if command.id & 0b1111_1000_0000_0000 != 0 {
-            panic!(
-                "IDs need to be u11. Found {} > {}",
-                command.id,
-                2u16.pow(11)
-            );
-        } else {
-            if id_list.contains(&command.id) {
-                panic!(
-                    "ID {} already taken!! {}:{} : pick a different one.",
-                    command.id, command.name, command.id
-                );
-            }
-            id_list.push(command.id);
-        }
         enum_definitions.push_str(&format!("    {}(u64),\n", command.name));
         match_to_id.push_str(&format!(
             "            Command::{}(_) => {},\n",
@@ -59,12 +52,12 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> St
             command.name
         ));
         ids.push(command.id.to_string());
-        name_list.push(format!("\"{}\"", command.name.to_string()));
-        names.push_str(&*format!(
+        name_list.push(format!("\"{}\"", command.name));
+        names.push_str(&format!(
             "            \"{}\" => Command::{}(p),\n",
             &command.name, &command.name
         ));
-        to_idx.push_str(&*format!(
+        to_idx.push_str(&format!(
             "            Command::{}(_) => {i},\n",
             &command.name
         ));
@@ -125,7 +118,7 @@ impl Command {{
 pub const COMMAND_IDS: [u16; {}] = [{}];
 pub const COMMANDS_LIST: [&str; {}] = [{}];
 ",
-        if drv { "#[derive(Debug, Clone, Copy, defmt::Format)]" } else { "#[derive(Debug, Clone, Copy)]" },
+        if drv { "#[derive(Debug, Clone, Copy, defmt::Format, PartialEq)]" } else { "#[derive(Debug, Clone, Copy, PartialEq)]" },
         enum_definitions, match_to_id, match_from_id, to_bytes, names,
         to_idx,
         ids.len(), ids.join(", "), name_list.len(), name_list.join(", ")

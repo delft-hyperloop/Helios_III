@@ -1,5 +1,6 @@
 <script lang="ts">
     import {onMount} from "svelte";
+    import {GrandDataDistributor} from "$lib";
 
     export let size:'sm'|'lg' = 'sm'
 
@@ -19,6 +20,10 @@
     let lane_switch_state:SVGGElement;
     let all_states: SVGGElement[];
 
+
+    const storeManager = GrandDataDistributor.getInstance().stores;
+    const fsmState = storeManager.getStore("FSMState");
+
     function turn_on(state:SVGGElement) {
         if (state === emerg_brake_state) {
             state.style.fill = '#D61111'
@@ -36,7 +41,7 @@
 
         setInterval(() => {
             turn_off_all(all_states);
-            turn_on(all_states[2 % all_states.length])
+            turn_on(all_states[$fsmState % all_states.length])
         }, 100)
     })
 

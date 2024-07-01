@@ -3,14 +3,15 @@
 
     export let pressure_left:number;
     export let pressure_right:number;
-    export let max_pressure:number;
+    export let max_pressure_left:number;
+    export let max_pressure_right:number;
 
     let colour_left: string;
     let colour_right: string;
 
     $: {
-        colour_left = util.colourCode(pressure_left, max_pressure);
-        colour_right = util.colourCode(pressure_right, max_pressure);
+        colour_left = util.colourCode(pressure_left, max_pressure_left);
+        colour_right = util.colourCode(pressure_right, max_pressure_right);
     }
 
     export let background = "bg-surface-900"

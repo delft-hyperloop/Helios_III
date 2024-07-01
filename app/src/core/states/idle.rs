@@ -2,7 +2,7 @@ use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::transit;
+use crate::{Info, transit};
 use crate::Event;
 
 impl Fsm {
@@ -12,6 +12,16 @@ impl Fsm {
 
     pub async fn react_idle(&mut self, event: Event) {
         match event {
+            Event::DisablePropulsionCommand => {
+                self.peripherals.propulsion_controller.disable();
+                self.log(Info::DisablePropulsionGpio).await;
+                self.send_data(crate::Datatype::PropGPIODebug, 0).await;
+            }
+            Event::EnablePropulsionCommand => {
+                self.peripherals.propulsion_controller.enable();
+                self.log(Info::EnablePropulsionGpio).await;
+                self.send_data(crate::Datatype::PropGPIODebug, 1).await;
+            }
             Event::TurnOnHVCommand => {
                 self.pod_unsafe().await;
                 //todo check for preconditions
@@ -24,12 +34,12 @@ impl Fsm {
                     .hv_peripherals
                     .power_on_hv_procedure()
                     .await;
-                transit!(self, State::HVSystemChecking);
+                transit!(self, State::HVOn);
             }
             Event::ArmBrakesCommand => {
                 #[cfg(debug_assertions)]
                 info!("[fsm] arming brakes");
-                self.peripherals.braking_controller.arm_breaks();
+                self.peripherals.braking_controller.arm_breaks().await;
             }
             _ => {
                 info!("The current state ignores {}", event.to_str());

@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
 extern crate serde;
+use goose_utils::check_ids;
 use goose_utils::commands::generate_commands;
 use goose_utils::datatypes::generate_datatypes;
 use goose_utils::events::generate_events;
@@ -9,7 +10,6 @@ use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::sync::Mutex;
 
 #[derive(Debug, Deserialize)]
 struct Config {
@@ -53,7 +53,8 @@ fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
     let dest_path = Path::new(&out_dir).join("config.rs");
     let gs_file = fs::read_to_string(CONFIG_PATH).unwrap();
-    let id_list = Mutex::new(Vec::new());
+
+    let _ = check_ids(DATATYPES_PATH, COMMANDS_PATH, EVENTS_PATH);
 
     let config: Config = toml::from_str(&gs_file).unwrap();
 
@@ -65,9 +66,9 @@ fn main() {
         config.gs.port,
         config.gs.force,
     ));
-    content.push_str(&generate_datatypes(&id_list, DATATYPES_PATH, true));
-    content.push_str(&generate_commands(&id_list, COMMANDS_PATH, false));
-    content.push_str(&generate_events(&id_list, EVENTS_PATH, false));
+    content.push_str(&generate_datatypes(DATATYPES_PATH, true));
+    content.push_str(&generate_commands(COMMANDS_PATH, false));
+    content.push_str(&generate_events(EVENTS_PATH, false));
     content.push_str(&configure_channels(&config));
     content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, true));
 

@@ -9,7 +9,6 @@ internal class EnableAndMove
 {
 public static string RunStateCommand(ICommandQueue commandQueue, List<CommandType> commandTypes)
 {
-  Console.WriteLine("Queueing a command sequence [ {0} ] on {1}.", string.Join(", ", commandTypes), commandQueue.FullName);
 
   var sequence = commandQueue.CreateCommandSequence(commandTypes);
   commandQueue.Queue(sequence);
@@ -38,11 +37,11 @@ public static void EnableAxis(Levitation arcas)
                 arcas.VerticalAxis.ResetFault();
                 arcas.VerticalQueue.Clear();
                 string result = RunStateCommand(arcas.VerticalQueue, new List<CommandType> { CommandType.Shutdown, CommandType.EnableOperation });
-                Console.WriteLine("vertical_{0}", result);
+                Console.WriteLine("INFO:vertical_{0}", result);
             }
             catch (Exception)
             {
-                Console.WriteLine("vertical_error");
+                Console.WriteLine("ERROR:vertical_error");
             }
 
             try
@@ -50,11 +49,11 @@ public static void EnableAxis(Levitation arcas)
                 arcas.LateralAxis.ResetFault();
                 arcas.LateralQueue.Clear();
                 string result = RunStateCommand(arcas.LateralQueue, new List<CommandType> { CommandType.Shutdown, CommandType.EnableOperation });
-                Console.WriteLine("lateral_{0}", result);
+                Console.WriteLine("INFO:lateral_{0}", result);
             }
             catch (Exception)
             {
-                Console.WriteLine("lateral_error");
+                Console.WriteLine("ERROR:lateral_error");
             }
 
         }
@@ -66,16 +65,16 @@ public static void EnableAxis(Levitation arcas)
                 string result = RunStateCommand(arcas.VerticalQueue, new List<CommandType> { CommandType.DisableVoltage });
                 if (result == "on")
                 {
-                    Console.WriteLine("vertical_{0}", "off"); 
+                    Console.WriteLine("INFO:vertical_{0}", "off"); 
                 }
                 else
                 {
-                    Console.WriteLine("vertical_error");
+                    Console.WriteLine("CRITICAL:vertical_error");
                 }
             }
             catch (Exception)
             {
-                Console.WriteLine("vertical_error");
+                Console.WriteLine("CRTICAL:vertical_error");
             }
 
             try
@@ -83,17 +82,17 @@ public static void EnableAxis(Levitation arcas)
                 string result = RunStateCommand(arcas.LateralQueue, new List<CommandType> { CommandType.DisableVoltage });
                 if (result == "on")
                 {
-                    Console.WriteLine("lateral_{0}", "off");
+                    Console.WriteLine("INFO:lateral_{0}", "off");
                 }
                 else
                 {
-                    Console.WriteLine("lateral_error");
+                    Console.WriteLine("CRITICAL:lateral_error");
                 }
             }
             catch (Exception)
             {
 
-                Console.WriteLine("lateral_error");
+                Console.WriteLine("CRITICAL:lateral_error");
             }
         }
     }

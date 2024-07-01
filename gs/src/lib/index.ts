@@ -5,7 +5,7 @@ import DetailsPanel from "$lib/panels/DetailsPanel.svelte";
 
 // Tabs
 import BatteriesTab from "$lib/panels/tabs/BatteriesTab.svelte";
-import MotorsTab from "$lib/panels/tabs/MotorsTab.svelte";
+import LeviTab from "$lib/panels/tabs/LeviTab.svelte";
 import HomeTab from "$lib/panels/tabs/HomeTab.svelte";
 import LocationTab from "$lib/panels/tabs/LocationTab.svelte";
 import ProceduresTab from "$lib/panels/tabs/ProceduresTab.svelte";
@@ -29,13 +29,17 @@ import Tile from "$lib/components/generic/Tile.svelte";
 import TileGrid from "$lib/components/generic/TileGrid.svelte";
 import ToggleCommand from "$lib/components/abstract/ToggleCommand.svelte";
 import TauriCommand from "$lib/components/abstract/TauriCommand.svelte";
+import SpeedsInput from "$lib/components/SpeedsInput.svelte";
 
 // Utils
 import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
 import {GrandDataDistributor} from "$lib/util/GrandDataDistributor";
 import util from "$lib/util/util";
+import {tempParse, voltParse, addEntryToChart, u64ToDouble,pressureParse,sensorParse} from "$lib/util/parsers";
 
-import type {NamedCommand, EventChannel, Log} from "$lib/types";
+// Types
+import type {NamedCommand, Log, LogType, IntervalFunction} from "$lib/types";
+import {EventChannel, RunMode} from "$lib/types";
 
 // Stores
 import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn, serverStatus} from "$lib/stores/state";
@@ -45,6 +49,12 @@ export const chartDataStore = new Map<string, uPlot.AlignedData>();
 
 // Export all
 export {
+    sensorParse,
+    pressureParse,
+    tempParse,
+    voltParse,
+    addEntryToChart,
+    u64ToDouble,
     TauriCommand,
     ToggleCommand,
     inputTurn,
@@ -62,7 +72,7 @@ export {
     LogsPanel,
     DetailsPanel,
     BatteriesTab,
-    MotorsTab,
+    LeviTab,
     HomeTab,
     LocationTab,
     ProceduresTab,
@@ -80,6 +90,9 @@ export {
     inputSpeed,
     Pneumatics,
     Localiser,
-    TheoreticalRun
+    TheoreticalRun,
+    EventChannel,
+    SpeedsInput,
+    RunMode
 }
-export type {NamedCommand, EventChannel, Log}
+export type {NamedCommand, Log, LogType, IntervalFunction}
