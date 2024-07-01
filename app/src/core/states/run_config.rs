@@ -5,7 +5,7 @@ use defmt::info;
 use crate::core::controllers::breaking_controller::BRAKE;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::transit;
+use crate::{Info, transit};
 use crate::Event;
 
 impl Fsm {
@@ -56,6 +56,16 @@ impl Fsm {
 
                 transit!(self, State::Exit);
                 todo!();
+            }
+
+            // TODO: delete these two
+            Event::DisablePropulsionCommand => {
+                self.peripherals.propulsion_controller.disable();
+                self.log(Info::DisablePropulsionGpio).await;
+            }
+            Event::EnablePropulsionCommand => {
+                self.peripherals.propulsion_controller.enable();
+                self.log(Info::EnablePropulsionGpio).await;
             }
             _ => {
                 info!("The current state ignores {}", event.to_str());
