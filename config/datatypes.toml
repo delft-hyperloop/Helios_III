@@ -767,3 +767,7 @@ id = 0x160
 name = "BrakingRearmDebug"
 id = 0x161
 
+[[Datatype]]
+name = "PropGPIODebug"
+id = 0x162
+

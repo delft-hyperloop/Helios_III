@@ -15,10 +15,12 @@ impl Fsm {
             Event::DisablePropulsionCommand => {
                 self.peripherals.propulsion_controller.disable();
                 self.log(Info::DisablePropulsionGpio).await;
+                self.send_data(crate::Datatype::PropGPIODebug, 0).await;
             }
             Event::EnablePropulsionCommand => {
                 self.peripherals.propulsion_controller.enable();
                 self.log(Info::EnablePropulsionGpio).await;
+                self.send_data(crate::Datatype::PropGPIODebug, 1).await;
             }
             Event::TurnOnHVCommand => {
                 self.pod_unsafe().await;
