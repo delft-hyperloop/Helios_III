@@ -82,14 +82,16 @@ impl CanController {
             event_sender,
             x.spawn(can_receiving_handler(
                 x,
-                event_sender,
-                can_one_receiver,
-                data_sender,
-                c2_rx,
-                None
-            ))
-        );
-        try_spawn!(
+                    event_sender,
+                    _can_one_sender,
+                    data_sender,
+                    c1_rx,
+                    None
+                ))
+            );
+        try_spawn!
+
+        (
             event_sender,
             x.spawn(can_receiving_handler(
                 x,

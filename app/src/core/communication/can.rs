@@ -84,16 +84,16 @@ pub async fn can_receiving_handler(
                                     data_sender,
                                     timestamp.as_ticks(),
                                 )
-                                .await;
+                                    .await;
                             } else if id == Datatype::IMDIsolationDetails.to_id() {
                                 ground_fault_detection_voltage_details(
                                     frame.data(),
                                     data_sender,
                                     timestamp.as_ticks(),
                                 )
-                                .await;
+                                    .await;
                             } else {
-                                if (gfd_counter > 5){
+                                if gfd_counter > 2 {
                                     gfd_counter = 0;
                                     can_sender.send(Frame::new_extended(0x18EAFF17, &[0x03u8, 0xFFu8, 0x00u8]).unwrap()).await;
                                     can_sender.send(Frame::new_extended(0x18EAFF17, &[0x02u8, 0xFFu8, 0x00u8]).unwrap()).await;
@@ -140,6 +140,6 @@ pub async fn can_receiving_handler(
         // # VERY IMPORTANT
         // without this, our main pcb is magically converted to an adhd CAN pcb
         // with no mind for anything else. Tread carefully around it
-        Timer::after_millis(1).await;
+        Timer::after_micros(500).await;
     }
 }

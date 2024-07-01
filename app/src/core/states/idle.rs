@@ -17,7 +17,6 @@ impl Fsm {
                 //todo check for preconditions
                 #[cfg(debug_assertions)] // todo actually turn on hv
                 info!("Starting HV System");
-                info!("Starting HV System");
                 // self.peripherals
                 //     .braking_controller
                 //     .start_run_brake_precondition();
