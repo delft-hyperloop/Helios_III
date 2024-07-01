@@ -103,6 +103,17 @@ impl Widget for &App {
             )
             .split(main_chunks[0]);
 
+        let left_bottom = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints(
+                [
+                    Constraint::Percentage(50), // top side for text stream
+                    Constraint::Percentage(50), // bottom side for the table
+                ]
+                    .as_ref(),
+            )
+            .split(left_chunks[1]);
+
         let text_block = Block::default()
             .title("Text Stream")
             .title_style(Style::default().fg(Color::LightBlue).bold()) // Styling the title
@@ -190,6 +201,11 @@ impl Widget for &App {
             .title_style(Style::default().fg(Color::LightBlue).bold()) // Styling the title
             .border_style(Style::default().fg(Color::Blue))
             .borders(Borders::ALL);
+        let data_block2 = Block::default()
+            .title("Other Info")
+            .title_style(Style::default().fg(Color::LightBlue).bold()) // Styling the title
+            .border_style(Style::default().fg(Color::Blue))
+            .borders(Borders::ALL);
 
         let mut data = vec![
             Line::styled(
@@ -216,8 +232,15 @@ impl Widget for &App {
                     .underlined(),
             ),
         ];
-        for (k, v) in &self.special_data {
+        for (k, v) in self.special_data.iter().take(self.special_data.len()/2 - 5) {
             data.push(Line::styled(
+                format!("{:?}: {}", k, v),
+                Style::default().fg(Color::White),
+            ));
+        }
+        let mut data2 = vec![];
+        for (k, v) in self.special_data.iter().skip(self.special_data.len()/2 - 5) {
+            data2.push(Line::styled(
                 format!("{:?}: {}", k, v),
                 Style::default().fg(Color::White),
             ));
@@ -227,6 +250,11 @@ impl Widget for &App {
             .wrap(Wrap { trim: false })
             .style(Style::new().fg(Color::White).bg(Color::Black))
             .block(data_block);
-        data_paragraph.render(left_chunks[1], buf);
+        let data_paragraph2 = Paragraph::new(data2)
+            .wrap(Wrap { trim: false })
+            .style(Style::new().fg(Color::White).bg(Color::Black))
+            .block(data_block2);
+        data_paragraph.render(left_bottom[0], buf);
+        data_paragraph2.render(left_bottom[1], buf);
     }
 }
