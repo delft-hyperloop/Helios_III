@@ -131,7 +131,7 @@ impl FSMPeripherals {
                 p.ADC2,
                 p.PA5,
                 p.PA6,
-                p.PE5,
+                p.PB1,
             )
             .await,
         }
