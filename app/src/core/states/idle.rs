@@ -41,6 +41,9 @@ impl Fsm {
                 info!("[fsm] arming brakes");
                 self.peripherals.braking_controller.arm_breaks().await;
             }
+            Event::ReConfigureCommand => {
+                transit!(self, State::RunConfig);
+            }
             _ => {
                 info!("The current state ignores {}", event.to_str());
             }

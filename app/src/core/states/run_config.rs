@@ -59,6 +59,9 @@ impl Fsm {
             Event::SystemResetCommand => {
                 self.send_data(crate::Datatype::FSMState, self.state as u64).await;
             }
+            Event::ReConfigureCommand => {
+                transit!(self, State::RunConfig);
+            }
 
             // TODO: delete these two
             Event::DisablePropulsionCommand => {
