@@ -24,7 +24,7 @@ pub fn default_configuration() -> Config {
     // });
     config.rcc.hse = Some(rcc::Hse {
         // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
-        freq: embassy_stm32::time::Hertz(24_000_000),
+        freq: embassy_stm32::time::Hertz(25_000_000),
         mode: rcc::HseMode::Oscillator,
     });
     config.rcc.pll1 = Some(Pll {
