@@ -1,5 +1,5 @@
 [gs]
-ip = [192,168,0,93]
+ip = [192,168,0,232]
 force = true
 port = 6942
 udp_port = 6943
@@ -83,5 +83,17 @@ label = "Unsafe"
 colour = "magenta"
 
 [[Info]]
+label = "EnablePropulsionGpio"
+colour = "yellow"
+
+
+[[Info]]
+label = "DisablePropulsionGpio"
+colour = "yellow"
+
+
+[[Info]]
 label = "SetPropulsionSpeed"
 colour = "yellow"
+
+
