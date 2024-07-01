@@ -30,11 +30,12 @@ const u64ToDouble = (u64: bigint): number => {
 }
 
 const sensorParse = (u64 : bigint) : number =>{
-    return u64>MAX_VALUE-100000 ? -(MAX_VALUE-Number(u64)+1)/100 : Number(u64)/100;
+    return u64>MAX_VALUE-100000 ? - (MAX_VALUE-Number(u64)+1)/100 : Number(u64)/100;
 }
 
 const pressureParse = (u64 : bigint) : number => {
-    return u64>-MAX_VALUE-100000 ? 0 : Number(u64)/100;
+    console.log(u64);
+    return u64>100_000_000 ? 0 : Number(u64)/100;
 }
 
 const metersPerMinuteToByte = (mpm: number): number => {

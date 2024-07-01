@@ -23,7 +23,7 @@ pub async fn get_messages_from_tcp(
             }
             Ok(n) => {
                 #[cfg(debug_assertions)]
-                message_transmitter.send(Message::Info(format!("[TRACE] received {} bytes", n)))?;
+                // message_transmitter.send(Message::Info(format!("[TRACE] received {} bytes", n)))?;
                 let _ = &buffer[..n].iter().for_each(|x| {
                     byte_queue.push_back(*x);
                 });
