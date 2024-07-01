@@ -56,6 +56,9 @@ impl Fsm {
                 transit!(self, State::Exit);
                 todo!();
             }
+            Event::SystemResetCommand => {
+                self.send_data(crate::Datatype::FSMState, self.state as u64).await;
+            }
 
             // TODO: delete these two
             Event::DisablePropulsionCommand => {
