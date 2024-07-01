@@ -7,7 +7,7 @@ use embassy_stm32::dac::Value;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Speed;
-use embassy_stm32::peripherals::ADC2;
+use embassy_stm32::peripherals::{ADC2, PB1};
 use embassy_stm32::peripherals::DAC1;
 use embassy_stm32::peripherals::PA4;
 use embassy_stm32::peripherals::PA5;
@@ -50,7 +50,7 @@ impl PropulsionController {
         adc2: ADC2,
         pa5: PA5,
         pa6: PA6,
-        pe5: PE5,
+        gpio_enable: PB1,
     ) -> Self {
         let speed_set_pin = embassy_stm32::dac::DacCh1::new(dac1, embassy_stm32::dma::NoDma, pa4);
 
@@ -65,7 +65,7 @@ impl PropulsionController {
 
         Self {
             speed_set_pin,
-            enable_pin: Output::new(pe5, Level::Low, Speed::Low),
+            enable_pin: Output::new(gpio_enable, Level::Low, Speed::Low),
         }
     }
 
