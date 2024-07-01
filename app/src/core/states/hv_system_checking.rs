@@ -19,6 +19,7 @@ impl Fsm {
         match event {
             Event::TurnOffHVCommand => {
                 self.peripherals.hv_peripherals.power_hv_off();
+                self.peripherals.led_controller.hv_relay_led(false).await;
                 #[cfg(debug_assertions)]
                 info!("HV Relays turned off");
                 self.pod_safe().await;

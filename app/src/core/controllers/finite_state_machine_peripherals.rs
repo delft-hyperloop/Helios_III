@@ -10,6 +10,7 @@ use crate::core::controllers::can_controller::CanPins;
 use crate::core::controllers::ethernet_controller::EthernetController;
 use crate::core::controllers::ethernet_controller::EthernetPins;
 use crate::core::controllers::hv_controller::HVPeripherals;
+use crate::core::controllers::led_controller::LedController;
 use crate::core::controllers::propulsion_controller::PropulsionController;
 use crate::InternalMessaging;
 
@@ -20,8 +21,8 @@ pub struct FSMPeripherals {
     pub can_controller: CanController,
     pub hv_peripherals: HVPeripherals,
     pub propulsion_controller: PropulsionController,
-    //  pub lv_controller: BatteryController,
     pub red_led: Output<'static>,
+    pub led_controller : LedController,
 }
 
 
@@ -103,6 +104,14 @@ impl FSMPeripherals {
         )
         .await;
 
+        let led_controller = LedController::new(
+            Output::new(p.PE7, Level::Low, Speed::Low),
+            Output::new(p.PE8, Level::Low, Speed::Low),
+            Output::new(p.PE9, Level::Low, Speed::Low),
+            Output::new(p.PE10, Level::Low, Speed::Low),
+            Output::new(p.PE13, Level::Low, Speed::Low),
+            Output::new(p.PE14, Level::Low, Speed::Low),
+        ).await;
 
         // the propulsion controller spawns tasks for reading current and voltage, and holds functions for setting the speed through the DAC
         // let propulsion_controller = PropulsionController::new();
@@ -120,6 +129,7 @@ impl FSMPeripherals {
             },
             red_led: Output::new(p.PB14, Level::Low, Speed::High),
             propulsion_controller : PropulsionController::new(i.data_sender, p.PA4, p.DAC1, p.PA5, p.PA6),
+            led_controller,
         }
     }
 }
