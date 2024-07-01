@@ -40,14 +40,19 @@
             }
 
             invoke('send_command', {cmdName: "SetSpeeds", val: Number(speeds_u64)}).then(() => {
-                console.log(`Command RunConfig sent`);
+                console.log(`Command SetSpeeds sent`);
                 modalStore.close();
             })
 
             let route_u64 = BigInt(0);
 
             invoke('send_command', {cmdName: "SetRoute", val: Number(route_u64)}).then(() => {
-                console.log(`Command RunConfig sent`);
+                console.log(`Command SetRoute sent`);
+                modalStore.close();
+            })
+
+            invoke('send_command', {cmdName: "FinishRunConfig", val: 0}).then(() => {
+                console.log(`Command FinishRunConfig sent`);
                 modalStore.close();
             })
         }

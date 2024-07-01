@@ -80,24 +80,24 @@ impl Widget for &App {
             .direction(Direction::Horizontal)
             .constraints(
                 [
-                    Constraint::Percentage(58), // left half for text stream
-                    Constraint::Percentage(42), // right half for table and data out
+                    Constraint::Percentage(60), // left half for text stream
+                    Constraint::Percentage(40), // right half for table and data out
                 ]
                 .as_ref(),
             )
             .split(inner_area);
 
         // Split the top half horizontally for text stream and info paragraph
-        let right_chunks = Layout::default()
+        let left_chunks = Layout::default()
             .direction(Direction::Vertical)
             .constraints(
                 [
-                    Constraint::Percentage(65), // top side for text stream
-                    Constraint::Percentage(35), // bottom side for the table
+                    Constraint::Percentage(50), // top side for text stream
+                    Constraint::Percentage(50), // bottom side for the table
                 ]
                 .as_ref(),
             )
-            .split(main_chunks[1]);
+            .split(main_chunks[0]);
 
         let text_block = Block::default()
             .title("Text Stream")
@@ -140,7 +140,7 @@ impl Widget for &App {
             .style(Style::new().fg(Color::White).bg(Color::Black))
             .block(text_block);
         // text stream goes top left
-        paragraph.render(main_chunks[0], buf);
+        paragraph.render(left_chunks[0], buf);
 
         /*
         pub enum Command {
@@ -178,7 +178,7 @@ impl Widget for &App {
         );
 
         // Render the table
-        ratatui::widgets::Widget::render(table, right_chunks[0], buf);
+        ratatui::widgets::Widget::render(table, main_chunks[1], buf);
 
         // A paragraph to display data (bottom right)
         let data_block = Block::default()
@@ -223,6 +223,6 @@ impl Widget for &App {
             .wrap(Wrap { trim: false })
             .style(Style::new().fg(Color::White).bg(Color::Black))
             .block(data_block);
-        data_paragraph.render(right_chunks[1], buf);
+        data_paragraph.render(left_chunks[1], buf);
     }
 }
