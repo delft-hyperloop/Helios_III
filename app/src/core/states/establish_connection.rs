@@ -1,7 +1,5 @@
 use defmt::info;
-use embassy_time::Instant;
 
-use crate::core::communication::Datapoint;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::transit;

@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 #![allow(
-    // unused_must_use,
+// unused_must_use,
 //     unused_imports,
 //     unused_variables,
 //     unused_mut,
@@ -48,6 +48,14 @@ include!(concat!(env!("OUT_DIR"), "/config.rs"));
 bind_interrupts!(struct Irqs {
     ETH => eth::InterruptHandler;
     RNG => rng::InterruptHandler<peripherals::RNG>;
+});
+bind_interrupts!(struct CanOneInterrupts {
+    FDCAN1_IT0 => can::IT0InterruptHandler<FDCAN1>;
+    FDCAN1_IT1 => can::IT1InterruptHandler<FDCAN1>;
+});
+bind_interrupts!(struct CanTwoInterrupts {
+    FDCAN2_IT0 => can::IT0InterruptHandler<FDCAN2>;
+    FDCAN2_IT1 => can::IT1InterruptHandler<FDCAN2>;
 });
 
 /// Custom Data types-----------------------

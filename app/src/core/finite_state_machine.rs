@@ -178,7 +178,7 @@ impl Fsm {
             State::EmergencyBraking => {
                 self.entry_emergency_braking();
                 self.pod_safe().await;
-            },
+            }
             State::Exit => self.entry_exit(),
             State::Crashing => self.entry_exit(),
         };
@@ -287,14 +287,6 @@ impl Fsm {
                 Instant::now().as_ticks(),
             ))
             .await;
-    }
-
-    pub async fn pod_safe(&self) {
-        self.data_queue.send(Datapoint::new(Datatype::Info, Info::to_idx(&Info::Safe), Instant::now().as_ticks())).await;
-    }
-
-    pub async fn pod_unsafe(&self) {
-        self.data_queue.send(Datapoint::new(Datatype::Info, Info::to_idx(&Info::Unsafe), Instant::now().as_ticks())).await;
     }
 }
 
