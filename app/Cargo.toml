@@ -2,7 +2,63 @@
 name = "app"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+build = "build.rs"
 
 [dependencies]
+defmt = "0.3"
+defmt-rtt = "0.4"
+
+cortex-m = { version = "0.7.7", features = ["inline-asm", "critical-section-single-core"] }
+cortex-m-rt = "0.7.3"
+embedded-hal = "0.2.7"
+embedded-hal-async = { version = "1.0" }
+embedded-nal-async = { version = "0.7.1" }
+embedded-io-async = { version = "0.6.1" }
+panic-probe = { version = "0.3", features = ["print-defmt"] }
+futures = { version = "0.3.17", default-features = false, features = ["async-await"] }
+heapless = { version = "0.8", default-features = false }
+rand_core = "0.6.3"
+critical-section = "1.1"
+micromath = "2.0.0"
+stm32-fmc = "0.3.0"
+embedded-storage = "0.3.1"
+static_cell = "2"
+chrono = { version = "^0.4", default-features = false }
+
+serde = "1.0.197"
+toml = "0.8.11"
+
+[build-dependencies]
+regex = "1.10.3"
+
+
+[dependencies.embassy-executor]
+git = "https://github.com/embassy-rs/embassy.git"
+branch = "main"
+features = ["task-arena-size-32768", "arch-cortex-m", "executor-thread", "defmt", "integrated-timers"]
+
+[dependencies.embassy-net]
+git = "https://github.com/embassy-rs/embassy.git"
+branch = "main"
+features = ["defmt", "tcp", "dhcpv4", "medium-ethernet", "proto-ipv6", "dns"]
+
+[dependencies.embassy-stm32]
+git = "https://github.com/embassy-rs/embassy.git"
+branch = "main"
+features = ["defmt", "stm32h743zi", "time-driver-any", "exti", "memory-x", "unstable-pac", "chrono"]
+
+[dependencies.embassy-sync]
+git = "https://github.com/embassy-rs/embassy.git"
+branch = "main"
+features = ["defmt"]
+
+[dependencies.embassy-time]
+git = "https://github.com/embassy-rs/embassy.git"
+branch = "main"
+features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"]
+
+[dependencies.embassy-usb]
+git = "https://github.com/embassy-rs/embassy.git"
+branch = "main"
+features = ["defmt"]
+
