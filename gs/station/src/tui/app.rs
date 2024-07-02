@@ -116,4 +116,6 @@ impl App {
             self.logs.push((Message::Error(format!("Tried to send command `{:?}` with no connection to station", command)), timestamp()));
         }
     }
+
+
 }

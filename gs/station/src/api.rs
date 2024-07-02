@@ -13,6 +13,7 @@ pub enum Status {
     ConnectionClosedByServer,
     ConnectionDropped,
     FailedToReadFromConnection,
+    LeviProgramStarted,
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -35,6 +36,7 @@ impl Status {
             Status::ConnectionClosedByServer => Color::Yellow,
             Status::ConnectionDropped => Color::Red,
             Status::FailedToReadFromConnection => Color::Red,
+            Status::LeviProgramStarted => Color::Green,
         }
     }
 }
