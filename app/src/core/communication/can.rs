@@ -46,19 +46,22 @@ pub async fn can_receiving_handler(
     mut bus: CanRx<'static, impl Instance>,
     mut utils: Option<CanTwoUtils>,
 ) -> ! {
+    let bus_nr = if utils.is_none() { 1 } else { 2 };
     info!(
         "[CAN] Ready for bus {:?}",
-        if utils.is_none() { 1 } else { 2 }
+        bus_nr
     );
     let mut error_counter = 0u64;
     loop {
+        #[cfg(debug_assertions)]
+        info!("Entering read loop on bus #{}", bus_nr);
         match bus.read().await {
             Ok(envelope) => {
                 error_counter = 0;
                 let (frame,timestamp) = envelope.parts();
                 let id = id_as_value(frame.id());
                 #[cfg(debug_assertions)]
-                info!("[CAN] received frame: id={:?} data={:?}", id, frame.data());
+                info!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
                 if DATA_IDS.contains(&id) {
                 debug!("first if");
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
@@ -103,7 +106,7 @@ pub async fn can_receiving_handler(
                     event_sender.send(Event::from_id(id, Some(69420))).await; // since we are never supposed to change the speed through the can bus (and run config is the only event with an actual value), i want a magic number that i can filter out from the run config handler just to make sure the pod doesn't do something stupid
                 } else {
                     #[cfg(debug_assertions)]
-                    info!("[CAN] unknown ID: {:?}", id);
+                    info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
                     data_sender
                         .send(Datapoint::new(
                             Datatype::UnknownCanId,
@@ -115,7 +118,7 @@ pub async fn can_receiving_handler(
             }
             Err(e) => {
                 if error_counter < 10 || error_counter % 2500 == 0 {
-                    error!("[CAN] Error reading from CAN bus (bus nr {}) (#{}): {:?}", if utils.is_none() { 1 } else { 2 }, error_counter, e);
+                    error!("[CAN ({})] Error reading from CAN bus (#{}): {:?}", bus_nr, error_counter, e);
                 }
                 Timer::after_millis(500);
                 error_counter += 1;
@@ -124,6 +127,6 @@ pub async fn can_receiving_handler(
         /// # VERY IMPORTANT
         /// without this, our main pcb is magically converted to an adhd CAN pcb
         /// with no mind for anything else. Tread carefully around it
-        Timer::after_micros(1000).await;
+        Timer::after_micros(500).await;
     }
 }
