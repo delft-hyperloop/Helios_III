@@ -25,6 +25,17 @@ name = "IMDVoltageDetails"
 id = 0x39
 
 
+[[Datatype]]
+name = "InsulationNegative"
+id = 0x50A
+
+[[Datatype]]
+name = "InsulationPositive"
+id = 0x50B
+
+[[Datatype]]
+name = "InsulationOriginal"
+id = 0x50C
 
 [[Datatype]]
 name = "DefaultBMSLow"
