@@ -24,13 +24,13 @@ impl Fsm {
             //     todo!();
             //
             // }
-            Event::TurnOnHVCommand => {
-                #[cfg(debug_assertions)]
+            Event::TurnOnHVCommand => { //todo check for preconditions
+                #[cfg(debug_assertions)] // todo actually turn on hv
                 info!("Starting HV System");
+                info!("Starting HV System");
+                self.peripherals.braking_controller.start_run_brake_precondition();
+                self.peripherals.hv_peripherals.power_on_hv_procedure().await;
                 transit!(self, State::HVSystemChecking);
-            }
-            Event::ArmBrakesCommand => {
-                todo!();
             }
             /// This is commented out because it was refactored to be handled by the default react ///
             // /// Here this events can be triggered for the first time, but they'll transit to Exit State instead of emergency breaking as HV is off
