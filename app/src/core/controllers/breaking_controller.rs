@@ -1,5 +1,3 @@
-use core::fmt::Debug;
-
 use defmt::info;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Adc;

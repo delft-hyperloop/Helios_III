@@ -41,10 +41,6 @@
     $chartStore.set("EMS Current", emsCurrentChart);
 
     let voffChart = new PlotBuffer(500, 300000, [0, 100], false)
-    let hoffChart = new PlotBuffer(500, 300000, [0, 100], false)
-    hoffChart.addSeries(StrokePresets.theoretical())
-    let velChart = new PlotBuffer(500, 5*60*1000, [0, 100], false)
-    let leviChart = new PlotBuffer(500, 300000, [0, 13000], false);
 
     $chartStore.set('Offset Horizontal', hoffChart);
     $chartStore.set('Offset Vertical', voffChart);

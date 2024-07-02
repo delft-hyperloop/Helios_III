@@ -2,11 +2,11 @@ use defmt::debug;
 use defmt::error;
 use defmt::info;
 
-use crate::core::controllers::breaking_controller::BRAKE;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::{Info, transit};
+use crate::transit;
 use crate::Event;
+use crate::Info;
 
 impl Fsm {
     pub fn entry_run_config(&mut self) {
@@ -58,7 +58,8 @@ impl Fsm {
                 todo!();
             }
             Event::SystemResetCommand => {
-                self.send_data(crate::Datatype::FSMState, self.state as u64).await;
+                self.send_data(crate::Datatype::FSMState, self.state as u64)
+                    .await;
             }
             Event::ReConfigureCommand => {
                 transit!(self, State::RunConfig);

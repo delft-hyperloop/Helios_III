@@ -110,7 +110,7 @@ impl Widget for &App {
                     Constraint::Percentage(50), // top side for text stream
                     Constraint::Percentage(50), // bottom side for the table
                 ]
-                    .as_ref(),
+                .as_ref(),
             )
             .split(left_chunks[1]);
 
@@ -232,14 +232,22 @@ impl Widget for &App {
                     .underlined(),
             ),
         ];
-        for (k, v) in self.special_data.iter().take(self.special_data.len()/2 - 5) {
+        for (k, v) in self
+            .special_data
+            .iter()
+            .take(self.special_data.len() / 2 - 5)
+        {
             data.push(Line::styled(
                 format!("{:?}: {}", k, v),
                 Style::default().fg(Color::White),
             ));
         }
         let mut data2 = vec![];
-        for (k, v) in self.special_data.iter().skip(self.special_data.len()/2 - 5) {
+        for (k, v) in self
+            .special_data
+            .iter()
+            .skip(self.special_data.len() / 2 - 5)
+        {
             data2.push(Line::styled(
                 format!("{:?}: {}", k, v),
                 Style::default().fg(Color::White),

@@ -7,12 +7,12 @@ use embassy_stm32::dac::Value;
 use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Speed;
-use embassy_stm32::peripherals::{ADC2, PB1};
+use embassy_stm32::peripherals::ADC2;
 use embassy_stm32::peripherals::DAC1;
 use embassy_stm32::peripherals::PA4;
 use embassy_stm32::peripherals::PA5;
 use embassy_stm32::peripherals::PA6;
-use embassy_stm32::peripherals::PE5;
+use embassy_stm32::peripherals::PB1;
 use embassy_time::Instant;
 use embassy_time::Timer;
 

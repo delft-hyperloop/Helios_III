@@ -2,7 +2,7 @@ use crate::api::{state_to_string, Datapoint, Message};
 use crate::backend::Backend;
 use crate::tui::render::CmdRow;
 use crate::tui::{timestamp, Tui};
-use crate::{Datatype, Event, COMMANDS_LIST, Info};
+use crate::{Datatype, Event, Info, COMMANDS_LIST};
 use ratatui::Frame;
 use std::collections::BTreeMap;
 
@@ -97,15 +97,15 @@ impl App {
                                 self.safe = false;
                             }
                             _ => {}
-                        }
+                        },
                         Datatype::FSMState => {
                             self.cur_state = state_to_string(datapoint.value).to_string();
                             self.logs.push((
-                            Message::Warning(format!(
-                                "State changed to: {:?}",
-                                datapoint.value.to_be_bytes()
-                            )),
-                            timestamp(),
+                                Message::Warning(format!(
+                                    "State changed to: {:?}",
+                                    datapoint.value.to_be_bytes()
+                                )),
+                                timestamp(),
                             ));
                             self.logs.push((Message::Data(datapoint), timestamp()))
                         }
@@ -124,33 +124,30 @@ impl App {
                                 self.logs.push((Message::Data(datapoint), timestamp()))
                             }
                         }
+                        Datatype::PropulsionCurrent => {
+                            self.special_data
+                                .insert(Datatype::PropulsionCurrent, datapoint.value / 680);
+                        }
+                        Datatype::PropulsionVoltage => {
+                            self.special_data
+                                .insert(Datatype::PropulsionVoltage, datapoint.value / 340);
+                        }
+                        x if self
+                            .special_data
+                            .keys()
+                            .collect::<Vec<&Datatype>>()
+                            .contains(&&x) =>
+                        {
+                            self.special_data.insert(x, datapoint.value);
+                        }
                         _ => {
-                            self.logs.push((Message::Data(datapoint), timestamp()))
+                            self.logs.push((Message::Data(datapoint), timestamp()));
+                            if self.logs.len() > 42 {
+                                self.scroll += 1;
+                            }
                         }
                     }
-                    Datatype::PropulsionCurrent => {
-                        self.special_data
-                            .insert(Datatype::PropulsionCurrent, datapoint.value / 680);
-                    }
-                    Datatype::PropulsionVoltage => {
-                        self.special_data
-                            .insert(Datatype::PropulsionVoltage, datapoint.value / 340);
-                    }
-                    x if self
-                        .special_data
-                        .keys()
-                        .collect::<Vec<&Datatype>>()
-                        .contains(&&x) =>
-                    {
-                        self.special_data.insert(x, datapoint.value);
-                    }
-                    _ => {
-                        self.logs.push((Message::Data(datapoint), timestamp()));
-                        if self.logs.len() > 42 {
-                            self.scroll += 1;
-                        }
-                    }
-                },
+                }
                 msg => {
                     self.logs.push((msg, timestamp()));
                     if self.logs.len() > 42 {

@@ -204,8 +204,7 @@ impl BatteryController {
                     let mut i = 0;
                     while i < 8 {
                         self.single_cell_id = i;
-                        let a = &self.voltage_buffer
-                            [(i * 14) as usize..((i + 1) * 14) as usize];
+                        let a = &self.voltage_buffer[(i * 14) as usize..((i + 1) * 14) as usize];
                         // Initialize a new fixed-size array
                         let mut temp: [u64; 14] = [0; 14];
 
@@ -459,13 +458,13 @@ impl BatteryController {
             Self::module_data_calculation(self.module_buffer).await;
         let (avg_voltage_dt, min_voltage_dt, max_voltage_dt) = Self::match_voltage(module_id).await;
         self.data_sender
-            .send(Datapoint::new(avg_voltage_dt, avg_voltage+200, timestamp))
+            .send(Datapoint::new(avg_voltage_dt, avg_voltage + 200, timestamp))
             .await;
         self.data_sender
-            .send(Datapoint::new(min_voltage_dt, min_voltage+200, timestamp))
+            .send(Datapoint::new(min_voltage_dt, min_voltage + 200, timestamp))
             .await;
         self.data_sender
-            .send(Datapoint::new(max_voltage_dt, max_voltage+200, timestamp))
+            .send(Datapoint::new(max_voltage_dt, max_voltage + 200, timestamp))
             .await;
     }
 

@@ -22,7 +22,7 @@ pub fn default_configuration() -> Config {
     // });
     config.rcc.hse = Some(rcc::Hse {
         // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
-        freq: embassy_stm32::time::Hertz(24_000_000),
+        freq: embassy_stm32::time::Hertz(25_000_000),
         mode: rcc::HseMode::Oscillator,
     });
     config.rcc.pll1 = Some(Pll {
@@ -73,11 +73,13 @@ pub fn embassy_socket_from_config(t: ([u8; 4], u16)) -> IpEndpoint {
 /// - p is the prefix length, which is the number of bits in the address that are fixed per network.
 /// - tl;dr you need ip address+prefix length to define a network
 #[inline]
+#[allow(dead_code)]
 pub fn ip_cidr_from_config(t: ([u8; 4], u16)) -> Ipv4Cidr {
     Ipv4Cidr::new(Ipv4Address::new(t.0[0], t.0[1], t.0[2], t.0[3]), 24)
 }
 
 #[inline]
+#[allow(dead_code)]
 pub fn socket_from_config(t: ([u8; 4], u16)) -> SocketAddr {
     SocketAddr::V4(SocketAddrV4::new(
         Ipv4Addr::new(t.0[0], t.0[1], t.0[2], t.0[3]),
@@ -104,8 +106,6 @@ pub fn id_as_value(id: &embedded_can::Id) -> u16 {
 pub fn extended_as_value(id: &ExtendedId) -> u16 {
     if id.as_raw() == 0x18FF01F4 {
         return 0x37;
-<<<<<<< HEAD
-=======
     }
     if id.as_raw() == 0x18FF02F4 {
         return 0x38;
@@ -128,30 +128,8 @@ pub fn extended_as_value(id: &ExtendedId) -> u16 {
         0x500 => small_id = 0x5,   // Current messages
         0x800 => small_id += 96,   // Balance messages
         _ => {}                    // small_id = small_id | 0x000,
->>>>>>> ab76aa1 (Fixed clocks and can)
     }
-    if id.as_raw() == 0x18FF02F4 {
-        return 0x38;
-    }
-    if id.as_raw() == 0x18FF03F4 {
-        return 0x39;
-    }
-    let temp = id.as_raw();
-    let big_id = (temp & (0xFFFF000))>>16;
-    info!( "big_id {:?}", big_id);
-    let mut small_id = temp & 0xFF;
-    info!( "small_id {:?}", small_id);
-    let dt = temp & 0x0000F00;
-    match dt {
-        0x000 => small_id = small_id, // Normal Messages
-        0x100 => small_id = small_id + 0x20, // Voltage Messages
-        0x200 => small_id = small_id + 256, // Temp messages
-        0x300 => small_id = small_id + 0, //  I wonder what are these
-        0x500 => small_id = 0x5, // Current messages
-        0x800    => small_id = small_id + 96, // Balance messages
-        _ => small_id = small_id | 0x000,
-    }
-    info!( "small_id {:?}", small_id);
+    info!("small_id {:?}", small_id);
     (big_id + small_id) as u16
 }
 
