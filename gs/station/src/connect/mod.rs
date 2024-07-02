@@ -48,20 +48,23 @@ impl Station {
         }
 
         let listener = server.unwrap();
+        tx.send(Message::Status(Status::ServerStarted)).expect("[Station] Failed to send on msg tx");
         match listener.accept() {
             Ok((stream, client_socket)) => {
                 if client_socket.ip().ne(&IpAddr::from(POD_IP_ADDRESS.0)) {
                     tx.send(Message::Status(Status::UnknownClient)).expect("[Station] Failed to send on msg tx");
                     tx.send(Message::Error(format!("Unknown client tried to connect: {:?}", client_socket))).expect("[Station] Failed to send on msg tx");
                 } else {
+                    tx.send(Message::Status(Status::ConnectionEstablished)).expect("[Station] Failed to send on msg tx");
                     let handler = Handler {};
-                    handler.handle(stream, tx, rx);
+                    handler.handle(stream, tx.clone(), rx);
                 }
             }
             Err(e) => {
                 tx.send(Message::Error(format!("Failed to accept connection: {}", e))).expect("[Station] Failed to send on msg tx");
             }
         }
-        return;
+        tx.send(Message::Status(Status::ConnectionDropped)).expect("[Station] Failed to send on msg tx");
+        loop {}
     }
 }
