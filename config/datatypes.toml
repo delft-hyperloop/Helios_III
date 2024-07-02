@@ -91,3 +91,8 @@ id = 0x38
 [[Datatype]]
 name = "DefaultBMS"
 id = 0x19C
+
+[[Datatype]]
+name = "UnknownCanId"
+id = 0x7F0
+
