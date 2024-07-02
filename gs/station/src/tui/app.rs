@@ -1,8 +1,9 @@
+use std::collections::BTreeMap;
 use crate::api::{state_to_string, Datapoint, Message};
 use crate::backend::Backend;
 use crate::tui::render::CmdRow;
 use crate::tui::{timestamp, Tui};
-use crate::{COMMANDS_LIST, Event};
+use crate::{COMMANDS_LIST, Datatype, Event};
 use ratatui::Frame;
 use crate::Datatype::FSMEvent;
 
@@ -18,6 +19,7 @@ pub struct App {
     pub cmds: Vec<CmdRow>,
     pub cur_state: String,
     pub last_heartbeat: String,
+    pub special_data: BTreeMap<Datatype, u64>,
     pub backend: Backend,
 }
 
@@ -40,6 +42,16 @@ impl App {
                 .collect(),
             cur_state: "None Yet".to_string(),
             last_heartbeat: "None Yet".to_string(),
+                special_data: BTreeMap::from([
+                (Datatype::InsulationNegative, 0),
+                (Datatype::InsulationPositive, 0),
+                (Datatype::BatteryCurrentHigh, 0),
+                (Datatype::BatteryTemperatureHigh, 0),
+                (Datatype::TotalBatteryVoltageLow, 0),
+                (Datatype::TotalBatteryVoltageHigh, 0),
+                (Datatype::SingleCellVoltageLow, 0),
+                (Datatype::BatteryMaxBalancingLow, 0),
+            ]),
             backend,
         }
     }
@@ -75,6 +87,8 @@ impl App {
                     } else if datapoint.datatype == FSMEvent {
                         if datapoint.value == Event::Heartbeat.to_id() as u64 {
                             self.last_heartbeat = timestamp();
+                        } else if self.special_data.keys().collect::<Vec<&Datatype>>().contains(&&datapoint.datatype) {
+                            self.special_data.insert(datapoint.datatype, datapoint.value);
                         } else {
                             self.logs.push((Message::Data(datapoint), timestamp()))
                         }
