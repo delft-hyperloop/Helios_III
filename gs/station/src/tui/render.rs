@@ -189,6 +189,14 @@ impl Widget for &App {
                 format!("Selected Row: {}", self.selected_row),
                 Style::default().fg(Color::White),
             ),
+            Line::styled(
+                format!("Last heartbeat: {}", self.last_heartbeat),
+                Style::default().fg(Color::White),
+            ),
+            Line::styled(
+                format!("Lines printed: {}", self.logs.len()),
+                Style::default().fg(Color::White),
+            ),
         ];
 
         let data_paragraph = Paragraph::new(data)

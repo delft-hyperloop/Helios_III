@@ -109,12 +109,12 @@ impl CanController {
             event_sender,
             x.spawn(can_receiving_handler(
                 x,
-                event_sender.clone(),
-                can_two_receiver.clone(),
-                data_sender.clone(),
+                event_sender,
+                can_two_receiver,
+                data_sender,
                 c2_rx,
                 Some(CanTwoUtils {
-                    can_sender: can_two_sender.clone(),
+                    can_sender: can_two_sender,
                     hv_controller,
                     lv_controller,
                     gfd_controller: GroundFaultDetection {},
@@ -124,11 +124,11 @@ impl CanController {
 
         try_spawn!(
             event_sender,
-            x.spawn(can_transmitter(can_one_receiver.clone(), c1_tx))
+            x.spawn(can_transmitter(can_one_receiver, c1_tx))
         );
         try_spawn!(
             event_sender,
-            x.spawn(can_transmitter(can_two_receiver.clone(), c2_tx))
+            x.spawn(can_transmitter(can_two_receiver, c2_tx))
         );
 
         Self {}

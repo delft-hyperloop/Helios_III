@@ -1,9 +1,9 @@
-use crate::core::finite_state_machine::{State, FSM};
-use crate::Event;
+use crate::core::finite_state_machine::{State, Fsm};
+use crate::{transit, Event};
 use defmt::info;
 
-impl FSM {
-    pub async fn entry_accelerating(&mut self) {
+impl Fsm {
+    pub fn entry_accelerating(&mut self) {
         todo!();
     }
 
@@ -12,17 +12,17 @@ impl FSM {
             Event::DesiredSpeedReachedEvent => {
                 todo!();
 
-                self.transit(State::MovingLSST).await;
+                transit!(self, State::MovingLSST);
             }
             Event::LaneSwitchingPointReachedEvent => {
                 todo!();
 
-                self.transit(State::MovingLSCV).await;
+                transit!(self, State::MovingLSCV);
             }
             Event::BrakingPointReachedEvent => {
                 todo!();
 
-                self.transit(State::EndST).await;
+                transit!(self, State::EndST);
             }
             /// This is commented out because it was refactored to be handled by the default react ///     
             // Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {

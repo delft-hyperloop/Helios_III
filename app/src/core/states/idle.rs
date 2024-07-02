@@ -1,9 +1,9 @@
-use crate::core::finite_state_machine::{State, FSM};
-use crate::Event;
+use crate::core::finite_state_machine::{State, Fsm};
+use crate::{transit, Event};
 use defmt::info;
 
-impl FSM {
-    pub async fn entry_idle(&mut self) {
+impl Fsm {
+    pub fn entry_idle(&mut self) {
         info!("Entering Idle State")
     }
 
@@ -27,7 +27,7 @@ impl FSM {
             Event::TurnOnHVCommand => {
                 #[cfg(debug_assertions)]
                 info!("Starting HV System");
-                self.transit(State::HVSystemChecking).await;
+                transit!(self, State::HVSystemChecking);
             }
             Event::ArmBrakesCommand => {
                 todo!();
