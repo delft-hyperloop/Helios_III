@@ -3,9 +3,9 @@
 extern crate regex;
 extern crate serde;
 
+use serde::Deserialize;
 use std::fs;
 use std::sync::Mutex;
-use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -17,7 +17,7 @@ pub struct Event {
     name: String,
     id: u16,
     priority: usize,
-    params: Option<String>
+    params: Option<String>,
 }
 
 pub const COMMANDS_PATH: &str = "../config/events.toml";
@@ -43,10 +43,13 @@ pub fn main(id_list: &Mutex<Vec<u16>>) -> String {
     let mut event_ids = vec![];
     for event in config.Event {
         if event.id & 0b1111_1000_0000_0000 != 0 {
-            panic!("IDs need to be u11. Found {} > {}", event.id, 2^11);
+            panic!("IDs need to be u11. Found {} > {}", event.id, 2 ^ 11);
         } else {
             if id_list.contains(&event.id) {
-                panic!("ID {} already taken!! {}:{} : pick a different one.", event.id, event.name, event.id);
+                panic!(
+                    "ID {} already taken!! {}:{} : pick a different one.",
+                    event.id, event.name, event.id
+                );
             }
             id_list.push(event.id);
             event_ids.push(event.id);
@@ -56,24 +59,41 @@ pub fn main(id_list: &Mutex<Vec<u16>>) -> String {
                 enum_definitions.push_str(&format!("\t{},\n", event.name));
                 match_to_id.push_str(&format!("\t\t\tEvent::{} => {},\n", event.name, event.id));
                 // to_str.push_str(&format!("Event::{} => \"{}\",\n", command.name, command.name));
-                priorities.push_str(&format!("\t\t\tEvent::{} => {},\n", event.name, event.priority));
+                priorities.push_str(&format!(
+                    "\t\t\tEvent::{} => {},\n",
+                    event.name, event.priority
+                ));
                 match_from_id.push_str(&format!("\t\t\t{} => Event::{},\n", event.id, event.name));
                 to_idx.push_str(&format!("\t\t\tEvent::{} => {},\n", event.name, i));
             }
             Some(x) => {
                 enum_definitions.push_str(&format!("{}({}),\n", event.name, x));
-                match_to_id.push_str(&format!("\t\t\tEvent::{}(_) => {},\n", event.name, event.id));
+                match_to_id.push_str(&format!(
+                    "\t\t\tEvent::{}(_) => {},\n",
+                    event.name, event.id
+                ));
                 // to_str.push_str(&format!("Event::{}(_) => \"{}\",\n", command.name, command.name));
-                priorities.push_str(&format!("\t\t\tEvent::{}(_) => {},\n", event.name, event.priority));
-                match_from_id.push_str(&format!("\t\t\t{} => Event::{}(0),\n", event.id, event.name));
+                priorities.push_str(&format!(
+                    "\t\t\tEvent::{}(_) => {},\n",
+                    event.name, event.priority
+                ));
+                match_from_id.push_str(&format!(
+                    "\t\t\t{} => Event::{}(0),\n",
+                    event.id, event.name
+                ));
                 to_idx.push_str(&format!("\t\t\tEvent::{}(_) => {},\n", event.name, i));
             }
         }
         to_str.push_str(&format!("\"{}\",", event.name));
+        i += 1;
     }
 
-    format!("\n\npub static EVENTS_DISPLAY: [&str; {}] = [{}\"Unknown\"];\n", event_count+1, to_str)
-    + &* format!("
+    format!(
+        "\n\npub static EVENTS_DISPLAY: [&str; {}] = [{}\"Unknown\"];\n",
+        event_count + 1,
+        to_str
+    ) + &*format!(
+        "
 #[derive(Debug, PartialEq, Eq)]
 pub enum Event {{
 {}
@@ -105,6 +125,15 @@ impl Event {{
     pub fn to_str(&self) -> &'static str {{
         EVENTS_DISPLAY[self.to_idx()]
     }}
-}}", enum_definitions, match_to_id, match_from_id, priorities, to_idx, event_count)
-    + &*format!("\n\npub static EVENT_IDS : [u16;{}] = [{}];\n", event_ids.len(), event_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "))
+}}",
+        enum_definitions, match_to_id, match_from_id, priorities, to_idx, event_count
+    ) + &*format!(
+        "\n\npub static EVENT_IDS : [u16;{}] = [{}];\n",
+        event_ids.len(),
+        event_ids
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(", ")
+    )
 }

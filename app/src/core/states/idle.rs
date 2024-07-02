@@ -1,9 +1,8 @@
-use defmt::info;
-use crate::core::finite_state_machine::{FSM, State};
+use crate::core::finite_state_machine::{State, FSM};
 use crate::Event;
+use defmt::info;
 
 impl FSM {
-
     pub fn entry_idle(&mut self) {
         info!("Entering Idle State")
     }
@@ -26,14 +25,10 @@ impl FSM {
             //
             // }
             Event::TurnOnHVCommand => {
-
                 todo!();
-
             }
             Event::ArmBrakesCommand => {
-
                 todo!();
-
             }
             /// This is commented out because it was refactored to be handled by the default react ///
             // /// Here this events can be triggered for the first time, but they'll transit to Exit State instead of emergency breaking as HV is off
@@ -45,9 +40,7 @@ impl FSM {
             // }
             _ => {
                 info!("The current state ignores {}", event.to_str());
-
             }
         }
     }
-
 }

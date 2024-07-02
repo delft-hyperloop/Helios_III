@@ -1,12 +1,13 @@
-use core::cmp::Ordering;
 use crate::Datatype;
+use core::cmp::Ordering;
 
+pub mod can;
+mod parse;
 pub mod tcp;
 pub mod udp;
 mod dispatcher;
 mod parse;
 pub mod can;
-
 
 // IF YOU UPDATE THIS, ALSO LOOK AT config/config.toml
 // pub enum Datatype {
@@ -39,12 +40,12 @@ impl Datapoint {
         }
     }
 
-    pub fn as_bytes(&self) -> [u8; 13] {
-        let mut bytes = [0; 13];
+    pub fn as_bytes(&self) -> [u8; 18] {
+        let mut bytes = [0; 18];
         bytes[0] = (self.datatype.to_id() & 0x00FF) as u8;
         bytes[1] = (self.datatype.to_id() & 0xFF00) as u8;
         bytes[2..10].copy_from_slice(&self.value.to_le_bytes());
-        bytes[10..14].copy_from_slice(&self.timestamp.to_le_bytes());
+        bytes[10..18].copy_from_slice(&self.timestamp.to_le_bytes());
         bytes
     }
 }

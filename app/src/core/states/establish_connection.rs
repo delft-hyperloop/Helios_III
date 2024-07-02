@@ -1,33 +1,26 @@
-use defmt::info;
-use crate::core::finite_state_machine::{FSM, State};
+use crate::core::finite_state_machine::{State, FSM};
 use crate::Event;
+use defmt::info;
 
-impl FSM{
+impl FSM {
     pub fn entry_establish_connection(&mut self) {
-
         info!("Entering Establish Connection State");
-
+        // self.peripherals.braking_controller.brake();
         // TODO -> Start connection with the ground station, with levi and propulsion
-
     }
 
     pub fn react_establish_connection(&mut self, event: Event) {
         match event {
             Event::ConnectionEstablishedEvent => {
-
                 self.transit(State::RunConfig);
             }
             Event::ConnectionEstablishmentFailedEvent => {
-
                 self.transit(State::Exit);
             }
 
             _ => {
                 info!("The current state ignores {}", event.to_str());
-
             }
         }
     }
-
-
 }

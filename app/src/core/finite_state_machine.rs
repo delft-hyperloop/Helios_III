@@ -1,16 +1,15 @@
+use crate::core::communication::Datapoint;
+use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
+use crate::core::controllers::hv_controller::Status;
+use crate::{DataSender, Datatype, Event, EventReceiver};
+use core::cmp::{Eq, Ordering, PartialEq};
 use defmt::*;
 use embassy_stm32;
 use embassy_stm32::Peripherals;
-use heapless::Deque;
-use core::cmp::{Ordering, PartialEq, Eq};
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::{PriorityChannel, Receiver};
 use heapless::binary_heap::Max;
-use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
-use crate::{DataSender, Datatype, Event, EventReceiver};
-use crate::core::communication::{Datapoint};
-use crate::core::controllers::hv_controller::Status;
-
+use heapless::Deque;
 
 //Enum holding different states that the FSM can be in
 pub enum State {
@@ -28,7 +27,6 @@ pub enum State {
     Exit,
     Crashing,
 }
-
 
 /// All the functionalities states can have like converting to id's or format print statements should go here
 /// The actual implementation of each state should just be attached to the state machine in separate files
@@ -119,9 +117,16 @@ impl State {
 // This bad boy will be a singleton and it will be passed around everywhere
 // Just be careful with the STD's
 
-impl PartialOrd for Event { fn partial_cmp(&self, other: &Self) -> Option<Ordering> { Some(self.cmp(other)) } }
-impl Ord for Event { fn cmp(&self, other: &Self) -> Ordering { self.priority().cmp(&other.priority()) } }
-
+impl PartialOrd for Event {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl Ord for Event {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.priority().cmp(&other.priority())
+    }
+}
 
 pub struct FSM {
     state: State,
@@ -131,25 +136,23 @@ pub struct FSM {
     pub status: Status,
 }
 
-
 /// * Finite State Machine (FSM) for the DH08 POD -> Helios III
 /// * This FSM is a singleton and an entity. Its name is Megalo coming from the ancient greek word for "Big" and from the gods Megahni and Gonzalo
 impl FSM {
-    pub fn new(p : FSMPeripherals, pq : EventReceiver, dq: DataSender) -> Self {
-
+    pub fn new(p: FSMPeripherals, pq: EventReceiver, dq: DataSender) -> Self {
         //TODO: Decide if main should be dirty with peripheral initialization or if it should be done here
 
         Self {
             state: State::Boot,
-            peripherals:p,
+            peripherals: p,
             event_queue: pq,
             data_queue: dq,
             status: Status::new(),
         }
     }
 
-/// Function used to transit states of Megalo --> Comes from Megahni and Gonzalo
-///
+    /// Function used to transit states of Megalo --> Comes from Megahni and Gonzalo
+    ///
     pub fn transit(&mut self, next_state: State) {
         info!("Exiting state: ");
         self.state.fmt();
@@ -173,15 +176,21 @@ impl FSM {
             State::EmergencyBraking => self.entry_emergency_braking(),
             State::Exit => self.entry_exit(),
             _ => {
-                info!("Im going against a wall for sure this time");//<--- This is what happens if the Crashing state ever gets triggered
+                info!("Im going against a wall for sure this time"); //<--- This is what happens if the Crashing state ever gets triggered
             }
         }
     }
     pub(crate) async fn react(&mut self, event: Event) {
         info!("[fsm] reacting to {}", event.to_str());
-        self.data_queue.send(Datapoint::new(Datatype::FSMEvent, event.to_id() as u64, 69)).await;
+        self.data_queue
+            .send(Datapoint::new(Datatype::FSMEvent, event.to_id() as u64, 69))
+            .await;
         match event {
-            Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {
+            Event::LevitationErrorEvent
+            | Event::PropulsionErrorEvent
+            | Event::PowertrainErrorEvent
+            | Event::ConnectionLossEvent
+            | Event::EmergencyBrakeCommand => {
                 self.transit(State::EmergencyBraking);
                 return;
             }

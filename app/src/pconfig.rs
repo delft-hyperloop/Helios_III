@@ -1,12 +1,13 @@
 use embassy_net::IpAddress::Ipv4;
-use embassy_net::Ipv4Address;
 use embassy_net::IpEndpoint;
-use embassy_stm32::{Config, rcc};
+use embassy_net::Ipv4Address;
 use embassy_stm32::can::config;
 use embassy_stm32::rcc::Pll;
-use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
 use embassy_stm32::rcc::*;
+use embassy_stm32::{rcc, Config};
+use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
 // use embedded_hal::can::Id;
+use crate::Event;
 use embedded_can::Id;
 use embedded_nal_async::AddrType::IPv4;
 
@@ -51,17 +52,20 @@ pub fn default_configuration() -> Config {
 }
 
 #[inline]
-pub fn embassy_socket_from_config(t: ([u8;4],u16)) -> IpEndpoint {
-    IpEndpoint::new(Ipv4(Ipv4Address::new(t.0[0],t.0[1],t.0[2],t.0[3])), t.1)
+pub fn embassy_socket_from_config(t: ([u8; 4], u16)) -> IpEndpoint {
+    IpEndpoint::new(Ipv4(Ipv4Address::new(t.0[0], t.0[1], t.0[2], t.0[3])), t.1)
 }
 
 #[inline]
-pub fn socket_from_config(t: ([u8;4],u16)) -> SocketAddr {
-    SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(t.0[0],t.0[1],t.0[2],t.0[3]), t.1))
+pub fn socket_from_config(t: ([u8; 4], u16)) -> SocketAddr {
+    SocketAddr::V4(SocketAddrV4::new(
+        Ipv4Addr::new(t.0[0], t.0[1], t.0[2], t.0[3]),
+        t.1,
+    ))
 }
 
 #[inline]
-pub fn bytes_to_u64(b : &[u8]) -> u64 {
+pub fn bytes_to_u64(b: &[u8]) -> u64 {
     let mut x = 0u64;
     for i in 7..0 {
         x |= (b[i] as u64) << i;
@@ -69,13 +73,27 @@ pub fn bytes_to_u64(b : &[u8]) -> u64 {
     x
 }
 
-pub fn id_as_value(id : &embedded_can::Id) -> u16 {
+pub fn id_as_value(id: &embedded_can::Id) -> u16 {
     match id {
-        Id::Standard(x) => {
-            x.as_raw()
-        }
-        Id::Extended(y) => {
-            y.as_raw() as u16
-        }
+        Id::Standard(x) => x.as_raw(),
+        Id::Extended(y) => y.as_raw() as u16,
     }
+}
+
+#[macro_export]
+macro_rules! try_spawn {
+    ($event_sender:expr, $e:expr) => {
+        match $e {
+            Ok(_) => {},
+            Err(embassy_executor::SpawnError::Busy) => {
+                defmt::error!("Failed to spawn task because of SpawnError::Busy");
+                defmt::error!("->> Try increasing the pool_size for the task you're trying to spawn");
+                $event_sender.send(Event::BootingFailedEvent).await;
+            }
+            Err(err) => {
+                defmt::error!("Failed to spawn task: {:?}", err);
+                $event_sender.send(Event::BootingFailedEvent).await;
+            }
+        }
+    };
 }

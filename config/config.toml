@@ -22,5 +22,8 @@ keep_alive = 1000 # keep alive interval, in milliseconds.
 event_queue_size = 16
 data_queue_size = 32
 
-
+[pod.bms]
+lv_ids = [69, 42]
+hv_ids = []
+gfd_ids = []
 

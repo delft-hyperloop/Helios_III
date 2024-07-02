@@ -18,31 +18,35 @@ id = 0x0b
 
 [[Datatype]]
 name = "BatteryVoltage"
-id = 0x0c
+id = 0x19D
 
 [[Datatype]]
-name = "BatteryCurrent"
-id = 0x0d
+name = "TotalBatteryVoltage"
+id = 0x1A2
 
 [[Datatype]]
 name = "BatteryTemperature"
-id = 0x0e
+id = 0x1A4
 
 [[Datatype]]
 name = "BatteryBalance"
-id = 0x0f
+id = 0x1A0
 
 [[Datatype]]
 name = "SingleCellVoltage"
-id = 0x10
+id = 0x1BC
 
 [[Datatype]]
 name = "SingleCellTemperature"
-id = 0x11
+id = 0x1DC
 
 [[Datatype]]
 name = "ChargeState"
-id = 0x12
+id = 0x1A1
+
+[[Datatype]]
+name = "BatteryCurrent"
+id = 0x1A3
 
 [[Datatype]]
 name = "BrakeTemperature"
@@ -79,3 +83,11 @@ id = 0x1a
 [[Datatype]]
 name = "Localisation"
 id = 0x1b
+
+[[Datatype]]
+name = "GFDIsolation"
+id = 0x38
+
+[[Datatype]]
+name = "DefaultBMS"
+id = 0x19C
