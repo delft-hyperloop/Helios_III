@@ -12,8 +12,10 @@ use heapless::binary_heap::Max;
 use crate::core::controllers::breaking_controller::BrakingController;
 use crate::core::controllers::ethernet_controller::{EthernetController, EthernetPins};
 use crate::core::controllers::hv_controller::HVController;
-use crate::core::finite_state_machine::{Event, FSM};
-use crate::{DataReceiver, EventSender};
+use crate::core::finite_state_machine::{FSM};
+use crate::{DataReceiver, EventSender, InternalMessaging};
+use crate::core::controllers::battery_controller::BatteryController;
+use crate::core::controllers::can_controller::{CanController, CanPins};
 
 
 pub struct FSMPeripherals {

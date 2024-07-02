@@ -1,6 +1,7 @@
 use defmt::info;
 use embassy_time::Timer;
-use crate::core::finite_state_machine::{Event, FSM, State};
+use crate::core::finite_state_machine::{FSM, State};
+use crate::Event;
 
 impl FSM{
 

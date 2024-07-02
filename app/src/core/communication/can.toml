@@ -1,25 +1,42 @@
+# format
+# [[Message]]
+# name : String, for logging only tho
+# id : u11
+# event : (optional) String -> must correspond to sth in events.toml
+# datapoint : (optional) String -> must correspond to sth in datatypes.toml
+# everything is case-sensitive btw
 
+[[Message]]
+name = "POD DROP"
+id = 136
+event = "PodDropSwitchTriggered"
+datapoint = "PodDropTriggered"
+
+[[Message]]
+name = "End of track switch"
+id = 133
+event = "EndOfTrackReached"
 
 # CAN IDs
 #----------- Sensor Hub -----------
 # ///  Pod Drop Switches  ///
-[sensor_hub]
-DROP1 = 136
-DROP2 = 137
-DROP3 = 141
-DROP4 = 105
-DROP5 = 109
-DROP6 = 107
-DROP7 = 127
-DROP8 = 104
-DROP9 = 126
-DROP10 = 127
-DROP11 = 114
-DROP12 = 125
-DROP13 = 111
-DROP14 = 112
-DROP15 = 110
-DROP16 = 124
+#[sensor_hub]
+#DROP1 = 136 # the following have all been mapped to a single message id (136)
+#DROP2 = 137 # with the u64 content specifying which one triggered.
+#DROP3 = 141
+#DROP4 = 105
+#DROP5 = 109
+#DROP6 = 107
+#DROP7 = 127
+#DROP8 = 104
+#DROP9 = 126
+#DROP10 = 127
+#DROP11 = 114
+#DROP12 = 125
+#DROP13 = 111
+#DROP14 = 112
+#DROP15 = 110
+#DROP16 = 124
 EOT = 133
 MCU_REARM = 108
 MCU_BRAKE = 106

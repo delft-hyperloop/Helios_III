@@ -20,9 +20,9 @@ use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::{Receiver, Sender};
 use heapless::binary_heap::Max;
 use heapless::Vec;
-use crate::{DataReceiver, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, NETWORK_BUFFER_SIZE, KEEP_ALIVE, IP_TIMEOUT};
 use crate::core::communication::dispatcher::ground_station_message_dispatcher;
 use crate::core::finite_state_machine::Event;
+use crate::{DataReceiver, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, NETWORK_BUFFER_SIZE, KEEP_ALIVE, IP_TIMEOUT, Event, Command};
 use crate::pconfig::{embassy_socket_from_config, socket_from_config};
 
 
@@ -64,11 +64,11 @@ pub async fn tcp_connection_handler(
         // spawn the writer task: it will take messages from the channel and send them over the TCP connection
         // x.spawn(ground_station_message_dispatcher(tcp_writer, data_receiver.clone())).unwrap();*/
 
+        #[cfg(debug_assertions)]
         match socket.write(b"aaaaaaaaaaaaaaa0").await {
             Ok(_) => info!("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]Data sent successfully"),
             Err(e) => info!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Failed to send data: {:?}", e),
         }
-        // info!("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@THIS LINE NEVER GETS EXECUTED :(((((");
         // loop to receive data from the TCP connection
         loop {
             // info!("in the ethernet loop---------------------------");
@@ -84,10 +84,66 @@ pub async fn tcp_connection_handler(
             if socket.can_recv() {
                 let n = socket.read(&mut buf).await.unwrap();
                 if n == 0 {
+                    info!("[tcp] Connection closed by ground station..");
                     break;
                 }
                 #[cfg(debug_assertions)]
                 info!("[tcp] !!!!!!!!!!!!!!! Received::  {:?}", &buf[..n]);
+
+                let id = (buf[0] as u16) << 8 | (buf[1] as u16);
+                let cmd = Command::from_id(id);
+                match cmd {
+                    Command::EmergencyBrake(_) => {
+                        event_sender.send(Event::EmergencyBrakeCommand).await;
+                        #[cfg(debug_assertions)]
+                        info!("[tcp] EmergencyBrake command received!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        socket.flush();
+                        socket.write_all(b"")
+                    }
+                    Command::DefaultCommand(_) => {
+                        #[cfg(debug_assertions)]
+                        info!("[tcp] DefaultCommand received, unsure what to do with it...");
+                        socket.flush();
+                        socket.write_all(b"DefaultCommand received, unsure what to do with it...").await;
+                        socket.flush();
+                    }
+                    Command::Levitate(_) => {
+                        #[cfg(debug_assertions)]
+                        info!("[tcp] Levitate command received");
+                        event_sender.send(Event::StartLevitatingCommand).await;
+                    }
+                    Command::StopLevitating(_) => {
+                        #[cfg(debug_assertions)]
+                        info!("[tcp] StopLevitating command received");
+                        // event_sender.send(Event::).await; // TODO: theres no stop levitating event??
+                    }
+                    Command::Configure(x) => {
+                        #[cfg(debug_assertions)]
+                        info!("[tcp] Configure command received");
+                        event_sender.send(Event::SetRunConfig(x)).await;
+                    }
+                    Command::StartRun(_) => {
+                        #[cfg(debug_assertions)]
+                        info!("[tcp] Start Run command received");
+                        event_sender.send(Event::StartLevitatingCommand).await;
+                        event_sender.send(Event::StartAcceleratingCommand).await;
+                    }
+                    Command::Shutdown(_) => {
+                        #[cfg(debug_assertions)]
+                        info!("[tcp] Shutdown command received");
+                        event_sender.send(Event::ExitEvent).await;
+                    }
+                    Command::StartHV(_) => {
+                        #[cfg(debug_assertions)]
+                        info!("[tcp] StartHV command received");
+                        event_sender.send(Event::TurnOnHVCommand).await;
+                    }
+                    Command::StopHV(_) => {
+                        #[cfg(debug_assertions)]
+                        info!("[tcp] StopHV command received");
+                        // event_sender.send(Event::TurnOffHVCommand).await; // TODO: no turn off HV exists??
+                    }
+                }
             }
             // socket.write_all(b"trying to receive on data mpmc").await;
             socket.flush().await;

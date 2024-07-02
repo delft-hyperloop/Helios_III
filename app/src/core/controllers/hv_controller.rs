@@ -2,7 +2,7 @@ use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::Sender;
 use heapless::binary_heap::Max;
-use crate::core::finite_state_machine::Event;
+use crate::Event;
 
 pub struct HVController{
     pub propulsion_ready : bool,

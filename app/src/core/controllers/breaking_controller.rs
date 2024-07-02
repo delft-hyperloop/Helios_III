@@ -6,7 +6,7 @@ use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::Sender;
 use embassy_time::{Duration, Instant, Timer};
 use heapless::binary_heap::Max;
-use crate::core::finite_state_machine::Event;
+use crate::Event;
 
 static mut BRAKE: bool = false;
 

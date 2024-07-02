@@ -1,5 +1,7 @@
 use defmt::info;
-use crate::core::finite_state_machine::{Event, FSM, State};
+use crate::core::finite_state_machine::{FSM, State};
+use crate::Event;
+
 //use crate::core::finite_state_machine_peripherals::ARMED;
 
 impl FSM{
@@ -27,8 +29,8 @@ impl FSM{
                 self.transit(State::Exit);
             }
             _ => {
-                info!("The current state ignores");
-                event.fmt();
+                info!("The current state ignores {}", event.to_str());
+
             }
         }
     }

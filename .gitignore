@@ -7,3 +7,4 @@
 */.idea/*
 .DS_Store
 app/.cargo/*
+app/.cargo/config.toml
