@@ -4,4 +4,3 @@ pub mod can_controller;
 mod ethernet_controller;
 pub mod finite_state_machine_peripherals;
 pub mod hv_controller;
-mod sensor_hub_data;
