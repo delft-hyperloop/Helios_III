@@ -7,7 +7,7 @@ use defmt::info;
 impl FSM {
     pub async fn entry_run_config(&mut self) {
         if !self.peripherals.braking_controller.brake_retraction {
-            self.transit(State::Exit);
+            self.transit(State::Exit).await;
             //LOG BECAUSE BRAKES WERE NOT ALIVE
         }
 
@@ -18,17 +18,17 @@ impl FSM {
             Event::SetRunConfig(x) => {
                 todo!();
                 //self.peripherals.propulsion_controller.set_run_config(x);
-                self.transit(State::Idle);
+                self.transit(State::Idle).await;
             }
             Event::RunConfigCompleteEvent => {
                 todo!();
 
-                self.transit(State::Idle);
+                self.transit(State::Idle).await;
             }
             Event::RunConfigFailedEvent => {
                 todo!();
 
-                self.transit(State::Exit);
+                self.transit(State::Exit).await;
             }
             _ => {
                 info!("The current state ignores {}", event.to_str());

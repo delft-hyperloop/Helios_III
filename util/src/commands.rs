@@ -15,7 +15,7 @@ pub struct Command {
     pub id: u16,
 }
 
-pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
+pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> String {
     let config_str = fs::read_to_string(path).unwrap();
     let config: Config = toml::from_str(&config_str).unwrap();
     // println!("{:?}", config);
@@ -58,6 +58,7 @@ pub fn generate_commands(id_list: &Mutex<Vec<u16>>, path: &str) -> String {
 
     format!(
         "\n
+{}
 pub enum Command {{
 {}
 }}
@@ -99,6 +100,6 @@ impl Command {{
 }}
 pub const COMMAND_IDS: [u16; {}] = [{}];
 ",
-        enum_definitions, match_to_id, match_from_id, to_bytes, names, ids.len(), ids.join(", ")
+        if drv { "#[derive(Debug, Clone, Copy, defmt::Format)]" } else { "#[derive(Debug, Clone, Copy)]" }, enum_definitions, match_to_id, match_from_id, to_bytes, names, ids.len(), ids.join(", ")
     )
 }

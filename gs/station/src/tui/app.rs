@@ -1,7 +1,7 @@
 use std::io;
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
 use ratatui::Frame;
-use crate::api::{Message};
+use crate::api::{Message, state_to_string};
 use crate::Command;
 use crate::connect::{Datapoint, Station};
 use crate::tui::{timestamp, Tui};
@@ -15,6 +15,9 @@ pub struct App {
     pub scroll: u16,
     pub time_elapsed: u64,
     pub selected: usize,
+    pub selected_row: usize,
+    pub cmd_values: Vec<u64>,
+    pub cur_state: String,
     message_sender: Option<Sender<Message>>,
     message_receiver: Option<Receiver<Message>>,
     command_sender: Option<Sender<Command>>,
@@ -31,6 +34,9 @@ impl App {
             scroll: 0,
             time_elapsed: 0,
             selected: 0,
+            selected_row: 0,
+            cmd_values : vec![0; 10],
+            cur_state: "None Yet".to_string(),
             message_sender: None,
             message_receiver: None,
             command_sender: None,
@@ -78,7 +84,11 @@ impl App {
                 self.message_receiver = Some(x);
                 match msg {
                     Message::Data(datapoint) => {
-                        self.data.push(datapoint)
+                        if datapoint.datatype == crate::Datatype::FSMState {
+                            self.cur_state = format!("{}", state_to_string(datapoint.value));
+                            self.logs.push((Message::Warning(format!("State changed to: {:?}", datapoint.value.to_be_bytes())), timestamp()));
+                        }
+                        self.logs.push((Message::Data(datapoint), timestamp()))
                     }
                     _ => {
                         self.logs.push((msg, timestamp()))
@@ -99,7 +109,11 @@ impl App {
     }
 
     pub(crate) fn send_command(&mut self, command: Command) {
-        let x = self.command_sender.clone();
-        x.unwrap().send(command).unwrap();
+        if let Some(s) = self.command_sender.as_ref() {
+            self.logs.push((Message::Info(format!("Trying to send command: {:?}", command)), timestamp()));
+            s.send(command).unwrap();
+        } else {
+            self.logs.push((Message::Error(format!("Tried to send command `{:?}` with no connection to station", command)), timestamp()));
+        }
     }
 }
