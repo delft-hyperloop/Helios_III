@@ -55,7 +55,6 @@ pub async fn can_receiving_handler(
             Ok(envelope) => {
                 let (frame,timestamp) = envelope.parts();
                 let id = id_as_value(frame.id());
-                info!("received frame: id={:?}" ,id);
                 #[cfg(debug_assertions)]
                 info!("[CAN] received frame: id={:?} data={:?}", id, frame.data());
                 if DATA_IDS.contains(&id) {
@@ -107,8 +106,9 @@ pub async fn can_receiving_handler(
                             .await;
                     }
                 } else if EVENT_IDS.contains(&id) {
-                    event_sender.send(Event::from_id(id)).await;
+                    event_sender.send(Event::from_id(id, Some(69420))).await; // since we are never supposed to change the speed through the can bus (and run config is the only event with an actual value), i want a magic number that i can filter out from the run config handler just to make sure the pod doesn't do something stupid
                 } else {
+                    #[cfg(debug_assertions)]
                     info!("[CAN] unknown ID: {:?}", id);
                     data_sender
                         .send(Datapoint::new(
