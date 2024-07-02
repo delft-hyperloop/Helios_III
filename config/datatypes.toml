@@ -1,8 +1,3 @@
-## Every time this file is changed, you also need to update:
-## pod:
-## - communication/mod.rs
-## gs:
-## - api/mod.rs
 ## -
 [[Datatype]]
 name = "DefaultDatatype"
