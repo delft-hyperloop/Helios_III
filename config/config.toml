@@ -1,11 +1,5 @@
 [gs]
 ip = [192, 168, 1, 4]
-#ip = [172,20,10,3]
-#ip = [145,94,237,159]
-#ip = [145,94,237,232]
-#ip = [145,94,210,198]
-#ip = [145,94,240,108]
-#ip = [145,94,216,225]
 port = 6942
 udp_port = 6943
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
@@ -14,6 +8,7 @@ status_channel = "status_channel"
 info_channel = "info_channel"
 warning_channel = "warning_channel"
 error_channel = "error_channel"
+levi_exec_path = "/Users/andtsa/levitest"
 
 [pod.net]
 ip = [192, 168, 1, 69]
