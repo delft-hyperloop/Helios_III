@@ -10,7 +10,18 @@ use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::{PriorityChannel, Receiver};
 use embassy_time::Instant;
 use heapless::binary_heap::Max;
+use heapless::pool::boxed::Box;
 use heapless::Deque;
+
+#[macro_export]
+macro_rules! transit {
+    ($fsm:expr, $ns:expr) => {
+        info!("Exiting state: {:?}", $fsm.state);
+        info!("Entering state: {:?}", $ns);
+        $fsm.state = $ns;
+        $fsm.entry().await;
+    };
+}
 
 //Enum holding different states that the FSM can be in
 #[derive(Clone, Copy, Debug, Format)]
@@ -113,8 +124,8 @@ impl Ord for Event {
     }
 }
 
-pub struct FSM {
-    state: State,
+pub struct Fsm {
+    pub state: State,
     pub peripherals: FSMPeripherals,
     pub event_queue: EventReceiver,
     pub data_queue: DataSender,
@@ -123,7 +134,7 @@ pub struct FSM {
 
 /// * Finite State Machine (FSM) for the DH08 POD -> Helios III
 /// * This FSM is a singleton and an entity. Its name is Megalo coming from the ancient greek word for "Big" and from the gods Megahni and Gonzalo
-impl FSM {
+impl Fsm {
     pub fn new(p: FSMPeripherals, pq: EventReceiver, dq: DataSender) -> Self {
         Self {
             state: State::Boot,
@@ -134,39 +145,33 @@ impl FSM {
         }
     }
 
-    /// Function used to transit states of Megalo --> Comes from Megahni and Gonzalo
-    ///
-    pub async fn transit(&mut self, next_state: State) {
-        info!("Exiting state: {:?}", self.state);
-        info!("Entering state: {:?}", next_state);
-        self.state = next_state;
+    pub async fn entry(&mut self) {
+        #[cfg(debug_assertions)]
+        info!("entry called: {:?}", self.state);
+
         self.data_queue
             .send(Datapoint::new(
                 Datatype::FSMState,
-                next_state as u64,
+                self.state as u64,
                 Instant::now().as_ticks(),
             ))
             .await;
-        self.entry();
-    }
-    pub async fn entry(&mut self) {
+
         match self.state {
-            State::Boot => self.boot_entry().await,
-            State::EstablishConnection => self.entry_establish_connection().await,
-            State::Idle => self.entry_idle().await,
-            State::RunConfig => self.entry_run_config().await,
-            State::HVSystemChecking => self.entry_hv_system_checking().await,
-            State::Levitating => self.entry_levitating().await,
-            State::MovingST => self.entry_accelerating().await,
-            State::MovingLSST => self.entry_cruising().await,
-            State::MovingLSCV => self.entry_ls_cv().await,
-            State::EndST => self.entry_end_st().await,
-            State::EmergencyBraking => self.entry_emergency_braking().await,
-            State::Exit => self.entry_exit().await,
-            State::Crashing => {
-                info!("Im going against a wall for sure this time"); //<--- This is what happens if the Crashing state ever gets triggered
-            }
-        }
+            State::Boot => self.boot_entry(),
+            State::EstablishConnection => self.entry_establish_connection(),
+            State::Idle => self.entry_idle(),
+            State::RunConfig => self.entry_run_config(),
+            State::HVSystemChecking => self.entry_hv_system_checking(),
+            State::Levitating => self.entry_levitating(),
+            State::MovingST => self.entry_accelerating(),
+            State::MovingLSST => self.entry_cruising(),
+            State::MovingLSCV => self.entry_ls_cv(),
+            State::EndST => self.entry_end_st(),
+            State::EmergencyBraking => self.entry_emergency_braking(),
+            State::Exit => self.entry_exit(),
+            State::Crashing => self.entry_exit(),
+        };
     }
     pub(crate) async fn react(&mut self, event: Event) {
         info!("[fsm] reacting to {}", event.to_str());
@@ -174,7 +179,7 @@ impl FSM {
             .send(Datapoint::new(
                 Datatype::FSMEvent,
                 event.to_id() as u64,
-                embassy_time::Instant::now().as_ticks(),
+                Instant::now().as_ticks(),
             ))
             .await;
         match event {
@@ -183,10 +188,12 @@ impl FSM {
             | Event::PowertrainErrorEvent
             | Event::ConnectionLossEvent
             | Event::EmergencyBrakeCommand => {
-                self.transit(State::EmergencyBraking).await;
+                transit!(self, State::EmergencyBraking);
                 return;
             }
-            _ => {}
+            _ => {
+                trace!("Event was not emergency brake, continuing...");
+            }
         }
         match self.state {
             State::Boot => self.react_boot(event).await,
@@ -200,8 +207,32 @@ impl FSM {
             State::MovingLSCV => self.react_mv_ls_cv(event).await,
             State::EndST => self.react_end_st(event).await,
             State::Exit => self.react_exit(event).await,
-            State::EmergencyBraking => {}
-            State::Crashing => {}
+            State::EmergencyBraking => {
+                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
+                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
+                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
+                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
+                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
+                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
+            }
+            State::Crashing => {
+                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
+                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
+                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
+                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
+                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
+            }
         }
     }
 }
+
+/*
+/// Function used to transit states of Megalo --> Comes from Megahni and Gonzalo
+    ///
+    pub async fn transit(&mut self, next_state: State) {
+        info!("Exiting state: {:?}", self.state);
+        info!("Entering state: {:?}", next_state);
+        self.state = next_state;
+        self.entry().await;
+    }
+    */

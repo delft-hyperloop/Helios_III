@@ -2,8 +2,9 @@ use crate::api::{state_to_string, Datapoint, Message};
 use crate::backend::Backend;
 use crate::tui::render::CmdRow;
 use crate::tui::{timestamp, Tui};
-use crate::COMMANDS_LIST;
+use crate::{COMMANDS_LIST, Event};
 use ratatui::Frame;
+use crate::Datatype::FSMEvent;
 
 #[allow(dead_code)]
 pub struct App {
@@ -16,6 +17,7 @@ pub struct App {
     pub selected_row: usize,
     pub cmds: Vec<CmdRow>,
     pub cur_state: String,
+    pub last_heartbeat: String,
     pub backend: Backend,
 }
 
@@ -37,6 +39,7 @@ impl App {
                 })
                 .collect(),
             cur_state: "None Yet".to_string(),
+            last_heartbeat: "None Yet".to_string(),
             backend,
         }
     }
@@ -68,8 +71,16 @@ impl App {
                             )),
                             timestamp(),
                         ));
+                        self.logs.push((Message::Data(datapoint), timestamp()))
+                    } else if datapoint.datatype == FSMEvent {
+                        if datapoint.value == Event::Heartbeat.to_id() as u64 {
+                            self.last_heartbeat = timestamp();
+                        } else {
+                            self.logs.push((Message::Data(datapoint), timestamp()))
+                        }
+                    } else {
+                        self.logs.push((Message::Data(datapoint), timestamp()))
                     }
-                    self.logs.push((Message::Data(datapoint), timestamp()))
                 }
                 msg => {
                     self.logs.push((msg, timestamp()));

@@ -3,7 +3,7 @@ use crate::core::controllers::breaking_controller::BrakingController;
 use crate::core::controllers::can_controller::{CanController, CanPins};
 use crate::core::controllers::ethernet_controller::{EthernetController, EthernetPins};
 use crate::core::controllers::hv_controller::HVPeripherals;
-use crate::core::finite_state_machine::FSM;
+use crate::core::finite_state_machine::Fsm;
 use crate::{DataReceiver, EventSender, InternalMessaging};
 use defmt::{info, unwrap};
 use embassy_executor::Spawner;
@@ -33,7 +33,7 @@ impl FSMPeripherals {
         // let (braking_controller, init) = BrakingController::new(init);
         let braking_controller = BrakingController::new(
             x,
-            i.event_sender.clone(),
+            i.event_sender,
             p.PB8,
             p.PG1,
             p.PF12,
@@ -44,30 +44,30 @@ impl FSMPeripherals {
         .await;
 
         let mut hv_controller = BatteryController::new(
-            i.event_sender.clone(),
+            i.event_sender,
             0,
             0,
             0,
             0,
             0,
-            i.data_sender.clone(),
+            i.data_sender,
             true,
         ); //TODO <------ This is just to make it build
         let mut lv_controller = BatteryController::new(
-            i.event_sender.clone(),
+            i.event_sender,
             0,
             0,
             0,
             0,
             0,
-            i.data_sender.clone(),
+            i.data_sender,
             false,
         ); //TODO <------ This is just to make it build
 
         let mut eth_controller = EthernetController::new(
             *x,
-            i.event_sender.clone(),
-            i.data_receiver.clone(),
+            i.event_sender,
+            i.data_receiver,
             EthernetPins {
                 p_rng: p.RNG,
                 eth_pin: p.ETH,
@@ -87,13 +87,13 @@ impl FSMPeripherals {
         // b.set_high();
         let mut can_controller = CanController::new(
             *x,
-            i.event_sender.clone(),
-            i.data_sender.clone(),
-            i.data_receiver.clone(),
-            i.can_one_sender.clone(),
-            i.can_one_receiver.clone(),
-            i.can_two_sender.clone(),
-            i.can_two_receiver.clone(),
+            i.event_sender,
+            i.data_sender,
+            i.data_receiver,
+            i.can_one_sender,
+            i.can_one_receiver,
+            i.can_two_sender,
+            i.can_two_receiver,
             CanPins {
                 fdcan1: p.FDCAN1,
                 fdcan2: p.FDCAN2,

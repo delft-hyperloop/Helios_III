@@ -39,8 +39,8 @@ pub async fn control_braking_heartbeat(sender: EventSender, mut braking_signal: 
             braking_signal.set_low();
 
             // braking_heartbeat.set_duty(Channel::Ch1, 0);
-            sender.send(Event::EmergencyBrakeCommand).await;
-            info!("------------ BRAKE ! ------------");
+            // sender.send(Event::EmergencyBrakeCommand).await;
+            // info!("------------ BRAKE ! ------------");
         }
         if booting {
             sender.send(Event::BootingCompleteEvent).await;
@@ -108,7 +108,7 @@ impl BrakingController {
                 return true;
             }
         }
-        return false;
+        false
     }
 
     pub fn disarm_breaks(&mut self) {

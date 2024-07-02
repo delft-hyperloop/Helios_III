@@ -189,3 +189,8 @@ priority = 0
 name = "LaneSwitchEnded"
 id = 0x505
 priority = 0
+
+[[Event]]
+name = "Heartbeat"
+id = 0x420
+priority = 1
