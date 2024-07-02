@@ -28,6 +28,10 @@ impl Default for BackendState {
 
 
 pub fn tauri_main() {
+    println!("Starting tauri application");
+    println!("Starting tauri application");
+    println!("Starting tauri application");
+    println!("Starting tauri application");
     tauri::Builder::default()
         .manage(BackendState::default())
         .invoke_handler(tauri::generate_handler![unload_buffer, send_command, generate_test_data])
@@ -36,9 +40,10 @@ pub fn tauri_main() {
             let (command_sender, command_receiver) = std::sync::mpsc::channel();
             data_sender.send(Message::Info("Station started".to_string())).unwrap();
             unsafe { COMMAND_SENDER.replace(command_sender); }
-            std::thread::spawn(move ||
-                Station::new().launch(data_sender, command_receiver)
-            );
+            std::thread::spawn(move || {
+                println!("Starting station");
+                Station::new().launch(data_sender, command_receiver);
+            });
             let app_handle = app.handle();
             tauri::async_runtime::spawn(async move {
                 loop {
