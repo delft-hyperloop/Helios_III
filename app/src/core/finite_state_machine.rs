@@ -9,6 +9,7 @@ use heapless::binary_heap::Max;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::{DataSender, Datatype, Event, EventReceiver};
 use crate::core::communication::{Datapoint};
+use crate::core::controllers::hv_controller::Status;
 
 
 //Enum holding different states that the FSM can be in
@@ -127,6 +128,7 @@ pub struct FSM {
     pub peripherals: FSMPeripherals,
     pub event_queue: EventReceiver,
     pub data_queue: DataSender,
+    pub status: Status,
 }
 
 
@@ -142,6 +144,7 @@ impl FSM {
             peripherals:p,
             event_queue: pq,
             data_queue: dq,
+            status: Status::new(),
         }
     }
 

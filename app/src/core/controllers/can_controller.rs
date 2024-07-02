@@ -34,6 +34,7 @@ use embassy_stm32::gpio::low_level::Pin;
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_time::{Duration, Instant, Timer};
 use crate::core::communication::can::{can_receiving_handler, can_transmitter, can_two_receiver_handler};
+use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::ethernet_controller::EthernetPins;
 
 
@@ -60,7 +61,9 @@ impl CanController {
         can_one_receiver: CanReceiver,
         can_two_sender: CanSender,
         can_two_receiver: CanReceiver,
-        pins: CanPins
+        pins: CanPins,
+        hv_controller: &mut BatteryController,
+        lv_controller: &mut BatteryController,
     ) -> Self {
 
         let mut can1 = can::FdcanConfigurator::new(pins.fdcan1, pins.pd0_pin, pins.pd1_pin, CanOneInterrupts);

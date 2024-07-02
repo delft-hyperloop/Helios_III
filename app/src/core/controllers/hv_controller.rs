@@ -3,16 +3,15 @@ use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::Sender;
 use heapless::binary_heap::Max;
 use crate::Event;
-
-pub struct HVController{
+pub struct Status{
     pub propulsion_ready : bool,
     pub levitation_ready : bool,
     pub powertrain_ready : bool,
 }
 
-impl HVController {
+impl Status {
 
-    pub fn new(x: &Spawner, hv_sender: Sender<'static,NoopRawMutex,Event,Max, { crate::EVENT_QUEUE_SIZE }>) -> Self {
+    pub fn new() -> Self{
         Self {
             propulsion_ready : false,
             levitation_ready : false,

@@ -11,7 +11,6 @@ use embassy_time::{Duration, Instant, Timer};
 use heapless::binary_heap::Max;
 use crate::core::controllers::breaking_controller::BrakingController;
 use crate::core::controllers::ethernet_controller::{EthernetController, EthernetPins};
-use crate::core::controllers::hv_controller::HVController;
 use crate::core::finite_state_machine::{FSM};
 use crate::{DataReceiver, EventSender, InternalMessaging};
 use crate::core::controllers::battery_controller::BatteryController;
@@ -20,8 +19,10 @@ use crate::core::controllers::can_controller::{CanController, CanPins};
 
 pub struct FSMPeripherals {
     pub braking_controller: BrakingController,
-    pub hv_controller: HVController,
     pub eth_controller: EthernetController,
+    pub can_controller: CanController,
+    pub hv_controller: BatteryController,
+    pub lv_controller: BatteryController,
 }
 
 // pub(crate) struct PInit {
@@ -37,7 +38,8 @@ impl FSMPeripherals{
         // let (braking_controller, init) = BrakingController::new(init);
         let braking_controller = BrakingController::new(x, s.clone(), p.PB8, p.PG1, p.PF12);
 
-        let mut hv_controller = HVController::new(x, s.clone());
+        let mut hv_controller = BatteryController::new(i.event_sender.clone(), 0,0,0,0,0); //TODO <------ This is just to make it build
+        let mut lv_controller = BatteryController::new(i.event_sender.clone(),0,0,0,0,0); //TODO <------ This is just to make it build
 
         let mut eth_controller = EthernetController::new(*x, s.clone(), r.clone(),EthernetPins{
             p_rng: p.RNG,
@@ -68,14 +70,14 @@ impl FSMPeripherals{
             pd1_pin: p.PD1,
             pb5_pin: p.PB5,
             pb6_pin: p.PB6,
-        });
-
-        let mut battery_controller = BatteryController::new(*x, i.event_sender.clone());
+        },   &mut hv_controller,&mut lv_controller,);
 
         Self {
             braking_controller,
-            hv_controller,
             eth_controller,
+            can_controller,
+            hv_controller,
+            lv_controller
         }
     }
 
