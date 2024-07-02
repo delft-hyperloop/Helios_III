@@ -14,7 +14,7 @@ pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
     tauri::Builder::default()
         .manage(BackendState::default())
-        .invoke_handler(tauri::generate_handler![unload_buffer, send_command, generate_test_data])
+        .invoke_handler(tauri::generate_handler![unload_buffer, send_command, generate_test_data, start_server, start_levi, quit_server, quit_levi])
         .setup(move |app| {
             let app_handle = app.handle();
             let mut message_rcv = backend.message_receiver.resubscribe();
