@@ -31,7 +31,7 @@ mod core;
 
 // Imports: 
 // - GS_IP_ADDRESS: ([u16;4], u16)
-include!(concat!(env!("OUT_DIR"), "/config_ip.rs"));
+include!(concat!(env!("OUT_DIR"), "/config.rs"));
 
 
 
@@ -68,7 +68,9 @@ async fn main(spawner: Spawner) -> ! {
 	loop {
 		nucleo_green_led.set_high();
         	Timer::after_millis(500).await;	
-		nucelo_green_led.set_low();
+		nucleo_green_led.set_low();
         	Timer::after_millis(500).await;
 	}
 }
+
+

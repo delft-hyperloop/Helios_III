@@ -25,13 +25,6 @@ embedded-storage = "0.3.1"
 static_cell = "2"
 chrono = { version = "^0.4", default-features = false }
 
-serde = "1.0.197"
-toml = "0.8.11"
-
-[build-dependencies]
-regex = "1.10.3"
-
-
 [dependencies.embassy-executor]
 git = "https://github.com/embassy-rs/embassy.git"
 branch = "main"
@@ -62,3 +55,33 @@ git = "https://github.com/embassy-rs/embassy.git"
 branch = "main"
 features = ["defmt"]
 
+
+# Only for build.rs
+[build-dependencies]
+regex = "1.10.3"
+serde = { version = "1.0.197", features = ["derive"] }
+toml = "0.8.11"
+
+
+# Build and run configurations
+[profile.dev]
+opt-level = "s"
+debug = true
+strip = "none"
+debug-assertions = true
+overflow-checks = true
+lto = true
+panic = 'unwind'
+incremental = true
+codegen-units = 16
+
+[profile.release]
+opt-level = 3
+debug = false
+strip = "none"
+debug-assertions = false
+overflow-checks = false
+lto = true
+panic = 'unwind'
+incremental = false
+codegen-units = 1
