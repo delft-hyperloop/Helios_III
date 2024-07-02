@@ -20,6 +20,7 @@ pub enum Datapoint {
     Error(String),           // if the main pcb sends an error message
     Info(String),            // if the main pcb sends an info/log message
     Status(String),          // status message from the backend, NOT main pcb
+    SafetyScore(f64),        // safety score 😎
 }
 
 /// Going the other way round, the frontend will have some buttons that need to be converted to
@@ -47,3 +48,5 @@ pub struct RunConfig {
     lane_switch: bool, // false: go straight, true: switch to the right lane
     braking_point: Position,
 }
+
+

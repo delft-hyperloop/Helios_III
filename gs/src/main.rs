@@ -1,6 +1,7 @@
 mod gui;
 mod station;
 mod api;
+mod util;
 
 use std::thread;
 use rayon::prelude::*;
@@ -16,12 +17,13 @@ fn main() {
     thread::spawn(|| {
         station::launch(data_tx, command_rx);
     });
+        gui::main::gui_main(command_tx, data_rx).unwrap();
 
     // parse command line arguments to see if we should run the TUI or just the backend
-    let args: Vec<String> = std::env::args().collect();
-    if args.len() > 1 && args[1] == "ui" {
-        gui::main::gui_main(command_tx, data_rx).unwrap();
-    } else {
-        loop {}
-    }
+    // let args: Vec<String> = std::env::args().collect();
+    // if args.len() > 1 && args[1] == "ui" {
+    //     gui::main::gui_main(command_tx, data_rx).unwrap();
+    // } else {
+    //     loop {}
+    // }
 }
