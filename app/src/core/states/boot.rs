@@ -6,11 +6,12 @@ impl FSM {
 
         info!("Entering Boot State");
 
-        if !self.peripherals.rearm_breaks() {
+        if !(self.peripherals.rearm_breaks()) {
             self.react(Event::BootingFailedEvent);
         }
+        info!("Booting complete");
 
-        // TODO -> Start also the connection with the sensor hub
+        // TODO -> Start also the connection with the sensor hub ||| I think this will be a task that starts can bus 1 and 2
     }
 
     pub fn react_boot(&mut self, event: Event) {

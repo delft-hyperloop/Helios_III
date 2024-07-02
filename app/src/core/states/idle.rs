@@ -4,26 +4,26 @@ use crate::core::finite_state_machine::{Event, FSM, State};
 impl FSM {
 
     pub fn entry_idle(&mut self) {
-        todo!();
+        info!("Entering Idle State")
     }
 
     pub fn react_idle(&mut self, event: Event) {
         match event {
-            Event::LVLevitationReadyEvent => {
-
-                todo!();
-
-            }
-            Event::LVPowertrainReadyEvent => {
-
-                todo!();
-
-            }
-            Event::LVPropulsionReadyEvent => {
-
-                todo!();
-
-            }
+            // Event::LVLevitationReadyEvent => {
+            //
+            //     todo!();
+            //
+            // }
+            // Event::LVPowertrainReadyEvent => {
+            //
+            //     todo!();
+            //
+            // }
+            // Event::LVPropulsionReadyEvent => {
+            //
+            //     todo!();
+            //
+            // }
             Event::TurnOnHVCommand => {
 
                 todo!();
