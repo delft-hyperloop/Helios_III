@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Battery, south_bridge_payload, Table, type TempTableEntry} from "$lib";
+    import {Battery, south_bridge_payload, Table} from "$lib";
 
     let titles = ["Battery", "Voltage", "Current", "Temperature"];
     let tableArr:any[][] = [
@@ -26,10 +26,10 @@
             </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
-            <Table {tableArr} {titles} />
-            <Table {tableArr} {titles} />
-            <Table {tableArr} {titles} />
-            <Table {tableArr} {titles} />
+            <Table background="bg-surface-900" {tableArr} {titles} />
+            <Table background="bg-surface-900" {tableArr} {titles} />
+            <Table background="bg-surface-900" {tableArr} {titles} />
+            <Table background="bg-surface-900" {tableArr} {titles} />
         </div>
     </div>
 </div>
