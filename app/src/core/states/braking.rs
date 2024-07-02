@@ -3,11 +3,11 @@ use crate::Event;
 use defmt::info;
 
 impl FSM {
-    pub fn entry_braking(&mut self) {
+    pub async fn entry_braking(&mut self) {
         todo!();
     }
 
-    pub fn react_braking(&mut self, event: Event) {
+    pub async fn react_braking(&mut self, event: Event) {
         match event {
             Event::DirectionChangedEvent => {
                 todo!();

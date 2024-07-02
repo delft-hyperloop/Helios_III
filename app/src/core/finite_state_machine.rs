@@ -161,21 +161,21 @@ impl FSM {
         self.state = next_state;
         self.entry();
     }
-    pub fn entry(&mut self) {
+    pub async fn entry(&mut self) {
         match self.state {
-            State::Boot => self.boot_entry(),
-            State::EstablishConnection => self.entry_establish_connection(),
-            State::Idle => self.entry_idle(),
-            State::RunConfig => self.entry_run_config(),
-            State::HVSystemChecking => self.entry_hv_system_checking(),
-            State::Levitating => self.entry_levitating(),
-            State::Accelerating => self.entry_accelerating(),
-            State::Cruising => self.entry_cruising(),
-            State::LaneSwitch => self.entry_lane_switch(),
-            State::Braking => self.entry_braking(),
-            State::EmergencyBraking => self.entry_emergency_braking(),
-            State::Exit => self.entry_exit(),
-            _ => {
+            State::Boot => self.boot_entry().await,
+            State::EstablishConnection => self.entry_establish_connection().await,
+            State::Idle => self.entry_idle().await,
+            State::RunConfig => self.entry_run_config().await,
+            State::HVSystemChecking => self.entry_hv_system_checking().await,
+            State::Levitating => self.entry_levitating().await,
+            State::Accelerating => self.entry_accelerating().await,
+            State::Cruising => self.entry_cruising().await,
+            State::LaneSwitch => self.entry_lane_switch().await,
+            State::Braking => self.entry_braking().await,
+            State::EmergencyBraking => self.entry_emergency_braking().await,
+            State::Exit => self.entry_exit().await,
+            State::Crashing => {
                 info!("Im going against a wall for sure this time"); //<--- This is what happens if the Crashing state ever gets triggered
             }
         }
@@ -197,20 +197,19 @@ impl FSM {
             _ => {}
         }
         match self.state {
-            State::Boot => self.react_boot(event),
-            State::EstablishConnection => self.react_establish_connection(event),
-            State::Idle => self.react_idle(event),
-            State::RunConfig => self.react_run_config(event),
-            State::HVSystemChecking => self.react_hv_system_checking(event),
-            State::Levitating => self.react_levitating(event),
-            State::Accelerating => self.react_accelerating(event),
-            State::Cruising => self.react_cruising(event),
-            State::LaneSwitch => self.react_lane_switch(event),
-            State::Braking => self.react_braking(event),
-            State::Exit => self.react_exit(event),
-            _ => {
-                info!("Unknown state"); // <---- Kiko: Im forced to have this here but im against it
-            }
+            State::Boot => self.react_boot(event).await,
+            State::EstablishConnection => self.react_establish_connection(event).await,
+            State::Idle => self.react_idle(event).await,
+            State::RunConfig => self.react_run_config(event).await,
+            State::HVSystemChecking => self.react_hv_system_checking(event).await,
+            State::Levitating => self.react_levitating(event).await,
+            State::Accelerating => self.react_accelerating(event).await,
+            State::Cruising => self.react_cruising(event).await,
+            State::LaneSwitch => self.react_lane_switch(event).await,
+            State::Braking => self.react_braking(event).await,
+            State::Exit => self.react_exit(event).await,
+            State::EmergencyBraking => {}
+            State::Crashing => {}
         }
     }
 }

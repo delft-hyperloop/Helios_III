@@ -3,11 +3,11 @@ use crate::Event;
 use defmt::info;
 
 impl FSM {
-    pub fn entry_levitating(&mut self) {
+    pub async fn entry_levitating(&mut self) {
         todo!();
     }
 
-    pub fn react_levitating(&mut self, event: Event) {
+    pub async fn react_levitating(&mut self, event: Event) {
         match event {
             Event::StartAcceleratingCommand => {
                 todo!();
