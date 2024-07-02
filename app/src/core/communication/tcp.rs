@@ -1,30 +1,30 @@
+use crate::pconfig::{embassy_socket_from_config, socket_from_config};
+use crate::{
+    Command, DataReceiver, Event, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, IP_TIMEOUT,
+    KEEP_ALIVE, NETWORK_BUFFER_SIZE,
+};
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_net::tcp::client::{TcpClient, TcpClientState};
+use embassy_net::tcp::TcpSocket;
+use embassy_net::{Ipv4Address, Ipv4Cidr};
 use embassy_net::{Stack, StackResources};
 use embassy_stm32::eth::generic_smi::GenericSMI;
 use embassy_stm32::eth::{Ethernet, PacketQueue, PHY};
+use embassy_stm32::gpio::{Level, Output, Speed};
 use embassy_stm32::peripherals::ETH;
 use embassy_stm32::rng::Rng;
 use embassy_stm32::{bind_interrupts, eth, peripherals, rng, Config};
+use embassy_sync::blocking_mutex::raw::NoopRawMutex;
+use embassy_sync::priority_channel::{Receiver, Sender};
 use embassy_time::{Duration, Timer};
 use embedded_io_async::{Read, Write};
 use embedded_nal_async::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpConnect};
+use heapless::binary_heap::Max;
+use heapless::Vec;
 use rand_core::RngCore;
 use static_cell::StaticCell;
 use {defmt_rtt as _, panic_probe as _};
-use embassy_net::{Ipv4Cidr, Ipv4Address};
-use embassy_net::tcp::TcpSocket;
-use embassy_stm32::gpio::{Level, Output, Speed};
-use embassy_sync::blocking_mutex::raw::NoopRawMutex;
-use embassy_sync::priority_channel::{Receiver, Sender};
-use heapless::binary_heap::Max;
-use heapless::Vec;
-use crate::core::communication::dispatcher::ground_station_message_dispatcher;
-use crate::core::finite_state_machine::Event;
-use crate::{DataReceiver, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, NETWORK_BUFFER_SIZE, KEEP_ALIVE, IP_TIMEOUT, Event, Command};
-use crate::pconfig::{embassy_socket_from_config, socket_from_config};
-
 
 /// This is the task that:
 /// 1. bugs the ground station to connect until it does
@@ -34,8 +34,8 @@ use crate::pconfig::{embassy_socket_from_config, socket_from_config};
 pub async fn tcp_connection_handler(
     x: Spawner,
     stack: &'static Stack<Ethernet<'static, ETH, GenericSMI>>,
-    event_sender : EventSender,
-    data_receiver : DataReceiver,
+    event_sender: EventSender,
+    data_receiver: DataReceiver,
 ) -> ! {
     // info!("------------------------------------------------ TCP Connection Handler Started! ------------------------------------------");
     stack.wait_config_up().await;
@@ -48,7 +48,8 @@ pub async fn tcp_connection_handler(
     let mut rx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
     let mut tx_buffer: [u8; { NETWORK_BUFFER_SIZE }] = [0u8; { NETWORK_BUFFER_SIZE }];
 
-    let mut socket: TcpSocket = TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
+    let mut socket: TcpSocket =
+        TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
 
     let mut buf = [0; 1024];
     loop {
@@ -66,8 +67,13 @@ pub async fn tcp_connection_handler(
 
         #[cfg(debug_assertions)]
         match socket.write(b"aaaaaaaaaaaaaaa0").await {
-            Ok(_) => info!("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]Data sent successfully"),
-            Err(e) => info!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Failed to send data: {:?}", e),
+            Ok(_) => {
+                info!("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]Data sent successfully")
+            }
+            Err(e) => info!(
+                ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Failed to send data: {:?}",
+                e
+            ),
         }
         // loop to receive data from the TCP connection
         loop {
@@ -104,7 +110,9 @@ pub async fn tcp_connection_handler(
                         #[cfg(debug_assertions)]
                         info!("[tcp] DefaultCommand received, unsure what to do with it...");
                         socket.flush().await;
-                        socket.write_all(b"DefaultCommand received, unsure what to do with it...").await;
+                        socket
+                            .write_all(b"DefaultCommand received, unsure what to do with it...")
+                            .await;
                         socket.flush().await;
                     }
                     Command::Levitate(_) => {

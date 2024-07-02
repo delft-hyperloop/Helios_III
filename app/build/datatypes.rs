@@ -3,9 +3,9 @@
 extern crate regex;
 extern crate serde;
 
+use serde::Deserialize;
 use std::fs;
 use std::sync::Mutex;
-use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -17,7 +17,6 @@ pub struct Datatype {
     name: String,
     id: u16,
 }
-
 
 pub const COMMANDS_PATH: &str = "../config/datatypes.toml";
 
@@ -36,20 +35,30 @@ pub fn main(id_list: &Mutex<Vec<u16>>) -> String {
     let mut data_ids = vec![];
     for dtype in config.Datatype {
         if dtype.id & 0b1111_1000_0000_0000 != 0 {
-            panic!("IDs need to be u11. Found {} > {}", dtype.id, 2^11);
+            panic!("IDs need to be u11. Found {} > {}", dtype.id, 2 ^ 11);
         } else {
             if id_list.contains(&dtype.id) {
-                panic!("ID {} already taken!! {}:{} : pick a different one.", dtype.id, dtype.name, dtype.id);
+                panic!(
+                    "ID {} already taken!! {}:{} : pick a different one.",
+                    dtype.id, dtype.name, dtype.id
+                );
             }
             id_list.push(dtype.id);
             data_ids.push(dtype.id);
         }
         enum_definitions.push_str(&format!("\t{},\n", dtype.name));
-        match_to_id.push_str(&format!("\t\t\tDatatype::{} => {},\n", dtype.name, dtype.id));
-        match_from_id.push_str(&format!("\t\t\t{} => Datatype::{},\n", dtype.id, dtype.name));
+        match_to_id.push_str(&format!(
+            "\t\t\tDatatype::{} => {},\n",
+            dtype.name, dtype.id
+        ));
+        match_from_id.push_str(&format!(
+            "\t\t\t{} => Datatype::{},\n",
+            dtype.id, dtype.name
+        ));
     }
 
-    format!("\n
+    format!(
+        "\n
 pub enum Datatype {{
 {}
 }}\n
@@ -66,5 +75,15 @@ impl Datatype {{
         }}
     }}
 }}
-pub static DATA_IDS : [u16;{}] = [{}];\n", enum_definitions, match_to_id, match_from_id, data_ids.len(), data_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "))
+pub static DATA_IDS : [u16;{}] = [{}];\n",
+        enum_definitions,
+        match_to_id,
+        match_from_id,
+        data_ids.len(),
+        data_ids
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(", ")
+    )
 }
