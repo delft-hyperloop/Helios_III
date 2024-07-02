@@ -6,19 +6,17 @@ impl FSM{
 
         info!("Entering Establish Connection State");
 
+        // TODO -> Start connection with the ground station, with levi and propulsion
+
     }
 
     pub fn react_establish_connection(&mut self, event: Event) {
         match event {
             Event::ConnectionEstablishedEvent => {
 
-                todo!();
-
                 self.transit(State::RunConfig);
             }
             Event::ConnectionEstablishmentFailedEvent => {
-
-                todo!();
 
                 self.transit(State::Exit);
             }
