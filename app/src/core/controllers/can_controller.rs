@@ -117,14 +117,14 @@ impl CanController {
             ))
         );
 
-        try_spawn!(
-            event_sender,
-            x.spawn(can_transmitter(can_one_receiver.clone(), c1_tx))
-        );
-        try_spawn!(
-            event_sender,
-            x.spawn(can_transmitter(can_two_receiver.clone(), c2_tx))
-        );
+        // try_spawn!(
+        //     event_sender,
+        //     x.spawn(can_transmitter(can_one_receiver.clone(), c1_tx))
+        // );
+        // try_spawn!(
+        //     event_sender,
+        //     x.spawn(can_transmitter(can_two_receiver.clone(), c2_tx))
+        // );
 
         Self {}
     }
