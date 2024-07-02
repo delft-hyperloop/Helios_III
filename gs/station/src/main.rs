@@ -1,9 +1,7 @@
 // Prevents an additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::io::{BufRead, Read};
-use std::sync::mpsc::TryRecvError;
-use crate::api::Message;
+use std::io::{BufRead};
 use crate::frontend::tauri_main;
 use crate::tui::gui_main;
 
