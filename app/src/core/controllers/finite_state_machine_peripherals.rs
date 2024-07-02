@@ -2,6 +2,7 @@ use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::breaking_controller::BrakingController;
 use crate::core::controllers::can_controller::{CanController, CanPins};
 use crate::core::controllers::ethernet_controller::{EthernetController, EthernetPins};
+use crate::core::controllers::hv_controller::HVPeripherals;
 use crate::core::finite_state_machine::FSM;
 use crate::{DataReceiver, EventSender, InternalMessaging};
 use defmt::{info, unwrap};
@@ -15,7 +16,6 @@ use embassy_sync::mutex::Mutex;
 use embassy_sync::priority_channel::{PriorityChannel, Sender};
 use embassy_time::{Duration, Instant, Timer};
 use heapless::binary_heap::Max;
-use crate::core::controllers::hv_controller::HVPeripherals;
 
 pub struct FSMPeripherals {
     pub braking_controller: BrakingController,
@@ -31,13 +31,38 @@ impl FSMPeripherals {
     pub async fn new(p: Peripherals, x: &Spawner, i: InternalMessaging) -> Self {
         // let mut init = PInit{p,x,q};
         // let (braking_controller, init) = BrakingController::new(init);
-        let braking_controller =
-            BrakingController::new(x, i.event_sender.clone(), p.PB8, p.PG1, p.PF12,p.PB0,p.PD5, p.TIM16).await;
+        let braking_controller = BrakingController::new(
+            x,
+            i.event_sender.clone(),
+            p.PB8,
+            p.PG1,
+            p.PF12,
+            p.PB0,
+            p.PD5,
+            p.TIM16,
+        )
+        .await;
 
-        let mut hv_controller =
-            BatteryController::new(i.event_sender.clone(), 0, 0, 0, 0, 0, i.data_sender.clone(),true); //TODO <------ This is just to make it build
-        let mut lv_controller =
-            BatteryController::new(i.event_sender.clone(), 0, 0, 0, 0, 0, i.data_sender.clone(),false); //TODO <------ This is just to make it build
+        let mut hv_controller = BatteryController::new(
+            i.event_sender.clone(),
+            0,
+            0,
+            0,
+            0,
+            0,
+            i.data_sender.clone(),
+            true,
+        ); //TODO <------ This is just to make it build
+        let mut lv_controller = BatteryController::new(
+            i.event_sender.clone(),
+            0,
+            0,
+            0,
+            0,
+            0,
+            i.data_sender.clone(),
+            false,
+        ); //TODO <------ This is just to make it build
 
         let mut eth_controller = EthernetController::new(
             *x,

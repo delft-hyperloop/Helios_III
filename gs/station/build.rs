@@ -59,7 +59,11 @@ fn main() {
     let mut content = String::new();
 
     content.push_str(&*configure_gs(&config));
-    content.push_str(&*configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force));
+    content.push_str(&*configure_gs_ip(
+        config.gs.ip,
+        config.gs.port,
+        config.gs.force,
+    ));
     content.push_str(&*generate_datatypes(&id_list, DATATYPES_PATH, true));
     content.push_str(&*generate_commands(&id_list, COMMANDS_PATH, false));
     content.push_str(&*generate_events(&id_list, EVENTS_PATH));

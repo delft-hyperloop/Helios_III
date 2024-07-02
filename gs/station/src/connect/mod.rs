@@ -12,9 +12,16 @@ pub async fn connect_main(
     command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
 ) {
     // Bind the listener to the address
-    message_transmitter.send(Message::Warning(format!("trying to connect... {:?}", gs_socket()))).unwrap();
+    message_transmitter
+        .send(Message::Warning(format!(
+            "trying to connect... {:?}",
+            gs_socket()
+        )))
+        .unwrap();
     let listener = TcpListener::bind(gs_socket()).await.unwrap();
-    message_transmitter.send(Message::Status(crate::api::Status::ServerStarted)).unwrap();
+    message_transmitter
+        .send(Message::Status(crate::api::Status::ServerStarted))
+        .unwrap();
     message_transmitter
         .send(Message::Info(format!(
             "Server Listening on: {}",

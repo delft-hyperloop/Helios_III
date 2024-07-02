@@ -1,5 +1,5 @@
-use tokio::io::AsyncBufReadExt;
 use crate::api::Message;
+use tokio::io::AsyncBufReadExt;
 
 /// # Read from levi child stdout
 /// reads from the stdout of the levi child process, and sends the messages to the message_transmitter.
@@ -12,7 +12,9 @@ pub async fn read_from_levi_child_stdout(
     loop {
         match reader.read_line(&mut line).await {
             Ok(0) => {
-                message_transmitter.send(Message::Error("Levi stdout closed.".to_string())).unwrap();
+                message_transmitter
+                    .send(Message::Error("Levi stdout closed.".to_string()))
+                    .unwrap();
                 break;
             }
             Ok(n) => {
@@ -21,7 +23,9 @@ pub async fn read_from_levi_child_stdout(
                     .unwrap();
             }
             Err(e) => {
-                message_transmitter.send(Message::Error(format!("Levi stdout closed: {:?}", e))).unwrap();
+                message_transmitter
+                    .send(Message::Error(format!("Levi stdout closed: {:?}", e)))
+                    .unwrap();
                 break;
             }
         }

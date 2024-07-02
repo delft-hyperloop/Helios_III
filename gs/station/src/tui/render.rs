@@ -1,11 +1,11 @@
+use crate::api::Message;
+use crate::tui::app::App;
+use crate::Command;
 use ratatui::{
     prelude::*,
     symbols::border,
     widgets::{block::*, *},
 };
-use crate::api::Message;
-use crate::Command;
-use crate::tui::app::App;
 
 #[derive(Debug)]
 pub struct CmdRow {
@@ -77,7 +77,7 @@ impl Widget for &App {
                     Constraint::Percentage(58), // left half for text stream
                     Constraint::Percentage(42), // right half for table and data out
                 ]
-                    .as_ref(),
+                .as_ref(),
             )
             .split(inner_area);
 
@@ -89,20 +89,28 @@ impl Widget for &App {
                     Constraint::Percentage(80), // top side for text stream
                     Constraint::Percentage(20), // bottom side for the table
                 ]
-                    .as_ref(),
+                .as_ref(),
             )
             .split(main_chunks[1]);
 
-        let text_block = Block::default().title("Text Stream")
+        let text_block = Block::default()
+            .title("Text Stream")
             .title_style(Style::default().fg(Color::LightBlue).bold()) // Styling the title
             .border_style(Style::default().fg(Color::Blue))
             .borders(Borders::ALL);
 
         // Create the text stream
-        let styled_logs: Vec<Line> = self.logs.iter().map(|(msg, t)| {
-            match msg {
-                Message::Data(d) => Line::styled(format!("[{}] {:?}={} at {}", t, d.datatype, d.value, d.timestamp), Style::default().bg(Color::Cyan)),
-                Message::Status(s) => Line::styled(format!("[{}] {:?}", t, s), Style::default().fg(s.colour())),
+        let styled_logs: Vec<Line> = self
+            .logs
+            .iter()
+            .map(|(msg, t)| match msg {
+                Message::Data(d) => Line::styled(
+                    format!("[{}] {:?}={} at {}", t, d.datatype, d.value, d.timestamp),
+                    Style::default().bg(Color::Cyan),
+                ),
+                Message::Status(s) => {
+                    Line::styled(format!("[{}] {:?}", t, s), Style::default().fg(s.colour()))
+                }
                 Message::Info(x) => Line::styled(format!("[{}] {}", t, x), {
                     if x.contains("[TRACE]") {
                         Style::default().fg(Color::Gray)
@@ -110,10 +118,14 @@ impl Widget for &App {
                         Style::default().fg(Color::White)
                     }
                 }),
-                Message::Warning(x) => Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Yellow)),
-                Message::Error(x) => Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Red)),
-            }
-        }).collect();
+                Message::Warning(x) => {
+                    Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Yellow))
+                }
+                Message::Error(x) => {
+                    Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Red))
+                }
+            })
+            .collect();
         // Render the text stream
         let paragraph = Paragraph::new(styled_logs)
             .wrap(Wrap { trim: false })
@@ -138,31 +150,45 @@ impl Widget for &App {
         }*/
 
         // Create the table block
-        let mut rows = vec![
-            Row::new(vec!["Command", "Value"])
-                .style(Style::default().fg(Color::Blue).bg(Color::Black).add_modifier(Modifier::BOLD)),
-        ];
+        let mut rows = vec![Row::new(vec!["Command", "Value"]).style(
+            Style::default()
+                .fg(Color::Blue)
+                .bg(Color::Black)
+                .add_modifier(Modifier::BOLD),
+        )];
         self.cmds.iter().enumerate().for_each(|(i, x)| {
-            rows.push(x.to_row().style(Style::default().bg(Color::Black).fg(border_select(self, i))))
+            rows.push(
+                x.to_row()
+                    .style(Style::default().bg(Color::Black).fg(border_select(self, i))),
+            )
         });
 
-        let table = Table::new(rows, vec![Constraint::Fill(1), Constraint::Length(10)])
-            .block(Block::default().borders(Borders::ALL).title(Title::from("Commands Panel".light_blue().bold()))
-                .border_style(Style::default().fg(Color::Blue)));
+        let table = Table::new(rows, vec![Constraint::Fill(1), Constraint::Length(10)]).block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title(Title::from("Commands Panel".light_blue().bold()))
+                .border_style(Style::default().fg(Color::Blue)),
+        );
 
         // Render the table
         ratatui::widgets::Widget::render(table, right_chunks[0], buf);
 
         // A paragraph to display data (bottom right)
-        let data_block = Block::default().title("Other Info")
+        let data_block = Block::default()
+            .title("Other Info")
             .title_style(Style::default().fg(Color::LightBlue).bold()) // Styling the title
             .border_style(Style::default().fg(Color::Blue))
             .borders(Borders::ALL);
 
         let data = vec![
-            Line::styled(format!("Current State: {}", self.cur_state), Style::default().fg(Color::White).bg(Color::Blue)),
-            Line::styled(format!("Selected Row: {}", self.selected_row), Style::default().fg(Color::White)),
-
+            Line::styled(
+                format!("Current State: {}", self.cur_state),
+                Style::default().fg(Color::White).bg(Color::Blue),
+            ),
+            Line::styled(
+                format!("Selected Row: {}", self.selected_row),
+                Style::default().fg(Color::White),
+            ),
         ];
 
         let data_paragraph = Paragraph::new(data)

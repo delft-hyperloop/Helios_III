@@ -1,9 +1,9 @@
+use crate::core::communication::Datapoint;
 use crate::core::finite_state_machine::*;
 use crate::{Datatype, Event};
 use defmt::{info, warn};
 use embassy_stm32::gpio::Level::High;
 use embassy_stm32::gpio::Output;
-use crate::core::communication::Datapoint;
 
 impl FSM {
     pub async fn entry_hv_system_checking(&mut self) {

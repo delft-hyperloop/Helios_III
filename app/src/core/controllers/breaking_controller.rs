@@ -2,14 +2,14 @@ use crate::{try_spawn, Event, EventSender};
 use defmt::export::timestamp;
 use defmt::{info, unwrap};
 use embassy_executor::Spawner;
+use embassy_stm32::adc::Adc;
+use embassy_stm32::gpio::OutputType::PushPull;
 use embassy_stm32::gpio::{Input, Level, Output, OutputType, Pull, Speed};
 use embassy_stm32::peripherals::{PB0, PD5, TIM16};
 use embassy_stm32::time::khz;
 use embassy_stm32::timer::simple_pwm::{PwmPin, SimplePwm};
 use embassy_stm32::timer::Channel;
 use embassy_stm32::{peripherals, Peripherals};
-use embassy_stm32::adc::Adc;
-use embassy_stm32::gpio::OutputType::PushPull;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::Sender;
 use embassy_time::{Duration, Instant, Timer};
@@ -32,11 +32,10 @@ pub async fn control_braking_heartbeat(sender: EventSender, mut braking_signal: 
     let mut time_stamp = Instant::now();
     loop {
         Timer::after_micros(200).await;
-        if (unsafe {!BRAKE}) {
+        if (unsafe { !BRAKE }) {
             braking_signal.set_high();
             // braking_heartbeat.set_duty(Channel::Ch1, braking_heartbeat.get_max_duty()/2);
-        }
-        else {
+        } else {
             braking_signal.set_low();
 
             // braking_heartbeat.set_duty(Channel::Ch1, 0);
@@ -66,7 +65,7 @@ impl BrakingController {
         // If we want to keep it alive we send a 10khz digital clock signal
         let mut braking_rearm: Output = Output::new(pg1, Level::High, Speed::Low); // <--- To keep the breaks not rearmed we send a 1, if we want to arm the breaks we send a 0
 
-        let mut led : Output = Output::new(pb0,Level::High,Speed::Low);
+        let mut led: Output = Output::new(pb0, Level::High, Speed::Low);
         // let mut led2 : Output = Output::new(pd5,Level::High,Speed::Low);
         led.set_high();
         info!("set led on pb0 to high");
@@ -80,7 +79,7 @@ impl BrakingController {
         //     Default::default(),
         // );
         let mut braking_communication = Input::new(pf12, Pull::None); // <--- If its HIGH it means that breaks are rearmed, if its low it , means we are breaking
-                                                                             // Finally if we set the heartbeat to LOW, and we still receive a 1 is basically means we are crashing so lets actually make use of the crashing state
+                                                                      // Finally if we set the heartbeat to LOW, and we still receive a 1 is basically means we are crashing so lets actually make use of the crashing state
 
         // let mut braking_communication = Adc::new();
         // braking_communication
@@ -88,7 +87,10 @@ impl BrakingController {
         let braking_signal = Output::new(pb8, Level::High, Speed::Low);
         // pwm.enable(Channel::Ch1);
 
-        try_spawn!(braking_sender, x.spawn(control_braking_heartbeat(braking_sender, braking_signal)));
+        try_spawn!(
+            braking_sender,
+            x.spawn(control_braking_heartbeat(braking_sender, braking_signal))
+        );
 
         BrakingController {
             braking_rearm,
@@ -112,7 +114,7 @@ impl BrakingController {
     pub fn disarm_breaks(&mut self) {
         self.braking_rearm.set_low();
         self.brake_retraction = true;
-        unsafe{BRAKE = false};
+        unsafe { BRAKE = false };
     }
     pub fn brake(&mut self) {
         unsafe { BRAKE = true };

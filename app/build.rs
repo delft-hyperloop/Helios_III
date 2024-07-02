@@ -2,13 +2,13 @@
 
 extern crate serde;
 
+use goose_utils;
+use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::Path;
 use std::sync::Mutex;
-use goose_utils;
-use goose_utils::ip::configure_gs_ip;
 
 /*
    BUILD CONFIGURATION
@@ -78,12 +78,27 @@ fn main() {
     let mut content = String::new();
 
     content.push_str(&*configure_ip(&config));
-    content.push_str(&*configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force));
+    content.push_str(&*configure_gs_ip(
+        config.gs.ip,
+        config.gs.port,
+        config.gs.force,
+    ));
     content.push_str(&*configure_pod(&config));
     content.push_str(&*configure_internal(&config));
-    content.push_str(&*goose_utils::commands::generate_commands(&id_list, COMMANDS_PATH, true));
-    content.push_str(&*goose_utils::datatypes::generate_datatypes(&id_list, DATATYPES_PATH, false));
-    content.push_str(&*goose_utils::events::generate_events(&id_list, EVENTS_PATH));
+    content.push_str(&*goose_utils::commands::generate_commands(
+        &id_list,
+        COMMANDS_PATH,
+        true,
+    ));
+    content.push_str(&*goose_utils::datatypes::generate_datatypes(
+        &id_list,
+        DATATYPES_PATH,
+        false,
+    ));
+    content.push_str(&*goose_utils::events::generate_events(
+        &id_list,
+        EVENTS_PATH,
+    ));
     // content.push_str(&*can::main(&id_list));
 
     fs::write(dest_path.clone(), content).expect(&*format!(

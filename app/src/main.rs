@@ -71,30 +71,20 @@ type EventReceiver = embassy_sync::priority_channel::Receiver<
     Max,
     { EVENT_QUEUE_SIZE },
 >;
-type CanSender = embassy_sync::channel::Sender<
-    'static,
-    NoopRawMutex,
-    can::frame::Frame,
-    { CAN_QUEUE_SIZE },
->;
-type CanReceiver = embassy_sync::channel::Receiver<
-    'static,
-    NoopRawMutex,
-    can::frame::Frame,
-    { CAN_QUEUE_SIZE },
->;
+type CanSender =
+    embassy_sync::channel::Sender<'static, NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>;
+type CanReceiver =
+    embassy_sync::channel::Receiver<'static, NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>;
 
 /// Static Allocations - just the MPMC queues for now (?)
 static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }>> =
     StaticCell::new();
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
     StaticCell::new();
-static CAN_ONE_QUEUE: StaticCell<
-    Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>,
-> = StaticCell::new();
-static CAN_TWO_QUEUE: StaticCell<
-    Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>,
-> = StaticCell::new();
+static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
+    StaticCell::new();
+static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
+    StaticCell::new();
 
 pub struct InternalMessaging {
     event_sender: EventSender,
@@ -144,19 +134,13 @@ async fn main(spawner: Spawner) -> ! {
     let data_sender: DataSender = data_queue.sender();
     let data_receiver: DataReceiver = data_queue.receiver();
 
-    let can_one_queue: &'static mut Channel<
-        NoopRawMutex,
-        can::frame::Frame,
-        { CAN_QUEUE_SIZE },
-    > = CAN_ONE_QUEUE.init(Channel::new());
+    let can_one_queue: &'static mut Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }> =
+        CAN_ONE_QUEUE.init(Channel::new());
     let can_one_sender: CanSender = can_one_queue.sender();
     let can_one_receiver: CanReceiver = can_one_queue.receiver();
 
-    let can_two_queue: &'static mut Channel<
-        NoopRawMutex,
-        can::frame::Frame,
-        { CAN_QUEUE_SIZE },
-    > = CAN_TWO_QUEUE.init(Channel::new());
+    let can_two_queue: &'static mut Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }> =
+        CAN_TWO_QUEUE.init(Channel::new());
     let can_two_sender: CanSender = can_two_queue.sender();
     let can_two_receiver: CanReceiver = can_two_queue.receiver();
 
@@ -203,10 +187,25 @@ pub async fn your_mom(ds: DataSender) {
     loop {
         info!("Your mom");
         Timer::after_secs(1).await;
-        ds.send(Datapoint::new(Datatype::BatteryVoltageHigh, 42, Instant::now().as_ticks())).await;
-        ds.send(Datapoint::new(Datatype::BatteryBalanceHigh, 69, Instant::now().as_ticks())).await;
-        ds.send(Datapoint::new(Datatype::BatteryCurrentHigh, idx, Instant::now().as_ticks())).await;
+        ds.send(Datapoint::new(
+            Datatype::BatteryVoltageHigh,
+            42,
+            Instant::now().as_ticks(),
+        ))
+        .await;
+        ds.send(Datapoint::new(
+            Datatype::BatteryBalanceHigh,
+            69,
+            Instant::now().as_ticks(),
+        ))
+        .await;
+        ds.send(Datapoint::new(
+            Datatype::BatteryCurrentHigh,
+            idx,
+            Instant::now().as_ticks(),
+        ))
+        .await;
         // ds.send(Datapoint::new(Datatype::BatteryVoltageHigh, 6543, Instant::now().as_ticks())).await;
-        idx = (idx + 9)%50;
+        idx = (idx + 9) % 50;
     }
 }

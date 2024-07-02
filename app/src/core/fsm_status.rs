@@ -1,4 +1,3 @@
-
 #[derive(Debug, Default)]
 pub struct Status {
     pub propulsion_ready: bool,
@@ -13,6 +12,4 @@ pub struct Status {
     pub brakes_retracted: bool,
 }
 
-impl Status {
-
-}
+impl Status {}
