@@ -75,7 +75,7 @@ impl CanController {
             can::CanConfigurator::new(pins.fdcan1, pins.pd0_pin, pins.pd1_pin, CanOneInterrupts);
 
         let mut can2 =
-            can::CanConfigurator::new(pins.fdcan2, pins.pb5_pin, pins.pb6_pin, CanTwoInterrupts); // <--- Im not really sure if this are the correct pins
+            can::CanConfigurator::new(pins.fdcan2, pins.pb5_pin /* pb5=can2 RX */, pins.pb6_pin /* pb6=can2 TX */, CanTwoInterrupts); 
         can1.config().protocol_exception_handling = false;
         can2.config().protocol_exception_handling = false;
 
