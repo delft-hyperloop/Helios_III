@@ -1,8 +1,9 @@
+#![allow(non_snake_case)]
+
 extern crate serde;
 use std::env;
 use std::fs;
 use std::path::Path;
-use std::str::FromStr;
 use serde::{Deserialize};
 
 /*
@@ -21,10 +22,11 @@ struct GS {
     ip: [u8; 4],
     port: u16,
     buffer_size: usize,
+    timeout: u64,
 }
 
 
-pub const NETCONFIG_PATH: &str = "../config/netconfig.toml";
+pub const NETCONFIG_PATH: &str = "../config/config.toml";
 
 
 fn main() {
@@ -46,6 +48,7 @@ fn configure_ip(dest_path: &Path) {
     let ipconfig: Config = toml::from_str(&ip_file).unwrap();
     config.push_str(&format!("pub fn GS_SOCKET() -> std::net::SocketAddr {} std::net::SocketAddr::new(std::net::IpAddr::from([{},{},{},{}]),{}) {}\n", "{", ipconfig.gs.ip[0], ipconfig.gs.ip[1], ipconfig.gs.ip[2], ipconfig.gs.ip[3], ipconfig.gs.port, "}"));
     config.push_str(&format!("const IP_BUFFER_SIZE: usize = {};\n", ipconfig.gs.buffer_size));
+    config.push_str(&format!("const IP_TIMEOUT: u64 = {};\n", ipconfig.gs.timeout));
     println!("\n\n\n\n\n\n\nconfig.rs will have {}\n\n\n\n\n\n\n", config);
     fs::write(&dest_path, config).unwrap();
 }

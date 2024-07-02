@@ -9,27 +9,39 @@ use ratatui::{
     symbols::border,
     widgets::{block::*, *},
 };
-use crate::{Command, Datapoint};
+use crate::api::{Command, Datapoint};
 use crate::gui::tui;
 use crate::gui::tui::restore;
 
 
+pub enum LogType {
+    Info,
+    Warning,
+    Error,
+    Success,
+}
 /// This struct holds everything the TUI needs
 /// this includes:
 /// - communication channels
 /// - vectors of datapoints, specifically one for each graph that we display
 ///                                                 (NOT Vec<Datapoint>, this means nothing!!)
 /// - vector of TCP messages that we display
-#[derive(Debug)]
 pub struct App {
-    pub logs: Vec<String>,
+    pub logs: Vec<(LogType, String)>,
     pub tx: Sender<Command>,
     pub rx: Receiver<Datapoint>,
+    pub safety_score: Vec<(f64,f64)>,
+    pub unsafety_score: Vec<(f64,f64)>,
+    pub battery_voltages: Vec<(String,u64)>,
     pub exit: bool,
+    pub scroll: u16,
+    pub time_elapsed: u64,
+    pub selected: usize,
 }
 
+
 pub fn gui_main(tx : Sender<Command>, rx: Receiver<Datapoint>) -> io::Result<()> {
-    set_panic_hook(); // custom panic hook to restore the terminal before panicking
+    // set_panic_hook(); // custom panic hook to restore the terminal before panicking
 
     let mut terminal = tui::init()?; // initialise the crossterm magic
     let app_result = App::new(tx, rx).run(&mut terminal);
@@ -45,7 +57,7 @@ fn set_panic_hook() {
         // Attempt to call restore. Since restore() returns a Result,
         if let Err(e) = restore() {
             // Log the error, print it out, or handle it as necessary
-            println!("Failed to restore application state: {:?}", e);
+            println!("Failed to restore terminal state: {:?}", e);
         }
         // Print panic info message if available
         if let Some(location) = panic_info.location() {
