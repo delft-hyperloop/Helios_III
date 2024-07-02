@@ -67,11 +67,11 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 1000,
+        "height": 700,
         "resizable": true,
         "decorations": false,
         "title": "Ground Station",
-        "width": 1500
+        "width": 1000
       }
     ]
   }
