@@ -18,10 +18,18 @@ impl HVPeripherals {
 
     pub async fn power_on_hv_procedure(&mut self) {
         self.pin_6.set_high();
+        #[cfg(debug_assertions)]
+        info!("just set pin 6 high");
         self.pin_7.set_high();
+        #[cfg(debug_assertions)]
+        info!("just set pin 7 high");
         Timer::after_millis(5000).await;
         self.pin_7.set_low();
+        #[cfg(debug_assertions)]
+        info!("just set pin 7 low");
         self.pin_4.set_high();
+        #[cfg(debug_assertions)]
+        info!("just set pin 4 high");
         #[cfg(debug_assertions)]
         info!("HV Powered on");
         info!("HV Powered on");
