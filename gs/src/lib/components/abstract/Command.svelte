@@ -6,8 +6,7 @@
     export let cmd: NamedCommand;
     export let val: number = 0;
     export let callback: (val:number) => void = () => {};
-
-    const send = async () => {
+    export let send = async () => {
         await invoke('send_command', {cmd, val});
         callback(val);
     };

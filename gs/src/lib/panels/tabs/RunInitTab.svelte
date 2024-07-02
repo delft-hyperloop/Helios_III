@@ -53,7 +53,13 @@
             </div>
             <div class="flex-grow"></div>
             <div class="grid grid-cols-2 gap-2">
-                <Command cmd="establish_connection" className="btn rounded-md bg-surface-700  col-span-2" />
+                <Command send={
+                    async () => {
+                        await invoke('start_server');
+                    }
+                }
+
+                 cmd="establish_connection" className="btn rounded-md bg-surface-700  col-span-2" />
                 <Command cmd="StartHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="Levitate" className="btn flex-grow rounded-md bg-surface-700 " />
