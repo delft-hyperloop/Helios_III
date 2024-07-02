@@ -54,6 +54,8 @@ pub fn generate_datatypes(id_list: &Mutex<Vec<u16>>, path: &str, drv: bool) -> S
 
     format!(
         "\n
+#[allow(non_camel_case_types)]
+#[allow(non_snake_case)]
 {}
 pub enum Datatype {{
 {}

@@ -1,6 +1,6 @@
-use std::cmp::min;
 use crate::tui::app::App;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
+use std::cmp::min;
 
 impl App {
     /// updates the application's state based on user input
@@ -17,7 +17,9 @@ impl App {
                 }
             }
             Ok(false) => {} // no event exists
-            Err(e) => {eprintln!("error processing events?? {:?}", e)} // error reading event
+            Err(e) => {
+                eprintln!("error processing events?? {:?}", e)
+            } // error reading event
         };
     }
 
@@ -49,7 +51,8 @@ impl App {
                 self.selected_row = (self.selected_row + self.cmds.len() - 1) % self.cmds.len();
             }
             KeyCode::Enter => {
-                self.backend.send_command(self.cmds[self.selected_row].as_cmd());
+                self.backend
+                    .send_command(self.cmds[self.selected_row].as_cmd());
                 // self.backend.warn(format!("interpreting {:?}", self.cmds[self.selected_row]));
             }
             KeyCode::Char('1') => {

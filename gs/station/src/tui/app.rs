@@ -1,9 +1,9 @@
-use crate::api::{Datapoint, Message, state_to_string};
+use crate::api::{state_to_string, Datapoint, Message};
 use crate::backend::Backend;
-use crate::COMMANDS_LIST;
 use crate::tui::render::CmdRow;
-use ratatui::Frame;
 use crate::tui::{timestamp, Tui};
+use crate::COMMANDS_LIST;
+use ratatui::Frame;
 
 #[allow(dead_code)]
 pub struct App {
@@ -29,9 +29,15 @@ impl App {
             time_elapsed: 0,
             selected: 0,
             selected_row: 0,
-            cmds: COMMANDS_LIST.iter().map(|x| CmdRow { name: format!("{}", x), value: 0 }).collect(),
+            cmds: COMMANDS_LIST
+                .iter()
+                .map(|x| CmdRow {
+                    name: format!("{}", x),
+                    value: 0,
+                })
+                .collect(),
             cur_state: "None Yet".to_string(),
-            backend
+            backend,
         }
     }
 
@@ -55,7 +61,13 @@ impl App {
                 Message::Data(datapoint) => {
                     if datapoint.datatype == crate::Datatype::FSMState {
                         self.cur_state = format!("{}", state_to_string(datapoint.value));
-                        self.logs.push((Message::Warning(format!("State changed to: {:?}", datapoint.value.to_be_bytes())), timestamp()));
+                        self.logs.push((
+                            Message::Warning(format!(
+                                "State changed to: {:?}",
+                                datapoint.value.to_be_bytes()
+                            )),
+                            timestamp(),
+                        ));
                     }
                     self.logs.push((Message::Data(datapoint), timestamp()))
                 }

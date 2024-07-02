@@ -20,19 +20,13 @@ pub fn levi_main(
 
     let transmitter = message_transmitter.clone();
     let lh1 = tokio::spawn(async move {
-        write_to_stdin::write_to_levi_child_stdin(
-            stdin,
-            transmitter,
-            command_receiver,
-        ).await
-    }).abort_handle();
+        write_to_stdin::write_to_levi_child_stdin(stdin, transmitter, command_receiver).await
+    })
+    .abort_handle();
 
     let transmitter = message_transmitter.clone();
     let lh2 = tokio::spawn(async move {
-        read_from_stdout::read_from_levi_child_stdout(
-            stdout,
-            transmitter,
-        ).await
+        read_from_stdout::read_from_levi_child_stdout(stdout, transmitter).await
     })
     .abort_handle();
 

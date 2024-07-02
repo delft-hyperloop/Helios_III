@@ -52,7 +52,8 @@ impl Backend {
             let m = self.message_transmitter.clone();
             let c = self.command_receiver.resubscribe();
             self.server_handle = Some(
-                tokio::spawn(async move { crate::connect::connect_main(m, c).await }).abort_handle(),
+                tokio::spawn(async move { crate::connect::connect_main(m, c).await })
+                    .abort_handle(),
             );
             // self.status(crate::api::Status::ServerStarted);
             self.info(format!("Server handle: {:?}", self.server_handle));
@@ -89,13 +90,17 @@ impl Backend {
         self.message_transmitter.send(Message::Info(msg)).unwrap();
     }
     pub fn warn(&mut self, msg: String) {
-        self.message_transmitter.send(Message::Warning(msg)).unwrap();
+        self.message_transmitter
+            .send(Message::Warning(msg))
+            .unwrap();
     }
     pub fn err(&mut self, msg: String) {
         self.message_transmitter.send(Message::Error(msg)).unwrap();
     }
     pub fn status(&mut self, status: crate::api::Status) {
-        self.message_transmitter.send(Message::Status(status)).unwrap();
+        self.message_transmitter
+            .send(Message::Status(status))
+            .unwrap();
     }
     pub fn quit_levi(&mut self) {
         if let Some((lh1, lh2)) = self.levi_handle.take() {

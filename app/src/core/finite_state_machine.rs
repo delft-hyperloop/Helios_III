@@ -1,5 +1,6 @@
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
+use crate::core::fsm_status::Status;
 use crate::{DataSender, Datatype, Event, EventReceiver};
 use core::cmp::{Eq, Ordering, PartialEq};
 use defmt::*;
@@ -10,7 +11,6 @@ use embassy_sync::priority_channel::{PriorityChannel, Receiver};
 use embassy_time::Instant;
 use heapless::binary_heap::Max;
 use heapless::Deque;
-use crate::core::fsm_status::Status;
 
 //Enum holding different states that the FSM can be in
 #[derive(Clone, Copy, Debug, Format)]
@@ -33,9 +33,7 @@ pub enum State {
 
 /// All the functionalities states can have like converting to id's or format print statements should go here
 /// The actual implementation of each state should just be attached to the state machine in separate files
-impl State {
-
-}
+impl State {}
 
 // [!!!!!] [April 3 2024] -> This is here as a reference only, if you want to add or edit events go to ../config/events.toml
 /*
@@ -136,15 +134,19 @@ impl FSM {
         }
     }
 
-
-
     /// Function used to transit states of Megalo --> Comes from Megahni and Gonzalo
     ///
     pub async fn transit(&mut self, next_state: State) {
         info!("Exiting state: {:?}", self.state);
         info!("Entering state: {:?}", next_state);
         self.state = next_state;
-        self.data_queue.send(Datapoint::new(Datatype::FSMState, next_state as u64, Instant::now().as_ticks())).await;
+        self.data_queue
+            .send(Datapoint::new(
+                Datatype::FSMState,
+                next_state as u64,
+                Instant::now().as_ticks(),
+            ))
+            .await;
         self.entry();
     }
     pub async fn entry(&mut self) {
@@ -169,7 +171,11 @@ impl FSM {
     pub(crate) async fn react(&mut self, event: Event) {
         info!("[fsm] reacting to {}", event.to_str());
         self.data_queue
-            .send(Datapoint::new(Datatype::FSMEvent, event.to_id() as u64, embassy_time::Instant::now().as_ticks()))
+            .send(Datapoint::new(
+                Datatype::FSMEvent,
+                event.to_id() as u64,
+                embassy_time::Instant::now().as_ticks(),
+            ))
             .await;
         match event {
             Event::LevitationErrorEvent
