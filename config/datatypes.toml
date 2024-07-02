@@ -96,3 +96,7 @@ id = 0x19C
 name = "UnknownCanId"
 id = 0x7F0
 
+[[Datatype]]
+name = "Info"
+id = 0x7FA
+
