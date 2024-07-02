@@ -73,13 +73,20 @@ pub async fn tcp_connection_handler(
         loop {
             // info!("in the ethernet loop---------------------------");
             // socket.write(b"in da tcp loop!").await;
-            event_sender.send(Event::DefaultEvent).await;
-            info!("[tcp] Sent default event");
+
+            if cfg!(debug_assertions) {
+                event_sender.send(Event::DefaultEvent).await;
+                info!("[tcp] Sent default event");
+                Timer::after_millis(1000).await;
+            } else {
+                Timer::after_micros(1).await;
+            }
             if socket.can_recv() {
                 let n = socket.read(&mut buf).await.unwrap();
                 if n == 0 {
                     break;
                 }
+                #[cfg(debug_assertions)]
                 info!("[tcp] !!!!!!!!!!!!!!! Received::  {:?}", &buf[..n]);
             }
             // socket.write_all(b"trying to receive on data mpmc").await;
@@ -88,16 +95,17 @@ pub async fn tcp_connection_handler(
                 Ok(data) => {
                     // socket.write(b"received on data mpmc").await;
                     let mut data = data.as_bytes();
+                    #[cfg(debug_assertions)]
                     info!("[tcp:mpmc] Sending data: {:?}", data);
                     socket.write_all(&mut data).await.unwrap();
                     // socket.
                 }
                 Err(_) => {
                     // socket.write(b"took an L on data mpmc").await;
+                    #[cfg(debug_assertions)]
                     info!("[tcp:mpmc] No data on mpmc channel to send");
                 }
             }
-            Timer::after_millis(1000).await;
         }
         // if this is reached, it means that the connection was dropped
         info!("SOMETHING FUCKED UP! D:");
