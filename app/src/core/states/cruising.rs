@@ -12,12 +12,12 @@ impl FSM {
             Event::BrakingPointReachedEvent => {
                 todo!();
 
-                self.transit(State::Braking);
+                self.transit(State::Braking).await;
             }
             Event::LaneSwitchingPointReachedEvent => {
                 todo!();
 
-                self.transit(State::LaneSwitch);
+                self.transit(State::LaneSwitch).await;
             }
             /// This is commented out because it was refactored to be handled by the default react ///
             // Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {

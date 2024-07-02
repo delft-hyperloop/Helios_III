@@ -13,10 +13,10 @@ impl FSM {
     pub async fn react_establish_connection(&mut self, event: Event) {
         match event {
             Event::ConnectionEstablishedEvent => {
-                self.transit(State::RunConfig);
+                self.transit(State::RunConfig).await;
             }
             Event::ConnectionEstablishmentFailedEvent => {
-                self.transit(State::Exit);
+                self.transit(State::Exit).await;
             }
             Event::ArmBrakesCommand => {
                 match self.peripherals.braking_controller.arm_breaks() {
@@ -24,7 +24,7 @@ impl FSM {
                         self.data_queue.send(Datapoint::new(Datatype::Info, 1, embassy_time::Instant::now().as_ticks())).await;
                     }
                     false => {
-                        self.transit(State::Exit);
+                        self.transit(State::Exit).await;
                     }
                 }
             }

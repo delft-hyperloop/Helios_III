@@ -12,7 +12,7 @@ impl FSM {
             Event::StartAcceleratingCommand => {
                 todo!();
 
-                self.transit(State::Accelerating);
+                self.transit(State::Accelerating).await;
             }
             Event::HVPropulsionReadyEvent => {
                 todo!();

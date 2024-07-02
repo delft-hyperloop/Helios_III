@@ -1,8 +1,5 @@
 use crate::pconfig::{embassy_socket_from_config, socket_from_config};
-use crate::{
-    Command, DataReceiver, Event, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, IP_TIMEOUT,
-    KEEP_ALIVE, NETWORK_BUFFER_SIZE,
-};
+use crate::{Command, DataReceiver, Datatype, Event, EventSender, GS_IP_ADDRESS, GS_UPD_IP_ADDRESS, IP_TIMEOUT, KEEP_ALIVE, NETWORK_BUFFER_SIZE};
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_net::tcp::client::{TcpClient, TcpClientState};
@@ -26,6 +23,7 @@ use heapless::Deque;
 use rand_core::RngCore;
 use static_cell::StaticCell;
 use {defmt_rtt as _, panic_probe as _};
+use crate::core::communication::Datapoint;
 
 /// This is the task that:
 /// 1. bugs the ground station to connect until it does
@@ -115,8 +113,17 @@ pub async fn tcp_connection_handler(
                         } else {
                             // we actually have 20 bytes in the buffer, we can create a command from them
                             let mut x = [0u8; 20];
-                            parsing_buffer.iter().take(20).enumerate().for_each(|(i, y)| { x[i] = *y });
-                            match Command::from_bytes(&x) {
+                            for i in 0..20 {
+                                x[i] = parsing_buffer.pop_front().unwrap();
+                            }
+                            // parsing_buffer.iter().take(20).enumerate().for_each(|(i, y)| { x[i] = *y });
+
+                            let cmd = Command::from_bytes(&x);
+                            #[cfg(debug_assertions)]
+                            info!("[tcp] Command received: {:?}", cmd);
+                            #[cfg(debug_assertions)]
+                            socket.write_all(&Datapoint::new(Datatype::Info, cmd.to_id() as u64, embassy_time::Instant::now().as_ticks()).as_bytes()).await;
+                            match cmd {
                                 Command::EmergencyBrake(_) => {
                                     event_sender.send(Event::EmergencyBrakeCommand).await;
                                     #[cfg(debug_assertions)]

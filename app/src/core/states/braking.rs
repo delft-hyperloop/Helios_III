@@ -16,7 +16,7 @@ impl FSM {
                 #[cfg(debug_assertions)]
                 info!("Run finished");
 
-                self.transit(State::Exit);
+                self.transit(State::Exit).await;
             }
             /// This is commented out because it was refactored to be handled by the default react ///
             // Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {

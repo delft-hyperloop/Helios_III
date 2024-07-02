@@ -57,7 +57,7 @@ fn main() {
 
     content.push_str(&*configure_ip(&config));
     content.push_str(&*generate_datatypes(&id_list, DATATYPES_PATH, true));
-    content.push_str(&*generate_commands(&id_list, COMMANDS_PATH));
+    content.push_str(&*generate_commands(&id_list, COMMANDS_PATH, false));
     content.push_str(&*generate_events(&id_list, EVENTS_PATH));
     content.push_str(&*configure_channels(&config));
 

@@ -29,11 +29,11 @@ impl FSM {
             }
             Event::StartLevitatingCommand => {
                 if (self.status.check_all()) {
-                    self.transit(State::Levitating);
+                    self.transit(State::Levitating).await;
                 }
                 todo!();
 
-                self.transit(State::Levitating)
+                self.transit(State::Levitating).await
             }
             /// This is commented out because it was refactored to be handled by the default react ///
             // /// Error Events that are core from all states that HV is on

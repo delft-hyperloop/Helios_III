@@ -23,12 +23,12 @@ impl FSM {
             Event::BootingCompleteEvent => {
                 info!("Booting complete");
 
-                self.transit(State::EstablishConnection);
+                self.transit(State::EstablishConnection).await;
             }
             Event::BootingFailedEvent => {
                 error!("Booting failed!!");
 
-                self.transit(State::Exit)
+                self.transit(State::Exit).await
             }
             _ => {
                 info!("The current state ignores {}", event.to_str());
