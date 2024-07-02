@@ -5,7 +5,6 @@ use ratatui::{
 };
 use crate::api::Message;
 use crate::tui::app::App;
-use crate::tui::timestamp;
 
 fn border_select(app: &App, idx: usize) -> Color {
     match app.selected_row == idx {

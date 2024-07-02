@@ -7,22 +7,22 @@ impl FSM {
         todo!();
     }
 
-    pub async fn react_accelerating(&mut self, event: Event) {
+    pub async fn react_mv_st(&mut self, event: Event) {
         match event {
             Event::DesiredSpeedReachedEvent => {
                 todo!();
 
-                self.transit(State::Cruising).await;
+                self.transit(State::MovingLSST).await;
             }
             Event::LaneSwitchingPointReachedEvent => {
                 todo!();
 
-                self.transit(State::LaneSwitch).await;
+                self.transit(State::MovingLSCV).await;
             }
             Event::BrakingPointReachedEvent => {
                 todo!();
 
-                self.transit(State::Braking).await;
+                self.transit(State::EndST).await;
             }
             /// This is commented out because it was refactored to be handled by the default react ///     
             // Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {

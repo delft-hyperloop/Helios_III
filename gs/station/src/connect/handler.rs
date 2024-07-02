@@ -47,7 +47,7 @@ impl<'h> Handler {
                 }
                 Ok(n) => {
                     // tx.send(Message::Info(format!("Received: {:?}", &buf[..n]))).expect("[Handler] Failed to send on msg tx");
-                    &buf[..n].iter().for_each(|x| {
+                    let _ = &buf[..n].iter().for_each(|x| {
                         byte_queue.push_back(*x);
                     });
                     Handler::parse(&mut byte_queue, tx.clone());

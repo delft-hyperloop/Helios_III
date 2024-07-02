@@ -1,7 +1,6 @@
 use std::cmp::min;
 use crate::tui::app::App;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
-use crate::Command::EmergencyBrake;
 use crate::COMMAND_IDS;
 
 impl App {
@@ -42,7 +41,7 @@ impl App {
             KeyCode::Char('u') => self.scroll_up(10000),
             KeyCode::Char('i') => self.scroll_up(10),
             KeyCode::Char('s') => self.launch_station(),
-            // KeyCode::Char('l') =>
+            KeyCode::Char('l') => self.launch_levi_software(),
             // KeyCode::Char('t') => self.logs.push((LogType::Warning, format!("{}:  this is a testing goose",Util::Now()).parse().unwrap())),
             KeyCode::Tab => {
                 self.selected_row = (self.selected_row + 1) % 10;

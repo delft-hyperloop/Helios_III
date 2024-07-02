@@ -1,11 +1,8 @@
 use std::collections::VecDeque;
-use std::io::Read;
 use std::sync::mpsc::{Sender};
 use crate::api::Message;
 use crate::connect::Datapoint;
 use crate::connect::handler::Handler;
-use crate::DATA_IDS;
-use crate::Datatype;
 
 impl Handler {
     pub(crate) fn parse(parsing_buffer: &mut VecDeque<u8>, tx: Sender<Message>) {

@@ -1,4 +1,4 @@
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufRead, BufReader};
 use std::process::{Stdio};
 use std::sync::mpsc::{Receiver, Sender};
 use crate::api::Message;
@@ -6,15 +6,16 @@ use crate::levi::parser::levi_str_to_message;
 use crate::levi::writer::send_commands_to_levi;
 use crate::{Command, LEVI_EXEC_PATH};
 
-pub fn run_levi_software(sender: Sender<Message>, receiver: Receiver<Command>) {
+pub fn run_levi_software(sender: Sender<Message>, receiver: Receiver<Command>) -> std::io::Result<()> {
     let mut child = std::process::Command::new(LEVI_EXEC_PATH)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .spawn()
-        .map_err(|e|
+        .map_err(|e| {
             sender.send(Message::Error(format!("Failed to start levi: {}", e)))
-                .expect("Failed to send error message"))
-        .expect("Failed to start levi");
+                .expect("Failed to send error message");
+            e
+        })?;
 
     match child.stdin.take() {
         Some(stdin) => {
@@ -32,10 +33,11 @@ pub fn run_levi_software(sender: Sender<Message>, receiver: Receiver<Command>) {
         for line in reader.lines() {
             let line = line.expect("Failed to read line");
             sender.send(levi_str_to_message(line.as_str().trim())).expect("Failed to send message");
-            #[cfg(debug_assertions)]
-            println!("Received: {}", line);
+            // #[cfg(debug_assertions)]
+            // println!("Received: {}", line);
         }
     } else {
         sender.send(Message::Error("Failed to open stdout".to_string())).expect("Failed to send error message");
     }
+    Ok(())
 }
