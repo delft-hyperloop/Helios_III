@@ -1,5 +1,6 @@
 [gs]
 ip = [192, 168, 1, 4]
+#ip = [145,94,237,159]
 #ip = [145,94,237,232]
 #ip = [145,94,210,198]
 #ip = [145,94,240,108]
@@ -30,6 +31,9 @@ Configure = [0x0c, 0x04]
 StartRun = [0x0d, 0x00]
 EmergencyBrake = [0xff, 0x00]
 Shutdown = [0x0f, 0x00]
+StartHV = [0x10, 0x00]
+StopHV = [0x11, 0x00]
+PropulsionInit = [0x12, 0x00]
 
 # Every time this file is changed, you also need to update:
 # pod:

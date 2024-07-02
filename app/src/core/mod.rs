@@ -1,4 +1,5 @@
 pub mod finite_state_machine;
 pub mod states;
-pub mod communication;
-pub mod controllers;
+pub(crate) mod finite_state_machine_peripherals;
+mod sensor_hub_data;
+mod CAN;

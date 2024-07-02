@@ -14,7 +14,7 @@ use embassy_stm32::eth::generic_smi::GenericSMI;
 use embassy_stm32::eth::{Ethernet, PacketQueue, PHY};
 use embassy_stm32::peripherals::*;
 use embassy_stm32::rng::Rng;
-use embassy_stm32::{bind_interrupts, eth, peripherals, rng, Config, rcc};
+use embassy_stm32::{bind_interrupts, eth, peripherals, rng, Config, rcc, can};
 use embassy_stm32::rcc::*;
 use embassy_time::Timer;
 use embedded_io_async::Write;
@@ -79,6 +79,31 @@ async fn main(spawner: Spawner) -> ! {
 	/// 	+ the dispatcher will get a receiver instance of the DataQueue
 	///
 	let event_queue : &'static mut PriorityChannel<NoopRawMutex,Event,Max, { EVENT_QUEUE_SIZE }>  = EVENT_QUEUE.init(PriorityChannel::new());
+	// Configuration start
+	let mut config = Config::default();
+
+	config.rcc.hse = Some(rcc::Hse {
+		freq: embassy_stm32::time::Hertz(24_000_000),
+		mode: rcc::HseMode::Oscillator,
+	});
+	config.rcc.pll1 = Some(Pll {
+		source: PllSource::HSE,
+		prediv: PllPreDiv::DIV6,
+		mul: PllMul::MUL50,
+		divp: Some(PllDiv::DIV8),
+		divq: Some(PllDiv::DIV8),
+		divr: Some(PllDiv::DIV8),
+	});
+	config.rcc.mux.fdcansel = rcc::mux::Fdcansel::PLL1_Q;
+	// Configuration end. `p` is the most important object in our code; treat it with respect and caution
+	let p = embassy_stm32::init(config);
+
+
+	//let mut sender_one = event_queue.();
+	// static  SENDER_TWO : Sender<NoopRawMutex,Event,Max,16> = event_queue.sender();
+	let  sender: Sender<'static,NoopRawMutex,Event,Max,16> = event_queue.sender();
+	let  brake_sender: Sender<'static,NoopRawMutex,Event,Max,16> = event_queue.sender();
+	let  reciever: Receiver<'static,NoopRawMutex,Event,Max,16> = event_queue.receiver();
 
 	let event_sender: EventSender = event_queue.sender();
 	let event_receiver: Receiver<'static,NoopRawMutex,Event,Max, { EVENT_QUEUE_SIZE }> = event_queue.receiver();

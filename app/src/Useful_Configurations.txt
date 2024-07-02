@@ -1,1 +1,66 @@
-This is a file full of useful configurations
+This is a file full of useful configurations.
+CAN IDs
+
+----------- Sensor Hub -----------
+///  Pod Drop Switches  ///
+PD1 = 136
+PD2 = 137
+PD3 = 141
+PD4 = 105
+PD5 = 109
+PD6 = 107
+PD7 = 127
+PD8 = 104
+PD9 = 126
+PD10 = 127
+PD11 = 114
+PD12 = 125
+PD13 = 111
+PD14 = 112
+PD15 = 110
+PD16 = 124
+EOT = 133
+MCU_REARM = 108
+MCU_BRAKE = 106
+DRIVES = 138
+EME = 135
+DRIVES = 138
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+If any of the values above is read as ID it means that the message buffer is empty and the pob had to brake for some reason.
+Meaning that we will transition directly to the Emergency Braking state or the exit state.
+The only ones im not so sure about are the MCU_REARM and MCU_BRAKE. Im not sure if they are pod drop switches or not or are simply the response to the requested action from the MCU.
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+///   Pressure Sensors  ///
+HIGH_PRESSURE_SENSOR = 140;
+LOW_PRESSURE_SENSOR = 139;
+
+//   IMU    //
+/\ Accelerometer /\
+
+ ACCX = 121;
+ ACCY = 120;
+ ACCZ = 119;
+
+/\ Gyroscope /\
+
+ GYRX = 118;
+ GYRY = 117;
+ GYRZ = 116;
+
+/\ Temperature /\
+
+ TEMP = 115;
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+All the above need to have some kind of threshold to determine if the pod is in a safe state or not.
+If so they will either trigger the Brakes or we will simply send this values to the ground station and it will send us back an emergency code or not.
+This is still to be decided but we are sure they have to go to the ground station.
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+-------- This was all for the sensor hub --------
+
+
