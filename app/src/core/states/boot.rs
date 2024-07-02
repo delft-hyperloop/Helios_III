@@ -1,7 +1,7 @@
 use crate::core::communication::Datapoint;
 use crate::core::finite_state_machine::{State, FSM};
 use crate::{Datatype, Event};
-use defmt::info;
+use defmt::{error, info};
 
 impl FSM {
     pub async fn boot_entry(&mut self) {
@@ -26,7 +26,7 @@ impl FSM {
                 self.transit(State::EstablishConnection);
             }
             Event::BootingFailedEvent => {
-                todo!();
+                error!("Booting failed!!");
 
                 self.transit(State::Exit)
             }

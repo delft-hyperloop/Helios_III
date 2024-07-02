@@ -1,10 +1,14 @@
 use crate::core::finite_state_machine::*;
-use crate::Event;
+use crate::{Datatype, Event};
 use defmt::info;
+use crate::core::communication::Datapoint;
 
 impl FSM {
     pub async fn entry_hv_system_checking(&mut self) {
-        todo!();
+        #[cfg(debug_assertions)]
+        info!("Entering HV System Checking");
+        self.status.reset();
+
     }
 
     pub async fn react_hv_system_checking(&mut self, event: Event) {

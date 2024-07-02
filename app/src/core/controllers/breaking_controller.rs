@@ -34,7 +34,7 @@ pub async fn run(sender: EventSender, mut braking_heartbeat: SimplePwm<'static, 
         else {
             braking_heartbeat.set_duty(Channel::Ch1, 0);
             sender.send(Event::EmergencyBrakeCommand).await;
-            info!("------------ BRAKE !-----");
+            info!("------------ BRAKE ! ------------");
         }
         if booting {
             sender.send(Event::BootingCompleteEvent).await;

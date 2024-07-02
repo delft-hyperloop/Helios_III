@@ -15,6 +15,11 @@ impl FSM {
     }
     pub async fn react_run_config(&mut self, event: Event) {
         match event {
+            Event::SetRunConfig(x) => {
+                todo!();
+                //self.peripherals.propulsion_controller.set_run_config(x);
+                self.transit(State::Idle);
+            }
             Event::RunConfigCompleteEvent => {
                 todo!();
 
