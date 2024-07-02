@@ -98,5 +98,9 @@ name = "DcOn"
 id = 0x65
 
 [[Command]]
+name = "SystemReset"
+id = 0x66
+
+[[Command]]
 name = "EmitEvent"
 id = 0x7A0

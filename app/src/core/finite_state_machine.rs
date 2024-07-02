@@ -207,14 +207,7 @@ impl Fsm {
             State::MovingLSCV => self.react_mv_ls_cv(event).await,
             State::EndST => self.react_end_st(event).await,
             State::Exit => self.react_exit(event).await,
-            State::EmergencyBraking => {
-                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
-                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
-                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
-                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
-                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
-                info!("TRYING TO REACT WHILE IN EMERGENCY BRAKE!!!!!!");
-            }
+            State::EmergencyBraking => self.react_emergency_braking(event).await,
             State::Crashing => {
                 info!("TRYING TO REACT WHILE CRASHING!!!!!!");
                 info!("TRYING TO REACT WHILE CRASHING!!!!!!");

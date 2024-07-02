@@ -21,11 +21,11 @@ pub struct BrakingController {
     pub braking_rearm: Output<'static>,
     // pub braking_signal: Output<'static>,
     pub braking_communication: Input<'static>,
-    pub brake_retraction: bool,
+    pub brakes_extended: bool,
 }
 
 #[embassy_executor::task]
-pub async fn control_braking_heartbeat(sender: EventSender, mut braking_signal: Output<'static>) {
+pub async fn control_braking_heartbeat(sender: EventSender, mut braking_signal: Output<'static>, /*mut braking_status: Input*/) {
     // pub async fn control_braking_heartbeat(sender: EventSender, mut braking_heartbeat: SimplePwm<'static, TIM16>) {
     info!("----------------- Start Braking Heartbeat! -----------------");
     let mut booting = true;
@@ -95,25 +95,25 @@ impl BrakingController {
         BrakingController {
             braking_rearm,
             braking_communication,
-            brake_retraction: false,
+            brakes_extended: false,
         }
     }
 
     pub fn arm_breaks(&mut self) -> bool {
-        self.braking_rearm.set_high();
+        self.braking_rearm.set_low();
         let time_stamp = Instant::now();
         while (Instant::now() - time_stamp) < Duration::from_millis(100) {
             if self.braking_communication.is_high() {
-                self.brake_retraction = true;
+                self.brakes_extended = true;
                 return true;
             }
         }
         false
     }
 
-    pub fn disarm_breaks(&mut self) {
-        self.braking_rearm.set_low();
-        self.brake_retraction = true;
+    pub fn start_run_brake_precondition(&mut self) { // todo run this before any run
+        self.braking_rearm.set_high();
+        self.brakes_extended = false;
         unsafe { BRAKE = false };
     }
     pub fn brake(&mut self) {
