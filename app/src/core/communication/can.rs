@@ -54,7 +54,7 @@ pub async fn can_receiving_handler(
     let mut error_counter = 0u64;
     loop {
         #[cfg(debug_assertions)]
-        // info!("Entering read loop on bus #{}", bus_nr);
+        info!("Entering read loop on bus #{}", bus_nr);
         match bus.read().await {
             Ok(envelope) => {
                 error_counter = 0;
@@ -92,7 +92,7 @@ pub async fn can_receiving_handler(
                                 ground_fault_detection_voltage_details(frame.data(),data_sender,timestamp.as_ticks()).await;
                             }
                             else{
-                                debug!(" Not using current id ")
+                                debug!("GFD is not using id #{}", &id);
                             }
 
                         }
