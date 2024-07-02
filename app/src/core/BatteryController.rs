@@ -8,7 +8,6 @@ use embassy_stm32::adc::Temperature;
 use embassy_stm32::can::Timestamp;
 use embassy_time::Instant;
 use embedded_hal::can::{Id, StandardId};
-// use log::info;
 use crate::pconfig::bytes_to_u64;
 
 pub struct BatteryController {
