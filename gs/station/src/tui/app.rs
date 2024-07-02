@@ -2,10 +2,24 @@ use std::io;
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
 use ratatui::Frame;
 use crate::api::{Message, state_to_string};
-use crate::Command;
+use crate::{Command, COMMANDS_LIST};
 use crate::connect::{Datapoint, Station};
 use crate::tui::{timestamp, Tui};
 
+
+pub struct CmdRow {
+    pub name: String,
+    pub value: u64,
+}
+
+impl CmdRow {
+    pub fn to_row(&self) -> ratatui::widgets::Row {
+        ratatui::widgets::Row::new(vec![self.name.clone(), self.value.to_string()])
+    }
+    pub fn as_cmd(&self) -> Command {
+        Command::from_string(&self.name, self.value)
+    }
+}
 
 #[allow(dead_code)]
 pub struct App {
@@ -16,7 +30,7 @@ pub struct App {
     pub time_elapsed: u64,
     pub selected: usize,
     pub selected_row: usize,
-    pub cmd_values: Vec<u64>,
+    pub cmds: Vec<CmdRow>,
     pub cur_state: String,
     message_sender: Option<Sender<Message>>,
     message_receiver: Option<Receiver<Message>>,
@@ -36,7 +50,7 @@ impl App {
             time_elapsed: 0,
             selected: 0,
             selected_row: 0,
-            cmd_values : vec![0; 10],
+            cmds: COMMANDS_LIST.iter().map(|x| CmdRow { name: format!("{:?}", x), value: 0 }).collect(),
             cur_state: "None Yet".to_string(),
             message_sender: None,
             message_receiver: None,
