@@ -51,6 +51,25 @@ impl FSMPeripherals{
             pa1_pin: p.PA1,
         });
 
+        let mut can_controller = CanController::new(*x,
+                                                    i.event_sender.clone(),
+                                                    i.data_sender.clone(),
+                                                    i.data_receiver.clone(),
+                                                    i.can_one_sender.clone(),
+                                                    i.can_one_receiver.clone(),
+                                                    i.can_two_sender.clone(),
+                                                    i.can_two_receiver.clone(),
+        CanPins {
+            fdcan1: p.FDCAN1,
+            fdcan2: p.FDCAN2,
+            pd0_pin: p.PD0,
+            pd1_pin: p.PD1,
+            pb5_pin: p.PB5,
+            pb6_pin: p.PB6,
+        });
+
+        let mut battery_controller = BatteryController::new(*x, i.event_sender.clone());
+
         Self {
             braking_controller,
             hv_controller,

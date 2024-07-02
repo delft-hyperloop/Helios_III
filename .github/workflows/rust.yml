@@ -17,6 +17,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: cd app && cargo build --verbose
+      run: rustup target add thumbv7em-none-eabihf && cd app && cargo build --verbose
     # - name: Run tests
       # run: cargo test --verbose
