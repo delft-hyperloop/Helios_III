@@ -6,6 +6,7 @@ pub mod tcp;
 pub mod udp;
 mod dispatcher;
 mod parse;
+pub mod can;
 
 
 // IF YOU UPDATE THIS, ALSO LOOK AT config/config.toml

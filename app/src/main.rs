@@ -56,6 +56,18 @@ bind_interrupts!(struct Irqs {
 
 static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex,Event,Max,16>> = StaticCell::new();
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex,Datapoint, { DATA_QUEUE_SIZE }>> = StaticCell::new();
+static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex,can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>> = StaticCell::new();
+static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex,can::frame::ClassicFrame, { CAN_QUEUE_SIZE }>> = StaticCell::new();
+
+pub struct InternalMessaging {
+	event_sender: EventSender,
+	data_sender: DataSender,
+	data_receiver: DataReceiver,
+	can_one_sender: CanSender,
+	can_one_receiver: CanReceiver,
+	can_two_sender: CanSender,
+	can_two_receiver: CanReceiver,
+}
 
 /// Main Function: program entry point
 #[embassy_executor::main]
@@ -115,10 +127,24 @@ async fn main(spawner: Spawner) -> ! {
 	// Begin peripheral configuration
 
 
+<<<<<<< HEAD
 	let mut per: FSMPeripherals = FSMPeripherals::new(p, spawner.borrow(), event_sender, data_receiver);
 	//let mut nucleo_green_led = Output::new(p.PB14, Level::High, Speed::Low); // <- TODO - Initialize all the peripherals in FSMPeripheral
 	
 	// End peripheral configuration
+=======
+	/// Begin peripheral configuration
+	let mut per: FSMPeripherals = FSMPeripherals::new(p, spawner.borrow(), InternalMessaging {
+		event_sender,
+		data_sender,
+		data_receiver,
+		can_one_sender,
+		can_one_receiver,
+		can_two_sender,
+		can_two_receiver,
+	});
+	/// End peripheral configuration
+>>>>>>> 1fc2d57 (i had a computer science nightmare)
 
 	/// Create FSM
 	let mut fsm = FSM::new(per, event_receiver, data_sender);
