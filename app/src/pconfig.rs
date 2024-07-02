@@ -58,3 +58,12 @@ pub fn embassy_socket_from_config(t: ([u8;4],u16)) -> IpEndpoint {
 pub fn socket_from_config(t: ([u8;4],u16)) -> SocketAddr {
     SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(t.0[0],t.0[1],t.0[2],t.0[3]), t.1))
 }
+
+#[inline]
+pub fn bytes_to_u64(b : &[u8]) -> u64 {
+    let mut x = 0u64;
+    for i in 7..0 {
+        x |= (b[i] as u64) << i;
+    }
+    x
+}

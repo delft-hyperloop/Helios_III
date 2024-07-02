@@ -7,8 +7,8 @@ use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::priority_channel::{PriorityChannel, Receiver};
 use heapless::binary_heap::Max;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
-use crate::{DataSender, EventReceiver};
-use crate::core::communication::{Datapoint, Datatype};
+use crate::{DataSender, Datatype, Event, EventReceiver};
+use crate::core::communication::{Datapoint};
 
 
 //Enum holding different states that the FSM can be in
@@ -51,162 +51,73 @@ impl State {
     }
 }
 
-
+// [!!!!!] [April 3 2024] -> This is here as a reference only, if you want to add or edit events go to ../config/events.toml
+/*
 //Enum holding different events that the FSM can react to
-#[derive(Debug, PartialEq, Eq)]
-pub enum Event {
-    DefaultEvent,
-
-    // Boot state related events
-    BootingCompleteEvent,
-    BootingFailedEvent,
-
-    // Establish Connection state related events
-    ConnectionEstablishedEvent,
-    ConnectionEstablishmentFailedEvent,
-
-    // Run Config state related events
-    SetRunConfig(u32),
-    RunConfigCompleteEvent,
-    RunConfigFailedEvent,
-
-    //Error Handling events
-    LevitationErrorEvent,
-    PropulsionErrorEvent,
-    PowertrainErrorEvent,
-    EmergencyBrakeCommand,
-    ConnectionLossEvent,
-
-    // Idle state related events
-    LVLevitationReadyEvent,
-    LVPropulsionReadyEvent,
-    LVPowertrainReadyEvent,
-    ArmBrakesCommand,
-    TurnOnHVCommand,
-
-
-    // HV System Checking state
-    HVPowertrainReadyEvent,
-    HVLevitationReadyEvent,
-    StartLevitatingCommand,
-
-    // Levitating
-    HVPropulsionReadyEvent,
-    StartAcceleratingCommand,
-
-    // Accelerating
-    DesiredSpeedReachedEvent,
-    BrakingPointReachedEvent,
-
-    // Cruising
-    LaneSwitchingPointReachedEvent,
-
-
-    //LaneSwitching
-    LaneSwitchingCompleteEvent,
-
-    // Braking
-    DirectionChangedEvent,
-    RunFinishedEvent,
-
-    // EmergencyBraking
-    SystemResetCommand,
-
-    ExitEvent,
-}
+// #[derive(Debug, PartialEq, Eq)]
+// pub enum Event {
+//     DefaultEvent,
+//     // Boot state related events
+//     BootingCompleteEvent,
+//     BootingFailedEvent,
+//     // Establish Connection state related events
+//     ConnectionEstablishedEvent,
+//     ConnectionEstablishmentFailedEvent,
+//     // Run Config state related events
+//     SetRunConfig(u32),
+//     RunConfigCompleteEvent,
+//     RunConfigFailedEvent,
+//
+//     //Error Handling events
+//     LevitationErrorEvent,
+//     PropulsionErrorEvent,
+//     PowertrainErrorEvent,
+//     EmergencyBrakeCommand,
+//     ConnectionLossEvent,
+//
+//     // Idle state related events
+//     LVLevitationReadyEvent,
+//     LVPropulsionReadyEvent,
+//     LVPowertrainReadyEvent,
+//     ArmBrakesCommand,
+//     TurnOnHVCommand,
+//
+//
+//     // HV System Checking state
+//     HVPowertrainReadyEvent,
+//     HVLevitationReadyEvent,
+//     StartLevitatingCommand,
+//
+//     // Levitating
+//     HVPropulsionReadyEvent,
+//     StartAcceleratingCommand,
+//
+//     // Accelerating
+//     DesiredSpeedReachedEvent,
+//     BrakingPointReachedEvent,
+//
+//     // Cruising
+//     LaneSwitchingPointReachedEvent,
+//
+//
+//     //LaneSwitching
+//     LaneSwitchingCompleteEvent,
+//
+//     // Braking
+//     DirectionChangedEvent,
+//     RunFinishedEvent,
+//
+//     // EmergencyBraking
+//     SystemResetCommand,
+//
+//     ExitEvent,
+// }*/
 // Again some functionalities that might be useful for the events to have mut be here
-
-impl Event {
-    pub fn fmt(&self) {
-        match self {
-            Event::BootingCompleteEvent => info!("BootingCompleteEvent"),
-            Event::BootingFailedEvent => info!("BootingFailedEvent"),
-            Event::ConnectionEstablishedEvent => info!("ConnectionEstablishedEvent"),
-            Event::ConnectionEstablishmentFailedEvent => { info!("ConnectionEstablishmentFailedEvent") }
-            Event::LVLevitationReadyEvent => info!("LVLevitationReadyEvent"),
-            Event::LVPropulsionReadyEvent => info!("LVPropulsionReadyEvent"),
-            Event::LVPowertrainReadyEvent => info!("LVPowertrainReadyEvent"),
-            Event::HVPowertrainReadyEvent => info!("HVPowertrainReadyEvent"),
-            Event::HVLevitationReadyEvent => info!("HVLevitationReadyEvent"),
-            Event::StartLevitatingCommand => info!("StartLevitatingCommand"),
-            Event::HVPropulsionReadyEvent => info!("HVPropulsionReadyEvent"),
-            Event::StartAcceleratingCommand => info!("StartAcceleratingCommand"),
-            Event::DesiredSpeedReachedEvent => info!("DesiredSpeedReachedEvent"),
-            Event::BrakingPointReachedEvent => info!("BrakingPointReachedEvent"),
-            Event::DirectionChangedEvent => info!("DirectionChangedEvent"),
-            Event::SystemResetCommand => info!("SystemResetCommand"),
-            Event::LevitationErrorEvent => info!("LevitationErrorEvent"),
-            Event::PropulsionErrorEvent => info!("PropulsionErrorEvent"),
-            Event::PowertrainErrorEvent => info!("PowertrainErrorEvent"),
-            Event::EmergencyBrakeCommand => info!("EmergencyBrakeCommand"),
-            Event::RunFinishedEvent => info!("RunFinishedEvent"),
-            Event::LaneSwitchingPointReachedEvent => info!("LaneSwitchingPointReachedEvent"),
-            Event::LaneSwitchingCompleteEvent => info!("LaneSwitchingCompleteEvent"),
-            Event::ConnectionLossEvent => info!("ConnectionLossEvent"),
-            Event::ArmBrakesCommand => info!("ArmBrakesCommand"),
-            Event::ExitEvent => info!("QuitEvent"),
-            Event::TurnOnHVCommand => info!("TurnOnHVCommand"),
-            Event::RunConfigFailedEvent => info!("Run configuration failed"),
-            Event::RunConfigCompleteEvent => info!("RunConfigComplete"),
-            Event::DefaultEvent => info!("DefaultEvent"),
-            _ => info! {"Unknown"},
-        }
-    }
-}
 
 //TODO: Add all the parameters that the FSM might need to have
 // This bad boy will be a singleton and it will be passed around everywhere
 // Just be careful with the STD's
 
-impl Event {
-    /// Function to get priority of events
-    fn priority(&self) -> usize {
-        match self {
-            Event::EmergencyBrakeCommand => 5,
-            Event::LevitationErrorEvent => 4,
-            Event::PropulsionErrorEvent => 3,
-            Event::PowertrainErrorEvent => 2,
-            Event::ConnectionLossEvent => 1,
-            _ => 0, // Lower priority for all other events
-        }
-    }
-
-    pub fn as_u8(&self) -> u8 {
-        match self {
-            Event::BootingCompleteEvent => 0,
-            Event::BootingFailedEvent => 1,
-            Event::ConnectionEstablishedEvent => 2,
-            Event::ConnectionEstablishmentFailedEvent => 3,
-            Event::LVLevitationReadyEvent => 4,
-            Event::LVPropulsionReadyEvent => 5,
-            Event::LVPowertrainReadyEvent => 6,
-            Event::HVPowertrainReadyEvent => 7,
-            Event::HVLevitationReadyEvent => 8,
-            Event::StartLevitatingCommand => 9,
-            Event::HVPropulsionReadyEvent => 10,
-            Event::StartAcceleratingCommand => 11,
-            Event::DesiredSpeedReachedEvent => 12,
-            Event::BrakingPointReachedEvent => 13,
-            Event::DirectionChangedEvent => 14,
-            Event::SystemResetCommand => 15,
-            Event::LevitationErrorEvent => 16,
-            Event::PropulsionErrorEvent => 17,
-            Event::PowertrainErrorEvent => 18,
-            Event::EmergencyBrakeCommand => 19,
-            Event::RunFinishedEvent => 20,
-            Event::LaneSwitchingPointReachedEvent => 21,
-            Event::LaneSwitchingCompleteEvent => 22,
-            Event::ConnectionLossEvent => 23,
-            Event::ArmBrakesCommand => 24,
-            Event::ExitEvent => 25,
-            Event::TurnOnHVCommand => 26,
-            Event::RunConfigFailedEvent => 27,
-            Event::RunConfigCompleteEvent => 28,
-            Event::DefaultEvent => 29,
-            _ => 69
-        }
-    }
-}
 impl PartialOrd for Event { fn partial_cmp(&self, other: &Self) -> Option<Ordering> { Some(self.cmp(other)) } }
 impl Ord for Event { fn cmp(&self, other: &Self) -> Ordering { self.priority().cmp(&other.priority()) } }
 
@@ -264,8 +175,8 @@ impl FSM {
         }
     }
     pub(crate) async fn react(&mut self, event: Event) {
-        info!("[fsm] reacting to {}", event.as_u8());
-        self.data_queue.send(Datapoint::new(Datatype::FSMEvent, event.as_u8() as u64, 69)).await;
+        info!("[fsm] reacting to {}", event.to_str());
+        self.data_queue.send(Datapoint::new(Datatype::FSMEvent, event.to_id() as u64, 69)).await;
         match event {
             Event::LevitationErrorEvent|Event::PropulsionErrorEvent|Event::PowertrainErrorEvent |Event::ConnectionLossEvent|Event::EmergencyBrakeCommand=> {
                 self.transit(State::EmergencyBraking);

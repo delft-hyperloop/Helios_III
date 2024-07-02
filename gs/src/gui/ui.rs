@@ -259,6 +259,11 @@ impl Widget for &App {
         calendar.render(right_pair[0], buf);
 
 
+        // Make a table
+
+
+
+
         // bar chart for the bottom of the page:
         // 1. convert the dataset
         let mut bv: [(&str, u64); 39] = [("B1", 0); 39];

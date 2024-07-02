@@ -27,14 +27,13 @@ use heapless::binary_heap::Max;
 use heapless::Vec;
 use crate::core::communication::tcp::tcp_connection_handler;
 use crate::core::communication::udp::udp_connection_handler;
-use crate::core::finite_state_machine::Event;
 use embassy_stm32::flash::Error::Size;
 use embassy_stm32::gpio::{Input, Pull};
 use embassy_stm32::{can, Peripheral, Peripherals};
 use embassy_stm32::gpio::low_level::Pin;
 use embassy_stm32::peripherals::{FDCAN1, FDCAN2};
 use embassy_time::{Duration, Instant, Timer};
-use crate::core::communication::can::{can_one_receiving_handler, can_transmitter, can_two_receiver_handler};
+use crate::core::communication::can::{can_one_receiving_handler, can_receiving_handler, can_transmitter, can_two_receiver_handler};
 use crate::core::controllers::ethernet_controller::EthernetPins;
 
 
@@ -77,8 +76,8 @@ impl CanController {
         let (mut c1_tx, mut c1_rx) = can1.split();
         let (mut c2_tx, mut c2_rx) = can2.split();
 
-        unwrap!(x.spawn(can_one_receiving_handler(x, event_sender.clone(), can_one_receiver.clone(), data_sender.clone(), c1_rx)));
-        unwrap!(x.spawn(can_two_receiver_handler(x, event_sender.clone(), can_two_receiver.clone(), data_sender.clone(), c2_rx)));
+        unwrap!(x.spawn(can_receiving_handler(x, event_sender.clone(), can_one_receiver.clone(), data_sender.clone(), c1_rx)));
+        unwrap!(x.spawn(can_receiving_handler(x, event_sender.clone(), can_two_receiver.clone(), data_sender.clone(), c2_rx)));
 
         unwrap!(x.spawn(can_transmitter(can_one_receiver.clone(), c1_tx)));
         unwrap!(x.spawn(can_transmitter(can_two_receiver.clone(), c2_tx)));
