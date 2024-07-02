@@ -22,12 +22,20 @@
     const leviVB = gdd.getStore("levi_volt_max");
     const leviVC = gdd.getStore("levi_volt_avg");
 
+    $: leviVolt = [
+        ["Min", $leviVA],
+        ["Max", $leviVB],
+        ["Avg", $leviVC],
+    ]
+
     const leviHemsAG = gdd.getStore("levi_hems_airgap");
     const leviHemsPT = gdd.getStore("levi_hems_pitch");
     const leviHemsRL = gdd.getStore("levi_hems_roll");
 
-    $: tableVoltages = [
-        [$leviVA, $leviVB, $leviVC]
+    $: leviHems = [
+        ["Air Gap", $leviHemsAG],
+        ["Pitch", $leviHemsPT],
+        ["Roll", $leviHemsRL],
     ]
 </script>
 
@@ -50,9 +58,7 @@
             <Table background="bg-surface-900" titles={["Gap", "EMS", "HEMS"]} tableArr={tableGaps} />
         </Tile>
         <Tile heading="Levi Voltages" insideClass="flex flex-col justify-center">
-            <p>Min: {$leviVA}</p>
-            <p>Max: {$leviVB}</p>
-            <p>Avg: {$leviVC}</p>
+            <Table background="bg-surface-900" titles={["Value", "V"]} tableArr={leviVolt} />
         </Tile>
         <Tile heading="Levi Rotation" insideClass="flex flex-col justify-center">
             <Table background="bg-surface-900" titles={["Axis", "Value"]} tableArr={leviHems} />
@@ -60,3 +66,4 @@
     </TileGrid>
     <br>
 </div>
+

@@ -16,11 +16,12 @@
     //////////////////////////////
     /////////// CHARTS ///////////
     //////////////////////////////
-    let emsTempChart = new PlotBuffer(500, 300000, [0, 120], true, "EMS 1");
+    let emsTempChart = new PlotBuffer(500, 60000, [0, 120], true, "EMS 1");
     emsTempChart.addSeries(StrokePresets.theoretical("EMS 2"))
     $chartStore.set("EMS Temperatures", emsTempChart);
 
-    let hemsTempChart = new PlotBuffer(500, 300000, [0, 120], true, "HEMS 1");
+    let hemsTempChart = new PlotBuffer(500, 60000, [0, 120], true, "HEMS 1");
+
     hemsTempChart.addSeries(StrokePresets.theoretical("HEMS 2"))
     hemsTempChart.addSeries(StrokePresets.yellow("HEMS 3"))
     hemsTempChart.addSeries(StrokePresets.blue("HEMS 4"))
@@ -40,9 +41,7 @@
     emsCurrentChart.addSeries(StrokePresets.theoretical("cd"))
     $chartStore.set("EMS Current", emsCurrentChart);
 
-    let voffChart = new PlotBuffer(500, 300000, [0, 100], false)
-
-    $chartStore.set('Offset Horizontal', hoffChart);
+    let voffChart = new PlotBuffer(500, 60000, [8, 25], false)
     $chartStore.set('Offset Vertical', voffChart);
 
     let rolPitchChart = new PlotBuffer(500, 60000, [-0.8, 0.8], true, "roll")
@@ -283,12 +282,20 @@
     gdd.stores.registerStore<number>("levi_ems_current_ab", 0.0, data => addEntryToChart(emsCurrentChart, data, 1))
     gdd.stores.registerStore<number>("levi_ems_current_cd", 0.0, data => addEntryToChart(emsCurrentChart, data, 2))
 
-    gdd.stores.registerStore<number>("levi_hems_airgap", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_hems_pitch", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_hems_roll", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_hems_airgap", 0.0, data => addEntryToChart(voffChart, data, 1))
+    gdd.stores.registerStore<number>("levi_hems_roll", 0.0, data => addEntryToChart(rolPitchChart, data, 1))
+    gdd.stores.registerStore<number>("levi_hems_pitch", 0.0, data => addEntryToChart(rolPitchChart, data, 2))
 
-    gdd.stores.registerStore<number>("levi_ems_offset_ab", 0.0, u64ToDouble)
-    gdd.stores.registerStore<number>("levi_ems_offset_cd", 0.0, u64ToDouble)
+    gdd.stores.registerStore<number>("levi_ems_offset_ab", 0.0, data => {
+        const curr: number = u64ToDouble(data);
+        hoffChart.addEntry(1, curr);
+        return curr;
+    })
+    gdd.stores.registerStore<number>("levi_ems_offset_cd", 0.0, data => {
+        const curr = u64ToDouble(data);
+        hoffChart.addEntry(2, curr);
+        return curr;
+    })
 
     gdd.stores.registerStore<number>("levi_hems_power", 0.0, u64ToDouble)
     gdd.stores.registerStore<number>("levi_ems_power", 0.0, u64ToDouble)
@@ -335,3 +342,4 @@
     <slot/>
     <BottomBar/>
 </div>
+

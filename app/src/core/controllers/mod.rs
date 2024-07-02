@@ -4,5 +4,5 @@ pub mod can_controller;
 pub mod ethernet_controller;
 pub mod finite_state_machine_peripherals;
 pub mod hv_controller;
-pub mod propulsion_controller;
 mod led_controller;
+pub mod propulsion_controller;

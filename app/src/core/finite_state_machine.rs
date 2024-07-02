@@ -162,7 +162,10 @@ impl Fsm {
                 Instant::now().as_ticks(),
             ))
             .await;
-        self.peripherals.led_controller.state_led(self.state as u8).await;
+        self.peripherals
+            .led_controller
+            .state_led(self.state as u8)
+            .await;
         match self.state {
             State::Boot => self.boot_entry(),
             State::EstablishConnection => self.entry_establish_connection(),

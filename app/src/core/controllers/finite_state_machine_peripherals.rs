@@ -27,7 +27,7 @@ pub struct FSMPeripherals {
     pub propulsion_controller: PropulsionController,
     pub data_send_line: DataSender,
     pub red_led: Output<'static>,
-    pub led_controller : LedController,
+    pub led_controller: LedController,
 }
 
 impl FSMPeripherals {
@@ -114,7 +114,8 @@ impl FSMPeripherals {
             Output::new(p.PE10, Level::Low, Speed::Low),
             Output::new(p.PE13, Level::Low, Speed::Low),
             Output::new(p.PE14, Level::Low, Speed::Low),
-        ).await;
+        )
+        .await;
 
         // the propulsion controller spawns tasks for reading current and voltage, and holds functions for setting the speed through the DAC
         // let propulsion_controller = PropulsionController::new();

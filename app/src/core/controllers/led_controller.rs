@@ -30,15 +30,31 @@ impl LedController {
         }
     }
 
-    pub async fn state_led(&mut self, mut id : u8){
+    pub async fn state_led(&mut self, mut id: u8) {
         id += 1;
-        if id & 1 == 0 {self.led_1.set_low()} else {self.led_1.set_high()};
-        if id & 2 == 0 {self.led_2.set_low()} else {self.led_2.set_high()};
-        if id & 4 == 0 {self.led_3.set_low()} else {self.led_3.set_high()};
-        if id & 8 == 0 {self.led_4.set_low()} else {self.led_4.set_high()};
+        if id & 1 == 0 {
+            self.led_1.set_low()
+        } else {
+            self.led_1.set_high()
+        };
+        if id & 2 == 0 {
+            self.led_2.set_low()
+        } else {
+            self.led_2.set_high()
+        };
+        if id & 4 == 0 {
+            self.led_3.set_low()
+        } else {
+            self.led_3.set_high()
+        };
+        if id & 8 == 0 {
+            self.led_4.set_low()
+        } else {
+            self.led_4.set_high()
+        };
     }
 
-    pub async fn hv_relay_led(&mut self, on : bool){
+    pub async fn hv_relay_led(&mut self, on: bool) {
         if on {
             self.hv_relay_1.set_high();
             self.hv_relay_2.set_high();
