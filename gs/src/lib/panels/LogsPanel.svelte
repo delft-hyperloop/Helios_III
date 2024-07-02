@@ -31,10 +31,13 @@
     }
 
     onMount(async () => {
-        unlistens[0] = await registerChannel(EventChannels.STATUS, "STATUS");
-        unlistens[1] = await registerChannel(EventChannels.INFO, "INFO");
-        unlistens[2] = await registerChannel(EventChannels.WARNING, "WARNING");
-        unlistens[3] = await registerChannel(EventChannels.ERROR, "ERROR");
+        unlistens[0] = await listen('status_channel', (event) => {
+                                         //@ts-ignore
+                                         logs.push({message: event.payload, status: 'STATUS', timestamp: Date.now().valueOf()})
+                                     });
+        //unlistens[1] = await registerChannel(EventChannels.INFO, "INFO");
+        //unlistens[2] = await registerChannel(EventChannels.WARNING, "WARNING");
+        //unlistens[3] = await registerChannel(EventChannels.ERROR, "ERROR");
 
         logContainer.addEventListener('scroll', () => {
             userHasScrolled = logContainer.scrollTop < logContainer.scrollHeight - logContainer.clientHeight;
