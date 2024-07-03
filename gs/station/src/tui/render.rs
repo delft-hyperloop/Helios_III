@@ -6,6 +6,7 @@ use ratatui::{
     symbols::border,
     widgets::{block::*, *},
 };
+use crate::tui::timestamp;
 
 #[derive(Debug)]
 pub struct CmdRow {
@@ -56,8 +57,8 @@ impl Widget for &App {
             "Quit".magenta(),
             " <Q> ".light_magenta().bold(),
             " ––––––– ".set_style(safety_style),
-            "timestamp: ".light_blue(),
-            format!(" <{}> ", self.time_elapsed).light_blue(),
+            "timestamp:".light_blue(),
+            format!(" <{}> ", timestamp()).light_blue(),
         ]));
 
         let outer_block = Block::default()
@@ -185,7 +186,7 @@ impl Widget for &App {
             )
         });
 
-        let table = Table::new(rows, vec![Constraint::Fill(1), Constraint::Length(10)]).block(
+        let table = Table::new(rows, vec![Constraint::Fill(1), Constraint::Length(25)]).block(
             Block::default()
                 .borders(Borders::ALL)
                 .title(Title::from("Commands Panel".light_blue().bold()))
@@ -232,22 +233,17 @@ impl Widget for &App {
                     .underlined(),
             ),
         ];
-        for (k, v) in self
-            .special_data
-            .iter()
-            .take(self.special_data.len() / 2 - 5)
-        {
+
+        let split = (self.special_data.len() - 5)/2;
+        for (k, v) in self.special_data.iter().take(split) {
             data.push(Line::styled(
                 format!("{:?}: {}", k, v),
                 Style::default().fg(Color::White),
             ));
         }
         let mut data2 = vec![];
-        for (k, v) in self
-            .special_data
-            .iter()
-            .skip(self.special_data.len() / 2 - 5)
-        {
+
+        for (k, v) in self.special_data.iter().skip(split) {
             data2.push(Line::styled(
                 format!("{:?}: {}", k, v),
                 Style::default().fg(Color::White),
