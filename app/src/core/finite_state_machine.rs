@@ -4,6 +4,7 @@ use defmt::*;
 use embassy_time::Instant;
 
 use crate::core::communication::Datapoint;
+use crate::core::controllers::breaking_controller::ENABLE_BRAKING_COMM;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::core::fsm_status::Route;
 use crate::core::fsm_status::RouteUse;
@@ -215,6 +216,13 @@ impl Fsm {
                 let s = self.route.speed_at(p);
                 self.peripherals.propulsion_controller.set_speed(s);
                 self.send_data(Datatype::PropulsionSpeed, s as u64).await;
+            }
+
+            Event::PreventBrakingComm => {
+                unsafe { ENABLE_BRAKING_COMM = false; }
+            }
+            Event::EnableBrakingComm => {
+                unsafe { ENABLE_BRAKING_COMM = true; }
             }
 
             _ => {

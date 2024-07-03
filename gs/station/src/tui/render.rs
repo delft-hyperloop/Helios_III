@@ -126,6 +126,7 @@ impl Widget for &App {
             .logs
             .iter()
             .skip(self.scroll.saturating_sub(10) as usize)
+            .take(self.scroll.saturating_add(120) as usize)
             .map(|(msg, t)| match msg {
                 Message::Data(d) => Line::styled(
                     format!("[{}] {:?}={} at {}", t, d.datatype, d.value, d.timestamp),

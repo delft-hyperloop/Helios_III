@@ -252,3 +252,13 @@ name = "ReConfigureCommand"
 priority = 0 
 
 
+[[Event]]
+id = 666
+name = "PreventBrakingComm"
+priority = 1
+
+[[Event]]
+id = 667
+name = "EnableBrakingComm"
+priority = 1
+
