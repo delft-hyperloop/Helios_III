@@ -218,12 +218,12 @@ impl Fsm {
                 self.send_data(Datatype::PropulsionSpeed, s as u64).await;
             }
 
-            Event::PreventBrakingComm => {
-                unsafe { ENABLE_BRAKING_COMM = false; }
-            }
-            Event::EnableBrakingComm => {
-                unsafe { ENABLE_BRAKING_COMM = true; }
-            }
+            Event::PreventBrakingComm => unsafe {
+                ENABLE_BRAKING_COMM = false;
+            },
+            Event::EnableBrakingComm => unsafe {
+                ENABLE_BRAKING_COMM = true;
+            },
 
             _ => {
                 trace!("Event was not emergency brake, continuing...");

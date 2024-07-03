@@ -1,12 +1,12 @@
 use crate::api::Message;
 use crate::tui::app::App;
+use crate::tui::timestamp;
 use crate::Command;
 use ratatui::{
     prelude::*,
     symbols::border,
     widgets::{block::*, *},
 };
-use crate::tui::timestamp;
 
 #[derive(Debug)]
 pub struct CmdRow {
@@ -235,7 +235,7 @@ impl Widget for &App {
             ),
         ];
 
-        let split = (self.special_data.len() - 5)/2;
+        let split = (self.special_data.len() - 5) / 2;
         for (k, v) in self.special_data.iter().take(split) {
             data.push(Line::styled(
                 format!("{:?}: {}", k, v),

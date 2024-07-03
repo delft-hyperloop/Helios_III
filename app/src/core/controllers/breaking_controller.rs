@@ -124,7 +124,8 @@ async fn read_braking_communication(
             }
             Timer::after_millis(1000).await;
         }
-        if !edge && !is_activated { // braking comm went high again
+        if !edge && !is_activated {
+            // braking comm went high again
             edge = true;
         }
         Timer::after_micros(10).await;

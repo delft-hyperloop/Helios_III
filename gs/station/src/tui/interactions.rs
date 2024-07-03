@@ -29,10 +29,7 @@ impl App {
         self.scroll = self.scroll.saturating_sub(val);
     }
     fn scroll_down(&mut self, val: u16) {
-        self.scroll = min(
-            self.scroll.saturating_add(val),
-            self.logs.len() as u16 + 1,
-        );
+        self.scroll = min(self.scroll.saturating_add(val), self.logs.len() as u16 + 1);
     }
 
     /// Keyboard shortcuts!
