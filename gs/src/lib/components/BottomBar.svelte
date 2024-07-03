@@ -2,11 +2,11 @@
     import { onMount } from 'svelte';
     import {GrandDataDistributor} from "$lib";
 
-    let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+    let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
 
     onMount(() => {
         const interval = setInterval(() => {
-            time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
         }, 1000);
 
         return () => {

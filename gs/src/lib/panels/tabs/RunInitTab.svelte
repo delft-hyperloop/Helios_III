@@ -112,7 +112,7 @@
             <Status status={0 % 2 === 0} />
             <p>Localization:</p>
             <Status status={0 % 2 === 1} />
-            <p>Breaking PCB:</p>
+            <p>Braking PCB:</p>
             <Status on="armed" off="unarmed" status={0 % 2 === 0} />
         </Tile>
         <Tile heading="Data">

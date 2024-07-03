@@ -88,8 +88,10 @@
 </script>
 
 <Keydown on:combo={({detail}) => {
-    if (detail === "Control- -Enter") {
-        invoke('abort')
+    if (detail === "Esc") { // todo: this doesn't work
+        invoke('send_command', {cmdName: "EmergencyBrake", val: 0}).then(() => {
+            console.log(`Triggered EmergencyBrake!!`);
+        })
     }
     }}/>
 
@@ -103,7 +105,7 @@
             <Command callback={() => {
                 toastStore.trigger({
                     //@ts-ignore
-                    message: "Abort operation triggered",
+                    message: "Emergency Brake triggered!",
                     background: 'variant-filled-error'
                 });
             }} className="bg-error-500 text-surface-100 btn py-0 border border-error-500 rounded-sm" cmd="EmergencyBrake"/>
@@ -112,8 +114,12 @@
 
     {#if width < 200}
         <div class="flex flex-col h-full pb-20 justify-between items-center">
-            <button on:click={() => {invoke('abort')}} class="btn border border-error-500 bg-error-500 rounded-sm">
-                <span style="writing-mode: vertical-lr">ABORT</span>
+            <button on:click={() => {
+                invoke('send_command', {cmdName: "EmergencyBrake", val: 0}).then(() => {
+                    console.log(`Triggered EmergencyBrake!!`);
+                })
+            }} class="btn border border-error-500 bg-error-500 rounded-sm">
+                <span style="writing-mode: vertical-lr">EMERGENCY BRAKE</span>
             </button>
             <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
             <div class="flex flex-col gap-4">
