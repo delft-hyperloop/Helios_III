@@ -16,6 +16,7 @@ impl Fsm {
         }
 
         self.peripherals.hv_peripherals.power_hv_off();
+        self.peripherals.propulsion_controller.disable();
         self.peripherals.red_led.set_high();
         error!("------ Emergency Braking!! ------");
         warn!("Emergency Braking!!!");
