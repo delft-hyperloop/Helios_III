@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { SvelteComponent } from 'svelte';
-    import DragDropList, { VerticalDropZone, reorder, type DropEvent } from 'svelte-dnd-list';
+    import DragDropList, { VerticalDropZone, HorizontalDropZone, reorder, type DropEvent } from 'svelte-dnd-list';
 
     import { getModalStore } from '@skeletonlabs/skeleton';
     import {invoke} from "@tauri-apps/api/tauri";
@@ -38,7 +38,9 @@
     const inputs: SpeedFormKey[] = Object.keys(speedForm) as SpeedFormKey[];
 
     function onRouteStepClick(step: RouteStep): void {
+      if (routeSteps.length < 21) {
         routeSteps = [...routeSteps, step];
+      }
     }
 
     function removeRouteStep(index: number): void {
@@ -84,8 +86,8 @@
     <div class="modal-example-form w-modal-wide {cBase}">
         <header class={cHeader}>{$modalStore[0].title}</header>
 
-        <div class="flex flex-col gap-4">
-            <div class="w-full p-4">
+        <div class="grid grid-cols-4 grid-rows-[1fr 2fr] h-full gap-4 col-span-1">
+            <div class="w-full p-4 col-span-3">
                 <svg viewBox="0 0 919 148" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="localiser">
                         <g id="track">
@@ -135,7 +137,30 @@
                     </g>
                 </svg>
             </div>
-            <div class="grid grid-cols-6 gap-2">
+            <div class="col-span-1 row-span-2 h-[600px] overflow-auto">
+                <DragDropList
+                        id="aaa"
+                        type={VerticalDropZone}
+                        itemSize={55}
+                        itemCount={routeSteps.length}
+                        on:drop={onDrop}
+                        let:index
+                        zoneClass="bg-surface-900 scrollable"
+                >
+                    <div class="flex items-center justify-between p-2 bg-surface-800 rounded-lg cursor-move m-2">
+                        <div class="flex items-center">
+                            <Icon icon="mdi:drag"/>
+                            <span>{routeSteps[index]} - {index}</span>
+                        </div>
+                        <button type="button"
+                                class="btn rounded-lg"
+                                on:click={() => removeRouteStep(index)}>
+                            <Icon icon="mdi:close" class="text-error-400"/>
+                        </button>
+                    </div>
+                </DragDropList>
+            </div>
+            <div class="col-span-2 gap-4">
                 {#each inputs as input}
                     <label>
                         <span>{util.snakeToCamel(input)}</span>
@@ -143,51 +168,31 @@
                                type="number" max="500" min="-500" bind:value={speedForm[input]}
                                on:focus={() => focusedInput = input} on:blur={() => focusedInput = ''}
                                on:input={() => {
-                               if (speedForm[input] < -500 || speedForm[input] > 500) {
-                                   if (!invalidInputs.includes(input)) {
-                                       invalidInputs = [...invalidInputs, input];
-                                   }
-                               } else {
-                                   invalidInputs = invalidInputs.filter(i => i !== input);
+                           if (speedForm[input] < -500 || speedForm[input] > 500) {
+                               if (!invalidInputs.includes(input)) {
+                                   invalidInputs = [...invalidInputs, input];
                                }
-                        }}/>
+                           } else {
+                               invalidInputs = invalidInputs.filter(i => i !== input);
+                           }
+                    }}/>
                     </label>
                 {/each}
             </div>
-        </div>
-
-        <div class="grid grid-cols-4 gap-4">
-            <div class="col-span-1 flex flex-col bg-surface-900 rounded-lg">
-                {#each RouteStepNames as step, i}
-                    <button type="button"
-                            class="btn rounded-none"
-                            on:click={() => onRouteStepClick(step)}>
-                        {step}
-                    </button>
+            <div class="col-span-1 flex flex-col items-center gap-2 rounded-lg max-h-80 overflow-auto">
+                {#each RouteStepNames as step}
+                    <div class="flex items-center justify-between w-full p-2 bg-surface-900 rounded-lg">
+                        <span>{step}</span>
+                        <button type="button"
+                                class="btn rounded-none"
+                                on:click={() => onRouteStepClick(step)}>
+                            <Icon icon="mdi:plus" class={routeSteps.length < 21 ? "text-surface-400" : "text-error-400"}/>
+                        </button>
+                    </div>
                 {/each}
             </div>
-
-            <DragDropList
-                    id="example"
-                    type={VerticalDropZone}
-                    itemSize={60}
-                    itemCount={routeSteps.length}
-                    on:drop={onDrop}
-                    let:index
-            >
-                <div class="flex items-center justify-between p-2 bg-surface-900 rounded-lg cursor-move">
-                    <div class="flex items-center">
-                        <Icon icon="mdi:drag"/>
-                        <span>{routeSteps[index]}</span>
-                    </div>
-                    <button type="button"
-                            class="btn rounded-lg"
-                            on:click={() => removeRouteStep(index)}>
-                        <Icon icon="mdi:close" class="text-error-400"/>
-                    </button>
-                </div>
-            </DragDropList>
         </div>
+
 
 
         <footer class="modal-footer {parent.regionFooter}">
