@@ -4,6 +4,7 @@ use crate::frontend::{BackendState, BACKEND};
 use crate::Datatype;
 use crate::{Command, ERROR_CHANNEL, INFO_CHANNEL, STATUS_CHANNEL, WARNING_CHANNEL};
 use rand::Rng;
+use std::path::PathBuf;
 use std::sync::Mutex;
 use tauri::{Manager, State};
 
@@ -180,5 +181,29 @@ pub fn quit_levi() {
 pub fn quit_server() {
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
         backend_mutex.get_mut().unwrap().quit_server();
+    }
+}
+
+#[allow(unused)]
+#[tauri::command]
+pub fn procedures() -> Vec<[String; 5]> {
+    let res =
+        Backend::load_procedures(PathBuf::from_string("../../../../config/procedures/").unwrap());
+    if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
+        if let Ok(x) = res {
+            backend_mutex
+                .get_mut()
+                .unwrap()
+                .log_msg(Message::Info("Loading procedures".into()));
+            x
+        } else {
+            backend_mutex
+                .get_mut()
+                .unwrap()
+                .log_msg(Message::Error("Failed to load procedures".into()));
+            Vec::new()
+        }
+    } else {
+        res.unwrap()
     }
 }

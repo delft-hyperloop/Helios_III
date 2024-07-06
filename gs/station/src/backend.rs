@@ -1,6 +1,6 @@
-use std::path::PathBuf;
 use crate::api::Message;
 use crate::Command;
+use std::path::PathBuf;
 use tokio::task::AbortHandle;
 
 // /// Any frontend that interfaces with this backend needs to comply to this trait
@@ -52,7 +52,10 @@ impl Backend {
             message_receiver,
             command_transmitter,
             command_receiver,
-            log: Log { messages: vec![], commands: vec![] },
+            log: Log {
+                messages: vec![],
+                commands: vec![],
+            },
         }
     }
 
@@ -145,5 +148,46 @@ impl Backend {
     }
     pub fn log_cmd(&mut self, cmd: &Command) {
         self.log.commands.push(*cmd);
+    }
+
+    pub fn load_procedures(folder: PathBuf) -> anyhow::Result<Vec<[String; 5]>> {
+        let mut r = vec![];
+
+        for entry in std::fs::read_dir(folder)? {
+            let f = entry?;
+
+            if f.file_name().to_str()?.ends_with(".procedure") {
+                let contents = std::fs::read_to_string(f.path())?;
+                let mut lines = contents.lines();
+                let name = f
+                    .file_name()
+                    .to_str()?
+                    .trim_end_matches(".procedure")
+                    .to_string();
+                let title = lines.next()?.trim_start_matches([' ', '#']).to_string();
+                let people = lines
+                    .next()?
+                    .trim_start()
+                    .trim_start_matches("people")
+                    .trim_start_matches("People")
+                    .trim_start_matches("PEOPLE")
+                    .trim_start_matches(":")
+                    .trim_start()
+                    .to_string();
+                let equipment = lines
+                    .next()?
+                    .trim_start()
+                    .trim_start_matches("equipment")
+                    .trim_start_matches("Equipment")
+                    .trim_start_matches("EQUIPMENT")
+                    .trim_start_matches(":")
+                    .trim_start()
+                    .to_string();
+                let content = lines.collect::<Vec<&str>>().join("\n").trim().to_string();
+                r.push([name, title, people, equipment, content]);
+            }
+        }
+
+        Ok(r)
     }
 }
