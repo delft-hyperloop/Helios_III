@@ -314,6 +314,13 @@ id = 0x222
 name = "Temp_EMS_2"
 id = 0x223
 
+[[Datatype]]
+name = "Temp_EMS_3"
+id = 0x225
+
+[[Datatype]]
+name = "Temp_EMS_4"
+id = 0x226
 
 
 [[Datatype]]
