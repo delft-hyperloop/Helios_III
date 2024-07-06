@@ -1,6 +1,6 @@
 {
   "name": "gs-gui",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -44,6 +44,7 @@
   "type": "module",
   "dependencies": {
     "@tauri-apps/api": "^1.5.4",
+    "svelte-dnd-list": "^0.1.8",
     "svelte-splitpanes": "^0.8.0",
     "uplot": "^1.6.30",
     "zod": "^3.23.4"

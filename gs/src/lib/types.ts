@@ -86,6 +86,14 @@ export type Log = {
     log_type:LogType, message:string, timestamp:number
 }
 
+export enum RouteStep {
+    STRAIGHT = 'straight',
+    LEFT = 'left',
+    RIGHT = 'right',
+    STOP = 'stop',
+    ANDREAS = 'andreas'
+}
+
 export type LogType = 'INFO' | 'WARNING' | 'ERROR' | 'STATUS';
 
 // OLD TYPES
