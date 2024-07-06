@@ -150,7 +150,7 @@ impl Backend {
         self.log.commands.push(*cmd);
     }
 
-    pub fn load_procedures(folder: PathBuf) -> anyhow::Result<Vec<[String; 5]>> {
+    pub fn load_procedures(folder: PathBuf) -> anyhow::Result<Vec<[String; 6]>> {
         let mut r = vec![];
 
         for entry in std::fs::read_dir(folder)? {
@@ -165,6 +165,15 @@ impl Backend {
                     .trim_end_matches(".procedure")
                     .to_string();
                 let title = lines.next()?.trim_start_matches([' ', '#']).to_string();
+                let id = lines
+                    .next()?
+                    .trim_start()
+                    .trim_start_matches("id")
+                    .trim_start_matches("Id")
+                    .trim_start_matches("ID")
+                    .trim_start_matches(":")
+                    .trim_start()
+                    .to_string();
                 let people = lines
                     .next()?
                     .trim_start()
@@ -184,7 +193,7 @@ impl Backend {
                     .trim_start()
                     .to_string();
                 let content = lines.collect::<Vec<&str>>().join("\n").trim().to_string();
-                r.push([name, title, people, equipment, content]);
+                r.push([name, title, id, people, equipment, content]);
             }
         }
 

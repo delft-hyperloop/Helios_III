@@ -186,7 +186,7 @@ pub fn quit_server() {
 
 #[allow(unused)]
 #[tauri::command]
-pub fn procedures() -> Vec<[String; 5]> {
+pub fn procedures() -> Vec<[String; 6]> {
     let res =
         Backend::load_procedures(PathBuf::from_string("../../../../config/procedures/").unwrap());
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
