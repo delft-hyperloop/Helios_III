@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { SvelteComponent } from 'svelte';
-    import DragDropList, { VerticalDropZone, HorizontalDropZone, reorder, type DropEvent } from 'svelte-dnd-list';
+    import DragDropList, { VerticalDropZone, reorder, type DropEvent } from 'svelte-dnd-list';
 
     import { getModalStore } from '@skeletonlabs/skeleton';
     import {invoke} from "@tauri-apps/api/tauri";
@@ -65,6 +65,11 @@
             })
 
             let route_u64 = BigInt(0);
+
+            routeSteps.forEach(step => {
+            const stepBits = BigInt(util.stepTo3Bit(step));
+            route_u64 = (route_u64 << BigInt(3)) | stepBits;
+            });
 
             invoke('send_command', {cmdName: "SetRoute", val: Number(route_u64)}).then(() => {
                 console.log(`Command SetRoute sent`);
