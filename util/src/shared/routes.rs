@@ -440,7 +440,8 @@ mod tests {
     #[test]
     fn printing_speed_values() {
         let route = Route {
-            positions: LocationSequence { // 0 210 0 180 0
+            positions: LocationSequence {
+                // 0 210 0 180 0
                 0: [
                     Location::StopAndWait,
                     Location::StraightStart,
@@ -477,7 +478,7 @@ mod tests {
                     (Location::StopAndWait, 0),
                     (Location::BrakeHere, 0),
                 ]
-                    .into(),
+                .into(),
             ),
         };
         let s_bytes: u64 = route.speeds.clone().into();

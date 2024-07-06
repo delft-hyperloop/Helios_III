@@ -1,7 +1,8 @@
-#![allow(non_snake_case)]
+#![allow(non_snake_case, non_camel_case_types)]
+
+use std::fs;
 
 use serde::Deserialize;
-use std::fs;
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -12,6 +13,8 @@ pub struct Config {
 pub struct Datatype {
     pub name: String,
     pub id: u16,
+    pub lower: Option<u64>,
+    pub upper: Option<u64>,
 }
 
 pub fn get_data_config(path: &str) -> Config {
@@ -35,6 +38,8 @@ pub fn generate_datatypes(path: &str, drv: bool) -> String {
     let mut match_from_id = String::new();
     let mut data_ids = vec![];
     let mut from_str = String::new();
+    let mut bounds = String::new();
+
     for dtype in config.Datatype {
         data_ids.push(dtype.id);
         enum_definitions.push_str(&format!("    {},\n", dtype.name));
@@ -50,6 +55,30 @@ pub fn generate_datatypes(path: &str, drv: bool) -> String {
             "            {:?} => Datatype::{},\n",
             dtype.name, dtype.name
         ));
+        bounds.push_str(&format!(
+            "            Datatype::{} => {} && {},\n",
+            dtype.name,
+            dtype
+                .lower
+                .map(|x| format!("(other >= {}u64)", x))
+                .unwrap_or("true".to_string()),
+            dtype
+                .upper
+                .map(|x| format!("(other <= {}u64)", x))
+                .unwrap_or("true".to_string()),
+        ));
+        if let Some(l) = dtype.lower {
+            if l == 0 {
+                panic!("
+You set a lower bound of 0 for {}. \
+Since all values are treated as u64, \
+values less than 0 are impossible. 
+Please ommit specifying this to keep the config clean :)
+",
+                    dtype.name
+                );
+            }
+        }
     }
 
     format!(
@@ -82,8 +111,15 @@ impl Datatype {{
             _ => Datatype::DefaultDatatype,
         }}
     }}
+
+
+    pub fn check_bounds(&self, other: u64) -> bool {{
+        match *self {{
+{}
+        }}
+    }}
 }}
-pub static DATA_IDS : [u16;{}] = [{}];\n",
+",
         if drv {
             "#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize, PartialOrd, Ord)]"
         } else {
@@ -93,6 +129,9 @@ pub static DATA_IDS : [u16;{}] = [{}];\n",
         match_to_id,
         match_from_id,
         from_str,
+        bounds,
+    ) + &format!(
+        "pub static DATA_IDS : [u16;{}] = [{}];\n",
         data_ids.len(),
         data_ids
             .iter()

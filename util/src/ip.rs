@@ -1,5 +1,6 @@
-use local_ip_address::local_ip;
 use std::net::IpAddr;
+
+use local_ip_address::local_ip;
 
 pub fn configure_gs_ip(ip: [u8; 4], port: u16, force: bool) -> String {
     let mut ip = (ip[0], ip[1], ip[2], ip[3], port);
