@@ -232,6 +232,12 @@ priority = 0
 params = "u64"
 
 [[Event]]
+id = 0x428
+name = "SetCurrentSpeedCommand"
+priority = 0 
+params = "u64"
+
+[[Event]]
 id = 0x423
 name = "LeviLaunchingEvent"
 priority = 0 
@@ -251,4 +257,14 @@ id = 0x427
 name = "ReConfigureCommand"
 priority = 0 
 
+
+[[Event]]
+id = 666
+name = "PreventBrakingComm"
+priority = 1
+
+[[Event]]
+id = 667
+name = "EnableBrakingComm"
+priority = 1
 

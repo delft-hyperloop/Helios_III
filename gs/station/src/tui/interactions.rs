@@ -29,10 +29,7 @@ impl App {
         self.scroll = self.scroll.saturating_sub(val);
     }
     fn scroll_down(&mut self, val: u16) {
-        self.scroll = min(
-            self.scroll.saturating_add(val),
-            (1.1 * self.logs.len() as f64) as u16,
-        );
+        self.scroll = min(self.scroll.saturating_add(val), self.logs.len() as u16 + 1);
     }
 
     /// Keyboard shortcuts!
@@ -96,6 +93,12 @@ impl App {
                 self.cmds[self.selected_row].value /= 10;
             }
             KeyCode::Char('p') => {
+                self.backend
+                    .send_command(Command::SetRoute(8356402650779983807));
+                self.backend
+                    .send_command(Command::SetSpeeds(215199336366080));
+            }
+            KeyCode::Char('o') => {
                 self.backend
                     .send_command(Command::SetRoute(8328165916070586159));
                 self.backend

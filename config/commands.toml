@@ -147,5 +147,9 @@ id = 0x70
 #id = 0x68
 
 [[Command]]
+name = "SetCurrentSpeed"
+id = 0x5a
+
+[[Command]]
 name = "EmitEvent"
 id = 0x7A0

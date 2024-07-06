@@ -4,6 +4,7 @@ use defmt::warn;
 use crate::core::finite_state_machine::*;
 use crate::transit;
 use crate::Event;
+use crate::Info;
 
 impl Fsm {
     pub fn entry_hv_on(&mut self) {
@@ -29,6 +30,17 @@ impl Fsm {
                 info!("Starting Levitation");
 
                 transit!(self, State::Levitating);
+            }
+            // TODO: delete these two
+            Event::DisablePropulsionCommand => {
+                self.peripherals.propulsion_controller.disable();
+                self.log(Info::DisablePropulsionGpio).await;
+                self.send_data(crate::Datatype::PropGPIODebug, 0).await;
+            }
+            Event::EnablePropulsionCommand => {
+                self.peripherals.propulsion_controller.enable();
+                self.log(Info::EnablePropulsionGpio).await;
+                self.send_data(crate::Datatype::PropGPIODebug, 1).await;
             }
             _ => {
                 info!("The current state ignores {}", event.to_str());

@@ -46,6 +46,7 @@ impl Fsm {
             Event::ReConfigureCommand => {
                 transit!(self, State::RunConfig);
             }
+
             _ => {
                 info!("The current state ignores {}", event.to_str());
             }

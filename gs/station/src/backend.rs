@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use crate::api::Message;
 use crate::Command;
 use tokio::task::AbortHandle;
@@ -19,6 +20,13 @@ pub struct Backend {
     pub message_receiver: tokio::sync::broadcast::Receiver<Message>,
     pub command_transmitter: tokio::sync::broadcast::Sender<Command>,
     pub command_receiver: tokio::sync::broadcast::Receiver<Command>,
+    pub log: Log,
+}
+
+#[derive(serde::Serialize)]
+pub struct Log {
+    messages: Vec<Message>,
+    commands: Vec<Command>,
 }
 
 impl Default for Backend {
@@ -44,6 +52,7 @@ impl Backend {
             message_receiver,
             command_transmitter,
             command_receiver,
+            log: Log { messages: vec![], commands: vec![] },
         }
     }
 
@@ -91,6 +100,7 @@ impl Backend {
     pub fn send_command(&mut self, cmd: Command) {
         self.info(format!("[TRACE] enqueuing command {:?}", cmd));
         self.command_transmitter.send(cmd).unwrap();
+        self.log_cmd(&cmd);
     }
     pub fn info(&mut self, msg: String) {
         self.message_transmitter.send(Message::Info(msg)).unwrap();
@@ -122,5 +132,18 @@ impl Backend {
             self.command_transmitter.send(Command::Shutdown(0)).unwrap();
             sh.abort();
         }
+    }
+
+    pub fn save(&self, path: PathBuf) -> anyhow::Result<()> {
+        let json = serde_json::to_string(&self.log)?;
+        std::fs::write(path, json)?;
+        Ok(())
+    }
+
+    pub fn log_msg(&mut self, msg: Message) {
+        self.log.messages.push(msg);
+    }
+    pub fn log_cmd(&mut self, cmd: &Command) {
+        self.log.commands.push(*cmd);
     }
 }

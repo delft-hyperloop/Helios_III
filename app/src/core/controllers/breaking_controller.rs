@@ -21,6 +21,8 @@ use crate::EventSender;
 
 pub static mut BRAKE: bool = false;
 
+pub static mut ENABLE_BRAKING_COMM: bool = true;
+
 pub struct BrakingController {
     pub braking_rearm: Output<'static>,
     pub data_sender: DataSender,
@@ -110,17 +112,20 @@ async fn read_braking_communication(
     mut adc: Adc<'static, ADC1>,
     mut pf12: PF12,
 ) {
-    let mut edge = true;
+    let mut edge = true; // only trigger brakes on falling edge
     let mut last_timestamp = Instant::now();
     loop {
         let v = adc.read(&mut pf12);
-        let is_activated = v < 25000;
+        let is_activated = v < 25000; // when braking comm goes low, someone else triggered brakes (eg big red button)
         if edge && is_activated {
-            edge = false;
-            event_sender.send(Event::EmergencyBrakeCommand).await;
+            edge = false; // braking comm value is low, so we don't brake until it goes high again
+            if unsafe { ENABLE_BRAKING_COMM } {
+                event_sender.send(Event::EmergencyBrakeCommand).await;
+            }
             Timer::after_millis(1000).await;
         }
         if !edge && !is_activated {
+            // braking comm went high again
             edge = true;
         }
         Timer::after_micros(10).await;
