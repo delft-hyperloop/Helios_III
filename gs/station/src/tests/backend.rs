@@ -7,7 +7,7 @@ use crate::backend::Backend;
 fn import_procedures() {
     let procedures =
         Backend::load_procedures(PathBuf::from_str("../../config/procedures/").unwrap()).unwrap();
-    assert!(procedures.len() > 0);
+    assert!(procedures.len() > 1);
     // panic!("{:?}", procedures);
     let example = procedures.iter().find(|x| x[0] == "example").unwrap();
     assert_eq!(example[1], "This is an example procedure");

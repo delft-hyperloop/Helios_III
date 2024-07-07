@@ -413,32 +413,29 @@ mod tests {
     #[test]
     fn printing_speed_values() {
         let route = Route {
-            positions: LocationSequence {
-                // 0 210 0 180 0
-                0: [
-                    Location::StopAndWait,
-                    Location::StraightStart,
-                    Location::StopAndWait,
-                    Location::StraightBackwards,
-                    Location::StopAndWait,
-                    Location::StopAndWait,
-                    Location::StraightStart,
-                    Location::StopAndWait,
-                    Location::StraightBackwards,
-                    Location::StopAndWait,
-                    Location::StopAndWait,
-                    Location::StraightStart,
-                    Location::StopAndWait,
-                    Location::StraightBackwards,
-                    Location::StopAndWait,
-                    Location::StopAndWait,
-                    Location::StraightStart,
-                    Location::StopAndWait,
-                    Location::StraightBackwards,
-                    Location::StopAndWait,
-                    Location::StopAndWait,
-                ],
-            },
+            positions: LocationSequence([
+                Location::StopAndWait,
+                Location::StraightStart,
+                Location::StopAndWait,
+                Location::StraightBackwards,
+                Location::StopAndWait,
+                Location::StopAndWait,
+                Location::StraightStart,
+                Location::StopAndWait,
+                Location::StraightBackwards,
+                Location::StopAndWait,
+                Location::StopAndWait,
+                Location::StraightStart,
+                Location::StopAndWait,
+                Location::StraightBackwards,
+                Location::StopAndWait,
+                Location::StopAndWait,
+                Location::StraightStart,
+                Location::StopAndWait,
+                Location::StraightBackwards,
+                Location::StopAndWait,
+                Location::StopAndWait,
+            ]),
             current_position: 0,
             speeds: LocationSpeedMap(
                 [
@@ -455,7 +452,9 @@ mod tests {
             ),
         };
         let s_bytes: u64 = route.speeds.clone().into();
-        let r_bytes: u64 = route.positions.clone().into();
+        let r_bytes: u64 = route.positions.into();
         // panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+        assert!(s_bytes > 0);
+        assert!(r_bytes > 0);
     }
 }
