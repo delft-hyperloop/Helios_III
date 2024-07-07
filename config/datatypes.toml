@@ -1,7 +1,24 @@
 ## -
+# Format for new datatypes:
+# ```
+# [[Datatype]]
+# name = "YourNewDatatypeName"
+# id = 42 # must be unique. code will not compile if there is a collision. Values can be from 0-2047, or 0x000 to 0x7FF.
+# upper = 100 # an upper bound for the values of this datatype.
+# lower = 12 # a lower bound for the values of this datatype.
+# ```
+# when a datapoint is received there's a check if 
+#   lower <= value <= upper
+# If this is false, then an emergency brake is triggered.
+# Keep in mind that lower, value, and upper are all of type u64.
+# This means that:
+#   - everything has a lower bound of 0 
+#   - careful when setting bounds for floating point numbers.
+
 [[Datatype]]
 name = "DefaultDatatype"
 id = 0x00
+upper = 42001
 
 [[Datatype]]
 name = "PropulsionVoltage"

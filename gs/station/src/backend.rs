@@ -1,6 +1,8 @@
-use std::path::PathBuf;
 use crate::api::Message;
 use crate::Command;
+use anyhow::anyhow;
+use std::path::PathBuf;
+use regex::Regex;
 use tokio::task::AbortHandle;
 
 // /// Any frontend that interfaces with this backend needs to comply to this trait
@@ -52,7 +54,10 @@ impl Backend {
             message_receiver,
             command_transmitter,
             command_receiver,
-            log: Log { messages: vec![], commands: vec![] },
+            log: Log {
+                messages: vec![],
+                commands: vec![],
+            },
         }
     }
 
@@ -146,4 +151,84 @@ impl Backend {
     pub fn log_cmd(&mut self, cmd: &Command) {
         self.log.commands.push(*cmd);
     }
+
+    pub fn load_procedures(folder: PathBuf) -> anyhow::Result<Vec<[String; 6]>> {
+        let mut r = vec![];
+
+        for entry in std::fs::read_dir(folder)? {
+            let f = entry?;
+
+            let f_name = f
+                .file_name()
+                .to_str()
+                .ok_or_else(|| anyhow!("Invalid procedure file name: {:?}", f))?
+                .to_string();
+            if f_name.ends_with(".procedure") {
+                let contents = std::fs::read_to_string(f.path())?;
+                let mut lines = contents.lines();
+                let title = lines
+                    .next()
+                    .ok_or_else(|| anyhow!("Missing procedure title"))?
+                    .trim_start_matches([' ', '#'])
+                    .to_string();
+
+                let (id, people, equipment, content) =
+                    Self::parse_procedure_content(lines.fold(String::new(),|acc, x| {
+                        acc + x + "\n"
+                    }))?;
+
+                r.push([f_name.trim_end_matches(".procedure").to_string(), title, id, people, equipment, content]);
+            }
+        }
+
+        Ok(r)
+    }
+
+    fn parse_procedure_content(
+        content: String,
+    ) -> anyhow::Result<(String, String, String, String)> {
+        let mut x = (String::new(), String::new(), String::new(), String::new());
+
+        x.0 = Regex::new("\n[iI][dD][: ]*\n([a-zA-Z0-9\n .]*)\n\n")
+            .unwrap()
+            .captures(&content)
+            .ok_or_else(|| anyhow!("\nMissing \"ID\" field for procedure:\n{:?}", content))?
+            .get(1)
+            .unwrap()
+            .as_str()
+            .to_string();
+
+        x.1 = Regex::new("\nPeople[: ]*\n([a-zA-Z0-9\n .]*)\n\n")
+            .unwrap()
+            .captures(&content)
+            .ok_or_else(|| anyhow!("\nMissing \"People\" field for procedure:\n{:?}", content))?
+            .get(1)
+            .unwrap()
+            .as_str()
+            .to_string();
+
+        x.2 = Regex::new("\nEquipment[: ]*\n([a-zA-Z0-9\n .]*)\n\n")
+            .unwrap()
+            .captures(&content)
+            .ok_or_else(|| anyhow!("\nMissing \"Equipment\" field for procedure:\n{:?}", content))?
+            .get(1)
+            .unwrap()
+            .as_str()
+            .to_string();
+
+        x.3 = Regex::new("\nSteps[: ]*\n([a-zA-Z0-9\n .;!,:(){}]*)\n\n")
+            .unwrap()
+            .captures(&content)
+            .ok_or_else(|| anyhow!("\nMissing \"Steps\" field for procedure:\n{:?}", content))?
+            .get(1)
+            .unwrap()
+            .as_str()
+            .to_string();
+
+        Ok(x)
+    }
 }
+
+#[cfg(test)]
+#[path = "tests/backend.rs"]
+mod tests;
