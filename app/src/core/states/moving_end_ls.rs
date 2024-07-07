@@ -20,7 +20,7 @@ impl Fsm {
             Event::LaneSwitchBackwardsB => {
                 #[allow(clippy::single_match)]
                 match self.route.next_position() {
-                    Location::StraightBackwards => {
+                    Location::LaneSwitchStraight => {
                         self.send_levi_cmd(crate::Command::ls1(0)).await;
                         // self.peripherals.propulsion_controller.turn_off();
                         transit!(self, State::MovingLSST);
