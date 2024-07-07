@@ -1,9 +1,13 @@
+# Removing the power systems of the pod
+
 Id: 
 DH08.PROC.POD.PWR_OFF
 
 People:
 
+
 Items:
+
 
 Procedures:
 DH08.PROC.LV.DMOUNT

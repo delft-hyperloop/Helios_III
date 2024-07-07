@@ -191,7 +191,9 @@ impl Backend {
     ) -> anyhow::Result<(String, String, String, String)> {
         let mut x = (String::new(), String::new(), String::new(), String::new());
 
-        x.0 = Regex::new("\n[iI][dD][: ]*\n([a-zA-Z0-9\n .]*)\n\n")
+        let all = r#"[a-zA-Z0-9\n .;!,:(){}\"'_/+-=\[\]\t%]"#;
+
+        x.0 = Regex::new("\n[iI][dD][: ]*\n([a-zA-Z0-9\n ._]*)\n\n")
             .unwrap()
             .captures(&content)
             .ok_or_else(|| anyhow!("\nMissing \"ID\" field for procedure:\n{:?}", content))?
@@ -200,7 +202,7 @@ impl Backend {
             .as_str()
             .to_string();
 
-        x.1 = Regex::new("\nPeople[: ]*\n([a-zA-Z0-9\n .]*)\n\n")
+        x.1 = Regex::new(&format!("\nPeople[: ]*\n({}*)\nItems", all))
             .unwrap()
             .captures(&content)
             .ok_or_else(|| anyhow!("\nMissing \"People\" field for procedure:\n{:?}", content))?
@@ -209,7 +211,7 @@ impl Backend {
             .as_str()
             .to_string();
 
-        x.2 = Regex::new("\nItems[: ]*\n([a-zA-Z0-9\n .]*)\n\n")
+        x.2 = Regex::new(&format!("\nItems[: ]*\n({}*)\nProcedures", all))
             .unwrap()
             .captures(&content)
             .ok_or_else(|| anyhow!("\nMissing \"Items\" field for procedure:\n{:?}", content))?
@@ -218,7 +220,7 @@ impl Backend {
             .as_str()
             .to_string();
 
-        x.3 = Regex::new("\nProcedures[: ]*\n([a-zA-Z0-9\n .;!,:(){}]*)\n\n")
+        x.3 = Regex::new(&format!("\nProcedures[: ]*\n({}*)\n", all))
             .unwrap()
             .captures(&content)
             .ok_or_else(|| anyhow!("\nMissing \"Procedures\" field for procedure:\n{:?}", content))?
