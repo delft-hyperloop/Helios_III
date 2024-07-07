@@ -139,7 +139,7 @@ impl From<LocationSequence> for u64 {
         // Encode the positions as a 63-bit integer
         for (i, location) in val.0.iter().enumerate() {
             let location_bits = *location as u64;
-            bit_seq |= location_bits << (3 * (20 - i));
+            bit_seq |= location_bits << (4 * (15 - i));
         }
 
         bit_seq
@@ -201,9 +201,9 @@ fn parse_locations(bytes: u64) -> [Location; 16] {
     let mut locations = [Location::BrakeHere; 16];
     // let mut bit_seq: u32 = ((bytes[2] as u32) << 16) | ((bytes[1] as u32) << 8) | (bytes[0] as u32);
     let mut bit_seq = bytes;
-    for i in 0..=20 {
-        let bits = (bit_seq & 0b111) as u8;
-        bit_seq >>= 3;
+    for i in 0..=15 {
+        let bits = (bit_seq & 0b1111) as u8;
+        bit_seq >>= 4;
         locations[15 - i] = match bits {
             0b0001 => Location::ForwardA,
             0b0011 => Location::BackwardsA,
@@ -232,7 +232,7 @@ impl RouteUse for Route {
     }
 
     fn current_position(&self) -> Location {
-        if self.current_position > 20 {
+        if self.current_position > 15 {
             Location::BrakeHere
         } else {
             self.positions.0[self.current_position]
@@ -252,7 +252,7 @@ impl RouteUse for Route {
     fn current_speed(&self) -> u8 { self.speed_at(self.current_position()) }
 
     fn peek_next_position(&mut self) -> Location {
-        if self.current_position > 20 {
+        if self.current_position > 15 {
             Location::BrakeHere
         } else {
             self.positions.0[self.current_position + 1]
@@ -334,31 +334,37 @@ mod tests {
         assert_eq!(route.positions, new_positions);
     }
 
+    // ForwardA = 0b0001,
+    //     BackwardsA = 0b0011,
+    //     ForwardB = 0b0100,
+    //     BackwardsB = 0b0101,
+    //     ForwardC = 0b0111,
+    //     BackwardsC = 0b1000,
+    //     LaneSwitchStraight = 0b1001,
+    //     LaneSwitchCurved = 0b1010,
+    //     StopAndWait = 0b1011,
+    //     BrakeHere = 0b0000, //
+
     #[test]
     fn test_location_conversions() {
         let route = Route {
             positions: LocationSequence([
-                Location::StraightStart,
+                Location::ForwardA,
                 Location::LaneSwitchStraight,
                 Location::LaneSwitchCurved,
-                Location::StraightEndTrack,
-                Location::LaneSwitchEndTrack,
-                Location::StraightBackwards,
-                Location::StraightStart,
+                Location::BackwardsC,
+                Location::BackwardsB,
+                Location::StopAndWait,
+                Location::BackwardsA,
                 Location::LaneSwitchStraight,
                 Location::LaneSwitchCurved,
-                Location::StraightEndTrack,
-                Location::LaneSwitchEndTrack,
-                Location::StraightBackwards,
-                Location::StraightStart,
+                Location::ForwardC,
+                Location::BackwardsC,
+                Location::ForwardB,
+                Location::BackwardsA,
                 Location::LaneSwitchStraight,
                 Location::LaneSwitchCurved,
-                Location::StraightStart,
-                Location::LaneSwitchStraight,
-                Location::LaneSwitchCurved,
-                Location::StraightEndTrack,
-                Location::LaneSwitchEndTrack,
-                Location::StraightBackwards,
+                Location::BackwardsC,
             ]),
             current_position: 0,
             speeds: LocationSpeedMap::default(),
@@ -377,13 +383,14 @@ mod tests {
             positions: LocationSequence::default(),
             current_position: 0,
             speeds: LocationSpeedMap(
-                [
-                    (Location::StraightStart, 10),
-                    (Location::StraightBackwards, 20),
-                    (Location::LaneSwitchStraight, 30),
-                    (Location::LaneSwitchCurved, 40),
-                    (Location::StraightEndTrack, 50),
-                    (Location::LaneSwitchEndTrack, 60),
+                [ (Location::ForwardA,195),
+                    (Location::BackwardsA, 194),
+                    (Location::ForwardB, 0),
+                    (Location::BackwardsB, 0),
+                    (Location::ForwardC, 0),
+                    (Location::BackwardsC, 0),
+                    (Location::LaneSwitchStraight, 0),
+                    (Location::LaneSwitchCurved, 0),
                     (Location::StopAndWait, 0),
                     (Location::BrakeHere, 0),
                 ]
@@ -402,37 +409,34 @@ mod tests {
     fn printing_speed_values() {
         let route = Route {
             positions: LocationSequence([
+                Location::ForwardA,
+                Location::LaneSwitchStraight,
+                Location::LaneSwitchCurved,
+                Location::BackwardsC,
+                Location::BackwardsB,
                 Location::StopAndWait,
-                Location::StraightStart,
-                Location::StopAndWait,
-                Location::StraightBackwards,
-                Location::StopAndWait,
-                Location::StopAndWait,
-                Location::StraightStart,
-                Location::StopAndWait,
-                Location::StraightBackwards,
-                Location::StopAndWait,
-                Location::StopAndWait,
-                Location::StraightStart,
-                Location::StopAndWait,
-                Location::StraightBackwards,
-                Location::StopAndWait,
-                Location::StopAndWait,
-                Location::StraightStart,
-                Location::StopAndWait,
-                Location::StraightBackwards,
-                Location::StopAndWait,
-                Location::StopAndWait,
+                Location::BackwardsA,
+                Location::LaneSwitchStraight,
+                Location::LaneSwitchCurved,
+                Location::ForwardC,
+                Location::BackwardsC,
+                Location::ForwardB,
+                Location::BackwardsA,
+                Location::LaneSwitchStraight,
+                Location::LaneSwitchCurved,
+                Location::BackwardsC,
             ]),
             current_position: 0,
             speeds: LocationSpeedMap(
                 [
-                    (Location::StraightStart, 195),
-                    (Location::StraightBackwards, 185),
+                    (Location::ForwardA,195),
+                    (Location::BackwardsA, 194),
+                    (Location::ForwardB, 0),
+                    (Location::BackwardsB, 0),
+                    (Location::ForwardC, 0),
+                    (Location::BackwardsC, 0),
                     (Location::LaneSwitchStraight, 0),
                     (Location::LaneSwitchCurved, 0),
-                    (Location::StraightEndTrack, 0),
-                    (Location::LaneSwitchEndTrack, 0),
                     (Location::StopAndWait, 0),
                     (Location::BrakeHere, 0),
                 ]
