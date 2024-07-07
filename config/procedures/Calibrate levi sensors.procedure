@@ -1,0 +1,36 @@
+Id: 
+DH08.PROC.LEVI.OPER.CALIB_SENSORS
+
+People:
+Needs experience with PMP software and its parameters.
+Procedure assistant
+
+Items:
+2 mm shimplate
+Safety googles
+Insulating gloves
+Safety shoes
+Ruler/Caliper
+
+Procedures:
+Person A is sitting in the ground station
+Person B is magnet safe and wears all PPE.
+Person B is standing next to the pod.
+Low voltage is started on the pod according to DH08.PROC.PWRT.LVBATTERY_ACTIVATION
+Person A starts up the PMP software
+Person A connects to the Arcas
+Person A sets the busstate machine to preoperational and waits for all Cygni to be recognized by the PMP.
+Person A uploads the config file.
+Person A sets the busstate machine to safe operational.
+Person A checks the voltage value for laser sensor A and writes it down.
+Person B places a 2 mm shimplate against the track in front of laser sensor A
+Person A checks the voltage value for laser sensor A and writes it down.
+Person B can now take out the shimplate.
+Person A calculates the slope of the voltage of the laser sensor using :slope = (V2-V1)/(2mm)
+Person A changes the slope in the PMP to the calculated value
+Person B measures the distance from magnet A to the track and announces it to Person A.
+Person A changes the offset parameter in the PMP software until the measured value of the laser sensor is the same as the actual distance measured by person B.
+Person A writes down this offset value.
+Repeat steps ID.10 to ID.18 for all laser sensors.
+Person A recompiles the config file using the new values for slope and offset for each sensor.
+Low voltage is turned off according to DH08.PROC.PWRT.LVBATTERY_DEACTIVATION

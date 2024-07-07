@@ -1,0 +1,17 @@
+Id: 
+DH08.PROC.PT.HVBATTERY_DEACTIVATION
+
+People: 
+Needs some experience with powertrain
+Needs some experience with ground station control
+
+Items:
+HV protection gloves 
+safety glasses
+Multimeter
+
+Procedures:
+Wait 10 minutes after pod has initiated emergency brakes to make sure the HV DC bus capacitors are discharged.
+Confirm through ground station that IMD is not detecting any voltage above 20 V on the HV bus.
+Person A and B wear PPE.
+Person A turns both MIDs to the off position.

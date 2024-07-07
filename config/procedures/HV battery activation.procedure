@@ -1,0 +1,19 @@
+Id: 
+DH08.PROC.PT.HVBATTERY_ACTIVATION
+
+People: 
+Needs to have some experience with electrical
+Needs to have some experience with ground station control
+
+Items:
+HV protection gloves 
+safety glasses
+Multimeter
+
+Procedures:
+Check if the pod is mounted on the track, low voltage is on and connection with ground station is established.
+If low voltage in off, refer to procedure DH08.PROC.LVBATTERY_ACTIVATION.
+Check if communication with the BMS is established on ground station. Then check if there are no warnings or protections, and if the voltage is between 350 and 430 V, and the cell and CCGM temperature is below 40 degrees for all cells. 
+Check if relays on PDB are open
+If everything is correct, person A can close both MID's, after the first one person A shouts, "high voltage on!"
+Procedure reader shouts "High Voltage Battery ready"

@@ -1,0 +1,32 @@
+Id: 
+DH08.PROC.POD.DEMO
+
+People:
+Fire crew member 1
+Fire crew member 2
+Fire crew member 3
+Fire crew member 4, Emergency responder
+Emergency responder, safety officer
+Propulsion control engineer
+Levitation control engineer
+Main control engineer, emergency switch operator
+Chief engineer / Chief procedure
+
+Items:
+Helios III
+The second item involved in the task.
+
+Procedures:
+DH08.PROC.START_DAY
+DH08.PROC.LV.MOUNT
+DH08.PROC.LV_ACTIVATION
+DH08.POD.LIFT
+DH08.POD.MOUNT
+DH08.PROC.HV.MOUNT
+DH08.PROC.HV_ACTIVATION
+DH08.MECH.AERO.MOUNT
+DH08.PROC.POD.RUN
+DH08.PROC.POD.POST_RUN
+DH08.PROC.HV.DMOUNT
+DH08.PROC.POD.LOWER
+DH08.PROC.LV.DMOUNT

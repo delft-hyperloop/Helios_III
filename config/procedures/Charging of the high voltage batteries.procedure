@@ -1,0 +1,38 @@
+Id: 
+PROC.HV.CHRG
+
+People:
+Needs some experience with EMUS G1 Control Panel
+Needs some experience with powertrain
+
+Items:
+500 V power supply
+Laptop with EMUS G1 Control Panel
+EMUS G1 BMS Control Unit + appropriate cables
+Insulating gloves
+Safety Glasses
+
+
+Procedures:
+[If off pod] Batteries are dismounted and transported to designated charging place following HVBATTERY_DISMOUNTING and HVBATTERY_TRANSPORT procedures
+2 battery packs/enclosures are taken out of the battery box, for both packs it is checked if the MID is off
+The top pieces of both enclosures are taken off
+The CCGM's of both packs are connected, and one of the CCGMs is connected to the control unit
+The Control Unit is connected to the laptop
+The laptop is read out by person A, and it is validated if all values are appropriate and there are no protections, warnings or errors
+Person B, wearing insulating gloves, connects the packs in series by connecting the NEGATIVE (black) and POSITIVE (orange) poles together
+The power supply is plugged into a power socket and turned on
+The output switch on the power supply is turned off
+Person B connects the POSITIVE (orange) pole of the first battery pack to the POSITIVE (red) pole of the power supply, putting the wire through the current sensor of the EMUS BMS
+Person B connects NEGATIVE (black) pole of the second battery to the NEGATIVE (black) pole of the powersupply
+The maximum output voltage off the power supply is set to 430 V
+The maximum output current of the power supply is set to 0.5 A
+Both MID's are closed by person B wearing insualting gloves, saying 'High Voltage on'
+Person B counts down and switches the output switch of the power supply on
+Person A checks if the voltages rise as expected, and no errors occur
+If the batteries behave as expected, the maximum output current of the power supply is gradually set to 5 A, while Person A keep checking the Control Panel for anomalies
+The batteries are charged to 420 V. During this period both people will remain close to the batteries, but there should be at least 1 person present AT ALL TIMES
+When the batteries are fully charged, the power output of the power supply is set to 'off'
+If necessary, the batteries will be further balanced by the BMS
+When balanced, both MID's are opened by person B wearing insulating gloves
+The two packs are placed back into the battery box.

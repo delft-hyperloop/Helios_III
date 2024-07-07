@@ -1,0 +1,46 @@
+Id: 
+DH08.PROC.POD.RUN
+
+People:
+Fire crew member 1
+Fire crew member 2
+Fire crew member 3, Emergency responder
+Emergency responder, safety officer
+Mechanical engineer, impact plate mounter
+Propulsion control engineer
+Levitation control engineer
+Main control engineer, emergency switch operator
+Chief engineer / Chief procedure
+
+Items:
+Helios III
+The second item involved in the task.
+
+Procedures:
+Clear the area for bystanders and teammembers for 1.5 meters
+Check that fire crew, safety crew and demonstration crew are in place
+Select run type in the ground control and check reponse in the ground station
+Announce the run type to all the teammembers along the track
+Mount the impact plate in the position appropriate for the run type
+Check if impact plate mounted correctly
+Check that the ground station operator at the ground station is ready with emergency button
+Check via the GUI the temperature and voltages of the battery
+Make sure that the complete pod is on 1 beam
+Turn on high voltage via the ground station
+Levitation engineer checks if voltage rising. If voltage not rising, Person A switches MIDs off
+Confirm levitation pre-charge voltage
+Enable levitation state in the ground station
+Check via the ground station that the values in the levitation drives are good
+If doing it via the pmp software, Set the levitation state in pmp software to operational and wait for countdown confirmation
+Announce: HELIOS III WILL FLY IN 3..2..1..
+Activate vertical levitation
+Wait for confirmation from ground station that levitation is levitating stable
+Activate lateral levitation
+Wait for confirmation from ground station that levitation is levitating stable
+Show levitation status
+Check that brakes are armed
+Check the propulsion pre-charge voltage
+Enable the propulsion state
+Check via the ground station that the values in the propulsion drives are good and wait for propulsion countdown confirmation
+Annonce: HELIOS III WILL LAUNCH IN 3..2..1.
+Activate propulsion

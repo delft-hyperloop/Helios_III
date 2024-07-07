@@ -1,0 +1,19 @@
+Id: 
+DH08.PROC.LVBATTERY_ACTIVATION
+
+People:
+EMUS Control panel operator
+Assistant
+
+Items:
+Laptop with EMUS Control panel Software
+safety glasses
+Multimeter
+
+Procedures:
+This procedure is performed after DH08.PROC.LV_BATTERY_MOUNTING
+Person A and B put on safety glasses and everyone standing near the track
+Person B shouts, "Low Voltage on in ..." and counts down from 3 to 0, then flips the battery switch on, turning on low voltage.
+Person A uses the EMUS BMS app on his laptop to connect to the low voltage battery with the USB cable  and verifies that all parameters are correct.
+Boot ground station and continue to monitor the battery parameters from there.
+Person A disconnects the USB cable.

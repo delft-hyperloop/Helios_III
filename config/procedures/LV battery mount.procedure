@@ -1,0 +1,38 @@
+Id: 
+DH08.PROC.PT.LVBATTERY_DISMOUNT
+
+People: 
+Needs some experience with Powertrain
+Needs some experience with Powertrain
+
+
+Items:
+safety glasses
+Multimeter
+Battery box
+LV battery  + bolts and nuts
+Fitting wrench + allen key
+
+Procedures:
+Check that the aeroshell is off the pod, if the pod is on the track
+Place the safety sign for the track
+The path that has to be walked between the battery box and the pod have to be made sufficiently clear
+Check that the vacuum box is closed
+Person A and B put on the appropriate PPE 
+Person A and B walk to the battery box
+Check if no one will bump into while opening the battery box
+Person A opens the battery box and checks if there are no undisired objects barricating the low voltage battery
+Person A picks up the low voltage battery with both hands, and procedure reader shouts: "low voltage battery out of battery box"
+Person B closes the battery box while person A puts the lv battery on the table next to the battery box
+Person A turns the switch to the on position and measures the voltage across the LV battery using a multimeter and checks if it has an appropriate value between 22 and 24 V. If the value is too low, the battery will be charged first according to DH07.PROC.PWRT.LV_BATTERY_CHARGING first
+Person A turns switch of the battery to the off position and double checks that the voltage across the plus and minus pole is now 0
+Procedure reader shouts: "Low Voltage Battery in transit"
+Person A picks up the low voltage battery with both hands and walks to the pod while person B escorts him
+Person A arrives at the pod and puts the LV battery in the correct place
+Person A starts mounting the LV battery by tighening the bolts that person B gives him
+Procedure reader shouts "LV battery mounted".
+Person A double checks if the manual switch is turned off.
+Person A connects the LV power cable of the battery. 
+Person A connects the data cable of the battery. 
+Stick usb cable to holder
+Procedure reader shouts "LV battery mounted".

@@ -1,0 +1,41 @@
+Id: 
+PROC.LV.CHRG
+
+People:
+Needs to have some experience with powertrain and Emus BMS
+Needs to have some experience with electrical
+
+Items:
+LV protection gloves 
+safety glasses
+Multimeter
+Power supply
+Laptop with Emus BMS Control panel
+LV Battery
+
+Procedures:
+This procedure is performed when LV battery is off the pod
+
+Person B opens the battery box
+Person A checks if the LV switch is turned off (to the left) takes out the low-voltage battery and puts it on the charging station
+Person A connects the battery to the laptop
+Person A reads out BMS and sees if there are any errors, protections or anomalities, if everything is fine continue
+The power supply is plugged into a power socket and turned on, the voltage of the power supply is set to 25 V and the output current to 0 A
+The low voltage charging connector is plugged in to the LV power socket
+When ready, person A switches the manual switch to "ON"
+Person A checks if everything is okay in the BMS software while person B sees if the power supply gives.approximately  0 A
+If everything is okay, person B slowly increases the current to 8 A, while person A checks if the current measurement of the BMS is accurate
+Wait until the battery is charged, while always AT LEAST one person remains present, and the BMS values are checked at least every 5 minutes
+If the battery is charged to 24 V, the power supply current is turned down until it reaches 0 A
+The power switch on the battery is turned off
+The current connector is disconnected
+The power supply is turned off
+Person A takes the battery using insulating gloves, and puts it in the battery box, which person B opens for him
+Person A calculates the slope of the voltage of the laser sensor using :slope = (V2-V1)/(2mm)
+Person A changes the slope in the PMP to the calculated value
+Person B measures the distance from magnet A to the track and announces it to Person A.
+Person A changes the offset parameter in the PMP software until the measured value of the laser sensor is the same as the actual distance measured by person B.
+Person A writes down this offset value.
+Repeat steps ID.10 to ID.18 for all laser sensors.
+Person A recompiles the config file using the new values for slope and offset for each sensor.
+Low voltage is turned off according to DH08.PROC.PWRT.LVBATTERY_DEACTIVATION

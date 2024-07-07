@@ -1,0 +1,31 @@
+Id: 
+DH08.PROC.POD.CHECK
+
+People:
+Chief procedure or chief engineer
+Propulsion engineer
+Levitation engineer
+Mechanical engineer
+Power train engineer
+Sensecon engineer
+Safety officer
+
+Items:
+PPE (safety glasses, helmet, safety shoes) for everyone
+Reflective vests for everyone
+Multimeter
+Thermometer
+
+Procedures:
+All crew members do not wear any metal components or jewellery and wear the PPE and reflective vests
+Powertrain engineer must check that both high voltage and low voltage are off
+Check that brakes are not active
+Clear area of foreign objects and bystanders for 5 meters
+Open the vacuum box
+Let all the engineers check the connection of all the wires and cables (with multimeter)
+Let the propulsion and levitation engineers check the potting for any cracks or damage and measure the temperature
+Levitation engineer must check the bearings of all the safety wheels
+Mechanical engineer must check the status of the brakes and pneumatic system according to DH08.PROC.MECH.BRAKES.CHECK
+Powertrain engineer must check batteries
+Check that no of the bolts or nuts have slipped via the marks
+Close the vacuum box and pretension the bolts

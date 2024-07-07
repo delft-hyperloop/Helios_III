@@ -1,0 +1,35 @@
+Id: 
+DH08.PROC.POD.POST_RUN
+
+People:
+Fire crew member 1, HV battery operator, LV battery operator, aeroshell demounter
+Fire crew member 2, HV battery operator, track inspector, aeroshell demounter
+Fire crew member 3, HV battery operator,  track inspector,  aeroshell demounter
+Fire crew member 4, Emergency responder
+Emergency responder, safety officer
+Hv battery operator, brake operator, localization operator, aeroshell demounter
+Propulsion control engineer
+Levitation control engineer
+Main control engineer, emergency switch operator
+
+Items:
+Helios III
+Fire extinguisher 4x
+Headphones 4x
+Rubber gloves set 4x
+
+Procedures:
+Ensure via the ground station that the MIDs are open
+Retrieve and save the data from the run
+Check for anomalies in the sensor values for the batteries in the ground station
+Check in the high voltage subsystems that the voltage is lower than 50 V via the ground station
+After confirmation from ground control,  announce: Recovery team may approach the pod
+Person 1 deactivates the MIDs of the high voltage battery with rubber gloves
+If emergency button on pod is pressed, do activate low voltage according to DH07.PROC.PWRT.LV_BATTERY_ACTIVATION
+Make sure no one is in line of sight of brakes. Person 9 retracts the brakes from ground station.
+Make sure that person 6 wears headphones from now on
+Person 6 disarms the brakes manually
+Person 6 pushes the pod back to its original starting position
+If another run, proceed to DH08.PROC.POD.RUN ID. 1
+Person 6 pushes the pod to track extension
+DH08.PROC.MECH.AERO.DISMOUNT

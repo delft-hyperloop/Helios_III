@@ -1,0 +1,31 @@
+Id: 
+DH08.PROC.LEVI.MOUNT.VERT_LEVI
+
+People:
+Main Responsible (preferibly Levitation Engineer)
+Mounting Assistant
+
+Items:
+4 Vertical Levitation Modules
+Size 13 wrench
+Torque wrench with insert for Hex key size 6 (compatible with M8 bolts)
+M8 x 40 mm Bolt x 8
+M8 Nut x 8
+M8 Washer x 16
+Safety Shoes
+Safety Googles
+
+Procedures:
+Ensuring everyone is wearing all PPE.
+Make sure the pod is placed on the transportcart.
+Ensure 2 HEMS chassis attachment brackets are already assembled onto the unit.
+Person B places one of the vertical modules on the chassis so that the holes align and holds it in position. Ensure that the cables coming out of the HEMS module point towards the levitation side of the vacuum box and that the name on the HEMS module matches the name of the levitation corner.
+Person A puts 2 bolts on each of the attachment brackets with their respective washers.
+Person A puts nuts and washers on each of the bolts and fastens them by hand.
+Person B can now let go of the HEMS module
+Person A ensures that the torque is set to 35 Nm.
+Person B holds the size 13 wrench in one of the nuts.
+Person A uses the torque wrench to fasten the bolt until the torque wrench produces a 'click' sound.
+Repeat steps ID.8 to ID.10 for each of the bolts from the HEMS assembly
+Connect the coils to its respective connector checking the polarities.
+Repeat steps ID.3 to ID.12 for each of the HEMS modules.

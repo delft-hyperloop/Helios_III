@@ -1,0 +1,26 @@
+Id: 
+DH08.PROC.MECH.BRAKES.EMPTY_TANK
+
+People:
+Braking engineer	
+
+Items:
+Safety Shoes
+Safety Glasses
+Hearing Protection
+High Voltage Safety Gloves
+
+Procedures:
+Make sure that engineer is wearing the right PPE (safety shoes, safety glasses, hearing protection, high voltage gloves)
+Check the needle valve on the braking system is closed by being fully turned in the clockwise direction.
+Check that the pressure regulator is fully decreased by being fully turned in the counter clockwise direction.
+Check the purge valve is closed by having the handle perpendicular to the tubing connected to it.
+Check the ball valve is opened by having the handle parallel to the tubing connected to it (if not and if the low pressure system is pressurized, make sure the solenoid valves are activated before opening it).
+Carefully open the purge valve by turning it in the counter clockwise direction (this will create a sound).
+Open the needle valve by turning it in the counter clockwise direction.
+Announce that the tank will be emptied and thus a loud sound is incoming.
+Turn the pressure regulator in the 'increase' direction (clockwise direction) until you hear the air escape the purge valve.
+Wait until all air has escaped the system (until no sound can be heard anymore).
+Close the needle valve by turning it in the clockwise direction.
+Turn the pressure regulator to 'low' by fully turning it in the 'decrease' direction (counter clockwise direction).
+Close the purge valve by turning it in the clockwise direction.
