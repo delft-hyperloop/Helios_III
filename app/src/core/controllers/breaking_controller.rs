@@ -21,7 +21,7 @@ use crate::EventSender;
 
 pub static mut BRAKE: bool = false;
 
-pub static mut ENABLE_BRAKING_COMM: bool = true;
+pub static mut DISABLE_BRAKING_COMMUNICATION: bool = false;
 
 pub struct BrakingController {
     pub braking_rearm: Output<'static>,
@@ -119,7 +119,7 @@ async fn read_braking_communication(
         let is_activated = v < 25000; // when braking comm goes low, someone else triggered brakes (eg big red button)
         if edge && is_activated {
             edge = false; // braking comm value is low, so we don't brake until it goes high again
-            if unsafe { ENABLE_BRAKING_COMM } {
+            if unsafe { !DISABLE_BRAKING_COMMUNICATION } {
                 event_sender.send(Event::EmergencyBrake).await;
             }
             Timer::after_millis(1000).await;

@@ -190,6 +190,9 @@ pub async fn tcp_connection_handler(
                                     info!("[tcp] Configure command received");
                                     event_sender.send(Event::SetRunConfigSpeed(x)).await;
                                 },
+                                Command::SetOverrides(x) => {
+                                    event_sender.send(Event::SetOverrides(x)).await;
+                                },
                                 Command::SetCurrentSpeed(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] SetCurrentSpeed command received");

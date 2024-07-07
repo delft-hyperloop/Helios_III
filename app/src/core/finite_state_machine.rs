@@ -4,7 +4,6 @@ use defmt::*;
 use embassy_time::Instant;
 
 use crate::core::communication::Datapoint;
-use crate::core::controllers::breaking_controller::ENABLE_BRAKING_COMM;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::core::fsm_status::Route;
 use crate::core::fsm_status::Status;
@@ -169,14 +168,7 @@ impl Fsm {
 
             ///////////////////
             // Debugging events
-
-            // Enable or disable braking from a falling edge of the braking communication signal
-            Event::PreventBrakingComm => unsafe {
-                ENABLE_BRAKING_COMM = false;
-            },
-            Event::EnableBrakingComm => unsafe {
-                ENABLE_BRAKING_COMM = true;
-            },
+            Event::SetOverrides(overrides) => self.status.overrides.set(overrides),
 
             // Override enabling or disabling propulsion GPIO
             Event::DisablePropulsionCommand => {

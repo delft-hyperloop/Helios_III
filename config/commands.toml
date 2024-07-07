@@ -97,11 +97,15 @@ id = 0x70
 
 [[Command]]
 name = "SetRoute"
-id = 0x5c
+id = 0x590
 
 [[Command]]
 name = "SetSpeeds"
-id = 0x59
+id = 0x591
+
+[[Command]]
+name = "SetOverrides"
+id = 0x592
 
 # END Configuration commands
 

@@ -125,6 +125,12 @@ id = 0xa5
 priority = 0
 params = "u64"
 
+[[Event]]
+name = "SetOverrides"
+id = 0x426
+priority = 0
+params = "u64"
+
 # ###########################################
 # Events triggered by the Localisation system
 

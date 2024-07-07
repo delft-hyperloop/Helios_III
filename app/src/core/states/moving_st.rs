@@ -52,6 +52,7 @@ impl Fsm {
                     },
                 }
             },
+
             Event::BrakingPointReachedA => {
                 #[cfg(debug_assertions)]
                 info!("Braking point reached");
@@ -60,6 +61,7 @@ impl Fsm {
                 self.send_levi_cmd(crate::Command::LeviPropulsionStop(0)).await;
                 transit!(self, State::Levitating);
             },
+
             _ => {
                 info!("The current state ignores {}", event.to_str());
             },

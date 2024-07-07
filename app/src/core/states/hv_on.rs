@@ -34,7 +34,8 @@ impl Fsm {
             },
 
             Event::RunStarting => {
-                if !self.status.levitating && !self.status.overrides.propulsion_without_levitation {
+                if !self.status.levitating && !self.status.overrides.propulsion_without_levitation()
+                {
                     self.log(Info::LevitationNotStarted).await;
                     return;
                 }
