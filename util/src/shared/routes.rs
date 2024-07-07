@@ -86,7 +86,7 @@ impl From<LocationSequence> for u64 {
         // Encode the positions as a 63-bit integer
         for (i, location) in val.0.iter().enumerate() {
             let location_bits = *location as u64;
-            bit_seq |= location_bits << (3 * (20 - i));
+            bit_seq |= location_bits << (4 * (15 - i));
         }
 
         bit_seq
@@ -148,9 +148,9 @@ fn parse_locations(bytes: u64) -> [Location; 16] {
     let mut locations = [Location::BrakeHere; 16];
     // let mut bit_seq: u32 = ((bytes[2] as u32) << 16) | ((bytes[1] as u32) << 8) | (bytes[0] as u32);
     let mut bit_seq = bytes;
-    for i in 0..=20 {
-        let bits = (bit_seq & 0b111) as u8;
-        bit_seq >>= 3;
+    for i in 0..=15 {
+        let bits = (bit_seq & 0b1111) as u8;
+        bit_seq >>= 4;
         locations[15 - i] = match bits {
             0b0001 => Location::ForwardA,
             0b0011 => Location::BackwardsA,
@@ -179,7 +179,7 @@ impl RouteUse for Route {
     }
 
     fn current_position(&self) -> Location {
-        if self.current_position > 20 {
+        if self.current_position > 15 {
             Location::BrakeHere
         } else {
             self.positions.0[self.current_position]
@@ -199,7 +199,7 @@ impl RouteUse for Route {
     fn current_speed(&self) -> u8 { self.speed_at(self.current_position()) }
 
     fn peek_next_position(&mut self) -> Location {
-        if self.current_position > 20 {
+        if self.current_position > 15 {
             Location::BrakeHere
         } else {
             self.positions.0[self.current_position + 1]
