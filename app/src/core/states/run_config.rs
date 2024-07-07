@@ -1,5 +1,4 @@
 use defmt::debug;
-use defmt::error;
 use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
@@ -10,24 +9,9 @@ use crate::Info;
 
 impl Fsm {
     pub fn entry_run_config(&mut self) {
-        // unsafe { BRAKE = false; }
-        // if !self.peripherals.braking_controller.brake_retraction {
-        //     transit!(self, State::Exit);
-        //     //LOG BECAUSE BRAKES WERE NOT ALIVE
-        // }
-        self.peripherals
-            .braking_controller
-            .start_run_brake_precondition();
-
-        //ASK THE GROUND STATION FOR THE CONFIGURATION FILE
-        // self.data_queue
-        //     .send(Datapoint::new(
-        //         Datatype::Info,
-        //         12345,
-        //         embassy_time::Instant::now().as_ticks(),
-        //     ))
-        //     .await;
+        self.peripherals.braking_controller.start_run_brake_precondition();
     }
+
     pub async fn react_run_config(&mut self, event: Event) {
         match event {
             Event::SetRoute(x) => {
@@ -35,50 +19,40 @@ impl Fsm {
                 debug!("Setting run config: {:?}", x);
                 self.route.positions_from(x);
                 self.route.current_position = 0;
-            }
+                self.status.route_set = true;
+            },
             Event::SetRunConfigSpeed(x) => {
                 #[cfg(debug_assertions)]
                 debug!("Setting run config speed: {:?}", x);
                 self.route.speeds_from(x);
-            }
+                self.status.speeds_set = true;
+            },
             Event::ArmBrakesCommand => {
                 self.peripherals.braking_controller.arm_breaks().await; // without this you cant turn on hv
+                self.status.brakes_armed = true;
                 #[cfg(debug_assertions)]
-                info!("[runconf] Rearmed braked!")
-            }
+                info!("[fsm] Rearmed brakes!");
+            },
             Event::RunConfigCompleteEvent => {
-                // todo!(); // TODO: receive reply from propulsion that desired speed has been set
-
-                transit!(self, State::Idle);
-            }
-            Event::RunConfigFailedEvent => {
-                error!("Run config failed");
-
-                transit!(self, State::Exit);
-                todo!();
-            }
+                if self.status.route_set && self.status.speeds_set {
+                    transit!(self, State::Idle);
+                } else {
+                    #[cfg(debug_assertions)]
+                    info!("[fsm] Route or Speeds not set");
+                    self.log(Info::IncompleteConfiguration).await;
+                }
+            },
             Event::SystemResetCommand => {
-                self.send_data(crate::Datatype::FSMState, self.state as u64)
-                    .await;
-            }
+                self.send_data(crate::Datatype::FSMState, self.state as u64).await;
+                transit!(self, State::RunConfig);
+            },
             Event::ReConfigureCommand => {
                 transit!(self, State::RunConfig);
-            }
+            },
 
-            // TODO: delete these two
-            Event::DisablePropulsionCommand => {
-                self.peripherals.propulsion_controller.disable();
-                self.log(Info::DisablePropulsionGpio).await;
-                self.send_data(crate::Datatype::PropGPIODebug, 0).await;
-            }
-            Event::EnablePropulsionCommand => {
-                self.peripherals.propulsion_controller.enable();
-                self.log(Info::EnablePropulsionGpio).await;
-                self.send_data(crate::Datatype::PropGPIODebug, 1).await;
-            }
             _ => {
                 info!("The current state ignores {}", event.to_str());
-            }
+            },
         }
     }
 }

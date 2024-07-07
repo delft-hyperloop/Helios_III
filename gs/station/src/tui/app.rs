@@ -1,10 +1,18 @@
-use crate::api::{state_to_string, Datapoint, Message};
+use std::collections::BTreeMap;
+
+use ratatui::Frame;
+
+use crate::api::state_to_string;
+use crate::api::Datapoint;
+use crate::api::Message;
 use crate::backend::Backend;
 use crate::tui::render::CmdRow;
-use crate::tui::{timestamp, Tui};
-use crate::{Datatype, Event, Info, COMMANDS_LIST};
-use ratatui::Frame;
-use std::collections::BTreeMap;
+use crate::tui::timestamp;
+use crate::tui::Tui;
+use crate::Datatype;
+use crate::Event;
+use crate::Info;
+use crate::COMMANDS_LIST;
 
 #[allow(dead_code)]
 pub struct App {
@@ -33,13 +41,7 @@ impl App {
             time_elapsed: 0,
             selected: 0,
             selected_row: 0,
-            cmds: COMMANDS_LIST
-                .iter()
-                .map(|x| CmdRow {
-                    name: x.to_string(),
-                    value: 0,
-                })
-                .collect(),
+            cmds: COMMANDS_LIST.iter().map(|x| CmdRow { name: x.to_string(), value: 0 }).collect(),
             cur_state: "None Yet".to_string(),
             last_heartbeat: "None Yet".to_string(),
             special_data: BTreeMap::from([
@@ -86,9 +88,7 @@ impl App {
         Ok(())
     }
 
-    fn render_frame(&self, frame: &mut Frame) {
-        frame.render_widget(self, frame.size());
-    }
+    fn render_frame(&self, frame: &mut Frame) { frame.render_widget(self, frame.size()); }
 
     fn receive_data(&mut self) {
         while let Ok(msg) = self.backend.message_receiver.try_recv() {
@@ -101,11 +101,11 @@ impl App {
                         Datatype::Info => match Info::from_id(datapoint.value as u16) {
                             Info::Safe => {
                                 self.safe = true;
-                            }
+                            },
                             Info::Unsafe => {
                                 self.safe = false;
-                            }
-                            _ => {}
+                            },
+                            _ => {},
                         },
                         Datatype::FSMState => {
                             self.cur_state = state_to_string(datapoint.value).to_string();
@@ -117,7 +117,7 @@ impl App {
                                 timestamp(),
                             ));
                             self.logs.push((Message::Data(datapoint), timestamp()))
-                        }
+                        },
                         Datatype::FSMEvent => {
                             if datapoint.value == Event::Heartbeat.to_id() as u64 {
                                 self.last_heartbeat = timestamp();
@@ -127,42 +127,36 @@ impl App {
                                 .collect::<Vec<&Datatype>>()
                                 .contains(&&datapoint.datatype)
                             {
-                                self.special_data
-                                    .insert(datapoint.datatype, datapoint.value);
+                                self.special_data.insert(datapoint.datatype, datapoint.value);
                             } else {
                                 self.logs.push((Message::Data(datapoint), timestamp()))
                             }
-                        }
+                        },
                         Datatype::PropulsionCurrent => {
                             self.special_data
                                 .insert(Datatype::PropulsionCurrent, datapoint.value / 680);
-                        }
+                        },
                         Datatype::PropulsionVoltage => {
                             self.special_data
                                 .insert(Datatype::PropulsionVoltage, datapoint.value / 340);
-                        }
-                        x if self
-                            .special_data
-                            .keys()
-                            .collect::<Vec<&Datatype>>()
-                            .contains(&&x) =>
-                        {
+                        },
+                        x if self.special_data.keys().collect::<Vec<&Datatype>>().contains(&&x) => {
                             self.special_data.insert(x, datapoint.value);
-                        }
+                        },
                         _ => {
                             self.logs.push((Message::Data(datapoint), timestamp()));
                             if self.logs.len() > 42 {
                                 self.scroll += 1;
                             }
-                        }
+                        },
                     }
-                }
+                },
                 msg => {
                     self.logs.push((msg, timestamp()));
                     if self.logs.len() > 42 {
                         self.scroll += 1;
                     }
-                }
+                },
             }
         }
     }

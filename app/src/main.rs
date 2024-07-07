@@ -28,8 +28,9 @@ use embassy_stm32::peripherals::*;
 use embassy_stm32::rng;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
-use embassy_sync::priority_channel::*;
+use embassy_sync::priority_channel::PriorityChannel;
 use embassy_time::Timer;
+use heapless::binary_heap::Max;
 use panic_probe as _;
 use static_cell::StaticCell;
 mod core;
@@ -39,6 +40,7 @@ use core::controllers::finite_state_machine_peripherals::*;
 use core::finite_state_machine::*;
 
 use crate::core::communication::Datapoint;
+use crate::core::data::data_middle_step;
 use crate::pconfig::default_configuration;
 
 // We need to include the external variables imported from build.rs
@@ -82,6 +84,10 @@ static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, { EVENT
     StaticCell::new();
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
     StaticCell::new();
+
+static PARSED_DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
+    StaticCell::new();
+
 static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
     StaticCell::new();
 static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
@@ -107,28 +113,31 @@ async fn main(spawner: Spawner) -> ! {
     let config = default_configuration();
     let p = embassy_stm32::init(config);
 
+    // -- Static allocations
+    // The communication channels get initialized and their endpoints are passed
+    // on to the FSM and other tasks
+
+    // Event queue carries events from all tasks to the FSM main loop
     let event_queue: &'static mut PriorityChannel<NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }> =
         EVENT_QUEUE.init(PriorityChannel::new());
-
     let event_sender: EventSender = event_queue.sender();
-    let event_receiver: Receiver<'static, NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }> =
-        event_queue.receiver();
 
+    // The data queue carries data points from all tasks to the data middle step
     let data_queue: &'static mut Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }> =
         DATA_QUEUE.init(Channel::new());
 
-    let data_sender: DataSender = data_queue.sender();
-    let data_receiver: DataReceiver = data_queue.receiver();
+    // The parsed data queue carries data points from the data middle step to the ground station
+    let parsed_data_queue: &'static mut Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }> =
+        PARSED_DATA_QUEUE.init(Channel::new());
 
+    // Send data to the middle step
+    let data_sender: DataSender = data_queue.sender();
+
+    // `CAN` queues carry `CAN` frames to the `CAN` busses
     let can_one_queue: &'static mut Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }> =
         CAN_ONE_QUEUE.init(Channel::new());
-    let can_one_sender: CanSender = can_one_queue.sender();
-    let can_one_receiver: CanReceiver = can_one_queue.receiver();
-
     let can_two_queue: &'static mut Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }> =
         CAN_TWO_QUEUE.init(Channel::new());
-    let can_two_sender: CanSender = can_two_queue.sender();
-    let can_two_receiver: CanReceiver = can_two_queue.receiver();
 
     //-- Begin peripheral configuration
     let per: FSMPeripherals = FSMPeripherals::new(
@@ -137,25 +146,31 @@ async fn main(spawner: Spawner) -> ! {
         InternalMessaging {
             event_sender,
             data_sender,
-            data_receiver,
-            can_one_sender,
-            can_one_receiver,
-            can_two_sender,
-            can_two_receiver,
+            data_receiver: parsed_data_queue.receiver(),
+            can_one_sender: can_one_queue.sender(),
+            can_one_receiver: can_one_queue.receiver(),
+            can_two_sender: can_two_queue.sender(),
+            can_two_receiver: can_two_queue.receiver(),
         },
     )
     .await;
     // -- End peripheral configuration
 
     // Create FSM
-    let mut fsm = Fsm::new(per, event_receiver, data_sender);
+    let mut fsm = Fsm::new(per, event_queue.receiver(), data_sender);
     fsm.entry().await;
     // --
 
     // Begin Spawn Tasks
+    try_spawn!(event_sender, spawner.spawn(your_mom(data_sender, event_sender)));
+
     try_spawn!(
         event_sender,
-        spawner.spawn(your_mom(data_sender, event_sender))
+        spawner.spawn(data_middle_step(
+            data_queue.receiver(),
+            parsed_data_queue.sender(),
+            event_sender
+        ))
     );
     // End Spawn Tasks
 

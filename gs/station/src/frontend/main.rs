@@ -1,13 +1,22 @@
-use crate::api::{Datapoint, Message};
-use crate::backend::Backend;
-use crate::frontend::{BackendState, BACKEND};
-use crate::Datatype;
-use crate::{Command, ERROR_CHANNEL, INFO_CHANNEL, STATUS_CHANNEL, WARNING_CHANNEL};
-use rand::Rng;
 use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::Mutex;
-use tauri::{Manager, State};
+
+use rand::Rng;
+use tauri::Manager;
+use tauri::State;
+
+use crate::api::Datapoint;
+use crate::api::Message;
+use crate::backend::Backend;
+use crate::frontend::BackendState;
+use crate::frontend::BACKEND;
+use crate::Command;
+use crate::Datatype;
+use crate::ERROR_CHANNEL;
+use crate::INFO_CHANNEL;
+use crate::STATUS_CHANNEL;
+use crate::WARNING_CHANNEL;
 
 pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
@@ -43,23 +52,23 @@ pub fn tauri_main(backend: Backend) {
                                     .lock()
                                     .unwrap()
                                     .push(Message::Data(dp));
-                            }
-                            Message::Status(s) => app_handle
-                                .emit_all(STATUS_CHANNEL, &*format!("{:?}", s))
-                                .unwrap(),
+                            },
+                            Message::Status(s) => {
+                                app_handle.emit_all(STATUS_CHANNEL, &*format!("{:?}", s)).unwrap()
+                            },
                             Message::Info(i) => {
                                 app_handle.emit_all(INFO_CHANNEL, i.to_string()).unwrap()
-                            }
+                            },
                             Message::Warning(w) => {
                                 app_handle.emit_all(WARNING_CHANNEL, w.to_string()).unwrap()
-                            }
+                            },
                             Message::Error(e) => {
                                 app_handle.emit_all(ERROR_CHANNEL, e.to_string()).unwrap()
-                            }
+                            },
                         },
                         Err(_e) => {
                             // eprintln!("Error receiving message: {:?}", e);
-                        }
+                        },
                     }
                 }
             });
@@ -80,41 +89,15 @@ pub fn generate_test_data() -> Vec<Datapoint> {
     let value3: u64 = rng.gen_range(0..101);
     let value4: u64 = rng.gen_range(0..300);
 
-    let datapoint = Datapoint {
-        value,
-        datatype: Datatype::from_id(0x3A3),
-        timestamp: 0,
-    };
-    let datapoint2 = Datapoint {
-        value: value2,
-        datatype: Datatype::from_id(0x19F),
-        timestamp: 0,
-    };
-    let datapoint3 = Datapoint {
-        value: 1,
-        datatype: Datatype::from_id(0x3AA),
-        timestamp: 0,
-    };
-    let datapoint4 = Datapoint {
-        value: 2,
-        datatype: Datatype::from_id(0x3AA),
-        timestamp: 0,
-    };
-    let datapoint5 = Datapoint {
-        value: 3,
-        datatype: Datatype::from_id(0x3AA),
-        timestamp: 0,
-    };
-    let datapoint6 = Datapoint {
-        value: value4,
-        datatype: Datatype::Module1AvgVoltage,
-        timestamp: 0,
-    };
-    let datapoint7 = Datapoint {
-        value: value4,
-        datatype: Datatype::Module3AvgTemperature,
-        timestamp: 0,
-    };
+    let datapoint = Datapoint { value, datatype: Datatype::from_id(0x3A3), timestamp: 0 };
+    let datapoint2 = Datapoint { value: value2, datatype: Datatype::from_id(0x19F), timestamp: 0 };
+    let datapoint3 = Datapoint { value: 1, datatype: Datatype::from_id(0x3AA), timestamp: 0 };
+    let datapoint4 = Datapoint { value: 2, datatype: Datatype::from_id(0x3AA), timestamp: 0 };
+    let datapoint5 = Datapoint { value: 3, datatype: Datatype::from_id(0x3AA), timestamp: 0 };
+    let datapoint6 =
+        Datapoint { value: value4, datatype: Datatype::Module1AvgVoltage, timestamp: 0 };
+    let datapoint7 =
+        Datapoint { value: value4, datatype: Datatype::Module3AvgTemperature, timestamp: 0 };
 
     datapoints.push(datapoint);
     datapoints.push(datapoint2);
@@ -192,10 +175,7 @@ pub fn procedures() -> Vec<[String; 6]> {
         Backend::load_procedures(PathBuf::from_str("../../../../config/procedures/").unwrap());
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
         if let Ok(x) = res {
-            backend_mutex
-                .get_mut()
-                .unwrap()
-                .log_msg(Message::Info("Loading procedures".into()));
+            backend_mutex.get_mut().unwrap().log_msg(Message::Info("Loading procedures".into()));
             x
         } else {
             backend_mutex

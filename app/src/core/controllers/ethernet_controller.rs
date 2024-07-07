@@ -40,9 +40,7 @@ pub struct EthernetPins {
 pub struct EthernetController {}
 
 #[embassy_executor::task]
-async fn net_task(stack: &'static Stack<Device>) -> ! {
-    stack.run().await
-}
+async fn net_task(stack: &'static Stack<Device>) -> ! { stack.run().await }
 
 impl EthernetController {
     pub async fn new(
@@ -102,10 +100,7 @@ impl EthernetController {
 
         try_spawn!(sender, x.spawn(net_task(stack)));
 
-        try_spawn!(
-            sender,
-            x.spawn(tcp_connection_handler(x, stack, sender, receiver))
-        );
+        try_spawn!(sender, x.spawn(tcp_connection_handler(x, stack, sender, receiver)));
         // unwrap!(x.spawn(udp_connection_handler(stack)));
 
         ethernet_controller

@@ -1,12 +1,12 @@
+use ratatui::prelude::*;
+use ratatui::symbols::border;
+use ratatui::widgets::block::*;
+use ratatui::widgets::*;
+
 use crate::api::Message;
 use crate::tui::app::App;
 use crate::tui::timestamp;
 use crate::Command;
-use ratatui::{
-    prelude::*,
-    symbols::border,
-    widgets::{block::*, *},
-};
 
 #[derive(Debug)]
 pub struct CmdRow {
@@ -18,9 +18,8 @@ impl CmdRow {
     pub fn to_row(&self) -> ratatui::widgets::Row {
         ratatui::widgets::Row::new(vec![self.name.clone(), self.value.to_string()])
     }
-    pub fn as_cmd(&self) -> Command {
-        Command::from_string(self.name.trim(), self.value)
-    }
+
+    pub fn as_cmd(&self) -> Command { Command::from_string(self.name.trim(), self.value) }
 }
 
 pub(crate) fn border_select(app: &App, idx: usize) -> Color {
@@ -63,11 +62,7 @@ impl Widget for &App {
 
         let outer_block = Block::default()
             .title(title.alignment(Alignment::Center))
-            .title(
-                instructions
-                    .alignment(Alignment::Center)
-                    .position(Position::Bottom),
-            )
+            .title(instructions.alignment(Alignment::Center).position(Position::Bottom))
             .borders(Borders::ALL)
             .style(if self.safe {
                 Style::default().fg(Color::Blue).bg(Color::Black)
@@ -134,7 +129,7 @@ impl Widget for &App {
                 ),
                 Message::Status(s) => {
                     Line::styled(format!("[{}] {:?}", t, s), Style::default().fg(s.colour()))
-                }
+                },
                 Message::Info(x) => Line::styled(format!("[{}] {}", t, x), {
                     if x.contains("[TRACE]") {
                         Style::default().fg(Color::Gray)
@@ -144,10 +139,10 @@ impl Widget for &App {
                 }),
                 Message::Warning(x) => {
                     Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Yellow))
-                }
+                },
                 Message::Error(x) => {
                     Line::styled(format!("[{}] {}", t, x), Style::default().fg(Color::Red))
-                }
+                },
             })
             .collect();
         // Render the text stream
@@ -174,16 +169,11 @@ impl Widget for &App {
         }*/
 
         // Create the table block
-        let mut rows = vec![Row::new(vec!["Command", "Value"]).style(
-            Style::default()
-                .fg(Color::Blue)
-                .bg(Color::Black)
-                .add_modifier(Modifier::BOLD),
-        )];
+        let mut rows = vec![Row::new(vec!["Command", "Value"])
+            .style(Style::default().fg(Color::Blue).bg(Color::Black).add_modifier(Modifier::BOLD))];
         self.cmds.iter().enumerate().for_each(|(i, x)| {
             rows.push(
-                x.to_row()
-                    .style(Style::default().bg(Color::Black).fg(border_select(self, i))),
+                x.to_row().style(Style::default().bg(Color::Black).fg(border_select(self, i))),
             )
         });
 
@@ -228,27 +218,18 @@ impl Widget for &App {
             ),
             Line::styled(
                 "Pod data:",
-                Style::default()
-                    .fg(Color::White)
-                    .bg(Color::Blue)
-                    .underlined(),
+                Style::default().fg(Color::White).bg(Color::Blue).underlined(),
             ),
         ];
 
         let split = (self.special_data.len() - 5) / 2;
         for (k, v) in self.special_data.iter().take(split) {
-            data.push(Line::styled(
-                format!("{:?}: {}", k, v),
-                Style::default().fg(Color::White),
-            ));
+            data.push(Line::styled(format!("{:?}: {}", k, v), Style::default().fg(Color::White)));
         }
         let mut data2 = vec![];
 
         for (k, v) in self.special_data.iter().skip(split) {
-            data2.push(Line::styled(
-                format!("{:?}: {}", k, v),
-                Style::default().fg(Color::White),
-            ));
+            data2.push(Line::styled(format!("{:?}: {}", k, v), Style::default().fg(Color::White)));
         }
 
         let data_paragraph = Paragraph::new(data)

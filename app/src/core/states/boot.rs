@@ -17,15 +17,15 @@ impl Fsm {
                 info!("Booting complete");
 
                 transit!(self, State::EstablishConnection);
-            }
+            },
             Event::BootingFailedEvent => {
                 error!("Booting failed!!");
 
                 transit!(self, State::Exit);
-            }
+            },
             _ => {
                 info!("Booting state ignores {}", event.to_str());
-            }
+            },
         }
     }
 }

@@ -1,15 +1,17 @@
 #![allow(non_snake_case)]
 
 extern crate serde;
+use std::env;
+use std::fs;
+use std::path::Path;
+use std::path::PathBuf;
+
 use goose_utils::check_ids;
 use goose_utils::commands::generate_commands;
 use goose_utils::datatypes::generate_datatypes;
 use goose_utils::events::generate_events;
 use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
-use std::env;
-use std::fs;
-use std::path::{Path, PathBuf};
 
 #[derive(Debug, Deserialize)]
 struct Config {
@@ -58,14 +60,10 @@ fn main() {
 
     let config: Config = toml::from_str(&gs_file).unwrap();
 
-    let mut content = String::new();
+    let mut content = String::from("//@generated\n");
 
     content.push_str(&configure_gs(&config));
-    content.push_str(&configure_gs_ip(
-        config.gs.ip,
-        config.gs.port,
-        config.gs.force,
-    ));
+    content.push_str(&configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force));
     content.push_str(&generate_datatypes(DATATYPES_PATH, true));
     content.push_str(&generate_commands(COMMANDS_PATH, false));
     content.push_str(&generate_events(EVENTS_PATH, false));
@@ -73,10 +71,7 @@ fn main() {
     content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, true));
 
     fs::write(dest_path.clone(), content).unwrap_or_else(|_| {
-        panic!(
-            "Couldn't write to {}! Build failed.",
-            dest_path.to_str().unwrap()
-        )
+        panic!("Couldn't write to {}! Build failed.", dest_path.to_str().unwrap())
     });
 
     println!("cargo:rerun-if-changed={}", CONFIG_PATH);
@@ -94,10 +89,8 @@ fn configure_gs(config: &Config) -> String {
         config.pod.net.ip[2],
         config.pod.net.ip[3],
         config.pod.net.port
-    ) + &*format!(
-        "pub const NETWORK_BUFFER_SIZE: usize = {};\n",
-        config.gs.buffer_size
-    ) + &*format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
+    ) + &*format!("pub const NETWORK_BUFFER_SIZE: usize = {};\n", config.gs.buffer_size)
+        + &*format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
         + &*format!("pub const HEARTBEAT: u64 = {};\n", config.gs.heartbeat)
         + &*format!(
             "pub const LEVI_EXEC_PATH: &str = \"{}\";\n",
@@ -106,17 +99,8 @@ fn configure_gs(config: &Config) -> String {
 }
 
 fn configure_channels(config: &Config) -> String {
-    format!(
-        "\npub const STATUS_CHANNEL: &str = \"{}\";\n",
-        config.gs.status_channel
-    ) + &*format!(
-        "pub const WARNING_CHANNEL: &str = \"{}\";\n",
-        config.gs.warning_channel
-    ) + &*format!(
-        "pub const INFO_CHANNEL: &str = \"{}\";\n",
-        config.gs.info_channel
-    ) + &*format!(
-        "pub const ERROR_CHANNEL: &str = \"{}\";\n",
-        config.gs.error_channel
-    )
+    format!("\npub const STATUS_CHANNEL: &str = \"{}\";\n", config.gs.status_channel)
+        + &*format!("pub const WARNING_CHANNEL: &str = \"{}\";\n", config.gs.warning_channel)
+        + &*format!("pub const INFO_CHANNEL: &str = \"{}\";\n", config.gs.info_channel)
+        + &*format!("pub const ERROR_CHANNEL: &str = \"{}\";\n", config.gs.error_channel)
 }

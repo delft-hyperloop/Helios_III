@@ -2,10 +2,11 @@ mod parse_input;
 mod read_from_stdout;
 mod write_to_stdin;
 
-use crate::api::Message;
-use crate::LEVI_EXEC_PATH;
 use anyhow::anyhow;
 use tokio::task::AbortHandle;
+
+use crate::api::Message;
+use crate::LEVI_EXEC_PATH;
 
 pub fn levi_main(
     message_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
@@ -13,23 +14,15 @@ pub fn levi_main(
     command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
 ) -> anyhow::Result<(AbortHandle, AbortHandle)> {
     let mut lcmd = tokio::process::Command::new(LEVI_EXEC_PATH);
-    message_transmitter.send(Message::Info(format!(
-        "starting levi at {}",
-        LEVI_EXEC_PATH
-    )))?;
+    message_transmitter.send(Message::Info(format!("starting levi at {}", LEVI_EXEC_PATH)))?;
     lcmd.stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped());
 
     let mut levi_child = lcmd.spawn()?;
 
-    let stdin = levi_child
-        .stdin
-        .ok_or(anyhow!("couldn't take the child's stdin"))?;
-    let stdout = levi_child
-        .stdout
-        .take()
-        .ok_or(anyhow!("couldn't take the child's stdout"))?;
+    let stdin = levi_child.stdin.ok_or(anyhow!("couldn't take the child's stdin"))?;
+    let stdout = levi_child.stdout.take().ok_or(anyhow!("couldn't take the child's stdout"))?;
 
     let transmitter = message_transmitter.clone();
     let lh1 = tokio::spawn(async move {
@@ -46,7 +39,7 @@ pub fn levi_main(
                         "[write_to_levi_child_stdin] closed without any errors.".to_string(),
                     ))
                     .expect("messaging channel closed... this is irrecoverable");
-            }
+            },
             Err(e) => {
                 transmitter
                     .send(Message::Error(format!(
@@ -54,7 +47,7 @@ pub fn levi_main(
                         e
                     )))
                     .expect("messaging channel closed... this is irrecoverable");
-            }
+            },
         }
         // todo: send emergency brake command if levi connection is lost?
     })
@@ -76,7 +69,7 @@ pub fn levi_main(
                         "[read_from_levi_child_stdout] closed without any errors.".to_string(),
                     ))
                     .expect("messaging channel closed... this is irrecoverable");
-            }
+            },
             Err(e) => {
                 msg_transmitter
                     .send(Message::Error(format!(
@@ -84,7 +77,7 @@ pub fn levi_main(
                         e
                     )))
                     .expect("messaging channel closed... this is irrecoverable");
-            }
+            },
         }
         // todo: send emergency brake command if levi connection is lost?
     })

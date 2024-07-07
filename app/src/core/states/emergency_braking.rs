@@ -18,13 +18,15 @@ impl Fsm {
         self.peripherals.hv_peripherals.power_hv_off();
         self.peripherals.propulsion_controller.disable();
         self.peripherals.red_led.set_high();
+        self.status.brakes_armed = false;
+        self.status.route_set = false;
+        self.status.speeds_set = false;
+
         error!("------ Emergency Braking!! ------");
         warn!("Emergency Braking!!!");
         error!("Emergency Braking!!");
         warn!("Emergency Braking!!!");
         error!("------ Emergency Braking!! ------");
-
-        // transit!(self, State::Exit);
     }
 
     pub async fn react_emergency_braking(&mut self, event: Event) {
@@ -32,14 +34,14 @@ impl Fsm {
             Event::SystemResetCommand => {
                 self.send_data(Datatype::BrakingRearmDebug, 1).await;
                 transit!(self, State::RunConfig);
-            }
+            },
             Event::ConnectionEstablishedEvent => {
                 self.send_data(Datatype::FSMState, self.state as u64).await;
-            }
+            },
             _ => {
                 #[cfg(debug_assertions)]
                 info!("[fsm] EmergencyBrake state ignores {:?}", event);
-            }
+            },
         }
     }
 }

@@ -1,12 +1,12 @@
-use crate::backend::Backend;
 use std::path::PathBuf;
 use std::str::FromStr;
+
+use crate::backend::Backend;
 
 #[test]
 fn import_procedures() {
     let procedures =
-        Backend::load_procedures(PathBuf::from_str("../../config/procedures/").unwrap())
-            .unwrap();
+        Backend::load_procedures(PathBuf::from_str("../../config/procedures/").unwrap()).unwrap();
     assert!(procedures.len() > 0);
     // panic!("{:?}", procedures);
     let example = procedures.iter().find(|x| x[0] == "example").unwrap();

@@ -20,6 +20,7 @@ use crate::core::communication::Datapoint;
 use crate::try_spawn;
 use crate::DataSender;
 use crate::Datatype;
+use crate::Event;
 use crate::EventSender;
 
 pub struct PropulsionController {
@@ -40,7 +41,7 @@ impl PropulsionController {
     /// - PA4: DAC1 - write desired speed to propulsion
     /// - PA5: ADC - read propulsion voltage
     /// - PA6: ADC - read propulsion current
-    /// - PE5: GPIO - enable/disable propulsion
+    /// - PB1: GPIO - enable/disable propulsion
     pub async fn new(
         x: Spawner,
         data_sender: DataSender,
@@ -63,10 +64,9 @@ impl PropulsionController {
             x.spawn(read_prop_adc(data_sender, v_ref_int_channel, adc, pa5, pa6))
         );
 
-        Self {
-            speed_set_pin,
-            enable_pin: Output::new(gpio_enable, Level::Low, Speed::Low),
-        }
+        event_sender.send(Event::LVPropulsionReadyEvent).await;
+
+        Self { speed_set_pin, enable_pin: Output::new(gpio_enable, Level::Low, Speed::Low) }
     }
 
     /// Write to the DAC to set the desired speed
@@ -74,18 +74,16 @@ impl PropulsionController {
         trace!("Setting speed to {}", speed);
         self.speed_set_pin.set(Value::Bit8(speed));
     }
+
     pub fn stop(&mut self) {
         trace!("Stopping propulsion by setting speed to 0");
         self.speed_set_pin.set(Value::Bit8(0));
+        self.disable();
     }
 
-    pub fn disable(&mut self) {
-        self.enable_pin.set_low();
-    }
+    pub fn disable(&mut self) { self.enable_pin.set_low(); }
 
-    pub fn enable(&mut self) {
-        self.enable_pin.set_high();
-    }
+    pub fn enable(&mut self) { self.enable_pin.set_high(); }
 }
 
 #[embassy_executor::task]
@@ -106,18 +104,10 @@ pub async fn read_prop_adc(
         //     v, i, v_ref_int
         // );
         data_sender
-            .send(Datapoint::new(
-                Datatype::PropulsionVoltage,
-                v,
-                Instant::now().as_ticks(),
-            ))
+            .send(Datapoint::new(Datatype::PropulsionVoltage, v, Instant::now().as_ticks()))
             .await;
         data_sender
-            .send(Datapoint::new(
-                Datatype::PropulsionCurrent,
-                i,
-                Instant::now().as_ticks(),
-            ))
+            .send(Datapoint::new(Datatype::PropulsionCurrent, i, Instant::now().as_ticks()))
             .await;
         data_sender
             .send(Datapoint::new(

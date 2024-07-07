@@ -86,7 +86,6 @@ colour = "magenta"
 label = "EnablePropulsionGpio"
 colour = "yellow"
 
-
 [[Info]]
 label = "DisablePropulsionGpio"
 colour = "yellow"
@@ -96,4 +95,19 @@ colour = "yellow"
 label = "SetPropulsionSpeed"
 colour = "yellow"
 
+[[Info]]
+label = "IncompleteConfiguration"
+colour = "magenta"
+
+[[Info]]
+label = "BrakesNotArmed"
+colour = "yellow"
+
+[[Info]]
+label = "InvalidRouteConfiguration"
+colour = "red"
+
+[[Info]]
+label = "LevitationNotStarted"
+colour = "red"
 

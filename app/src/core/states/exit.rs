@@ -22,15 +22,15 @@ impl Fsm {
                 #[cfg(debug_assertions)]
                 info!("Arming brakes");
                 self.peripherals.braking_controller.arm_breaks().await;
-            }
+            },
             Event::SystemResetCommand => {
                 self.send_data(Datatype::BrakingRearmDebug, 1).await;
                 transit!(self, State::RunConfig);
-            }
+            },
 
             _ => {
                 info!("The current state ignores {}", event.to_str());
-            }
+            },
         }
     }
 }

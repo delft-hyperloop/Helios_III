@@ -69,7 +69,7 @@ pub async fn control_braking_heartbeat(
                             Instant::now().as_ticks(),
                         ))
                         .await;
-                }
+                },
                 Level::High => {
                     data_sender
                         .send(Datapoint::new(
@@ -78,7 +78,7 @@ pub async fn control_braking_heartbeat(
                             Instant::now().as_ticks(),
                         ))
                         .await;
-                }
+                },
             }
             match unsafe { BRAKE } {
                 true => {
@@ -89,7 +89,7 @@ pub async fn control_braking_heartbeat(
                             Instant::now().as_ticks(),
                         ))
                         .await;
-                }
+                },
                 false => {
                     data_sender
                         .send(Datapoint::new(
@@ -98,7 +98,7 @@ pub async fn control_braking_heartbeat(
                             Instant::now().as_ticks(),
                         ))
                         .await;
-                }
+                },
             }
             last_timestamp = Instant::now();
         }
@@ -120,7 +120,7 @@ async fn read_braking_communication(
         if edge && is_activated {
             edge = false; // braking comm value is low, so we don't brake until it goes high again
             if unsafe { ENABLE_BRAKING_COMM } {
-                event_sender.send(Event::EmergencyBrakeCommand).await;
+                event_sender.send(Event::EmergencyBrake).await;
             }
             Timer::after_millis(1000).await;
         }
@@ -183,47 +183,26 @@ impl BrakingController {
 
         try_spawn!(
             braking_sender,
-            x.spawn(control_braking_heartbeat(
-                braking_sender,
-                data_sender,
-                braking_signal,
-            ))
+            x.spawn(control_braking_heartbeat(braking_sender, data_sender, braking_signal,))
         );
 
         try_spawn!(
             braking_sender,
-            x.spawn(read_braking_communication(
-                braking_sender,
-                data_sender,
-                adc,
-                pf12
-            ))
+            x.spawn(read_braking_communication(braking_sender, data_sender, adc, pf12))
         );
 
-        BrakingController {
-            braking_rearm,
-            data_sender,
-            brakes_extended: false,
-        }
+        BrakingController { braking_rearm, data_sender, brakes_extended: false }
     }
 
     pub async fn arm_breaks(&mut self) {
         self.braking_rearm.set_low();
         self.data_sender
-            .send(Datapoint::new(
-                Datatype::BrakingRearmDebug,
-                0,
-                Instant::now().as_ticks(),
-            ))
+            .send(Datapoint::new(Datatype::BrakingRearmDebug, 0, Instant::now().as_ticks()))
             .await;
         Timer::after_micros(10).await;
         self.braking_rearm.set_high();
         self.data_sender
-            .send(Datapoint::new(
-                Datatype::BrakingRearmDebug,
-                1,
-                Instant::now().as_ticks(),
-            ))
+            .send(Datapoint::new(Datatype::BrakingRearmDebug, 1, Instant::now().as_ticks()))
             .await;
 
         // let time_stamp = Instant::now();

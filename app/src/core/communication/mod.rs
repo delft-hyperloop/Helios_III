@@ -27,11 +27,7 @@ pub struct Datapoint {
 
 impl Datapoint {
     pub fn new(datatype: Datatype, value: u64, timestamp: u64) -> Self {
-        Self {
-            datatype,
-            value,
-            timestamp,
-        }
+        Self { datatype, value, timestamp }
     }
 
     pub fn as_bytes(&self) -> [u8; 20] {

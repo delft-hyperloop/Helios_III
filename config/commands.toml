@@ -6,6 +6,8 @@ id = 0x01
 name = "Heartbeat"
 id = 0x042
 
+# LEVITATION COMMANDS
+
 [[Command]]
 name = "ls0"
 id = 0x400
@@ -79,6 +81,21 @@ name = "lat0_reset"
 id = 0x418
 
 [[Command]]
+name = "LeviPropulsionStart"
+id = 0x68
+
+[[Command]]
+name = "LeviPropulsionStop"
+id = 0x70 
+
+# END LEVI COMMANDS 
+
+
+# Configuration commands
+# preparing for a run.
+# only valid in RunConfig state
+
+[[Command]]
 name = "SetRoute"
 id = 0x5c
 
@@ -86,17 +103,19 @@ id = 0x5c
 name = "SetSpeeds"
 id = 0x59
 
-[[Command]]
-name = "StartRun"
-id = 0x5d
+# END Configuration commands
+
+
+# Run Control commands 
+# used to walk through a run procedure
 
 [[Command]]
 name = "EmergencyBrake"
 id = 0xff
 
 [[Command]]
-name = "Shutdown"
-id = 0x5f
+name = "StartRun"
+id = 0x5d
 
 [[Command]]
 name = "StartHV"
@@ -105,22 +124,6 @@ id = 0x60
 [[Command]]
 name = "StopHV"
 id = 0x61
-
-[[Command]]
-name = "OpenContactor"
-id = 0x62
-
-[[Command]]
-name = "CloseContactor"
-id = 0x63
-
-[[Command]]
-name = "DcOff"
-id = 0x64
-
-[[Command]]
-name = "DcOn"
-id = 0x65
 
 [[Command]]
 name = "SystemReset"
@@ -134,17 +137,33 @@ id = 0x69
 name = "FinishRunConfig"
 id = 0x67
 
-[[Command]]
-name = "LeviPropulsionStart"
-id = 0x68
+
+# Ground station-related commands
 
 [[Command]]
-name = "LeviPropulsionStop"
-id = 0x70 
+name = "Shutdown"
+id = 0x5f
 
-#[[Command]]
-#name = "TurnAllHVRelaysOnUNSAFE"
-#id = 0x68
+
+# Override events
+# these are not part of the main control flow, but allow for either 
+# debugging or other similarly useful functionality.
+
+[[Command]]
+name = "DcOff"
+id = 0x64
+
+[[Command]]
+name = "DcOn"
+id = 0x65
+
+# [[Command]]
+# name = "OpenContactor"
+# id = 0x62
+#
+# [[Command]]
+# name = "CloseContactor"
+# id = 0x63
 
 [[Command]]
 name = "SetCurrentSpeed"
