@@ -56,20 +56,32 @@ pub fn generate_datatypes(path: &str, drv: bool) -> String {
             dtype.name, dtype.name
         ));
         bounds.push_str(&format!(
-            "            Datatype::{} => {} && {},\n",
+            "            Datatype::{} => {} {} {},\n",
             dtype.name,
             dtype
                 .lower
-                .map(|x| format!("(other >= {}u64)", x))
-                .unwrap_or("true".to_string()),
+                .map(|x| format!("other >= {}u64", x))
+                .unwrap_or("".to_string()),
+            if dtype.lower.is_some() && dtype.upper.is_some() {
+                "&&".to_string()
+            } else {
+                "".to_string()
+            },
             dtype
                 .upper
-                .map(|x| format!("(other <= {}u64)", x))
-                .unwrap_or("true".to_string()),
+                .map(|x| format!("other <= {}u64", x))
+                .unwrap_or_else(|| {
+                    if dtype.lower.is_none() && dtype.upper.is_none() {
+                        "true".to_string()
+                    } else {
+                        "".to_string()
+                    }
+                }),
         ));
         if let Some(l) = dtype.lower {
             if l == 0 {
-                panic!("
+                panic!(
+                    "
 You set a lower bound of 0 for {}. \
 Since all values are treated as u64, \
 values less than 0 are impossible. 

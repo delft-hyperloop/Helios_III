@@ -1,7 +1,18 @@
-# This is an example procedure:
-ID: DH08.PROC.SC.?
-People: Kiko, Kiril
-Equipment: Andreas
+# This is an example procedure
 
-I refuse to elaborate.
+Id: 
+DH08.PROC.SC.x
+
+People: 
+Kiko
+Kiril
+
+Equipment: 
+Andreas
+
+Steps:
+1. I refuse to elaborate.
+2. :)
+3. if in trouble just call me
+just text is also fine in a procedure.
 

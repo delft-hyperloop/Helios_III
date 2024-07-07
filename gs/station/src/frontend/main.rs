@@ -5,6 +5,7 @@ use crate::Datatype;
 use crate::{Command, ERROR_CHANNEL, INFO_CHANNEL, STATUS_CHANNEL, WARNING_CHANNEL};
 use rand::Rng;
 use std::path::PathBuf;
+use std::str::FromStr;
 use std::sync::Mutex;
 use tauri::{Manager, State};
 
@@ -188,7 +189,7 @@ pub fn quit_server() {
 #[tauri::command]
 pub fn procedures() -> Vec<[String; 6]> {
     let res =
-        Backend::load_procedures(PathBuf::from_string("../../../../config/procedures/").unwrap());
+        Backend::load_procedures(PathBuf::from_str("../../../../config/procedures/").unwrap());
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
         if let Ok(x) = res {
             backend_mutex

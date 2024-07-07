@@ -483,6 +483,6 @@ mod tests {
         };
         let s_bytes: u64 = route.speeds.clone().into();
         let r_bytes: u64 = route.positions.clone().into();
-        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+        // panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
     }
 }
