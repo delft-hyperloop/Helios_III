@@ -155,7 +155,7 @@
                     <div class="flex items-center justify-between p-2 bg-surface-800 rounded-lg cursor-move m-2">
                         <div class="flex items-center">
                             <Icon icon="mdi:drag"/>
-                            <span>{routeSteps[index]} - {index}</span>
+                            <span>{index + 1}. {routeSteps[index]}</span>
                         </div>
                         <button type="button"
                                 class="btn rounded-lg"
