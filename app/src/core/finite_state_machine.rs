@@ -17,8 +17,8 @@ use crate::Info;
 macro_rules! transit {
     ($fsm:expr, $ns:expr) => {
         {
-            info!("Exiting state: {:?}", $fsm.state);
-            info!("Entering state: {:?}", $ns);
+            defmt::info!("Exiting state: {:?}", $fsm.state);
+            defmt::info!("Entering state: {:?}", $ns);
             $fsm.state = $ns;
             $fsm.entry().await;
         }
@@ -116,7 +116,7 @@ impl Fsm {
             State::HVOn => self.entry_hv_on(),
             State::Levitating => self.entry_levitating(),
             State::MovingST => self.entry_mv_st(),
-            State::MovingLSST => self.entry_cruising(),
+            State::MovingLSST => self.entry_ls_st(),
             State::MovingLSCV => self.entry_ls_cv(),
             State::EndST => self.entry_end_st(),
             State::EndLS => self.entry_end_ls(),
@@ -142,6 +142,7 @@ impl Fsm {
 
         match event {
             Event::EmergencyBrake
+            | Event::EndOfTrackReached
             | Event::LevitationErrorEvent
             | Event::PropulsionErrorEvent
             | Event::PowertrainErrorEvent

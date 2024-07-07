@@ -23,11 +23,6 @@ id = 0x7ff
 priority = 1
 
 [[Event]]
-name = "RunFinishedEvent"
-id = 0xbD
-priority = 0
-
-[[Event]]
 name = "BootingCompleteEvent"
 id = 0xa1
 priority = 0

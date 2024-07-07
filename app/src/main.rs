@@ -12,6 +12,7 @@
     clippy::too_many_arguments
 )]
 #![deny(clippy::async_yields_async)]
+#![deny(rustdoc::broken_intra_doc_links)]
 // #[warn(unused_must_use)]
 
 // Import absolutely EVERYTHING

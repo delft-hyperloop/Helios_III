@@ -5,9 +5,8 @@ pub struct Status {
     pub overrides: Overrides,
     pub speeds_set: bool,
     pub route_set: bool,
-    pub hv_ready: bool,
-    pub hv_on: bool,
-    pub hub_connected: bool,
+    // pub hv_ready: bool, // todo: set this on from BMS data + check before turning on HV
+    // pub hub_connected: bool, // todo: set this on from hub data + check before leaving idle
     pub brakes_armed: bool,
     pub levitating: bool,
 }

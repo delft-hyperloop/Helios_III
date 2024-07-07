@@ -12,27 +12,37 @@ impl Fsm {
 
     pub async fn react_end_ls(&mut self, event: Event) {
         match event {
-            Event::RunFinishedEvent => {
-                #[cfg(debug_assertions)]
-                info!("Run finished");
-                transit!(self, State::Exit);
-            },
-            Event::LaneSwitchBackwardsB => {
-                #[allow(clippy::single_match)]
+            Event::BrakingPointReachedC => {
                 match self.route.next_position() {
-                    Location::StraightBackwards => {
-                        self.send_levi_cmd(crate::Command::ls1(0)).await;
-                        // self.peripherals.propulsion_controller.turn_off();
-                        transit!(self, State::MovingLSST);
+                    Location::BackwardsC => {
+                        transit!(self, State::EndLS);
                     },
-                    _ => {},
+                    Location::StopAndWait => {
+                        info!("Braking point reached");
+                        self.peripherals.propulsion_controller.stop();
+                        transit!(self, State::Levitating);
+                    }
+                    _ => {
+                        info!("Invalid configuration!");
+                        transit!(self, State::Exit);
+                    },
                 }
-            },
+            }
             Event::LaneSwitchBackwardsC => {
-                self.send_levi_cmd(crate::Command::ls2(0)).await;
-                // self.peripherals.propulsion_controller.turn_off();
-                transit!(self, State::MovingLSCV);
-            },
+                match self.route.next_position() {
+                    Location::LaneSwitchCurved => {
+                        transit!(self, State::MovingLSCV);
+                    },
+                    Location::StopAndWait => {
+                        self.peripherals.propulsion_controller.stop();
+                        transit!(self, State::Levitating);
+                    }
+                    _ => {
+                        info!("Invalid configuration!");
+                        transit!(self, State::Exit);
+                    },
+                }
+            }
             _ => {
                 info!("The current state ignores {}", event.to_str());
             },
