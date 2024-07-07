@@ -91,7 +91,7 @@
     <div class="modal-example-form w-modal-wide {cBase}">
         <header class={cHeader}>{$modalStore[0].title}</header>
 
-        <div class="grid grid-cols-4 grid-rows-[1fr 2fr] h-full gap-4 col-span-1">
+        <div class="grid modal-grid grid-rows-[1fr 2fr] h-full gap-4 col-span-1">
             <div class="w-full p-4 col-span-3">
                 <svg viewBox="0 0 919 148" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="localiser">
@@ -170,7 +170,11 @@
                     <label>
                         <span>{util.snakeToCamel(input)}</span>
                         <input class={`input rounded-lg px-1 ${invalidInputs.includes(input) ? 'text-error-400' : ''}`}
-                               type="number" max="500" min="-500" bind:value={speedForm[input]}
+                               type="number"
+                               max="500"
+                               min="-500"
+                               bind:value={speedForm[input]}
+                               pattern="^-?[0-9]*$"
                                on:focus={() => focusedInput = input} on:blur={() => focusedInput = ''}
                                on:input={() => {
                            if (speedForm[input] < -500 || speedForm[input] > 500) {
@@ -180,13 +184,13 @@
                            } else {
                                invalidInputs = invalidInputs.filter(i => i !== input);
                            }
-                    }}/>
+                        }}/>
                     </label>
                 {/each}
             </div>
-            <div class="col-span-1 flex flex-col items-center gap-2 rounded-lg max-h-80 overflow-auto">
+            <div class="col-span-1 flex flex-col items-center gap-2 rounded-lg p-2 bg-surface-900 max-h-80 overflow-auto">
                 {#each RouteStepNames as step}
-                    <div class="flex items-center justify-between w-full p-2 bg-surface-900 rounded-lg">
+                    <div class="flex items-center justify-between w-full p-2 bg-surface-800 rounded-lg">
                         <span>{step}</span>
                         <button type="button"
                                 class="btn rounded-none"
@@ -210,3 +214,9 @@
         </footer>
     </div>
 {/if}
+
+<style lang="scss">
+    .modal-grid {
+        grid-template-columns: 1fr 1fr 1fr 1.3fr;
+    }
+</style>
