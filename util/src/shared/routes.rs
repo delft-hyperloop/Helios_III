@@ -2,14 +2,33 @@
 #[cfg(target_os = "none")]
 use heapless::LinearMap;
 
+/// A speed setting for every location on the track (see [Location](enum.Location.html))
+///
+/// * Part of the route configuration (see [Route](struct.Route.html))
+/// * Each speed is a u8 value from 0 to 255,
+/// the analog voltage (0V to 3.3V) that will be sent to the PLC.
+/// * The implementation of this struct varies depending on the target OS
+/// (ground station / embedded).
+/// Currently in use is the *embedded* version, using a [`heapless::LinearMap`](https://docs.rs/heapless/latest/heapless/struct.LinearMap.html).
 #[cfg(target_os = "none")]
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub struct LocationSpeedMap(LinearMap<Location, u8, 10>);
 
+/// A speed setting for every location on the track (see [Location](enum.Location.html))
+///
+/// * Part of the route configuration (see [Route](struct.Route.html))
+/// * Each speed is a u8 value from 0 to 255,
+/// the analog voltage (0V to 3.3V) that will be sent to the PLC.
+/// * The implementation of this struct varies depending on the target OS
+/// (ground station / embedded).
+/// Currently in use is the *std* version, using a [`std::collections::BTreeMap`].
 #[cfg(not(target_os = "none"))]
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone)]
 pub struct LocationSpeedMap(std::collections::BTreeMap<Location, u8>);
 
+/// A sequence of locations that the pod will travel through
+///
+/// Part of the route configuration (see [Route](struct.Route.html))
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
 pub struct LocationSequence([Location; 16]);
 
@@ -54,7 +73,7 @@ pub trait RouteUse {
 ///            .  |
 /// ------------  |
 /// ```
-/// The bits correspond to the encoding used for converting a LcoationSequence to a u64
+/// The bits correspond to the encoding used for converting a LocationSequence to a u64 (see [LocationSequence](struct.LocationSequence.html))
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Copy, Ord)]
 #[cfg_attr(target_os = "none", derive(defmt::Format))]
 pub enum Location {
@@ -70,6 +89,16 @@ pub enum Location {
     BrakeHere = 0b0000, // no next position, just stop here.
 }
 
+/// A full configuration of the propulsion subsystem for a run.
+///
+/// * (Up to) 16 locations in a sequence, holds the current position.
+///
+/// * To transition, use [`route.next_position()`](trait.RouteUse.html#tymethod.next_position).
+/// * See [Location](enum.Location.html).
+///
+/// * Speeds for each location on the track
+/// * See [Speeds](enum.LocationSpeedMap.html).
+/// * To get the speed for the current position, use [`route.current_speed()`](trait.RouteUse.html#tymethod.current_speed).
 #[derive(Debug, PartialEq, Eq, Default)]
 pub struct Route {
     pub positions: LocationSequence,
