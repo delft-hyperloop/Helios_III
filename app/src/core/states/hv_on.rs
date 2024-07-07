@@ -2,8 +2,6 @@ use defmt::info;
 use defmt::warn;
 
 use crate::core::finite_state_machine::*;
-use crate::core::fsm_status::Location;
-use crate::core::fsm_status::RouteUse;
 use crate::transit;
 use crate::Event;
 use crate::Info;
@@ -40,18 +38,7 @@ impl Fsm {
                     return;
                 }
 
-                match self.route.next_position() {
-                    Location::StraightStart => transit!(self, State::MovingST),
-                    Location::StraightEndTrack | Location::StraightBackwards => {
-                        transit!(self, State::EndST)
-                    },
-                    Location::LaneSwitchEndTrack => transit!(self, State::EndLS),
-                    Location::StopAndWait => self.peripherals.propulsion_controller.stop(),
-                    _ => {
-                        self.log(Info::InvalidRouteConfiguration).await;
-                        transit!(self, State::Exit);
-                    },
-                }
+                self.enter_moving().await;
             },
 
             _ => {

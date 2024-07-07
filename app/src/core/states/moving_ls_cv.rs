@@ -15,17 +15,16 @@ impl Fsm {
     pub async fn react_mv_ls_cv(&mut self, event: Event) {
         match event {
             Event::LaneSwitchEndedC => match self.route.next_position() {
-                Location::LaneSwitchEndTrack => {
+                Location::ForwardC => {
                     info!("Entering straight track after curved lane-switch!");
                     self.send_levi_cmd(crate::Command::ls0(0)).await;
                     transit!(self, State::EndST);
                 },
-                Location:: => {
-                    info!("Entering straight track backwards");
+                Location::StopAndWait => {
+                    self.peripherals.propulsion_controller.stop();
                     self.send_levi_cmd(crate::Command::ls0(0)).await;
-                    transit!(self, State::MovingST);
+                    transit!(self, State::Levitating);
                 },
-
                 _ => {
                     info!("Invalid configuration!");
                     transit!(self, State::EndST);

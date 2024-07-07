@@ -13,21 +13,30 @@ impl Fsm {
 
     pub async fn react_end_st(&mut self, event: Event) {
         match event {
-            Event::RunFinishedEvent => {
-                #[cfg(debug_assertions)]
-                info!("Run finished");
-                transit!(self, State::Exit);
-            },
             Event::BrakingPointReachedB => match self.route.next_position() {
-                Location::StraightEndTrack => {
-
+                Location::BackwardsB => {
+                    transit!(self, State::EndST);
                 },
+
                 Location::StopAndWait => {
                     info!("Braking point reached");
                     self.peripherals.propulsion_controller.stop();
                     transit!(self, State::Levitating);
                 }
 
+                _ => {
+                    info!("Invalid configuration!");
+                    transit!(self, State::Exit);
+                },
+            },
+            Event::LaneSwitchBackwardsB => match self.route.next_position() {
+                Location::LaneSwitchStraight => {
+                    transit!(self, State::MovingLSST);
+                },
+                Location::StopAndWait => {
+                    self.peripherals.propulsion_controller.stop();
+                    transit!(self, State::Levitating);
+                }
                 _ => {
                     info!("Invalid configuration!");
                     transit!(self, State::Exit);
