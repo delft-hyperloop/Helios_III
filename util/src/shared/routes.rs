@@ -11,7 +11,7 @@ pub struct LocationSpeedMap(LinearMap<Location, u8, 8>);
 pub struct LocationSpeedMap(std::collections::BTreeMap<Location, u8>);
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
-pub struct LocationSequence([Location; 21]);
+pub struct LocationSequence([Location; 16]);
 
 #[allow(dead_code)]
 pub trait RouteUse {
@@ -34,14 +34,17 @@ pub trait RouteUse {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Copy, Ord)]
 #[cfg_attr(target_os = "none", derive(defmt::Format))]
 pub enum Location {
-    StraightStart = 0b001,
-    LaneSwitchStraight = 0b010,
-    LaneSwitchCurved = 0b011,
-    StraightEndTrack = 0b100,
-    LaneSwitchEndTrack = 0b101,
-    StraightBackwards = 0b110,
-    StopAndWait = 0b111,
-    BrakeHere = 0b000, // no next position, just stop here.
+    ForwardAStraight = 0b0001,
+    ForwardALS = 0b0010,
+    BackwardsA = 0b0011,
+    ForwardB = 0b0100,
+    BackwardsB = 0b0101,
+    ForwardC = 0b0111,
+    BackwardsC = 0b1000,
+    LaneSwitchStraight = 0b1001,
+    LaneSwitchCurved = 0b1010,
+    StopAndWait = 0b1011,
+    BrakeHere = 0b0000, // no next position, just stop here.
 }
 
 #[derive(Debug, PartialEq, Eq, Default)]
@@ -120,12 +123,23 @@ impl From<LocationSpeedMap> for u64 {
         let mut result: u64 = 0;
 
         // Insert speed data into the remaining bytes
-        result |= (val.0.get(&Location::StraightStart).copied().unwrap_or(0) as u64) << 40;
-        result |= (val.0.get(&Location::StraightBackwards).copied().unwrap_or(0) as u64) << 32;
-        result |= (val.0.get(&Location::LaneSwitchStraight).copied().unwrap_or(0) as u64) << 24;
-        result |= (val.0.get(&Location::LaneSwitchCurved).copied().unwrap_or(0) as u64) << 16;
-        result |= (val.0.get(&Location::StraightEndTrack).copied().unwrap_or(0) as u64) << 8;
-        result |= val.0.get(&Location::LaneSwitchEndTrack).copied().unwrap_or(0) as u64;
+        result |= val.0.get(&Location::ForwardAStraight).unwrap_or(&0) as u64;
+        result <<= 8;
+        result |= val.0.get(&Location::ForwardALS).unwrap_or(&0) as u64;
+        result <<= 8;
+        result |= val.0.get(&Location::BackwardsA).unwrap_or(&0) as u64;
+        result <<= 8;
+        result |= val.0.get(&Location::ForwardB).unwrap_or(&0) as u64;
+        result <<= 8;
+        result |= val.0.get(&Location::BackwardsB).unwrap_or(&0) as u64;
+        result <<= 8;
+        result |= val.0.get(&Location::ForwardC).unwrap_or(&0) as u64;
+        result <<= 8;
+        result |= val.0.get(&Location::BackwardsC).unwrap_or(&0) as u64;
+        result <<= 8;
+        result |= val.0.get(&Location::LaneSwitchStraight).unwrap_or(&0) as u64;
+        result <<= 8;
+        result |= val.0.get(&Location::LaneSwitchCurved).unwrap_or(&0) as u64;
 
         result
     }
@@ -138,16 +152,18 @@ fn parse_locations(bytes: u64) -> [Location; 21] {
     for i in 0..=20 {
         let bits = (bit_seq & 0b111) as u8;
         bit_seq >>= 3;
-        locations[20 - i] = match bits {
-            0b001 => Location::StraightStart,
-            0b010 => Location::LaneSwitchStraight,
-            0b011 => Location::LaneSwitchCurved,
-            0b100 => Location::StraightEndTrack,
-            0b101 => Location::LaneSwitchEndTrack,
-            0b110 => Location::StraightBackwards,
-            0b111 => Location::StopAndWait,
-            0b000 => Location::BrakeHere,
-            _ => Location::BrakeHere, // Handle invalid patterns
+        locations[15 - i] = match bits {
+            0b0001 => Location::ForwardAStraight,
+            0b0010 => Location::ForwardALS,
+            0b0011 => Location::BackwardsA,
+            0b0100 => Location::ForwardB,
+            0b0101 => Location::BackwardsB,
+            0b0111 => Location::ForwardC,
+            0b1000 => Location::BackwardsC,
+            0b1001 => Location::LaneSwitchStraight,
+            0b1010 => Location::LaneSwitchCurved,
+            0b1011 => Location::StopAndWait,
+            _ => Location::BrakeHere,
         };
     }
 
@@ -156,7 +172,7 @@ fn parse_locations(bytes: u64) -> [Location; 21] {
 
 impl RouteUse for Route {
     fn next_position(&mut self) -> Location {
-        if self.current_position >= 20 {
+        if self.current_position >= 15 {
             Location::BrakeHere
         } else {
             self.current_position += 1;
@@ -194,7 +210,7 @@ impl RouteUse for Route {
 }
 
 impl Default for LocationSequence {
-    fn default() -> Self { LocationSequence([Location::BrakeHere; 21]) }
+    fn default() -> Self { LocationSequence([Location::BrakeHere; 16]) }
 }
 
 impl Default for LocationSpeedMap {
@@ -203,12 +219,15 @@ impl Default for LocationSpeedMap {
         let speeds = {
             let mut x = heapless::LinearMap::new();
             ([
-                (Location::StraightStart, 0),
-                (Location::StraightBackwards, 0),
+                (Location::ForwardAStraight, 0),
+                (Location::ForwardALS, 0),
+                (Location::BackwardsA, 0),
+                (Location::ForwardB, 0),
+                (Location::BackwardsB, 0),
+                (Location::ForwardC, 0),
+                (Location::BackwardsC, 0),
                 (Location::LaneSwitchStraight, 0),
                 (Location::LaneSwitchCurved, 0),
-                (Location::StraightEndTrack, 0),
-                (Location::LaneSwitchEndTrack, 0),
                 (Location::StopAndWait, 0),
                 (Location::BrakeHere, 0),
             ])
@@ -221,12 +240,15 @@ impl Default for LocationSpeedMap {
         #[cfg(not(target_os = "none"))]
         let speeds = LocationSpeedMap(
             [
-                (Location::StraightStart, 0),
-                (Location::StraightBackwards, 0),
+                (Location::ForwardAStraight, 0),
+                (Location::ForwardALS, 0),
+                (Location::BackwardsA, 0),
+                (Location::ForwardB, 0),
+                (Location::BackwardsB, 0),
+                (Location::ForwardC, 0),
+                (Location::BackwardsC, 0),
                 (Location::LaneSwitchStraight, 0),
                 (Location::LaneSwitchCurved, 0),
-                (Location::StraightEndTrack, 0),
-                (Location::LaneSwitchEndTrack, 0),
                 (Location::StopAndWait, 0),
                 (Location::BrakeHere, 0),
             ]
@@ -237,94 +259,11 @@ impl Default for LocationSpeedMap {
 }
 
 impl IntoIterator for LocationSequence {
-    type IntoIter = core::array::IntoIter<Location, 21>;
+    type IntoIter = core::array::IntoIter<Location, 16>;
     type Item = Location;
 
     fn into_iter(self) -> Self::IntoIter { self.0.into_iter() }
 }
-
-// impl From<Route> for u64 {
-//     fn from(val: Route) -> Self {
-//         let mut bit_seq: u32 = 0;
-//
-//         // Encode the positions as a 24-bit integer
-//         for (i, location) in val.positions.iter().enumerate() {
-//             let location_bits = *location as u32;
-//             bit_seq |= location_bits << (3 * (20 - i));
-//         }
-//
-//         // Start with the bit sequence and shift it into the first three bytes
-//         let mut result: u64 = (bit_seq as u64) << 48;
-//
-//         // Insert speed data into the remaining bytes
-//         result |= (val
-//             .speeds
-//             .get(&Location::StraightStart)
-//             .copied()
-//             .unwrap_or(0) as u64)
-//             << 40;
-//         result |= (val
-//             .speeds
-//             .get(&Location::StraightBackwards)
-//             .copied()
-//             .unwrap_or(0) as u64)
-//             << 32;
-//         result |= (val
-//             .speeds
-//             .get(&Location::LaneSwitchStraight)
-//             .copied()
-//             .unwrap_or(0) as u64)
-//             << 24;
-//         result |= (val
-//             .speeds
-//             .get(&Location::LaneSwitchCurved)
-//             .copied()
-//             .unwrap_or(0) as u64)
-//             << 16;
-//         result |= (val
-//             .speeds
-//             .get(&Location::StraightEndTrack)
-//             .copied()
-//             .unwrap_or(0) as u64)
-//             << 8;
-//         result |= val
-//             .speeds
-//             .get(&Location::LaneSwitchEndTrack)
-//             .copied()
-//             .unwrap_or(0) as u64;
-//
-//         result
-//     }
-// }
-
-// impl From<(u64,u64)> for Route {
-//     fn from(bytes: (u64,u64)) -> Self {
-//         #[cfg(target_os = "none")]
-//         let mut speeds = LocationSpeedMap::new();
-//         let loc = bytes.0;
-//         let speed = bytes.1;
-//         #[cfg(not(target_os = "none"))]
-//         let mut speeds = std::collections::BTreeMap::new();
-//
-//         let bytes: [u8; 8] = speed.to_be_bytes();
-//
-//         let _ = (
-//             speeds.insert(Location::StraightStart, bytes[2]),
-//             speeds.insert(Location::StraightBackwards, bytes[3]),
-//             speeds.insert(Location::LaneSwitchStraight, bytes[4]),
-//             speeds.insert(Location::LaneSwitchCurved, bytes[5]),
-//             speeds.insert(Location::StraightEndTrack, bytes[6]),
-//             speeds.insert(Location::LaneSwitchEndTrack, bytes[7]),
-//             speeds.insert(Location::StopHere, 0),
-//         );
-//
-//         Route {
-//             positions: parse_locations(loc),
-//             current_position: 0,
-//             speeds,
-//         }
-//     }
-// }
 
 #[cfg(all(test, not(target_os = "none")))]
 mod tests {
