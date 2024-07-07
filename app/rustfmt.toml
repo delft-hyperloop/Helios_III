@@ -17,3 +17,6 @@ use_try_shorthand = true
 reorder_impl_items = true
 newline_style = "Unix"
 match_block_trailing_comma = true
+
+format_macro_bodies = false
+format_strings = false

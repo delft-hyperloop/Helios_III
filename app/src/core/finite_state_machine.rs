@@ -17,10 +17,12 @@ use crate::Info;
 #[macro_export]
 macro_rules! transit {
     ($fsm:expr, $ns:expr) => {
-        info!("Exiting state: {:?}", $fsm.state);
-        info!("Entering state: {:?}", $ns);
-        $fsm.state = $ns;
-        $fsm.entry().await;
+        {
+            info!("Exiting state: {:?}", $fsm.state);
+            info!("Entering state: {:?}", $ns);
+            $fsm.state = $ns;
+            $fsm.entry().await;
+        }
     };
 }
 
