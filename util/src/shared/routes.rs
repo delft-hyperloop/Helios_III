@@ -68,19 +68,13 @@ impl defmt::Format for Route {
 }
 
 impl Route {
-    pub fn speeds_from(&mut self, val: u64) {
-        self.speeds = LocationSpeedMap::from(val);
-    }
+    pub fn speeds_from(&mut self, val: u64) { self.speeds = LocationSpeedMap::from(val); }
 
-    pub fn positions_from(&mut self, val: u64) {
-        self.positions = LocationSequence::from(val);
-    }
+    pub fn positions_from(&mut self, val: u64) { self.positions = LocationSequence::from(val); }
 }
 
 impl From<Route> for (u64, u64) {
-    fn from(_r: Route) -> Self {
-        todo!()
-    }
+    fn from(_r: Route) -> Self { todo!() }
 }
 
 impl From<LocationSequence> for u64 {
@@ -98,9 +92,7 @@ impl From<LocationSequence> for u64 {
 }
 
 impl From<u64> for LocationSequence {
-    fn from(val: u64) -> Self {
-        LocationSequence(parse_locations(val))
-    }
+    fn from(val: u64) -> Self { LocationSequence(parse_locations(val)) }
 }
 
 impl From<u64> for LocationSpeedMap {
@@ -129,25 +121,11 @@ impl From<LocationSpeedMap> for u64 {
 
         // Insert speed data into the remaining bytes
         result |= (val.0.get(&Location::StraightStart).copied().unwrap_or(0) as u64) << 40;
-        result |= (val
-            .0
-            .get(&Location::StraightBackwards)
-            .copied()
-            .unwrap_or(0) as u64)
-            << 32;
-        result |= (val
-            .0
-            .get(&Location::LaneSwitchStraight)
-            .copied()
-            .unwrap_or(0) as u64)
-            << 24;
+        result |= (val.0.get(&Location::StraightBackwards).copied().unwrap_or(0) as u64) << 32;
+        result |= (val.0.get(&Location::LaneSwitchStraight).copied().unwrap_or(0) as u64) << 24;
         result |= (val.0.get(&Location::LaneSwitchCurved).copied().unwrap_or(0) as u64) << 16;
         result |= (val.0.get(&Location::StraightEndTrack).copied().unwrap_or(0) as u64) << 8;
-        result |= val
-            .0
-            .get(&Location::LaneSwitchEndTrack)
-            .copied()
-            .unwrap_or(0) as u64;
+        result |= val.0.get(&Location::LaneSwitchEndTrack).copied().unwrap_or(0) as u64;
 
         result
     }
@@ -204,9 +182,7 @@ impl RouteUse for Route {
         }
     }
 
-    fn current_speed(&self) -> u8 {
-        self.speed_at(self.current_position())
-    }
+    fn current_speed(&self) -> u8 { self.speed_at(self.current_position()) }
 
     fn peek_next_position(&mut self) -> Location {
         if self.current_position > 20 {
@@ -218,9 +194,7 @@ impl RouteUse for Route {
 }
 
 impl Default for LocationSequence {
-    fn default() -> Self {
-        LocationSequence([Location::BrakeHere; 21])
-    }
+    fn default() -> Self { LocationSequence([Location::BrakeHere; 21]) }
 }
 
 impl Default for LocationSpeedMap {
@@ -263,11 +237,10 @@ impl Default for LocationSpeedMap {
 }
 
 impl IntoIterator for LocationSequence {
-    type Item = Location;
     type IntoIter = core::array::IntoIter<Location, 21>;
-    fn into_iter(self) -> Self::IntoIter {
-        self.0.into_iter()
-    }
+    type Item = Location;
+
+    fn into_iter(self) -> Self::IntoIter { self.0.into_iter() }
 }
 
 // impl From<Route> for u64 {

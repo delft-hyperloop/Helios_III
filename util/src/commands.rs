@@ -40,14 +40,10 @@ pub fn generate_commands(path: &str, drv: bool) -> String {
     let mut to_idx = String::new();
     for (i, command) in config.Command.iter().enumerate() {
         enum_definitions.push_str(&format!("    {}(u64),\n", command.name));
-        match_to_id.push_str(&format!(
-            "            Command::{}(_) => {},\n",
-            command.name, command.id
-        ));
-        match_from_id.push_str(&format!(
-            "            {} => Command::{}(val),\n",
-            command.id, command.name
-        ));
+        match_to_id
+            .push_str(&format!("            Command::{}(_) => {},\n", command.name, command.id));
+        match_from_id
+            .push_str(&format!("            {} => Command::{}(val),\n", command.id, command.name));
         to_bytes.push_str(&format!(
             "            Command::{}(val) => {{ buf[3..11].copy_from_slice(&val.to_be_bytes()); }}\n",
             command.name
@@ -58,10 +54,7 @@ pub fn generate_commands(path: &str, drv: bool) -> String {
             "            \"{}\" => Command::{}(p),\n",
             &command.name, &command.name
         ));
-        to_idx.push_str(&format!(
-            "            Command::{}(_) => {i},\n",
-            &command.name
-        ));
+        to_idx.push_str(&format!("            Command::{}(_) => {i},\n", &command.name));
     }
 
     format!(
