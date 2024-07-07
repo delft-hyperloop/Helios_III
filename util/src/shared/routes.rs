@@ -31,6 +31,30 @@ pub trait RouteUse {
     fn peek_next_position(&mut self) -> Location;
 }
 
+/// Locations that the pod can be in
+/// ```ignore
+/// ------------  |            /   ---------
+///  ForwardB  ↑  |          /     ↗ ForwardC
+///            .  |        /    ↙ BackwardsC
+///  BackwardB ↓  |      /   --- ----------
+/// ------------  |     |   --------------
+///            .  |    /   .
+///            .  |   |   .
+///            .  |   |   .
+/// LaneSwitch    |  /      LaneSwitch
+/// Straight      | |       Curved
+///            .  | |   .
+///            .  | |   .
+/// ------------  |/   -------------------
+/// ------------  |
+///            .  |
+///  ForwardA  ↑  |
+///            .  |
+///  BackwardA ↓  |
+///            .  |
+/// ------------  |
+/// ```
+/// The bits correspond to the encoding used for converting a LcoationSequence to a u64
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Copy, Ord)]
 #[cfg_attr(target_os = "none", derive(defmt::Format))]
 pub enum Location {
