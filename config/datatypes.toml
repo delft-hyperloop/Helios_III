@@ -799,4 +799,7 @@ id = 0x162
 name = "ReceivedCan"
 id = 0x163
 
+[[Datatype]]
+name = "SendingCANEvent"
+id = 0x164
 
