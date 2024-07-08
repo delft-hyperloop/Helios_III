@@ -42,6 +42,7 @@ struct GS {
     warning_channel: String,
     info_channel: String,
     error_channel: String,
+    shortcut_channel: String,
     levi_exec_path: PathBuf,
 }
 
@@ -103,4 +104,5 @@ fn configure_channels(config: &Config) -> String {
         + &*format!("pub const WARNING_CHANNEL: &str = \"{}\";\n", config.gs.warning_channel)
         + &*format!("pub const INFO_CHANNEL: &str = \"{}\";\n", config.gs.info_channel)
         + &*format!("pub const ERROR_CHANNEL: &str = \"{}\";\n", config.gs.error_channel)
+        + &*format!("pub const SHORTCUT_CHANNEL: &str = \"{}\";\n", config.gs.shortcut_channel)
 }

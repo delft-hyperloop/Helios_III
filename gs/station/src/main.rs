@@ -3,7 +3,7 @@
 
 use crate::backend::Backend;
 #[cfg(feature = "backend")]
-use crate::frontend::main::tauri_main;
+use crate::frontend::app::tauri_main;
 #[cfg(feature = "tui")]
 use crate::tui::tui_main;
 
