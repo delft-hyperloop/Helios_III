@@ -37,7 +37,7 @@
         <TauriCommand cmd="start_levi" />
         <TauriCommand cmd="quit_server" successCallback={() => serverStatus.set(false)} />
         <TauriCommand cmd="quit_levi" />
-        <TauriCommand cmd="procedures" />
+        <TauriCommand cmd="procedures" textOverride="Refresh Procedures" />
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
     <p><kbd class="kbd">0</kbd> - <kbd class="kbd">7</kbd> to browse between the tabs of this panel</p>

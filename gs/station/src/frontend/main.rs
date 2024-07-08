@@ -32,7 +32,8 @@ pub fn tauri_main(backend: Backend) {
             start_server,
             start_levi,
             quit_server,
-            quit_levi
+            quit_levi,
+            procedures
         ])
         .setup(move |app| {
             let app_handle = app.handle();

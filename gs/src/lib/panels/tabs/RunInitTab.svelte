@@ -1,15 +1,12 @@
 <script lang="ts">
-    import {
-        Table,
-        TheoreticalRun,
-        Status,
-        Command,
-        Tile,
-        TileGrid,
-        TauriCommand,
-        type IntervalFunction,
-        SpeedsInput, GrandDataDistributor
-    } from "$lib";
+  import {
+    Table,
+    Status,
+    Command,
+    Tile,
+    TileGrid,
+    SpeedsInput, GrandDataDistributor, Chart
+  } from "$lib";
     import {getModalStore, type ModalComponent} from "@skeletonlabs/skeleton";
 
     const storeManager = GrandDataDistributor.getInstance().stores;
@@ -21,8 +18,7 @@
     const gyroY = storeManager.getStore("GyroscopeY")
     const gyroZ = storeManager.getStore("GyroscopeZ")
 
-    let calculateTheoretical:IntervalFunction;
-    let clearRuns: () => void;
+    const state = storeManager.getStore("FSMState");
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -51,20 +47,13 @@
     <TileGrid columns="1fr 1fr 1.5fr" rows="auto 1fr">
         <Tile containerClass="row-span-2" insideClass="flex flex-col gap-2" heading="Run Initialisation">
             <div class="grid grid-cols-2 gap-2">
-                <TauriCommand cmd="start_server" className="btn rounded-md bg-surface-700  col-span-2" />
                 <Command cmd="StartHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
-                <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal}>
-                    Run Config
-                </button>
-                <button class="btn rounded-md col-span-2 bg-surface-700 " type="button" on:click={calculateTheoretical}>
-                    Calculate theoretical run
-                </button>
-                <button class="btn rounded-md col-span-2 bg-surface-700 " type="button" on:click={clearRuns} >
-                    Clear runs
-                </button>
                 <Command cmd="SystemReset" className="btn flex-grow rounded-md bg-surface-700" />
                 <Command cmd="ArmBrakes" className="btn flex-grow rounded-md bg-surface-700" />
+                <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal} disabled={$state !== 2}>
+                    Configure Run
+                </button>
             </div>
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
@@ -85,7 +74,7 @@
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
         </Tile>
         <Tile containerClass="col-span-2">
-            <TheoreticalRun xDataCount={100} bind:clearRuns={clearRuns} bind:calculateTheoretical={calculateTheoretical}/>
+            <Chart height={250} background="bg-surface-900" title="Velocity" refreshRate={100} />
         </Tile>
     </TileGrid>
 </div>

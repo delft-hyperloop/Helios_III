@@ -39,24 +39,24 @@
 ## Andreas judging the UI 
 
 ### Home tab
-- [ ] rename the procedures button to "refresh procedures" and make a notification pop up when it finishes successfully
-- [ ] PLEASE increase the hitbox for dragging the logs panel up and down
+- [x] rename the procedures button to "refresh procedures" and make a notification pop up when it finishes successfully
+- [x] PLEASE increase the hitbox for dragging the logs panel up and down
 - [ ] change the description under the title
 - [ ] none of the keyboard shortcuts work
 - [ ] add a note that `Quit Server` doesn't kill an active connection
 - [ ] add a button and a text field to `Save logs to file` (backend already implemented)
 
 ### Run tab
-- [ ] remove start server button
-- [ ] rename `Run Config` button to `Configure Run`
-- [ ] if state != 2 (runconfig) gray out the configure run button
-- [ ] what on earth is a theoretical run?
-- [ ] statuses are cool but they dont work, must fix (this includes backend work)
-- [ ] you can't scroll this panel enough to show all content when the logs panel is extended (visible) pls fix 
+- [x] remove start server button
+- [x] rename `Run Config` button to `Configure Run`
+- [x] if state != 2 (runconfig) gray out the configure run button
+- [x] what on earth is a theoretical run?
+- [ ] statuses are cool, but they don't work, must fix (this includes backend work)
+- [x] you can't scroll this panel enough to show all content when the logs panel is extended (visible) pls fix 
 - [ ] discuss with andreas the functionality of run config (it didn't work when we tried)
 
 ### Location tab
-- [ ] rename tab to `Location` instead of `Location & IMU`
+- [x] rename tab to `Location` instead of `Location & IMU`
 - [ ] fix the graph (kiko is working on this)
 - [ ] fix the lighting up of the SVG with the new graph
 - [ ] we need buttons to actually control levitation. ask sjoerd what buttons are necessary for manual use and what should instead be automated by the FSM

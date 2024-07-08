@@ -88,11 +88,10 @@
 </script>
 
 <Keydown on:combo={({detail}) => {
-    if (detail === "Esc") { // todo: this doesn't work
+    if (detail === "Esc")
         invoke('send_command', {cmdName: "EmergencyBrake", val: 0}).then(() => {
             console.log(`Triggered EmergencyBrake!!`);
         })
-    }
     }}/>
 
 <div bind:clientWidth={width} class="h-full bg-surface-700 text-surface-50">
