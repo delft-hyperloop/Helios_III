@@ -175,13 +175,13 @@ pub fn procedures() -> Vec<[String; 6]> {
         Backend::load_procedures(PathBuf::from_str("../../../../config/procedures/").unwrap());
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
         if let Ok(x) = res {
-            backend_mutex.get_mut().unwrap().log_msg(Message::Info("Loading procedures".into()));
+            backend_mutex.get_mut().unwrap().log_msg(&Message::Info("Loading procedures".into()));
             x
         } else {
             backend_mutex
                 .get_mut()
                 .unwrap()
-                .log_msg(Message::Error("Failed to load procedures".into()));
+                .log_msg(&Message::Error("Failed to load procedures".into()));
             Vec::new()
         }
     } else {

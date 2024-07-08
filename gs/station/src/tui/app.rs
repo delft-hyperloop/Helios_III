@@ -92,11 +92,9 @@ impl App {
 
     fn receive_data(&mut self) {
         while let Ok(msg) = self.backend.message_receiver.try_recv() {
+            self.backend.log_msg(&msg);
             match msg {
                 Message::Data(datapoint) => {
-                    if self.scroll > 50 {
-                        self.scroll += 1;
-                    }
                     match datapoint.datatype {
                         Datatype::Info => match Info::from_id(datapoint.value as u16) {
                             Info::Safe => {
@@ -111,7 +109,7 @@ impl App {
                             self.cur_state = state_to_string(datapoint.value).to_string();
                             self.logs.push((
                                 Message::Warning(format!(
-                                    "State changed to: {:?}",
+                                    "State is now: {:?}",
                                     datapoint.value.to_be_bytes()
                                 )),
                                 timestamp(),
@@ -145,17 +143,11 @@ impl App {
                         },
                         _ => {
                             self.logs.push((Message::Data(datapoint), timestamp()));
-                            if self.logs.len() > 42 {
-                                self.scroll += 1;
-                            }
                         },
                     }
                 },
                 msg => {
                     self.logs.push((msg, timestamp()));
-                    if self.logs.len() > 42 {
-                        self.scroll += 1;
-                    }
                 },
             }
         }

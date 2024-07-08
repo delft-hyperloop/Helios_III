@@ -35,6 +35,9 @@ impl Overrides {
 
     /// Enable or disable braking from a falling edge of the braking communication signal
     pub fn prevent_braking_communication(&self) -> bool { self.values & 0b10 != 0 }
+
+    /// Allow HV ON without brakes armed 
+    pub fn hv_without_brakes_armed(&self) -> bool { self.values & 0b100 != 0 }
 }
 
 include!("../../../util/src/shared/routes.rs");

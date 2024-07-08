@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::PathBuf;use std::str::FromStr;
 
 use anyhow::anyhow;
 use regex::Regex;
@@ -25,6 +25,7 @@ pub struct Backend {
     pub command_transmitter: tokio::sync::broadcast::Sender<Command>,
     pub command_receiver: tokio::sync::broadcast::Receiver<Command>,
     pub log: Log,
+    pub save_path: PathBuf,
 }
 
 #[derive(serde::Serialize)]
@@ -55,6 +56,7 @@ impl Backend {
             command_transmitter,
             command_receiver,
             log: Log { messages: vec![], commands: vec![] },
+            save_path: PathBuf::from_str()
         }
     }
 
@@ -138,13 +140,13 @@ impl Backend {
         }
     }
 
-    pub fn save(&self, path: PathBuf) -> anyhow::Result<()> {
+    pub fn save(&self) -> anyhow::Result<()> {
         let json = serde_json::to_string(&self.log)?;
-        std::fs::write(path, json)?;
+        std::fs::write(self.save_path, json)?;
         Ok(())
     }
 
-    pub fn log_msg(&mut self, msg: Message) { self.log.messages.push(msg); }
+    pub fn log_msg(&mut self, msg: &Message) { self.log.messages.push(msg.clone()); }
 
     pub fn log_cmd(&mut self, cmd: &Command) { self.log.commands.push(*cmd); }
 
