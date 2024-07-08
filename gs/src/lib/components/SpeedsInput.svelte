@@ -26,12 +26,14 @@
     const modalStore = getModalStore();
 
     const speedForm = {
-        straightStart: 0,
-        laneSwitchStraight: 0,
-        straightBackwards: 0,
-        straightEndTrack: 0,
-        laneSwitchCurved: 0,
-        laneSwitchEndTrack: 0,
+        ForwardA: 0,
+        BackwardsA: 0,
+        ForwardB: 0,
+        BackwardsB: 0,
+        ForwardC: 0,
+        BackwardsC: 0,
+        LaneSwitchStraight: 0,
+        LaneSwitchCurved: 0,
     };
 
     type SpeedFormKey = keyof typeof speedForm;
@@ -56,7 +58,7 @@
 
             for (let i = 0; i < inputs.length; i++) {
                 const input = metersPerMinuteToByte(speedForm[inputs[i]]);
-                speeds_u64 |= BigInt(input) << BigInt((5 - i) * 8);
+                speeds_u64 |= BigInt(input) << BigInt((7 - i) * 8);
             }
 
             invoke('send_command', {cmdName: "SetSpeeds", val: Number(speeds_u64)}).then(() => {
@@ -67,8 +69,8 @@
             let route_u64 = BigInt(0);
 
             routeSteps.forEach(step => {
-            const stepBits = BigInt(util.stepTo3Bit(step));
-            route_u64 = (route_u64 << BigInt(3)) | stepBits;
+                const stepBits = BigInt(util.stepTo4Bit(step));
+                route_u64 = (route_u64 << BigInt(4)) | stepBits;
             });
 
             invoke('send_command', {cmdName: "SetRoute", val: Number(route_u64)}).then(() => {

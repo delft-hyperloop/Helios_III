@@ -56,7 +56,6 @@ pub async fn can_receiving_handler(
         // #[cfg(debug_assertions)]
         match bus.read().await {
             Ok(envelope) => {
-                info!(" got here");
                 error_counter = 0;
                 let (frame, timestamp) = envelope.parts();
                 // frame.header().format();
@@ -108,7 +107,7 @@ pub async fn can_receiving_handler(
                             }
                         }
                     } else {
-                        info!("#{}", bytes_to_u64(frame.data()));
+                        debug!("#{}", bytes_to_u64(frame.data()));
                         data_sender
                             .send(Datapoint::new(
                                 Datatype::from_id(id),

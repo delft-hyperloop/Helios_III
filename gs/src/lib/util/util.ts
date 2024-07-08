@@ -26,15 +26,18 @@ function log(message: string, channel: string) {
     emit(channel, message).then(r => console.log(r));
 }
 
-function stepTo3Bit(step: RouteStep): number {
+function stepTo4Bit(step: RouteStep): number {
     const mapping: Record<RouteStep, number> = {
-        stop: 0,
-        andreas: 1,
-        straight: 2,
-        left: 3,
-        right: 4
+        ForwardA: 0b0001,
+        BackwardsA: 0b0011,
+        ForwardB: 0b0100,
+        BackwardsB: 0b0101,
+        ForwardC: 0b0111,
+        BackwardsC: 0b1000,
+        LaneSwitchStraight: 0b1001,
+        LaneSwitchCurved: 0b1010,
     };
     return mapping[step];
 }
 
-export default {range, snakeToCamel, normalize, colourCode, log, stepTo3Bit};
+export default {range, snakeToCamel, normalize, colourCode, log, stepTo4Bit};

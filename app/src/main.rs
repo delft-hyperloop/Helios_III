@@ -147,7 +147,7 @@ async fn main(spawner: Spawner) -> ! {
         InternalMessaging {
             event_sender,
             data_sender,
-            data_receiver: parsed_data_queue.receiver(),
+            data_receiver: data_queue.receiver(),
             can_one_sender: can_one_queue.sender(),
             can_one_receiver: can_one_queue.receiver(),
             can_two_sender: can_two_queue.sender(),
@@ -165,14 +165,14 @@ async fn main(spawner: Spawner) -> ! {
     // Begin Spawn Tasks
     try_spawn!(event_sender, spawner.spawn(your_mom(data_sender, event_sender)));
 
-    try_spawn!(
-        event_sender,
-        spawner.spawn(data_middle_step(
-            data_queue.receiver(),
-            parsed_data_queue.sender(),
-            event_sender
-        ))
-    );
+    // try_spawn!(
+    //     event_sender,
+    //     spawner.spawn(data_middle_step(
+    //         data_queue.receiver(),
+    //         parsed_data_queue.sender(),
+    //         event_sender
+    //     ))
+    // );
     // End Spawn Tasks
 
     // # Main Loop
