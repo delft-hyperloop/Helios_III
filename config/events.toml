@@ -268,3 +268,8 @@ name = "DisablePropulsionCommand"
 id = 0x3e3
 priority = 0
 
+# [[Event]]
+# name = "Crying"
+# id = 1281
+# priority = 8 
+#

@@ -25,13 +25,13 @@ impl Fsm {
                         #[cfg(debug_assertions)]
                         info!("Entering a lane switch!");
                         // self.peripherals.propulsion_controller.turn_off();
-                        self.send_levi_cmd(crate::Command::ls1(0)).await;
+                        self.send_levi_cmd(Command::ls1(0)).await;
                         transit!(self, State::MovingLSST);
                     },
                     Location::LaneSwitchCurved => {
                         #[cfg(debug_assertions)]
                         info!("Entering a lane switch!");
-                        self.send_levi_cmd(crate::Command::ls2(0)).await;
+                        self.send_levi_cmd(Command::ls2(0)).await;
                         transit!(self, State::MovingLSCV);
                     },
                     Location::StopAndWait => {

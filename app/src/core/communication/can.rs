@@ -119,8 +119,6 @@ pub async fn can_receiving_handler(
                             .await;
                     }
                 } else if EVENT_IDS.contains(&id) {
-                    #[cfg(debug_assertions)]
-                    data_sender.send(Datapoint::new(Datatype::SendingCANEvent, id as u64, 0)).await;
                     event_sender.send(Event::from_id(id, Some(69420))).await; // since we are never supposed to change the speed through the can bus (and run config is the only event with an actual value), i want a magic number that i can filter out from the run config handler just to make sure the pod doesn't do something stupid
                 } else {
                     #[cfg(debug_assertions)]
@@ -142,12 +140,12 @@ pub async fn can_receiving_handler(
                     );
                 }
                 Timer::after_millis(500).await;
-                error_counter += 1;
+                error_counter = error_counter.wrapping_add(1);
             },
         }
         // # VERY IMPORTANT
-        // without this, our main pcb is magically converted to an adhd CAN pcb
-        // with no mind for anything else. Tread carefully around it
+        // without this, our main pcb is magically converted to an adhd CAN
+        // pcb with no mind for anything else. Tread carefully around it
         Timer::after_micros(500).await;
     }
 }

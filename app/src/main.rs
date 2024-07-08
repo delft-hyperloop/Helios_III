@@ -80,7 +80,7 @@ type CanSender =
 type CanReceiver =
     embassy_sync::channel::Receiver<'static, NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>;
 
-/// Static Allocations - just the MPMC queues for now (?)
+/// Static Allocations - MPMC queues
 static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }>> =
     StaticCell::new();
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
@@ -147,7 +147,7 @@ async fn main(spawner: Spawner) -> ! {
         InternalMessaging {
             event_sender,
             data_sender,
-            data_receiver: data_queue.receiver(),
+            data_receiver: parsed_data_queue.receiver(),
             can_one_sender: can_one_queue.sender(),
             can_one_receiver: can_one_queue.receiver(),
             can_two_sender: can_two_queue.sender(),
@@ -165,14 +165,14 @@ async fn main(spawner: Spawner) -> ! {
     // Begin Spawn Tasks
     try_spawn!(event_sender, spawner.spawn(your_mom(data_sender, event_sender)));
 
-    // try_spawn!(
-    //     event_sender,
-    //     spawner.spawn(data_middle_step(
-    //         data_queue.receiver(),
-    //         parsed_data_queue.sender(),
-    //         event_sender
-    //     ))
-    // );
+    try_spawn!(
+        event_sender,
+        spawner.spawn(data_middle_step(
+            data_queue.receiver(),
+            parsed_data_queue.sender(),
+            event_sender
+        ))
+    );
     // End Spawn Tasks
 
     // # Main Loop

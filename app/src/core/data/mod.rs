@@ -10,6 +10,10 @@ use crate::DataSender;
 use crate::Event;
 use crate::EventSender;
 
+/// ## Individual handling of datapoints
+/// A lot of the subsystems on the pod use their own "encoding" for data.
+/// In order to make a reasonable matching between semantic meaning of
+/// all data and the datatypes in config/datatypes, we need to extract it.
 #[embassy_executor::task]
 pub async fn data_middle_step(
     incoming: DataReceiver,

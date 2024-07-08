@@ -57,7 +57,7 @@ impl Backend {
             command_transmitter,
             command_receiver,
             log: Log { messages: vec![], commands: vec![] },
-            save_path: PathBuf::from_str("C:/Users/kikoa/RustroverProjects/Helios_III/log.txt").unwrap(),
+            save_path: PathBuf::from_str("/Users/andtsa/Desktop/log.txt").unwrap(),
         }
     }
 
@@ -142,7 +142,7 @@ impl Backend {
     }
 
     pub fn save(&self) -> anyhow::Result<Message> {
-        let json = serde_json::to_string(&self.log)?;
+        let json = serde_json::to_string_pretty(&self.log)?;
         match std::fs::write(self.save_path.clone(), json) {
             Ok(_) => Ok(Message::Info(format!("Saved to {:?}", &self.save_path))),
             Err(e) => {

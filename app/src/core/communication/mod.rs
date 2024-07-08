@@ -3,22 +3,7 @@ use crate::Datatype;
 pub mod can;
 pub mod tcp;
 
-// IF YOU UPDATE THIS, ALSO LOOK AT config/config.toml
-// pub enum Datatype {
-//     PropulsionTemperature,
-//     LevitationTemperature,
-//     BatteryVoltage,
-//     BatteryCurrent,
-//     BatteryTemperature,
-//     BrakeTemperature,
-//     PropulsionSpeed,
-//     BrakePressure,
-//     GroundVoltage,
-//     FSMState,
-//     FSMEvent,
-// }
-
-// #[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Datapoint {
     pub datatype: Datatype,
     pub value: u64,
@@ -30,6 +15,14 @@ impl Datapoint {
         Self { datatype, value, timestamp }
     }
 
+    /// ### Encode a datapoint as bytes
+    /// | index | meaning |
+    /// | --- | --- |
+    /// | 0 | 0xFF : flag byte |
+    /// | 1, 2 | 11 bit datatype id |
+    /// | 3..=10 | 8 byte value |
+    /// | 11..=18 | 8 byte timestamp |
+    /// | 19 | 0xFF : flag byte |
     pub fn as_bytes(&self) -> [u8; 20] {
         let mut bytes = [0; 20];
         bytes[0] = 0xFF;
