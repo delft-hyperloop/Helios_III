@@ -1,4 +1,5 @@
-use std::path::PathBuf;use std::str::FromStr;
+use std::path::PathBuf;
+use std::str::FromStr;
 
 use anyhow::anyhow;
 use regex::Regex;
@@ -56,7 +57,7 @@ impl Backend {
             command_transmitter,
             command_receiver,
             log: Log { messages: vec![], commands: vec![] },
-            save_path: PathBuf::from_str()
+            save_path: PathBuf::from_str("/Users/andtsa/Desktop/log.txt").unwrap(),
         }
     }
 
@@ -140,10 +141,14 @@ impl Backend {
         }
     }
 
-    pub fn save(&self) -> anyhow::Result<()> {
+    pub fn save(&self) -> anyhow::Result<Message> {
         let json = serde_json::to_string(&self.log)?;
-        std::fs::write(self.save_path, json)?;
-        Ok(())
+        match std::fs::write(self.save_path.clone(), json) {
+            Ok(_) => Ok(Message::Info(format!("Saved to {:?}", &self.save_path))),
+            Err(e) => {
+                Ok(Message::Error(format!("Failed to save at {:?}: {:?}", &self.save_path, e)))
+            },
+        }
     }
 
     pub fn log_msg(&mut self, msg: &Message) { self.log.messages.push(msg.clone()); }

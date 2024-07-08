@@ -94,57 +94,55 @@ impl App {
         while let Ok(msg) = self.backend.message_receiver.try_recv() {
             self.backend.log_msg(&msg);
             match msg {
-                Message::Data(datapoint) => {
-                    match datapoint.datatype {
-                        Datatype::Info => match Info::from_id(datapoint.value as u16) {
-                            Info::Safe => {
-                                self.safe = true;
-                            },
-                            Info::Unsafe => {
-                                self.safe = false;
-                            },
-                            _ => {},
+                Message::Data(datapoint) => match datapoint.datatype {
+                    Datatype::Info => match Info::from_id(datapoint.value as u16) {
+                        Info::Safe => {
+                            self.safe = true;
                         },
-                        Datatype::FSMState => {
-                            self.cur_state = state_to_string(datapoint.value).to_string();
-                            self.logs.push((
-                                Message::Warning(format!(
-                                    "State is now: {:?}",
-                                    datapoint.value.to_be_bytes()
-                                )),
-                                timestamp(),
-                            ));
+                        Info::Unsafe => {
+                            self.safe = false;
+                        },
+                        _ => {},
+                    },
+                    Datatype::FSMState => {
+                        self.cur_state = state_to_string(datapoint.value).to_string();
+                        self.logs.push((
+                            Message::Warning(format!(
+                                "State is now: {:?}",
+                                datapoint.value.to_be_bytes()
+                            )),
+                            timestamp(),
+                        ));
+                        self.logs.push((Message::Data(datapoint), timestamp()))
+                    },
+                    Datatype::FSMEvent => {
+                        if datapoint.value == Event::Heartbeat.to_id() as u64 {
+                            self.last_heartbeat = timestamp();
+                        } else if self
+                            .special_data
+                            .keys()
+                            .collect::<Vec<&Datatype>>()
+                            .contains(&&datapoint.datatype)
+                        {
+                            self.special_data.insert(datapoint.datatype, datapoint.value);
+                        } else {
                             self.logs.push((Message::Data(datapoint), timestamp()))
-                        },
-                        Datatype::FSMEvent => {
-                            if datapoint.value == Event::Heartbeat.to_id() as u64 {
-                                self.last_heartbeat = timestamp();
-                            } else if self
-                                .special_data
-                                .keys()
-                                .collect::<Vec<&Datatype>>()
-                                .contains(&&datapoint.datatype)
-                            {
-                                self.special_data.insert(datapoint.datatype, datapoint.value);
-                            } else {
-                                self.logs.push((Message::Data(datapoint), timestamp()))
-                            }
-                        },
-                        Datatype::PropulsionCurrent => {
-                            self.special_data
-                                .insert(Datatype::PropulsionCurrent, datapoint.value / 680);
-                        },
-                        Datatype::PropulsionVoltage => {
-                            self.special_data
-                                .insert(Datatype::PropulsionVoltage, datapoint.value / 340);
-                        },
-                        x if self.special_data.keys().collect::<Vec<&Datatype>>().contains(&&x) => {
-                            self.special_data.insert(x, datapoint.value);
-                        },
-                        _ => {
-                            self.logs.push((Message::Data(datapoint), timestamp()));
-                        },
-                    }
+                        }
+                    },
+                    Datatype::PropulsionCurrent => {
+                        self.special_data
+                            .insert(Datatype::PropulsionCurrent, datapoint.value / 680);
+                    },
+                    Datatype::PropulsionVoltage => {
+                        self.special_data
+                            .insert(Datatype::PropulsionVoltage, datapoint.value / 340);
+                    },
+                    x if self.special_data.keys().collect::<Vec<&Datatype>>().contains(&&x) => {
+                        self.special_data.insert(x, datapoint.value);
+                    },
+                    _ => {
+                        self.logs.push((Message::Data(datapoint), timestamp()));
+                    },
                 },
                 msg => {
                     self.logs.push((msg, timestamp()));

@@ -5,7 +5,9 @@ use crossterm::event::KeyCode;
 use crossterm::event::KeyEvent;
 use crossterm::event::KeyEventKind;
 use crossterm::event::{self};
+
 use crate::tui::app::App;
+use crate::tui::timestamp;
 use crate::Command;
 
 impl App {
@@ -104,8 +106,8 @@ impl App {
                 self.backend.send_command(Command::SetSpeeds(46542390612732));
             },
             KeyCode::Char('w') => {
-                self.backend.save().unwrap();
-            }
+                self.logs.push((self.backend.save().unwrap(), timestamp()));
+            },
             _ => {},
         }
     }
