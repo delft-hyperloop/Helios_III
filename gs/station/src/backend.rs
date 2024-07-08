@@ -57,7 +57,7 @@ impl Backend {
             command_transmitter,
             command_receiver,
             log: Log { messages: vec![], commands: vec![] },
-            save_path: PathBuf::from_str("/Users/andtsa/Desktop/log.txt").unwrap(),
+            save_path: PathBuf::from_str("C:/Users/kikoa/RustroverProjects/Helios_III/log.txt").unwrap(),
         }
     }
 
