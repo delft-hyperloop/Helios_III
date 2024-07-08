@@ -1,4 +1,4 @@
-import type {dataConvFun} from "$lib/types";
+import type {dataConvFun, Procedure} from "$lib/types";
 import {PlotBuffer} from "$lib/util/PlotBuffer";
 const MAX_VALUE = 4_294_967_295;
 
@@ -18,7 +18,6 @@ const addEntryToChart = (chart: PlotBuffer, data: bigint, index: number) => {
 
 const u64ToDouble = (u64: bigint): number => {
     const buffer = new ArrayBuffer(8);
-    const view = new DataView(buffer);
 
     const high = Number(BigInt(u64) / BigInt(2 ** 32));
     const low = Number(BigInt(u64) % BigInt(2 ** 32));
@@ -54,4 +53,15 @@ const metersPerMinuteToByte = (mpm: number): number => {
     return mappedValue;
 }
 
-export {tempParse, voltParse, addEntryToChart, u64ToDouble, sensorParse, pressureParse, metersPerMinuteToByte};
+const parseProcedure = (data: string[]):Procedure => {
+    return {
+        name: data[0],
+        title: data[1],
+        id: data[2],
+        people: data[3].trim().split('\n'),
+        equipment: data[4].trim().split('\n'),
+        content: data[5]
+    }
+}
+
+export {tempParse, voltParse, addEntryToChart, u64ToDouble, sensorParse, pressureParse, metersPerMinuteToByte, parseProcedure};

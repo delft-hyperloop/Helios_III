@@ -35,13 +35,13 @@
         detailTabSet.set(num - 1); // subtract 1 because your tabs are 0-indexed
     }
     }}/>
-<TabGroup regionPanel="h-full" padding="px-3 py-3" regionList="bg-surface-700" border="border-b border-surface-900">
+<TabGroup regionPanel="m-0 !mt-0" padding="px-3 py-3" regionList="bg-surface-700" border="border-b border-surface-900" >
     {#each tabs as tab}
         <Tab bind:group={$detailTabSet} value={tab.value} name={tab.name}><span>{tab.name}</span></Tab>
     {/each}
     <svelte:fragment slot="panel">
         <div style={style} class="snap-x scroll-px-4 snap-mandatory scroll-smooth overflow-x-auto">
-            <div class="h-full" style="margin-top: -16px;">
+            <div class="h-full">
                 {#if $detailTabSet === 0}
                     <HomeTab />
                 {:else if $detailTabSet === 1}
@@ -63,3 +63,9 @@
         </div>
     </svelte:fragment>
 </TabGroup>
+
+<style lang="scss">
+    .unMargin {
+      margin-top: -16px;
+    }
+</style>

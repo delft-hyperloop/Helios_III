@@ -1,6 +1,8 @@
 <script lang="ts">
     import {serverStatus, TauriCommand} from "$lib";
     import {getToastStore} from "@skeletonlabs/skeleton";
+    import {procedures} from "$lib/stores/data";
+    import {parseProcedure} from "$lib/util/parsers";
 
     const toastStore = getToastStore();
 
@@ -18,6 +20,10 @@
             message: `Server did not start successfully: ${error}`,
             background: "bg-error-400"
         });
+    };
+
+    const parseProcedures = (rawProcedures: string[][]) => {
+        procedures.set(rawProcedures.map(parseProcedure));
     };
 </script>
 
@@ -37,7 +43,7 @@
         <TauriCommand cmd="start_levi" />
         <TauriCommand cmd="quit_server" successCallback={() => serverStatus.set(false)} />
         <TauriCommand cmd="quit_levi" />
-        <TauriCommand cmd="procedures" textOverride="Refresh Procedures" />
+        <TauriCommand cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
     <p><kbd class="kbd">0</kbd> - <kbd class="kbd">7</kbd> to browse between the tabs of this panel</p>

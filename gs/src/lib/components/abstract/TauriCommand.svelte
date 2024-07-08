@@ -4,7 +4,7 @@
 
     export let className: string = '';
     export let cmd: 'start_server' | 'start_levi' | 'quit_levi' | 'quit_server' | 'procedures';
-    export let successCallback: () => void = () => {};
+    export let successCallback: (r:any) => void = () => {};
     export let errorCallback: (error:string) => void = () => {};
     export let textOverride: string = '';
 
@@ -12,7 +12,7 @@
         console.log(`Sending command: ${cmd}`);
         await invoke(cmd).then(r => {
             console.log(`Command ${cmd} sent with response: ` + r);
-            r ? successCallback() : errorCallback(r as string);
+            r ? successCallback(r) : errorCallback(r as string);
         }).catch((e) => {
             console.error(`Error sending command ${cmd}: ${e}`);
             errorCallback(`Error Sending Command: ${e}`);

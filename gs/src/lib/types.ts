@@ -97,6 +97,15 @@ export enum RouteStep {
     BRAKE_HERE = 'BrakeHere'
 }
 
+export type Procedure = {
+    name: string,
+    title: string,
+    id: string,
+    people: string[],
+    equipment: string[],
+    content: string
+}
+
 export type LogType = 'INFO' | 'WARNING' | 'ERROR' | 'STATUS';
 
 // OLD TYPES
