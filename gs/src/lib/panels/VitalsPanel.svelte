@@ -122,8 +122,8 @@
             </button>
             <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
             <div class="flex flex-col gap-4">
-                <Battery orientation="vertical" height={55} perc={Number($lvBattery)}/>
-                <Battery orientation="vertical" height={55} perc={Number($hvBattery)}/>
+                <Battery fill="#3b669c" orientation="vertical" height={55} perc={Number($lvBattery)}/>
+                <Battery fill="#723f9c" orientation="vertical" height={55} perc={Number($hvBattery)}/>
             </div>
         </div>
     {:else}
@@ -154,10 +154,10 @@
                         </div>
                         <div style="grid-template-columns: 1fr 2fr 2fr;" class="grid gap-y-2">
                             <span>LV: </span>
-                            <Battery orientation="horizontal" perc={Number($lvBattery)}/>
+                            <Battery fill="#3b669c" orientation="horizontal" perc={Number($lvBattery)}/>
                             <span>Total: <span class="font-mono font-medium">{$totalLVV} V</span></span>
                             <span>HV: </span>
-                            <Battery orientation="horizontal" perc={Number($hvBattery)}/>
+                            <Battery fill="#723f9c" orientation="horizontal" perc={Number($hvBattery)}/>
                             <span>Total: <span class="font-mono font-medium">{$totalHVV} V</span></span>
                         </div>
                     </div>

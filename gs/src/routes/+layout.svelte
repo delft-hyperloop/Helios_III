@@ -27,7 +27,7 @@
     hemsTempChart.addSeries(StrokePresets.blue("HEMS 4"))
     $chartStore.set("HEMS Temperatures", hemsTempChart);
 
-    let hemsCurrentChart = new PlotBuffer(500, 60000, [-11.3, 11.3], true, "a1");
+    let hemsCurrentChart = new PlotBuffer(500, 3*60000, [-11.3, 11.3], true, "a1");
     hemsCurrentChart.addSeries(StrokePresets.hyperloopGreenDashed("a2"))
     hemsCurrentChart.addSeries(StrokePresets.theoretical("b1"))
     hemsCurrentChart.addSeries(StrokePresets.theoreticalDashed("b2"))
@@ -37,7 +37,7 @@
     hemsCurrentChart.addSeries(StrokePresets.blueDashed("d2"))
     $chartStore.set("HEMS Current", hemsCurrentChart);
 
-    let emsCurrentChart = new PlotBuffer(500, 60000, [-11.3, 11.3], true);
+    let emsCurrentChart = new PlotBuffer(500, 3*60000, [-11.3, 11.3], true);
     emsCurrentChart.addSeries(StrokePresets.theoretical("cd"))
     $chartStore.set("EMS Current", emsCurrentChart);
 
@@ -310,6 +310,9 @@
 
     gdd.stores.registerStore<number>("LowPressureSensor", 0, pressureParse);
     gdd.stores.registerStore<number>("HighPressureSensor", 0,  pressureParse);
+    gdd.stores.registerStore<number>("BrakingCommDebug", 0,  data => (Number(data) * 3.3) / 65535);
+    gdd.stores.registerStore<number>("BrakingSignalDebug", 0)
+    gdd.stores.registerStore<number>("BrakingRearmDebug", 0)
 
     ///////////////////////////////////////////////////////////////
     /////////////////// GROUND FAULT DETECTION ////////////////////

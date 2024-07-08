@@ -62,20 +62,24 @@
 - [ ] we need buttons to actually control levitation. ask sjoerd what buttons are necessary for manual use and what should instead be automated by the FSM
 
 ### Batteries tab
-- [ ] colour-code the low voltage and high voltage batteries (i think blue for LV and purple/magenta for HV?)
-- [ ] the HV battery relay status is confusing, does green mean active or safe? since there's a procedure for turning on high voltage, make two disjoint buttons for `Enable HV Relays` and `Disable HV Relays`, make red text for HV ON and white HV OFF
-- [ ] the DC converter status text and colours are confusing, make the text white for `Off` and green for `Charging`
-- [ ] consider making the battery stats charts. discuss with kiko
+- [x] colour-code the low voltage and high voltage batteries (i think blue for LV and purple/magenta for HV?)
+- [x] the HV battery relay status is confusing, does green mean active or safe? since there's a procedure for 
+  turning on 
+- high voltage, make two disjoint buttons for `Enable HV Relays` and `Disable HV Relays`, make red text for HV ON and white HV OFF
+- [x] the DC converter status text and colours are confusing, make the text white for `Off` and green for `Charging`
+- [?] consider making the battery stats charts. discuss with kiko
 
 ### Levitation tab 
-- [ ] i dont think you need the last 30 minutes of data... ask sjoerd but maybe only display 3 minutes, since everything can be logged anyway
-- [ ] tables at the bottom are not visible at all when logs panel is open
+- [x] i dont think you need the last 30 minutes of data... ask sjoerd but maybe only display 3 minutes, since 
+  everything can be logged anyway
+- [x] tables at the bottom are not visible at all when logs panel is open
 
 ### Pneumatics
-- [ ] add fields for datatypes `BrakingCommDebug`, `BrakingSignalDebug`, `BrakingRearmDebug`
-- [ ] multiply `BrakingCommDebug` by `3.3` and divide by `65535`, unit is volts
-- [ ] if the colours on the graph can change pls make sure this works / is actually implemented everywhere (frontend + backend if necessary)
-- [ ] please please increase the hitbox of the log panel scrolling
+- [x] add fields for datatypes `BrakingCommDebug`, `BrakingSignalDebug`, `BrakingRearmDebug`
+- [x] multiply `BrakingCommDebug` by `3.3` and divide by `65535`, unit is volts
+- [x] if the colours on the graph can change pls make sure this works / is actually implemented everywhere (frontend 
++ backend if necessary)
+- [x] please please increase the hitbox of the log panel scrolling
 
 ### Procedures
 - [ ] top item in the left sidebar gets cut off, add some margin or padding

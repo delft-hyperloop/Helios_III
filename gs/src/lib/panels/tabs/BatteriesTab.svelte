@@ -104,21 +104,22 @@
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="auto 1fr auto">
         <Tile insideClass="flex h-full items-center gap-4">
             <div class="flex flex-col items-center">
-                <Battery orientation="horizontal" height={40} perc={Number($lvBattery)} />
+                <Battery fill="#3b669c" orientation="horizontal" height={40} perc={Number($lvBattery)} />
                 <p>Low voltage</p>
             </div>
             <div class="flex flex-col items-center">
-                <Battery orientation="horizontal" height={40} perc={Number($hvBattery)} />
+                <Battery fill="#723f9c" orientation="horizontal" height={40} perc={Number($hvBattery)} />
                 <p>High voltage</p>
             </div>
         </Tile>
         <Tile containerClass="col-span-2" insideClass="flex flex-col h-full gap-2 items-center">
             <div class="w-full flex justify-between items-center">
-                <Status label="HV Battery relay status" on="closed" off="open" bind:status={connectorStatus} />
+                <Status label="HV Battery relay status" onColor="text-error-400" offColor="text-surface-50"
+                        on="HV Relays ON" off="HV Relays Off" bind:status={connectorStatus} />
                 <ToggleCommand onCmd="OpenContactor" offCmd="CloseContactor" bind:status={connectorStatus} />
             </div>
             <div class="w-full flex justify-between items-center">
-                <Status label="DC Converter status" on="closed" off="open" bind:status={dcStatus} />
+                <Status label="DC Converter status" on="charging" off="off" offColor="text-surface-50" bind:status={dcStatus} />
                 <ToggleCommand onCmd="DcOn" offCmd="DcOff" bind:status={dcStatus} />
             </div>
         </Tile>
