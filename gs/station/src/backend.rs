@@ -142,12 +142,14 @@ impl Backend {
     }
 
     pub fn save(&self) -> anyhow::Result<Message> {
-        let json = serde_json::to_string_pretty(&self.log)?;
-        match std::fs::write(self.save_path.clone(), json) {
-            Ok(_) => Ok(Message::Info(format!("Saved to {:?}", &self.save_path))),
-            Err(e) => {
-                Ok(Message::Error(format!("Failed to save at {:?}: {:?}", &self.save_path, e)))
-            },
+        Self::save_to_path(&self.log, self.save_path.clone())
+    }
+
+    pub fn save_to_path(log: &Log, path: PathBuf) -> anyhow::Result<Message> {
+        let json = serde_json::to_string_pretty(log)?;
+        match std::fs::write(path.clone(), json) {
+            Ok(_) => Ok(Message::Info(format!("Saved to {:?}", &path))),
+            Err(e) => Ok(Message::Error(format!("Failed to save at {:?}: {:?}", &path, e))),
         }
     }
 

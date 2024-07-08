@@ -43,28 +43,34 @@ pub fn tauri_main(backend: Backend) {
             tokio::spawn(async move {
                 loop {
                     match message_rcv.try_recv() {
-                        Ok(msg) => match msg {
-                            Message::Data(dp) => {
-                                println!("Received datapoint: {:?}", dp);
-                                app_handle
-                                    .state::<BackendState>()
-                                    .data_buffer
-                                    .lock()
-                                    .unwrap()
-                                    .push(Message::Data(dp));
-                            },
-                            Message::Status(s) => {
-                                app_handle.emit_all(STATUS_CHANNEL, &*format!("{:?}", s)).unwrap()
-                            },
-                            Message::Info(i) => {
-                                app_handle.emit_all(INFO_CHANNEL, i.to_string()).unwrap()
-                            },
-                            Message::Warning(w) => {
-                                app_handle.emit_all(WARNING_CHANNEL, w.to_string()).unwrap()
-                            },
-                            Message::Error(e) => {
-                                app_handle.emit_all(ERROR_CHANNEL, e.to_string()).unwrap()
-                            },
+                        Ok(msg) => {
+                            if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
+                                backend_mutex.get_mut().unwrap().log_msg(&msg);
+                            }
+
+                            match msg {
+                                Message::Data(dp) => {
+                                    println!("Received datapoint: {:?}", dp);
+                                    app_handle
+                                        .state::<BackendState>()
+                                        .data_buffer
+                                        .lock()
+                                        .unwrap()
+                                        .push(Message::Data(dp));
+                                },
+                                Message::Status(s) => app_handle
+                                    .emit_all(STATUS_CHANNEL, &*format!("{:?}", s))
+                                    .unwrap(),
+                                Message::Info(i) => {
+                                    app_handle.emit_all(INFO_CHANNEL, i.to_string()).unwrap()
+                                },
+                                Message::Warning(w) => {
+                                    app_handle.emit_all(WARNING_CHANNEL, w.to_string()).unwrap()
+                                },
+                                Message::Error(e) => {
+                                    app_handle.emit_all(ERROR_CHANNEL, e.to_string()).unwrap()
+                                },
+                            }
                         },
                         Err(_e) => {
                             // eprintln!("Error receiving message: {:?}", e);
@@ -186,5 +192,20 @@ pub fn procedures() -> Vec<[String; 6]> {
         }
     } else {
         res.unwrap()
+    }
+}
+
+#[allow(unused)]
+#[tauri::command]
+pub fn save_to_file(path: &str) -> bool {
+    if let Some(backend_mutex) = unsafe { BACKEND.as_ref() } {
+        let log = &backend_mutex.lock().unwrap().log;
+        if let Ok(x) = PathBuf::from_str(path) {
+            Backend::save_to_path(log, x).is_ok()
+        } else {
+            false
+        }
+    } else {
+        false
     }
 }
