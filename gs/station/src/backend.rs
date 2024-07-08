@@ -1,9 +1,12 @@
-use crate::api::Message;
-use crate::Command;
-use anyhow::anyhow;
 use std::path::PathBuf;
+use std::str::FromStr;
+
+use anyhow::anyhow;
 use regex::Regex;
 use tokio::task::AbortHandle;
+
+use crate::api::Message;
+use crate::Command;
 
 // /// Any frontend that interfaces with this backend needs to comply to this trait
 // pub trait Frontend {
@@ -23,6 +26,7 @@ pub struct Backend {
     pub command_transmitter: tokio::sync::broadcast::Sender<Command>,
     pub command_receiver: tokio::sync::broadcast::Receiver<Command>,
     pub log: Log,
+    pub save_path: PathBuf,
 }
 
 #[derive(serde::Serialize)]
@@ -32,9 +36,7 @@ pub struct Log {
 }
 
 impl Default for Backend {
-    fn default() -> Self {
-        Self::new()
-    }
+    fn default() -> Self { Self::new() }
 }
 
 impl Backend {
@@ -54,10 +56,8 @@ impl Backend {
             message_receiver,
             command_transmitter,
             command_receiver,
-            log: Log {
-                messages: vec![],
-                commands: vec![],
-            },
+            log: Log { messages: vec![], commands: vec![] },
+            save_path: PathBuf::from_str("/Users/andtsa/Desktop/log.txt").unwrap(),
         }
     }
 
@@ -92,10 +92,10 @@ impl Backend {
                     self.levi_handle = Some(lh);
                     self.status(crate::Info::LeviProgramStarted);
                     self.info("Levi process started".to_string());
-                }
+                },
                 Err(e) => {
                     self.err(format!("Error starting levi: {}", e));
-                }
+                },
             }
         } else {
             self.warn("Levi already running".to_string());
@@ -107,22 +107,23 @@ impl Backend {
         self.command_transmitter.send(cmd).unwrap();
         self.log_cmd(&cmd);
     }
+
     pub fn info(&mut self, msg: String) {
         self.message_transmitter.send(Message::Info(msg)).unwrap();
     }
+
     pub fn warn(&mut self, msg: String) {
-        self.message_transmitter
-            .send(Message::Warning(msg))
-            .unwrap();
+        self.message_transmitter.send(Message::Warning(msg)).unwrap();
     }
+
     pub fn err(&mut self, msg: String) {
         self.message_transmitter.send(Message::Error(msg)).unwrap();
     }
+
     pub fn status(&mut self, status: crate::Info) {
-        self.message_transmitter
-            .send(Message::Status(status))
-            .unwrap();
+        self.message_transmitter.send(Message::Status(status)).unwrap();
     }
+
     pub fn quit_levi(&mut self) {
         if let Some((lh1, lh2)) = self.levi_handle.take() {
             self.info("Quitting levi_handle_1".into());
@@ -131,6 +132,7 @@ impl Backend {
             lh2.abort();
         }
     }
+
     pub fn quit_server(&mut self) {
         if let Some(sh) = self.server_handle.take() {
             self.info("Quitting server_handle".into());
@@ -139,18 +141,21 @@ impl Backend {
         }
     }
 
-    pub fn save(&self, path: PathBuf) -> anyhow::Result<()> {
-        let json = serde_json::to_string(&self.log)?;
-        std::fs::write(path, json)?;
-        Ok(())
+    pub fn save(&self) -> anyhow::Result<Message> {
+        Self::save_to_path(&self.log, self.save_path.clone())
     }
 
-    pub fn log_msg(&mut self, msg: Message) {
-        self.log.messages.push(msg);
+    pub fn save_to_path(log: &Log, path: PathBuf) -> anyhow::Result<Message> {
+        let json = serde_json::to_string_pretty(log)?;
+        match std::fs::write(path.clone(), json) {
+            Ok(_) => Ok(Message::Info(format!("Saved to {:?}", &path))),
+            Err(e) => Ok(Message::Error(format!("Failed to save at {:?}: {:?}", &path, e))),
+        }
     }
-    pub fn log_cmd(&mut self, cmd: &Command) {
-        self.log.commands.push(*cmd);
-    }
+
+    pub fn log_msg(&mut self, msg: &Message) { self.log.messages.push(msg.clone()); }
+
+    pub fn log_cmd(&mut self, cmd: &Command) { self.log.commands.push(*cmd); }
 
     pub fn load_procedures(folder: PathBuf) -> anyhow::Result<Vec<[String; 6]>> {
         let mut r = vec![];
@@ -172,12 +177,18 @@ impl Backend {
                     .trim_start_matches([' ', '#'])
                     .to_string();
 
-                let (id, people, equipment, content) =
-                    Self::parse_procedure_content(lines.fold(String::new(),|acc, x| {
-                        acc + x + "\n"
-                    }))?;
+                let (id, people, equipment, content) = Self::parse_procedure_content(
+                    lines.fold(String::new(), |acc, x| acc + x + "\n"),
+                )?;
 
-                r.push([f_name.trim_end_matches(".procedure").to_string(), title, id, people, equipment, content]);
+                r.push([
+                    f_name.trim_end_matches(".procedure").to_string(),
+                    title,
+                    id,
+                    people,
+                    equipment,
+                    content,
+                ]);
             }
         }
 
@@ -189,7 +200,9 @@ impl Backend {
     ) -> anyhow::Result<(String, String, String, String)> {
         let mut x = (String::new(), String::new(), String::new(), String::new());
 
-        x.0 = Regex::new("\n[iI][dD][: ]*\n([a-zA-Z0-9\n .]*)\n\n")
+        let all = r#"[a-zA-Z0-9\n .;!,:(){}\"'_/+-=\[\]\t%]"#;
+
+        x.0 = Regex::new("\n[iI][dD][: ]*\n([a-zA-Z0-9\n ._]*)\n\n")
             .unwrap()
             .captures(&content)
             .ok_or_else(|| anyhow!("\nMissing \"ID\" field for procedure:\n{:?}", content))?
@@ -198,7 +211,7 @@ impl Backend {
             .as_str()
             .to_string();
 
-        x.1 = Regex::new("\nPeople[: ]*\n([a-zA-Z0-9\n .]*)\n\n")
+        x.1 = Regex::new(&format!("\nPeople[: ]*\n({}*)\nItems", all))
             .unwrap()
             .captures(&content)
             .ok_or_else(|| anyhow!("\nMissing \"People\" field for procedure:\n{:?}", content))?
@@ -207,19 +220,19 @@ impl Backend {
             .as_str()
             .to_string();
 
-        x.2 = Regex::new("\nEquipment[: ]*\n([a-zA-Z0-9\n .]*)\n\n")
+        x.2 = Regex::new(&format!("\nItems[: ]*\n({}*)\nProcedures", all))
             .unwrap()
             .captures(&content)
-            .ok_or_else(|| anyhow!("\nMissing \"Equipment\" field for procedure:\n{:?}", content))?
+            .ok_or_else(|| anyhow!("\nMissing \"Items\" field for procedure:\n{:?}", content))?
             .get(1)
             .unwrap()
             .as_str()
             .to_string();
 
-        x.3 = Regex::new("\nSteps[: ]*\n([a-zA-Z0-9\n .;!,:(){}]*)\n\n")
+        x.3 = Regex::new(&format!("\nProcedures[: ]*\n({}*)\n", all))
             .unwrap()
             .captures(&content)
-            .ok_or_else(|| anyhow!("\nMissing \"Steps\" field for procedure:\n{:?}", content))?
+            .ok_or_else(|| anyhow!("\nMissing \"Procedures\" field for procedure:\n{:?}", content))?
             .get(1)
             .unwrap()
             .as_str()

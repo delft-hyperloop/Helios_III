@@ -11,7 +11,6 @@
     import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
-    import Keydown from "svelte-keydown";
 
     let width: number;
 
@@ -87,14 +86,6 @@
 
 </script>
 
-<Keydown on:combo={({detail}) => {
-    if (detail === "Esc") { // todo: this doesn't work
-        invoke('send_command', {cmdName: "EmergencyBrake", val: 0}).then(() => {
-            console.log(`Triggered EmergencyBrake!!`);
-        })
-    }
-    }}/>
-
 <div bind:clientWidth={width} class="h-full bg-surface-700 text-surface-50">
     <AppBar padding="p-3" border="border-b border-b-surface-900" background="bg-surface-700">
         <svelte:fragment slot="lead">
@@ -123,8 +114,8 @@
             </button>
             <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
             <div class="flex flex-col gap-4">
-                <Battery orientation="vertical" height={55} perc={Number($lvBattery)}/>
-                <Battery orientation="vertical" height={55} perc={Number($hvBattery)}/>
+                <Battery fill="#3b669c" orientation="vertical" height={55} perc={Number($lvBattery)}/>
+                <Battery fill="#723f9c" orientation="vertical" height={55} perc={Number($hvBattery)}/>
             </div>
         </div>
     {:else}
@@ -155,10 +146,10 @@
                         </div>
                         <div style="grid-template-columns: 1fr 2fr 2fr;" class="grid gap-y-2">
                             <span>LV: </span>
-                            <Battery orientation="horizontal" perc={Number($lvBattery)}/>
+                            <Battery fill="#3b669c" orientation="horizontal" perc={Number($lvBattery)}/>
                             <span>Total: <span class="font-mono font-medium">{$totalLVV} V</span></span>
                             <span>HV: </span>
-                            <Battery orientation="horizontal" perc={Number($hvBattery)}/>
+                            <Battery fill="#723f9c" orientation="horizontal" perc={Number($hvBattery)}/>
                             <span>Total: <span class="font-mono font-medium">{$totalHVV} V</span></span>
                         </div>
                     </div>

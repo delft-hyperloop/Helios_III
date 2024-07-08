@@ -23,11 +23,7 @@ pub fn get_data_config(path: &str) -> Config {
 }
 
 pub fn get_data_ids(path: &str) -> Vec<u16> {
-    get_data_config(path)
-        .Datatype
-        .iter()
-        .map(|x| x.id)
-        .collect()
+    get_data_config(path).Datatype.iter().map(|x| x.id).collect()
 }
 
 pub fn generate_datatypes(path: &str, drv: bool) -> String {
@@ -43,40 +39,25 @@ pub fn generate_datatypes(path: &str, drv: bool) -> String {
     for dtype in config.Datatype {
         data_ids.push(dtype.id);
         enum_definitions.push_str(&format!("    {},\n", dtype.name));
-        match_to_id.push_str(&format!(
-            "            Datatype::{} => {},\n",
-            dtype.name, dtype.id
-        ));
-        match_from_id.push_str(&format!(
-            "            {} => Datatype::{},\n",
-            dtype.id, dtype.name
-        ));
-        from_str.push_str(&format!(
-            "            {:?} => Datatype::{},\n",
-            dtype.name, dtype.name
-        ));
+        match_to_id.push_str(&format!("            Datatype::{} => {},\n", dtype.name, dtype.id));
+        match_from_id.push_str(&format!("            {} => Datatype::{},\n", dtype.id, dtype.name));
+        from_str.push_str(&format!("            {:?} => Datatype::{},\n", dtype.name, dtype.name));
         bounds.push_str(&format!(
             "            Datatype::{} => {} {} {},\n",
             dtype.name,
-            dtype
-                .lower
-                .map(|x| format!("other >= {}u64", x))
-                .unwrap_or("".to_string()),
+            dtype.lower.map(|x| format!("other >= {}u64", x)).unwrap_or("".to_string()),
             if dtype.lower.is_some() && dtype.upper.is_some() {
                 "&&".to_string()
             } else {
                 "".to_string()
             },
-            dtype
-                .upper
-                .map(|x| format!("other <= {}u64", x))
-                .unwrap_or_else(|| {
-                    if dtype.lower.is_none() && dtype.upper.is_none() {
-                        "true".to_string()
-                    } else {
-                        "".to_string()
-                    }
-                }),
+            dtype.upper.map(|x| format!("other <= {}u64", x)).unwrap_or_else(|| {
+                if dtype.lower.is_none() && dtype.upper.is_none() {
+                    "true".to_string()
+                } else {
+                    "".to_string()
+                }
+            }),
         ));
         if let Some(l) = dtype.lower {
             if l == 0 {
@@ -145,10 +126,6 @@ impl Datatype {{
     ) + &format!(
         "pub static DATA_IDS : [u16;{}] = [{}];\n",
         data_ids.len(),
-        data_ids
-            .iter()
-            .map(|x| x.to_string())
-            .collect::<Vec<String>>()
-            .join(", ")
+        data_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", ")
     )
 }

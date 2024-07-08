@@ -10,8 +10,6 @@ impl Fsm {
     pub fn entry_hv_on(&mut self) {
         #[cfg(debug_assertions)]
         info!("Entering HV System Checking");
-        // self.peripherals.hv_peripherals.enable_pin.set_high();
-        warn!("HV SYSTEM IS ON!");
         warn!("HV SYSTEM IS ON!");
     }
 
@@ -24,27 +22,28 @@ impl Fsm {
                 self.peripherals.led_controller.hv_relay_led(false).await;
                 self.pod_safe().await;
                 transit!(self, State::Idle);
-            }
-            Event::StartLevitatingCommand => {
+            },
+            Event::LeviLaunchingEvent => {
+                // no preconditions allowed since GS is in charge here
                 #[cfg(debug_assertions)]
                 info!("Starting Levitation");
 
                 transit!(self, State::Levitating);
-            }
-            // TODO: delete these two
-            Event::DisablePropulsionCommand => {
-                self.peripherals.propulsion_controller.disable();
-                self.log(Info::DisablePropulsionGpio).await;
-                self.send_data(crate::Datatype::PropGPIODebug, 0).await;
-            }
-            Event::EnablePropulsionCommand => {
-                self.peripherals.propulsion_controller.enable();
-                self.log(Info::EnablePropulsionGpio).await;
-                self.send_data(crate::Datatype::PropGPIODebug, 1).await;
-            }
+            },
+
+            Event::RunStarting => {
+                if !self.status.levitating && !self.status.overrides.propulsion_without_levitation()
+                {
+                    self.log(Info::LevitationNotStarted).await;
+                    return;
+                }
+
+                self.enter_moving().await;
+            },
+
             _ => {
                 info!("The current state ignores {}", event.to_str());
-            }
+            },
         }
     }
 }

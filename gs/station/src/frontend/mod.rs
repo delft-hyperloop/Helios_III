@@ -1,9 +1,10 @@
-pub(crate) mod main;
+pub mod commands;
+pub mod app;
+use std::fmt::Debug;
+use std::sync::Mutex;
 
 use crate::api::Message;
 use crate::backend::Backend;
-use std::fmt::Debug;
-use std::sync::Mutex;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct BackendState {

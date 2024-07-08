@@ -1,5 +1,7 @@
+# Mounting the low voltage batteries to the pod
+
 Id: 
-DH08.PROC.PT.LVBATTERY_DISMOUNT
+DH08.PROC.PT.LVBATTERY_MOUNT
 
 People: 
 Needs some experience with Powertrain
@@ -10,7 +12,7 @@ Items:
 safety glasses
 Multimeter
 Battery box
-LV battery  + bolts and nuts
+LV battery + bolts and nuts
 Fitting wrench + allen key
 
 Procedures:

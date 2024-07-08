@@ -81,10 +81,7 @@ pub fn ip_cidr_from_config(t: ([u8; 4], u16)) -> Ipv4Cidr {
 #[inline]
 #[allow(dead_code)]
 pub fn socket_from_config(t: ([u8; 4], u16)) -> SocketAddr {
-    SocketAddr::V4(SocketAddrV4::new(
-        Ipv4Addr::new(t.0[0], t.0[1], t.0[2], t.0[3]),
-        t.1,
-    ))
+    SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(t.0[0], t.0[1], t.0[2], t.0[3]), t.1))
 }
 
 #[inline]
@@ -127,7 +124,7 @@ pub fn extended_as_value(id: &ExtendedId) -> u16 {
         0x300 => small_id += 0,    //  I wonder what are these
         0x500 => small_id = 0x5,   // Current messages
         0x800 => small_id += 96,   // Balance messages
-        _ => {}                    // small_id = small_id | 0x000,
+        _ => {},                   // small_id = small_id | 0x000,
     }
     info!("small_id {:?}", small_id);
     (big_id + small_id) as u16

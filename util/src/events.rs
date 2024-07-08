@@ -44,27 +44,21 @@ pub fn generate_events(path: &str, drv: bool) -> String {
         match &event.params {
             None => {
                 enum_definitions.push_str(&format!("    {},\n", event.name));
-                match_to_id.push_str(&format!(
-                    "            Event::{} => {},\n",
-                    event.name, event.id
-                ));
+                match_to_id
+                    .push_str(&format!("            Event::{} => {},\n", event.name, event.id));
                 // to_str.push_str(&format!("Event::{} => \"{}\",\n", command.name, command.name));
                 priorities.push_str(&format!(
                     "            Event::{} => {},\n",
                     event.name, event.priority
                 ));
-                match_from_id.push_str(&format!(
-                    "            {} => Event::{},\n",
-                    event.id, event.name
-                ));
+                match_from_id
+                    .push_str(&format!("            {} => Event::{},\n", event.id, event.name));
                 to_idx.push_str(&format!("            Event::{} => {},\n", event.name, i));
-            }
+            },
             Some(x) => {
                 enum_definitions.push_str(&format!("    {}({}),\n", event.name, x));
-                match_to_id.push_str(&format!(
-                    "            Event::{}(_) => {},\n",
-                    event.name, event.id
-                ));
+                match_to_id
+                    .push_str(&format!("            Event::{}(_) => {},\n", event.name, event.id));
                 // to_str.push_str(&format!("Event::{}(_) => \"{}\",\n", command.name, command.name));
                 priorities.push_str(&format!(
                     "            Event::{}(_) => {},\n",
@@ -75,7 +69,7 @@ pub fn generate_events(path: &str, drv: bool) -> String {
                     event.id, event.name
                 ));
                 to_idx.push_str(&format!("            Event::{}(_) => {},\n", event.name, i));
-            }
+            },
         }
         to_str.push_str(&format!("\"{}\",", event.name));
     }
@@ -136,10 +130,6 @@ impl Event {{
     ) + &*format!(
         "\n\npub static EVENT_IDS : [u16;{}] = [{}];\n",
         event_ids.len(),
-        event_ids
-            .iter()
-            .map(|x| x.to_string())
-            .collect::<Vec<String>>()
-            .join(", ")
+        event_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", ")
     )
 }

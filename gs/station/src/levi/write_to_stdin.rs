@@ -9,9 +9,7 @@ pub async fn write_to_levi_child_stdin(
 ) -> anyhow::Result<()> {
     loop {
         let cmd = command_receiver.recv().await?;
-        stdin
-            .write_all(format!("{}\n", cmd.to_str()).as_bytes())
-            .await?;
+        stdin.write_all(format!("{}\n", cmd.to_str()).as_bytes()).await?;
         stdin.flush().await?;
         status_sender.send(crate::api::Message::Info(format!(
             "wrote command {:?} to levi stdin: <{:?}>",

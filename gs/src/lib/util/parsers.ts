@@ -1,5 +1,7 @@
-import type {dataConvFun} from "$lib/types";
+import type {dataConvFun, Procedure} from "$lib/types";
 import {PlotBuffer} from "$lib/util/PlotBuffer";
+import {detailTabSet} from "$lib";
+import {invoke} from "@tauri-apps/api/tauri";
 const MAX_VALUE = 4_294_967_295;
 
 const tempParse: dataConvFun<number> = (data: bigint) => {
@@ -18,7 +20,6 @@ const addEntryToChart = (chart: PlotBuffer, data: bigint, index: number) => {
 
 const u64ToDouble = (u64: bigint): number => {
     const buffer = new ArrayBuffer(8);
-    const view = new DataView(buffer);
 
     const high = Number(BigInt(u64) / BigInt(2 ** 32));
     const low = Number(BigInt(u64) % BigInt(2 ** 32));
@@ -54,4 +55,28 @@ const metersPerMinuteToByte = (mpm: number): number => {
     return mappedValue;
 }
 
-export {tempParse, voltParse, addEntryToChart, u64ToDouble, sensorParse, pressureParse, metersPerMinuteToByte};
+const parseProcedure = (data: string[]):Procedure => {
+    return {
+        name: data[0],
+        title: data[1],
+        id: data[2],
+        people: data[3].trim().split('\n'),
+        equipment: data[4].trim().split('\n'),
+        content: data[5]
+    }
+}
+
+const parseShortCut = async (shortcut:string):Promise<void> => {
+    const tabMatch = shortcut.match(/^tab_(\d)$/);
+    if (tabMatch) {
+        const tab = tabMatch[1];
+        console.log(`Switching to tab ${tab}`);
+        detailTabSet.set(Number(tab) - 1);
+    } else if (shortcut === "emergency_brake") {
+        console.log("Emergency brake");
+        await invoke('send_command', {cmdName: "EmergencyBrake", val: 0});
+    }
+
+}
+
+export {tempParse, voltParse, addEntryToChart, u64ToDouble, sensorParse, pressureParse, metersPerMinuteToByte, parseProcedure, parseShortCut};

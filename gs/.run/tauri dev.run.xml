@@ -1,10 +1,11 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="generate:commands" type="js.build_tools.npm" nameIsGenerated="true">
+  <configuration default="false" name="tauri dev" type="js.build_tools.npm" nameIsGenerated="true">
     <package-json value="$PROJECT_DIR$/gs/package.json" />
     <command value="run" />
     <scripts>
-      <script value="generate:commands" />
+      <script value="tauri" />
     </scripts>
+    <arguments value="dev" />
     <node-interpreter value="project" />
     <envs />
     <method v="2" />

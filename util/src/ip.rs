@@ -7,15 +7,9 @@ pub fn configure_gs_ip(ip: [u8; 4], port: u16, force: bool) -> String {
     if !force {
         match local_ip().unwrap() {
             IpAddr::V4(ipv4) => {
-                ip = (
-                    ipv4.octets()[0],
-                    ipv4.octets()[1],
-                    ipv4.octets()[2],
-                    ipv4.octets()[3],
-                    port,
-                );
-            }
-            IpAddr::V6(_) => {}
+                ip = (ipv4.octets()[0], ipv4.octets()[1], ipv4.octets()[2], ipv4.octets()[3], port);
+            },
+            IpAddr::V6(_) => {},
         }
     }
 

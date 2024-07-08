@@ -1,8 +1,11 @@
-use crate::api::{Datapoint, Message};
+use std::collections::VecDeque;
+
+use tokio::sync::broadcast::Sender;
+
+use crate::api::Datapoint;
+use crate::api::Message;
 use crate::connect::handle_incoming_data::handle_incoming_data;
 use crate::Command;
-use std::collections::VecDeque;
-use tokio::sync::broadcast::Sender;
 
 /// # Unloads from the buffer and transmits any messages found
 /// ```
@@ -25,10 +28,7 @@ pub async fn parse(
             } else {
                 // we actually have 20 bytes in the buffer, we can create a command from them
                 let mut x = [0u8; 20];
-                parsing_buffer
-                    .drain(..20)
-                    .enumerate()
-                    .for_each(|(i, y)| x[i] = y);
+                parsing_buffer.drain(..20).enumerate().for_each(|(i, y)| x[i] = y);
                 // x.reverse();
                 // tx.send(Message::Info(format!("[TRACE] received: {:?}", x))).unwrap();
                 //msg_sender.send(Message::Data(Datapoint::from_bytes(&x)))?;

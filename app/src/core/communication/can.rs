@@ -56,18 +56,14 @@ pub async fn can_receiving_handler(
         // #[cfg(debug_assertions)]
         match bus.read().await {
             Ok(envelope) => {
-                info!(" got here");
                 error_counter = 0;
                 let (frame, timestamp) = envelope.parts();
                 // frame.header().format();
                 let id = id_as_value(frame.id());
                 #[cfg(debug_assertions)]
-                info!(
-                    "[CAN ({})] received frame: id={:?} data={:?}",
-                    bus_nr,
-                    id,
-                    frame.data()
-                );
+                data_sender.send(Datapoint::new(Datatype::ReceivedCan, id as u64, bytes_to_u64(frame.data()))).await;
+                #[cfg(debug_assertions)]
+                info!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
                 if DATA_IDS.contains(&id) {
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
                         let ut = utils.as_mut().unwrap();
@@ -113,7 +109,7 @@ pub async fn can_receiving_handler(
                             }
                         }
                     } else {
-                        info!("#{}", bytes_to_u64(frame.data()));
+                        debug!("#{}", bytes_to_u64(frame.data()));
                         data_sender
                             .send(Datapoint::new(
                                 Datatype::from_id(id),
@@ -130,12 +126,12 @@ pub async fn can_receiving_handler(
                     data_sender
                         .send(Datapoint::new(
                             Datatype::UnknownCanId,
+                            id as u64,
                             bytes_to_u64(frame.data()),
-                            timestamp.as_ticks(),
                         ))
                         .await;
                 }
-            }
+            },
             Err(e) => {
                 if error_counter < 10 || error_counter % 2500 == 0 {
                     error!(
@@ -144,12 +140,12 @@ pub async fn can_receiving_handler(
                     );
                 }
                 Timer::after_millis(500).await;
-                error_counter += 1;
-            }
+                error_counter = error_counter.wrapping_add(1);
+            },
         }
         // # VERY IMPORTANT
-        // without this, our main pcb is magically converted to an adhd CAN pcb
-        // with no mind for anything else. Tread carefully around it
+        // without this, our main pcb is magically converted to an adhd CAN
+        // pcb with no mind for anything else. Tread carefully around it
         Timer::after_micros(500).await;
     }
 }

@@ -13,6 +13,8 @@ impl Fsm {
             BRAKE = true;
         }
         self.peripherals.hv_peripherals.power_hv_off();
+        self.status.brakes_armed = false;
+        self.peripherals.propulsion_controller.disable();
         info!("In exit state...");
     }
 
@@ -22,15 +24,15 @@ impl Fsm {
                 #[cfg(debug_assertions)]
                 info!("Arming brakes");
                 self.peripherals.braking_controller.arm_breaks().await;
-            }
+            },
             Event::SystemResetCommand => {
                 self.send_data(Datatype::BrakingRearmDebug, 1).await;
                 transit!(self, State::RunConfig);
-            }
+            },
 
             _ => {
                 info!("The current state ignores {}", event.to_str());
-            }
+            },
         }
     }
 }

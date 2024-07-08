@@ -2,13 +2,14 @@
     export let orientation:'horizontal'|'vertical' = 'vertical';
     export let perc:number;
     export let height:number = 27;
+    export let fill:string = '#4D9C89';
 </script>
 
 <div>
     {#if orientation === 'vertical'}
         <svg {height} viewBox="0 0 51 114" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="battery">
-                <rect id="battery-fill" y={107 - perc} width="51" height={7 + perc} rx="8" fill="#4D9C89"/>
+                <rect id="battery-fill" y={107 - perc} width="51" height={7 + perc} rx="8" {fill}/>
                 <rect id="battery-body" x="1" y="6" width="49" height="107" rx="7" stroke="#EFF0F0" stroke-width="2"/>
                 <path id="battery-edge" d="M20 1H32C33.6569 1 35 2.34315 35 4V6H17V4C17 2.34315 18.3431 1 20 1Z"
                       fill="#EFF0F0" stroke="#EFF0F0" stroke-width="2"/>
@@ -20,7 +21,7 @@
         <svg {height} viewBox="0 0 115 52" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="battery">
                 <rect id="battery-fill" x="107.5" y={100-perc} width="51" height={7.5 + perc} rx="8" transform="rotate(90 107.5 0.5)"
-                      fill="#4D9C89"/>
+                      {fill}/>
                 <rect id="battery-body" x="108.5" y="1.5" width="49" height="107" rx="7" transform="rotate(90 108.5 1.5)"
                       stroke="#EFF0F0" stroke-width="2"/>
                 <path id="battery-edge"

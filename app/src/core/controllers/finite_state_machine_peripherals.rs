@@ -52,12 +52,12 @@ impl FSMPeripherals {
         .await;
 
         debug!("creating hv controller");
-        // the battery controllers contain functions related to interpreting the BMS CAN messages
+        // the battery controllers contain functions related to interpreting the `BMS CAN` messages
         let hv_controller =
-            BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, true); //TODO <------ This is just to make it build
+            BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, true);
         debug!("creating lv controller");
         let lv_controller =
-            BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, false); //TODO <------ This is just to make it build
+            BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, false);
 
         debug!("creating ethernet controller");
         // The ethernet controller configures IP and then spawns the ethernet task
@@ -90,7 +90,6 @@ impl FSMPeripherals {
             *x,
             i.event_sender,
             i.data_sender,
-            i.data_receiver,
             i.can_one_sender,
             i.can_one_receiver,
             i.can_two_sender,

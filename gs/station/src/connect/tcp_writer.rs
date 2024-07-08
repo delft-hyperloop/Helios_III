@@ -1,8 +1,9 @@
+use tokio::io::AsyncWriteExt;
+use tokio::net::tcp::OwnedWriteHalf;
+
 use crate::api::Message;
 use crate::api::Message::Error;
 use crate::Command;
-use tokio::io::AsyncWriteExt;
-use tokio::net::tcp::OwnedWriteHalf;
 
 pub async fn transmit_commands_to_tcp(
     mut command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
@@ -14,24 +15,21 @@ pub async fn transmit_commands_to_tcp(
         loop {
             if last_send_timestamp.elapsed().as_millis() > (crate::HEARTBEAT as u128) {
                 last_send_timestamp = std::time::Instant::now();
-                match writer
-                    .write_all(&Command::as_bytes(&Command::Heartbeat(42)))
-                    .await
-                {
+                match writer.write_all(&Command::as_bytes(&Command::Heartbeat(42))).await {
                     Ok(_) => {
                         status_transmitter
                             .send(crate::api::Message::Info(
                                 "[TRACE][tcp] Sent keepalive".to_string(),
                             ))
                             .expect("messaging channel closed, cannot recover");
-                    }
+                    },
                     Err(e) => {
                         //eprintln!("Error sending keepalive over tcp: {:?}", e);
                         status_transmitter
                             .send(Error(format!("Error sending keepalive over tcp: {:?}", e)))
                             .unwrap();
                         break;
-                    }
+                    },
                 }
             }
             #[allow(clippy::single_match)]
@@ -54,18 +52,18 @@ pub async fn transmit_commands_to_tcp(
                                     command
                                 )))
                                 .expect("messaging channel closed, cannot recover");
-                        }
+                        },
                         Err(e) => {
                             eprintln!("Error sending command over tcp: {:?}", e);
                             break;
-                        }
+                        },
                     }
-                }
+                },
                 // Err(e) if !matches!(e, tokio::sync::broadcast::error::TryRecvError(_)) => {
                 //     eprintln!("Error receiving command from broadcast: {:?}", e);
                 //     break;
                 // }
-                _ => {}
+                _ => {},
             }
         }
     });
