@@ -71,7 +71,7 @@ const parseShortCut = async (shortcut:string):Promise<void> => {
     if (tabMatch) {
         const tab = tabMatch[1];
         console.log(`Switching to tab ${tab}`);
-        detailTabSet.set(Number(tab));
+        detailTabSet.set(Number(tab) - 1);
     } else if (shortcut === "emergency_brake") {
         console.log("Emergency brake");
         await invoke('send_command', {cmdName: "EmergencyBrake", val: 0});
