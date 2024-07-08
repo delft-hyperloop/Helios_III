@@ -1,9 +1,7 @@
 use std::path::PathBuf;
 use std::str::FromStr;
-use std::sync::Mutex;
 
 use rand::Rng;
-use tauri::Manager;
 use tauri::State;
 
 use crate::api::Datapoint;
@@ -13,7 +11,6 @@ use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
 use crate::Command;
 use crate::Datatype;
-
 
 #[macro_export]
 #[allow(unused)]
@@ -117,7 +114,7 @@ pub fn quit_server() {
 #[tauri::command]
 pub fn procedures() -> Vec<[String; 6]> {
     let res =
-        Backend::load_procedures(PathBuf::from_str("../../../../config/procedures/").unwrap());
+        Backend::load_procedures(PathBuf::from_str("../../config/procedures/").unwrap());
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
         if let Ok(x) = res {
             backend_mutex.get_mut().unwrap().log_msg(&Message::Info("Loading procedures".into()));
@@ -133,7 +130,6 @@ pub fn procedures() -> Vec<[String; 6]> {
         res.unwrap()
     }
 }
-
 
 #[macro_export]
 #[allow(unused)]

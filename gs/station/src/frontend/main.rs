@@ -1,23 +1,15 @@
-use std::path::PathBuf;
-use std::str::FromStr;
 use std::sync::Mutex;
 
-use rand::Rng;
 use tauri::Manager;
-use tauri::State;
-
-use crate::api::Datapoint;
 use crate::api::Message;
 use crate::backend::Backend;
+use crate::frontend::commands::*;
 use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
-use crate::Command;
-use crate::Datatype;
 use crate::ERROR_CHANNEL;
 use crate::INFO_CHANNEL;
 use crate::STATUS_CHANNEL;
 use crate::WARNING_CHANNEL;
-use crate::frontend::commands::*;
 
 pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
@@ -42,6 +34,13 @@ pub fn tauri_main(backend: Backend) {
             unsafe {
                 BACKEND.replace(Mutex::new(backend));
             }
+
+            // set up shortcuts
+
+            
+
+            // --
+
             tokio::spawn(async move {
                 loop {
                     match message_rcv.try_recv() {
@@ -85,4 +84,3 @@ pub fn tauri_main(backend: Backend) {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-
