@@ -37,7 +37,7 @@
                 <Pane minSize={50} class="bg-surface-800">
                     <DetailsPanel />
                 </Pane>
-                <Pane size={50} snapSize={10} minSize={5} class="bg-surface-800">
+                <Pane size={30} snapSize={10} minSize={5} class="bg-surface-800">
                     <LogsPanel />
                 </Pane>
             </Splitpanes>

@@ -3,7 +3,7 @@
     import {util} from "$lib";
 
     export let className: string = '';
-    export let cmd: 'start_server' | 'start_levi' | 'quit_levi' | 'quit_server';
+    export let cmd: 'start_server' | 'start_levi' | 'quit_levi' | 'quit_server' | 'procedures';
     export let successCallback: () => void = () => {};
     export let errorCallback: (error:string) => void = () => {};
 

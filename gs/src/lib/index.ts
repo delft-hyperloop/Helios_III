@@ -39,7 +39,7 @@ import {tempParse, voltParse, addEntryToChart, u64ToDouble,pressureParse,sensorP
 
 // Types
 import type {NamedCommand, Log, LogType, IntervalFunction} from "$lib/types";
-import {EventChannel, RunMode} from "$lib/types";
+import {EventChannel, RunMode, RouteStep} from "$lib/types";
 
 // Stores
 import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn, serverStatus} from "$lib/stores/state";
@@ -93,6 +93,7 @@ export {
     TheoreticalRun,
     EventChannel,
     SpeedsInput,
-    RunMode
+    RunMode,
+    RouteStep
 }
 export type {NamedCommand, Log, LogType, IntervalFunction}

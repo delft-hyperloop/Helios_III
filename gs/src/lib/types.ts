@@ -70,7 +70,7 @@ export type BMSEvent = {
 
 /**
  * Enumerator for the types of run you can have
- * Used in for the Localiser and for when choosing a rung in the RunInit tab.
+ * Used in for the Localiser and for when choosing a run in the RunInit tab.
  * @enum {string} - straight, left or right
  */
 export enum RunMode {
@@ -84,6 +84,17 @@ export enum RunMode {
  */
 export type Log = {
     log_type:LogType, message:string, timestamp:number
+}
+
+export enum RouteStep {
+    STRAIGHT_START = 'StraightStart',
+    LANE_SWITCH_STRAIGHT = 'LaneSwitchStraight',
+    LANE_SWITCH_CURVED = 'LaneSwitchCurved',
+    STRAIGHT_END_TRACK = 'StraightEndTrack',
+    LANE_SWITCH_END_TRACK = 'LaneSwitchEndTrack',
+    STRAIGHT_BACKWARDS = 'StraightBackwards',
+    STOP_AND_WAIT = 'StopAndWait',
+    BRAKE_HERE = 'BrakeHere'
 }
 
 export type LogType = 'INFO' | 'WARNING' | 'ERROR' | 'STATUS';

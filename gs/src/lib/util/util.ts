@@ -1,4 +1,5 @@
 import {emit} from "@tauri-apps/api/event";
+import {RouteStep} from "$lib";
 
 function range(count:number, start?:number, num?:number):number[] {
     return Array.from({length: count}, (_, i) => (num || i) + (start || 0));
@@ -25,4 +26,15 @@ function log(message: string, channel: string) {
     emit(channel, message).then(r => console.log(r));
 }
 
-export default {range, snakeToCamel, normalize, colourCode, log};
+function stepTo3Bit(step: RouteStep): number {
+    const mapping: Record<RouteStep, number> = {
+        stop: 0,
+        andreas: 1,
+        straight: 2,
+        left: 3,
+        right: 4
+    };
+    return mapping[step];
+}
+
+export default {range, snakeToCamel, normalize, colourCode, log, stepTo3Bit};
