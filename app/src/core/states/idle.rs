@@ -13,7 +13,7 @@ impl Fsm {
         match event {
             Event::TurnOnHVCommand => {
                 // check for preconditions
-                if !self.status.brakes_armed {
+                if !self.status.brakes_armed && !self.status.overrides.hv_without_brakes_armed() {
                     self.log(Info::BrakesNotArmed).await;
                     return;
                 }

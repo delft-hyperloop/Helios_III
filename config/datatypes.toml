@@ -795,3 +795,8 @@ id = 0x161
 name = "PropGPIODebug"
 id = 0x162
 
+[[Datatype]]
+name = "ReceivedCan"
+id = 0x163
+
+
