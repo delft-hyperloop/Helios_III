@@ -10,6 +10,7 @@ status_channel = "status_channel"
 info_channel = "info_channel"
 warning_channel = "warning_channel"
 error_channel = "error_channel"
+shortcut_channel = "shortcut_channel"
 levi_exec_path = "C:/Users/kikoa/RustroverProjects/Helios_III/gs/station/Levi/windows-x86_64-debug/PmpGettingStartedCs.exe"
 
 [pod.net]

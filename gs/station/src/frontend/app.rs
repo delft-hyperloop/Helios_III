@@ -1,6 +1,6 @@
 use std::sync::Mutex;
 
-use tauri::Manager;
+use tauri::{GlobalShortcutManager, Manager, WindowEvent};
 use crate::api::Message;
 use crate::backend::Backend;
 use crate::frontend::commands::*;
@@ -10,6 +10,7 @@ use crate::ERROR_CHANNEL;
 use crate::INFO_CHANNEL;
 use crate::STATUS_CHANNEL;
 use crate::WARNING_CHANNEL;
+use crate::SHORTCUT_CHANNEL;
 
 pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
@@ -30,6 +31,8 @@ pub fn tauri_main(backend: Backend) {
         ])
         .setup(move |app| {
             let app_handle = app.handle();
+            let window = app_handle.get_window("main").unwrap();
+
             let mut message_rcv = backend.message_receiver.resubscribe();
             unsafe {
                 BACKEND.replace(Mutex::new(backend));
@@ -37,7 +40,41 @@ pub fn tauri_main(backend: Backend) {
 
             // set up shortcuts
 
-            
+            let s = app_handle.clone();
+            let shortcuts = app_handle.global_shortcut_manager();
+
+
+            window.on_window_event(move |event| {
+                let mut sh = shortcuts.clone();
+                match event {
+                    WindowEvent::Focused(true) => {
+                        // Register shortcuts when window is focused
+                        let ss = s.clone();
+                        sh.register("Esc", move || {
+                            send_command("EmergencyBrake".into(), 0);
+                            ss.emit_all(SHORTCUT_CHANNEL, "emergency_brake").unwrap();
+                        }).expect("Could not register shortcut");
+                        let ss = s.clone();
+                        (0..10).into_iter().for_each(|i| {
+                            let sss = s.clone();
+                            sh.register(&format!("{i}"), move || {
+                                sss.emit_all(SHORTCUT_CHANNEL, &format!("tab_{i}")).unwrap();
+                            }).expect(&format!("Could not register shortcut tab_{i}"));
+                        });
+                    }
+                    WindowEvent::Focused(false) => {
+                        // Unregister shortcuts when window loses focus
+                        sh.unregister("Esc").expect("Could not unregister shortcut");
+                        let mut shh = sh.clone();
+                        (0..10).into_iter().for_each(|i| {
+                            shh.unregister(&format!("{i}")).expect(&format!("Could not unregister shortcut tab_{i}"));
+                        });
+                    }
+                    _ => {}
+                }
+            });
+
+
 
             // --
 

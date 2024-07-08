@@ -1,6 +1,5 @@
 pub mod commands;
-pub(crate) mod main;
-
+pub mod app;
 use std::fmt::Debug;
 use std::sync::Mutex;
 
