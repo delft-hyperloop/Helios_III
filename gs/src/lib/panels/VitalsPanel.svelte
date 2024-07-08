@@ -122,7 +122,7 @@
         <div class="snap-x scroll-px-0.5 snap-mandatory overflow-x-auto h-[90vh]">
             <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="">
                 <!--     FSM       -->
-                <Tile bgToken={800} containerClass="col-span-2">
+                <Tile bgToken={800} containerClass="col-span-2 px-16">
                     {#if width > 550}
                         <FSM size="sm"/>
                     {:else}
@@ -153,6 +153,14 @@
                             <span>Total: <span class="font-mono font-medium">{$totalHVV} V</span></span>
                         </div>
                     </div>
+                    <div class="flex gap-4">
+                        <Command cmd="StopHV" />
+                        <Command cmd="ArmBrakes" />
+                        <Command cmd="StartRun" />
+                    </div>
+                </Tile>
+                <Tile containerClass="py-2 col-span-2" bgToken={800}>
+                    <Chart title="Localisation"/>
                 </Tile>
                 <!--     TEMPERATURE TABLE      -->
                 <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
@@ -170,10 +178,10 @@
                            refreshRate={100}/>
                 </Tile>
                 <Tile containerClass="py-1 h-full w-full col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Chart title="Offset Vertical" refreshRate={100}/>
+                    <Chart title="Offset Vertical"/>
                 </Tile>
                 <Tile containerClass="py-2 col-span-2" bgToken={800}>
-                    <Chart title="Velocity" refreshRate={100}/>
+                    <Chart title="Velocity" />
                 </Tile>
             </TileGrid>
         </div>
