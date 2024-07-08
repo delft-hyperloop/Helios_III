@@ -6,9 +6,10 @@ use heapless::LinearMap;
 ///
 /// * Part of the route configuration (see [Route](struct.Route.html))
 /// * Each speed is a u8 value from 0 to 255,
-/// the analog voltage (0V to 3.3V) that will be sent to the PLC.
+///     the analog voltage (0V to 3.3V) that will be sent to the PLC.
 /// * The implementation of this struct varies depending on the target OS
-/// (ground station / embedded).
+///     (ground station / embedded).
+///
 /// Currently in use is the *embedded* version, using a [`heapless::LinearMap`](https://docs.rs/heapless/latest/heapless/struct.LinearMap.html).
 #[cfg(target_os = "none")]
 #[derive(PartialEq, Eq, Debug, Clone)]
@@ -18,9 +19,10 @@ pub struct LocationSpeedMap(LinearMap<Location, u8, 10>);
 ///
 /// * Part of the route configuration (see [Route](struct.Route.html))
 /// * Each speed is a u8 value from 0 to 255,
-/// the analog voltage (0V to 3.3V) that will be sent to the PLC.
+///     the analog voltage (0V to 3.3V) that will be sent to the PLC.
 /// * The implementation of this struct varies depending on the target OS
-/// (ground station / embedded).
+///     (ground station / embedded).
+///
 /// Currently in use is the *std* version, using a [`std::collections::BTreeMap`].
 #[cfg(not(target_os = "none"))]
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone)]

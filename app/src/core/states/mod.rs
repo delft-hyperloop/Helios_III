@@ -14,9 +14,12 @@ mod run_config;
 
 /// Helper functions to the route planning moving states.
 mod moving {
-    use crate::core::finite_state_machine::{Fsm, State};
-    use crate::core::fsm_status::{Location, RouteUse};
-    use crate::{Info, transit};
+    use crate::core::finite_state_machine::Fsm;
+    use crate::core::finite_state_machine::State;
+    use crate::core::fsm_status::Location;
+    use crate::core::fsm_status::RouteUse;
+    use crate::transit;
+    use crate::Info;
 
     impl Fsm {
         /// Check the planned route and transition from a not-moving state to the correct moving state

@@ -1,4 +1,5 @@
 use defmt::error;
+#[cfg(debug_assertions)]
 use defmt::info;
 use defmt::warn;
 

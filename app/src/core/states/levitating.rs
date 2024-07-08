@@ -7,9 +7,7 @@ use crate::Command;
 use crate::Event;
 
 impl Fsm {
-    pub fn entry_levitating(&mut self) {
-
-    }
+    pub fn entry_levitating(&mut self) {}
 
     pub async fn react_levitating(&mut self, event: Event) {
         match event {

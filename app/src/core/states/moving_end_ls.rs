@@ -12,37 +12,33 @@ impl Fsm {
 
     pub async fn react_end_ls(&mut self, event: Event) {
         match event {
-            Event::BrakingPointReachedC => {
-                match self.route.next_position() {
-                    Location::BackwardsC => {
-                        transit!(self, State::EndLS);
-                    },
-                    Location::StopAndWait => {
-                        info!("Braking point reached");
-                        self.peripherals.propulsion_controller.stop();
-                        transit!(self, State::Levitating);
-                    }
-                    _ => {
-                        info!("Invalid configuration!");
-                        transit!(self, State::Exit);
-                    },
-                }
-            }
-            Event::LaneSwitchBackwardsC => {
-                match self.route.next_position() {
-                    Location::LaneSwitchCurved => {
-                        transit!(self, State::MovingLSCV);
-                    },
-                    Location::StopAndWait => {
-                        self.peripherals.propulsion_controller.stop();
-                        transit!(self, State::Levitating);
-                    }
-                    _ => {
-                        info!("Invalid configuration!");
-                        transit!(self, State::Exit);
-                    },
-                }
-            }
+            Event::BrakingPointReachedC => match self.route.next_position() {
+                Location::BackwardsC => {
+                    transit!(self, State::EndLS);
+                },
+                Location::StopAndWait => {
+                    info!("Braking point reached");
+                    self.peripherals.propulsion_controller.stop();
+                    transit!(self, State::Levitating);
+                },
+                _ => {
+                    info!("Invalid configuration!");
+                    transit!(self, State::Exit);
+                },
+            },
+            Event::LaneSwitchBackwardsC => match self.route.next_position() {
+                Location::LaneSwitchCurved => {
+                    transit!(self, State::MovingLSCV);
+                },
+                Location::StopAndWait => {
+                    self.peripherals.propulsion_controller.stop();
+                    transit!(self, State::Levitating);
+                },
+                _ => {
+                    info!("Invalid configuration!");
+                    transit!(self, State::Exit);
+                },
+            },
             _ => {
                 info!("The current state ignores {}", event.to_str());
             },

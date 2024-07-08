@@ -69,9 +69,9 @@ pub struct Fsm {
 /// ### for the DH08 POD Helios III
 /// * This FSM is a singleton.
 /// * It is the main controller for the pod.
-/// Pretty closely following the principles of Event-Driven-Finite-State-Machine
-/// (EDFSM) architecture, other components are responsible for creating `event`s,
-/// and the FSM is responsible for `react`ing to them.
+///     Pretty closely following the principles of Event-Driven-Finite-State-Machine
+///     (EDFSM) architecture, other components are responsible for creating `event`s,
+///     and the FSM is responsible for `react`ing to them.
 ///
 /// ## States
 /// Starting from the boot state, the fsm can go through the procedure of a run by receiving

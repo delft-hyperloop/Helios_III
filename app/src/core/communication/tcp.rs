@@ -275,9 +275,9 @@ pub async fn tcp_connection_handler(
                 let data = data.as_bytes();
                 #[cfg(debug_assertions)]
                 info!("[tcp:mpmc] Sending data: {:?}", data);
-                #[cfg(debug_assertions)]
                 match socket.write_all(&data).await {
                     Ok(_) => {
+                        #[cfg(debug_assertions)]
                         info!("[tcp:socket] Data written successfully");
                     },
                     Err(e) => {
