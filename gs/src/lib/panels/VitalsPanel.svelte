@@ -87,13 +87,6 @@
 
 </script>
 
-<Keydown on:combo={({detail}) => {
-    if (detail === "Esc")
-        invoke('send_command', {cmdName: "EmergencyBrake", val: 0}).then(() => {
-            console.log(`Triggered EmergencyBrake!!`);
-        })
-    }}/>
-
 <div bind:clientWidth={width} class="h-full bg-surface-700 text-surface-50">
     <AppBar padding="p-3" border="border-b border-b-surface-900" background="bg-surface-700">
         <svelte:fragment slot="lead">

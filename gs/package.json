@@ -43,7 +43,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@tauri-apps/api": "^1.5.4",
+    "@tauri-apps/api": "^1.6.0",
     "svelte-dnd-list": "^0.1.8",
     "svelte-splitpanes": "^0.8.0",
     "uplot": "^1.6.30",
