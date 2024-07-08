@@ -13,8 +13,13 @@
     import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
     import {initProcedures} from "$lib/stores/data";
+    import {onDestroy} from "svelte";
+    import {listen} from "@tauri-apps/api/event";
+    import {parseShortCut} from "$lib/util/parsers";
 
     initProcedures();
+
+    const unlisten = listen("shortcut_channel", (event: {payload: string}) => parseShortCut(event.payload));
 
     //////////////////////////////
     /////////// CHARTS ///////////
@@ -338,6 +343,11 @@
     gdd.start(100);
 
     initializeStores();
+
+    onDestroy(() => {
+      GrandDataDistributor.getInstance().kill();
+      unlisten();
+    })
 </script>
 
 

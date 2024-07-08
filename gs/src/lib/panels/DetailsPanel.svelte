@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Keydown from "svelte-keydown";
     import {Tab, TabGroup} from "@skeletonlabs/skeleton";
     import {
         HomeTab,
@@ -29,12 +28,6 @@
     $: style = `height: ${$details_pane-9}vh`;
 </script>
 
-<Keydown pauseOnInput on:combo={({detail}) => {
-    const num = parseInt(detail, 10);
-    if (!isNaN(num) && num <= tabs.length) {
-        detailTabSet.set(num - 1); // subtract 1 because your tabs are 0-indexed
-    }
-    }}/>
 <TabGroup regionPanel="m-0 !mt-0" padding="px-3 py-3" regionList="bg-surface-700" border="border-b border-surface-900" >
     {#each tabs as tab}
         <Tab bind:group={$detailTabSet} value={tab.value} name={tab.name}><span>{tab.name}</span></Tab>
