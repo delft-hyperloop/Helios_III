@@ -11,7 +11,6 @@
     import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
-    import Keydown from "svelte-keydown";
 
     let width: number;
 

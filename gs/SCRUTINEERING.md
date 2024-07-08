@@ -42,7 +42,7 @@
 - [x] rename the procedures button to "refresh procedures" and make a notification pop up when it finishes successfully
 - [x] PLEASE increase the hitbox for dragging the logs panel up and down
 - [ ] change the description under the title
-- [ ] none of the keyboard shortcuts work
+- [x] none of the keyboard shortcuts work
 - [ ] add a note that `Quit Server` doesn't kill an active connection
 - [ ] add a button and a text field to `Save logs to file` (backend already implemented)
 
@@ -82,8 +82,8 @@
 - [x] please please increase the hitbox of the log panel scrolling
 
 ### Procedures
-- [ ] top item in the left sidebar gets cut off, add some margin or padding
-- [ ] make it actually work with the backend command:
+- [x] top item in the left sidebar gets cut off, add some margin or padding
+- [x] make it actually work with the backend command:
     - the tauri command `procedures()` gives an array of length 6:
         0. the procedure name as should be displayed in the sidebar
         1. title, `<h1>`

@@ -16,6 +16,10 @@
     import {onDestroy} from "svelte";
     import {listen} from "@tauri-apps/api/event";
     import {parseShortCut} from "$lib/util/parsers";
+    import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
+    import { storePopup } from '@skeletonlabs/skeleton';
+
+    storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
     initProcedures();
 
