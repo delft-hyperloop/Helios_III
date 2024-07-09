@@ -74,7 +74,7 @@
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
         </Tile>
         <Tile containerClass="col-span-2">
-            <Chart height={250} background="bg-surface-900" title="Velocity" refreshRate={100} />
+            <Chart height={250} background="bg-surface-900" title="Velocity" />
         </Tile>
     </TileGrid>
 </div>
