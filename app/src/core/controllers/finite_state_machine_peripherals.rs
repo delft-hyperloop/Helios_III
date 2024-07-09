@@ -1,7 +1,7 @@
 use defmt::debug;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Adc;
-use embassy_stm32::gpio::Level;
+use embassy_stm32::gpio::{Input, Level, Pull};
 use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::Peripherals;
@@ -33,8 +33,8 @@ pub struct FSMPeripherals {
 impl FSMPeripherals {
     // pub fn new(p : Peripherals, x: &Spawner, q : &PriorityChannel<NoopRawMutex, Event, Max, 16>) -> Self {
     pub async fn new(p: Peripherals, x: &Spawner, i: InternalMessaging) -> Self {
-        // let mut init = PInit{p,x,q};
-        // let (braking_controller, init) = BrakingController::new(init);
+        // set to high impedance, since there's a 24V signal being given and this would fry the PCB
+        let _ = Input::new(p.PD4, Pull::None);
 
         // The braking controller is responsible for rearming the braked
         let braking_controller = BrakingController::new(
@@ -130,6 +130,7 @@ impl FSMPeripherals {
                 pin_4: Output::new(p.PD3, Level::Low, Speed::Low),
                 pin_6: Output::new(p.PG9, Level::Low, Speed::Low),
                 pin_7: Output::new(p.PG10, Level::Low, Speed::Low),
+                dc_dc: Output::new(p.PD2, Level::Low, Speed::Low),
             },
             red_led: Output::new(p.PB14, Level::Low, Speed::High),
             propulsion_controller: PropulsionController::new(

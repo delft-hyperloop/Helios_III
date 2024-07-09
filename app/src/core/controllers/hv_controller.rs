@@ -6,6 +6,7 @@ pub struct HVPeripherals {
     pub pin_4: Output<'static>,
     pub pin_6: Output<'static>,
     pub pin_7: Output<'static>,
+    pub dc_dc: Output<'static>,
 }
 
 impl HVPeripherals {

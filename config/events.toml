@@ -110,6 +110,16 @@ id = 0x427
 name = "ReConfigureCommand"
 priority = 0 
 
+[[Event]]
+id = 0x429
+name = "DcOn"
+priority = 1 
+
+[[Event]]
+id = 0x42a
+name = "DcOff"
+priority = 1 
+
 # ###########################################
 # Events that carry configuration information
 

@@ -219,6 +219,16 @@ pub async fn tcp_connection_handler(
                                     event_sender.send(Event::TurnOffHVCommand).await;
                                     // TODO: no turn off HV exists??
                                 },
+                                Command::DcOn(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] DcOn command received");
+                                    event_sender.send(Event::DcOn).await;
+                                },
+                                Command::DcOff(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] DcOff command received");
+                                    event_sender.send(Event::DcOff).await;
+                                },
                                 Command::EmitEvent(e) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] EmitEvent command received");

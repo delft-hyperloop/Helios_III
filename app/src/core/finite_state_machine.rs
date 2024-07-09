@@ -167,6 +167,14 @@ impl Fsm {
                 return;
             },
 
+            Event::DcOn => {
+                self.peripherals.hv_peripherals.dc_dc.set_high();
+            }
+
+            Event::DcOff => {
+                self.peripherals.hv_peripherals.dc_dc.set_low();
+            }
+
             ///////////////////
             // Debugging events
             Event::SetOverrides(overrides) => self.status.overrides.set(overrides),
