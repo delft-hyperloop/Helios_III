@@ -4,7 +4,6 @@ import {PlotBuffer} from "$lib";
 
 export const detailTabSet: Writable<number> = writable(1);
 export const inputSpeed: Writable<number> = writable(50);
-export const inputPosit: Writable<number> = writable(-1);
 export const inputEmerg: Writable<number> = writable(-1);
 export const inputTurn: Writable<RunMode> = writable(RunMode.ShortRun);
 

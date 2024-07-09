@@ -56,6 +56,9 @@
     let voffChart = new PlotBuffer(500, 60000, [8, 25], false)
     $chartStore.set('Offset Vertical', voffChart);
 
+    let accelChart = new PlotBuffer(500, 60000, [0, 25], false)
+    $chartStore.set('Acceleration', accelChart);
+
     let rolPitchChart = new PlotBuffer(500, 60000, [-0.8, 0.8], true, "roll")
     rolPitchChart.addSeries(StrokePresets.theoretical("pitch"))
     $chartStore.set("Roll Pitch", rolPitchChart)
