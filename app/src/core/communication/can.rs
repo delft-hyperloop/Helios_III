@@ -90,7 +90,7 @@ pub async fn can_receiving_handler(
                                     timestamp.as_ticks(),
                                 )
                                 .await;
-                            } else if gfd_counter > 2 {
+                            } else if gfd_counter > 2 && frame.data()[2] == 0xFE{
                                 gfd_counter = 0;
                                 can_sender
                                     .send(
