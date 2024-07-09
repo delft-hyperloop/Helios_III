@@ -21,6 +21,10 @@ id = 0x00
 upper = 42001
 
 [[Datatype]]
+name = "ConnectionStatus"
+id = 0x7fe
+
+[[Datatype]]
 name = "PropulsionVoltage"
 id = 0x1b2
 

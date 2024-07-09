@@ -20,6 +20,13 @@
 
     const state = storeManager.getStore("FSMState");
 
+    // const mainpcb_connected = storeManager.getStore("");
+    // const propulsion_connected = storeManager.getStore("PropulsionVRefInt");
+    // const levitation_connected = storeManager.getStore("");
+    // const mainpcb_connected = storeManager.getStore("");
+    // const mainpcb_connected = storeManager.getStore("");
+    
+
     let tableArr2:any[][];
     $: tableArr2 = [
         ["Acceleration X", $accelX],
@@ -57,18 +64,18 @@
             </div>
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
-            <p>Helios III</p>
+            <p>Main PCB</p>
             <Status status={0 % 2 === 0} />
-            <p>Propulsion:</p>
+            <p>Propulsion</p>
+            <Status on="Active" off="Off" status={0 % 2 === 1} />
+            <p>Levitation</p>
             <Status status={0 % 2 === 1} />
-            <p>Levitation:</p>
+            <p>Sensor Hub</p>
             <Status status={0 % 2 === 0} />
-            <p>PTC:</p>
-            <Status status={0 % 2 === 0} />
-            <p>Localization:</p>
+            <p>Batteries</p>
             <Status status={0 % 2 === 1} />
-            <p>Braking PCB:</p>
-            <Status on="armed" off="unarmed" status={0 % 2 === 0} />
+            <p>Braking PCB</p>
+            <Status on="Armed" off="Extended" status={0 % 2 === 0} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>

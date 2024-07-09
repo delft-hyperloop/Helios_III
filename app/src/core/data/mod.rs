@@ -4,6 +4,7 @@
 //! This module is the middle man between the data producers and the ground station.
 
 mod batteries;
+mod sources;
 
 use crate::DataReceiver;
 use crate::DataSender;
