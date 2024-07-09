@@ -93,9 +93,9 @@
         5. content, one long string (`<p>` probably)
     
 ### Vitals
-- [ ] make fsm a bit smaller.
-- [ ] the location diagram should be visible here.
-- [ ] we really need buttons for other important actions:
+- [x] make fsm a bit smaller.
+- [x] the location diagram should be visible here.
+- [x] we really need buttons for other important actions:
     - turn off high voltage
     - arm brakes
     - continue run (`send_command StartRun`)
