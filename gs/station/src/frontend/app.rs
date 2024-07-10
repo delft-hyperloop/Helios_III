@@ -1,4 +1,3 @@
-use std::path::PathBuf;
 use std::sync::Mutex;
 
 use tauri::GlobalShortcutManager;
@@ -80,8 +79,9 @@ pub fn tauri_main(backend: Backend) {
                         sh.unregister("Space").expect("Could not unregister shortcut");
                         let mut shh = sh.clone();
                         (0..10).for_each(|i| {
-                            shh.unregister(&format!("{i}"))
-                                .unwrap_or_else(|_| panic!("Could not unregister shortcut tab_{i}"));
+                            shh.unregister(&format!("{i}")).unwrap_or_else(|_| {
+                                panic!("Could not unregister shortcut tab_{i}")
+                            });
                         });
                     },
                     _ => {},
@@ -132,31 +132,4 @@ pub fn tauri_main(backend: Backend) {
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-}
-
-#[allow(unused)]
-#[tauri::command]
-pub fn procedures() -> Vec<[String; 6]> {
-    let res = Backend::load_procedures(PathBuf::from("../../config/procedures/"));
-    if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
-        if let Ok(x) = res {
-            backend_mutex.get_mut().unwrap().log_msg(&Message::Info("Loading procedures".into()));
-            x
-        } else {
-            backend_mutex
-                .get_mut()
-                .unwrap()
-                .log_msg(&Message::Error("Failed to load procedures".into()));
-            vec![[
-                "Failed".into(),
-                "Failed to parse some procedures".into(),
-                "".into(),
-                "".into(),
-                "".into(),
-                format!("{:?}", res),
-            ]]
-        }
-    } else {
-        res.unwrap()
-    }
 }

@@ -124,3 +124,31 @@ pub fn save_to_file(path: &str) -> bool {
         false
     }
 }
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn procedures() -> Vec<[String; 6]> {
+    let res = Backend::load_procedures(PathBuf::from("../../config/procedures/"));
+    if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
+        if let Ok(x) = res {
+            backend_mutex.get_mut().unwrap().log_msg(&Message::Info("Loading procedures".into()));
+            x
+        } else {
+            backend_mutex
+                .get_mut()
+                .unwrap()
+                .log_msg(&Message::Error("Failed to load procedures".into()));
+            vec![[
+                "Failed".into(),
+                "Failed to parse some procedures".into(),
+                "".into(),
+                "".into(),
+                "".into(),
+                format!("{:?}", res),
+            ]]
+        }
+    } else {
+        res.unwrap()
+    }
+}
