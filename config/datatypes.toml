@@ -27,6 +27,7 @@ id = 0x1b2
 [[Datatype]]
 name = "PropulsionCurrent"
 id = 0x1b3
+upper = 
 
 [[Datatype]]
 name = "PropulsionVRefInt"
@@ -250,6 +251,8 @@ id = 0x1a
 [[Datatype]]
 name = "Localisation"
 id = 0x500
+lower = 500
+upper = 12000
 
 [[Datatype]]
 name = "Velocity"
@@ -278,67 +281,79 @@ id = 0x7FA
 [[Datatype]]
 name = "Presure_VB"
 id = 0x210
+# no limit necessary
 
 [[Datatype]]
 name = "Average_Temp_VB_Bottom"
 id = 0x211
-
+upper = 80000 # (e-2) degrees
 
 [[Datatype]]
 name = "Average_Temp_VB_top"
 id = 0x200
-
+upper = 80000 # (e-2) degrees
 
 
 [[Datatype]]
 name = "Temp_HEMS_1"
 id = 0x20a
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_HEMS_2"
 id = 0x20b
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_HEMS_3"
 id = 0x20c
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_HEMS_4"
 id = 0x20d
+upper = 10000 # (e-2) degrees
 
 
 [[Datatype]]
 name = "Temp_Motor_1"
 id = 0x20e
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_Motor_2"
 id = 0x20f
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Ambient_presure"
 id = 0x220
+# no limit necessary
 
 [[Datatype]]
 name = "Ambient_temp"
 id = 0x224
+# no limit necessary
 
 [[Datatype]]
 name = "Temp_EMS_1"
 id = 0x222
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_EMS_2"
 id = 0x223
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_EMS_3"
 id = 0x225
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_EMS_4"
 id = 0x226
-
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_1"
@@ -655,10 +670,14 @@ id = 0x777
 [[Datatype]]
 name = "LowPressureSensor"
 id = 0x127
+# lower = 40 #bar
+# upper = 52 #bar
 
 [[Datatype]]
 name = "HighPressureSensor"
 id = 0x128
+# lower = 80 #bar
+# upper = 180 #bar
 
 
 # SJOERD LEVITATION DATATYPES
