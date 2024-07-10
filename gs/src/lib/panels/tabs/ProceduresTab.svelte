@@ -19,16 +19,16 @@
         <h2 class="text-2xl font-bold">{$procedures[currentTile]?.title || 'NONE LOADED'}</h2>
         <span>Needed personnel:</span>
         <ul class="list-disc">
-            {#each $procedures[currentTile]?.people as person}
+            {#each $procedures[currentTile]?.people || [] as person}
                 <li class="text-sm">{person}</li>
             {/each}
         </ul>
         <span>Needed equipment:</span>
         <ul class="list-disc">
-            {#each $procedures[currentTile]?.equipment as equipment}
+            {#each $procedures[currentTile]?.equipment || [] as equipment}
                 <li class="text-sm">{equipment}</li>
             {/each}
         </ul>
-        <p>{$procedures[currentTile]?.content || 'NONE LOADED'}</p>
+        <div>{@html $procedures[currentTile]?.content || 'NONE LOADED'}</div>
     </div>
 </div>

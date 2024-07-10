@@ -58,24 +58,24 @@
                 <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="SystemReset" className="btn flex-grow rounded-md bg-surface-700" />
                 <Command cmd="ArmBrakes" className="btn flex-grow rounded-md bg-surface-700" />
-                <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal} disabled={$state !== 2}>
+                <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal} disabled={$state !== 0}>
                     Configure Run
                 </button>
             </div>
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
             <p>Main PCB</p>
-            <Status status={0 % 2 === 0} />
+            <Status status={0 % 2 === 1} />
             <p>Propulsion</p>
             <Status on="Active" off="Off" status={0 % 2 === 1} />
             <p>Levitation</p>
             <Status status={0 % 2 === 1} />
             <p>Sensor Hub</p>
-            <Status status={0 % 2 === 0} />
+            <Status status={0 % 2 === 1} />
             <p>Batteries</p>
             <Status status={0 % 2 === 1} />
             <p>Braking PCB</p>
-            <Status on="Armed" off="Extended" status={0 % 2 === 0} />
+            <Status on="Armed" off="Extended" status={0 % 2 === 1} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>

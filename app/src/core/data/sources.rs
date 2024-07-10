@@ -8,9 +8,7 @@ pub enum Subsystems {
     Levitation,
 }
 
-pub const GROUND_STATION_DATA: [Datatype; 1] = [
-    Datatype::ResponseHeartbeat,
-];
+pub const GROUND_STATION_DATA: [Datatype; 1] = [Datatype::ResponseHeartbeat];
 
 pub const SENSOR_HUB_DATA: [Datatype; 9] = [
     Datatype::Acceleration,
@@ -24,11 +22,8 @@ pub const SENSOR_HUB_DATA: [Datatype; 9] = [
     Datatype::GyroscopeZ,
 ];
 
-pub const PROPULSION_DATA: [Datatype; 3] = [
-    Datatype::PropulsionSpeed,
-    Datatype::PropulsionVoltage,
-    Datatype::PropulsionCurrent,
-];
+pub const PROPULSION_DATA: [Datatype; 3] =
+    [Datatype::PropulsionSpeed, Datatype::PropulsionVoltage, Datatype::PropulsionCurrent];
 
 pub const HV_BMS_DATA: [Datatype; 3] = [
     Datatype::BatteryBalanceHigh,

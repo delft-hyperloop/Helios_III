@@ -1,5 +1,5 @@
-pub mod commands;
 pub mod app;
+pub mod commands;
 use std::fmt::Debug;
 use std::sync::Mutex;
 

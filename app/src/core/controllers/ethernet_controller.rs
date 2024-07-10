@@ -17,6 +17,7 @@ use static_cell::StaticCell;
 use crate::core::communication::tcp::tcp_connection_handler;
 use crate::try_spawn;
 use crate::DataReceiver;
+use crate::DataSender;
 use crate::EventSender;
 use crate::Irqs;
 use crate::POD_MAC_ADDRESS;
@@ -47,6 +48,7 @@ impl EthernetController {
         x: Spawner,
         sender: EventSender,
         receiver: DataReceiver,
+        data_sender: DataSender,
         pins: EthernetPins,
     ) -> Self {
         let mut rng = Rng::new(pins.p_rng, Irqs);
@@ -100,7 +102,10 @@ impl EthernetController {
 
         try_spawn!(sender, x.spawn(net_task(stack)));
 
-        try_spawn!(sender, x.spawn(tcp_connection_handler(x, stack, sender, receiver)));
+        try_spawn!(
+            sender,
+            x.spawn(tcp_connection_handler(x, stack, sender, receiver, data_sender))
+        );
         // unwrap!(x.spawn(udp_connection_handler(stack)));
 
         ethernet_controller

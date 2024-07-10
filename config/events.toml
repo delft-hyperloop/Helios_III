@@ -76,6 +76,11 @@ id = 0xb9
 priority = 1 
 
 [[Event]]
+name = "ContinueRunEvent"
+id = 0xbd
+priority = 1 
+
+[[Event]]
 name = "SystemResetCommand"
 id = 0xbE
 priority = 0

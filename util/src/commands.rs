@@ -1,15 +1,18 @@
 #![allow(non_snake_case)]
 
 use std::fs;
+use std::hash::DefaultHasher;
+use std::hash::Hash;
+use std::hash::Hasher;
 
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Hash)]
 pub struct Config {
     pub(crate) Command: Vec<Command>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Hash)]
 pub struct Command {
     pub name: String,
     pub id: u16,
@@ -29,6 +32,10 @@ pub fn generate_commands(path: &str, drv: bool) -> String {
     let config_str = fs::read_to_string(path).unwrap();
     let config: Config = toml::from_str(&config_str).unwrap();
     // println!("{:?}", config);
+
+    let mut hasher = DefaultHasher::new();
+    config.hash(&mut hasher);
+    let hash = hasher.finish();
 
     let mut enum_definitions = String::new();
     let mut match_to_id = String::new();
@@ -117,4 +124,5 @@ pub const COMMANDS_LIST: [&str; {}] = [{}];
         to_idx,
         ids.len(), ids.join(", "), name_list.len(), name_list.join(", ")
     )
+    + &format!("\npub const COMMAND_HASH: u64 = {hash};")
 }

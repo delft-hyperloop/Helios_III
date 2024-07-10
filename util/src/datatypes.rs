@@ -1,15 +1,18 @@
 #![allow(non_snake_case, non_camel_case_types)]
 
 use std::fs;
+use std::hash::DefaultHasher;
+use std::hash::Hash;
+use std::hash::Hasher;
 
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Hash)]
 pub struct Config {
     pub(crate) Datatype: Vec<Datatype>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Hash)]
 pub struct Datatype {
     pub name: String,
     pub id: u16,
@@ -28,6 +31,10 @@ pub fn get_data_ids(path: &str) -> Vec<u16> {
 
 pub fn generate_datatypes(path: &str, drv: bool) -> String {
     let config: Config = get_data_config(path);
+
+    let mut hasher = DefaultHasher::new();
+    config.hash(&mut hasher);
+    let hash = hasher.finish();
 
     let mut enum_definitions = String::new();
     let mut match_to_id = String::new();
@@ -127,5 +134,5 @@ impl Datatype {{
         "pub static DATA_IDS : [u16;{}] = [{}];\n",
         data_ids.len(),
         data_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", ")
-    )
+    ) + &format!("\npub const DATA_HASH: u64 = {hash};")
 }

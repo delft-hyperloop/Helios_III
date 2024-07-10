@@ -1,8 +1,10 @@
 use defmt::debug;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Adc;
-use embassy_stm32::gpio::{Input, Level, Pull};
+use embassy_stm32::gpio::Input;
+use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
+use embassy_stm32::gpio::Pull;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::Peripherals;
 
@@ -65,6 +67,7 @@ impl FSMPeripherals {
             *x,
             i.event_sender,
             i.data_receiver,
+            i.data_sender,
             EthernetPins {
                 p_rng: p.RNG,
                 eth_pin: p.ETH,

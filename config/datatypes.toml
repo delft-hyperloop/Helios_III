@@ -343,7 +343,6 @@ id = 0x225
 name = "Temp_EMS_4"
 id = 0x226
 
-
 [[Datatype]]
 name = "SingleCellVoltageHigh_1"
 id = 0x3C0
@@ -806,4 +805,25 @@ id = 0x163
 [[Datatype]]
 name = "SendingCANEvent"
 id = 0x164
+
+[[Datatype]]
+name = "RoutePlan"
+id = 0x165
+
+[[Datatype]]
+name = "CurrentPosition"
+id = 0x166
+
+[[Datatype]]
+name = "CommandHash"
+id = 0x167
+
+[[Datatype]]
+name = "EventsHash"
+id = 0x168
+
+[[Datatype]]
+name = "DataHash"
+id = 0x169
+
 
