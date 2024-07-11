@@ -77,7 +77,7 @@
 
     $: tableArr2 = [
         ["Insulation", $ins, "Insulation-", $insn],
-        ["Insulation+", $insp, "IMD Voltage", $imdv],
+        ["IMD Voltage", $imdv, "Insulation+", $insp],
     ]
 
     const location = storeManager.getStore("Localisation");
