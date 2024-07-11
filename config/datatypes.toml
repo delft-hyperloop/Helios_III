@@ -1,24 +1,61 @@
-## -
+##### -----
 # Format for new datatypes:
 # ```
 # [[Datatype]]
 # name = "YourNewDatatypeName"
-# id = 42 # must be unique. code will not compile if there is a collision. Values can be from 0-2047, or 0x000 to 0x7FF.
-# upper = 100 # an upper bound for the values of this datatype.
-# lower = 12 # a lower bound for the values of this datatype.
+# id = 42 # must be unique. 
+#         # the code will not compile if there is a collision. 
+#         # Values can be from 0-2047, or 0x000 to 0x7FF.
 # ```
-# when a datapoint is received there's a check if 
-#   lower <= value <= upper
-# If this is false, then an emergency brake is triggered.
-# Keep in mind that lower, value, and upper are all of type u64.
-# This means that:
-#   - everything has a lower bound of 0 
-#   - careful when setting bounds for floating point numbers.
+# 
+# Limits:
+# ---------
+# Every time a datapoint is received by the main pcb,
+# it checks the limits of that datatype, and produces 
+# an error if any of the limits are surpassed.
+#
+# There are 3 severities for surpassing bounds:
+# - warn: the associated field on the ground station will turn yellow
+# - err: the associated field on the ground station will turn red and blink
+# - brake: critical limit, the main pcb will immediately deploy emergency brakes
+# 
+# Not specifying a specific limit means nothing will happen.
+# 
+# ```
+# [[Datatype]]
+# name = "Example1"
+# id = 50
+# lower = 5 
+# upper = { warn = 50, err = 60, brake = 100 }
+# ```
+# as you can see, you can either specify *one* limit (e.g. `lower = 5`),
+# which if surpassed will function equivalent to `warn`, just informing the 
+# ground station operator,
+# or you can specify multiple limits of different severities (as in `upper = { ... }`).
+#
+# If you don't want a certain severity to ever happen, 
+# just don't include the field:
+# ```
+# [[Datatype]]
+# name = "Example2"
+# id = 51
+# lower = { warn = 10, err = 4 }
+# ```
+# For this one, there will be 
+# - no upper limit, 
+# - a warning when it's below 10 
+# - a (ground station) error when it's below 4,
+# - and no emergency braking at any point.
+
 
 [[Datatype]]
 name = "DefaultDatatype"
 id = 0x00
 upper = 42001
+
+[[Datatype]]
+name = "ConnectionStatus"
+id = 0x7fe
 
 [[Datatype]]
 name = "PropulsionVoltage"
@@ -250,6 +287,8 @@ id = 0x1a
 [[Datatype]]
 name = "Localisation"
 id = 0x500
+lower = 500
+upper = 12000
 
 [[Datatype]]
 name = "Velocity"
@@ -266,10 +305,13 @@ id = 0x1d
 [[Datatype]]
 name = "BrakePressure"
 id = 0x15
+upper = 250
+lower = 1
 
 [[Datatype]]
 name = "UnknownCanId"
 id = 0x7F0
+
 [[Datatype]]
 name = "Info"
 id = 0x7FA
@@ -278,67 +320,79 @@ id = 0x7FA
 [[Datatype]]
 name = "Presure_VB"
 id = 0x210
+# no limit necessary
 
 [[Datatype]]
 name = "Average_Temp_VB_Bottom"
 id = 0x211
-
+upper = 80000 # (e-2) degrees
 
 [[Datatype]]
 name = "Average_Temp_VB_top"
 id = 0x200
-
+upper = 80000 # (e-2) degrees
 
 
 [[Datatype]]
 name = "Temp_HEMS_1"
 id = 0x20a
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_HEMS_2"
 id = 0x20b
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_HEMS_3"
 id = 0x20c
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_HEMS_4"
 id = 0x20d
+upper = 10000 # (e-2) degrees
 
 
 [[Datatype]]
 name = "Temp_Motor_1"
 id = 0x20e
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_Motor_2"
 id = 0x20f
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Ambient_presure"
 id = 0x220
+# no limit necessary
 
 [[Datatype]]
 name = "Ambient_temp"
 id = 0x224
+# no limit necessary
 
 [[Datatype]]
 name = "Temp_EMS_1"
 id = 0x222
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_EMS_2"
 id = 0x223
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_EMS_3"
 id = 0x225
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_EMS_4"
 id = 0x226
-
+upper = 10000 # (e-2) degrees
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_1"
@@ -655,10 +709,14 @@ id = 0x777
 [[Datatype]]
 name = "LowPressureSensor"
 id = 0x127
+# lower = 40 #bar
+# upper = 52 #bar
 
 [[Datatype]]
 name = "HighPressureSensor"
 id = 0x128
+# lower = 80 #bar
+# upper = 180 #bar
 
 
 # SJOERD LEVITATION DATATYPES
@@ -802,4 +860,36 @@ id = 0x163
 [[Datatype]]
 name = "SendingCANEvent"
 id = 0x164
+
+[[Datatype]]
+name = "RoutePlan"
+id = 0x165
+
+[[Datatype]]
+name = "CurrentPosition"
+id = 0x166
+
+[[Datatype]]
+name = "CommandHash"
+id = 0x167
+
+[[Datatype]]
+name = "EventsHash"
+id = 0x168
+
+[[Datatype]]
+name = "DataHash"
+id = 0x169
+
+[[Datatype]]
+name = "ValueError"
+id = 0x16a
+
+[[Datatype]]
+name = "ValueWarning"
+id = 0x16b
+
+[[Datatype]]
+name = "ValueCausedBraking"
+id = 0x16c
 

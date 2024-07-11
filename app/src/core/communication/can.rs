@@ -61,7 +61,13 @@ pub async fn can_receiving_handler(
                 // frame.header().format();
                 let id = id_as_value(frame.id());
                 #[cfg(debug_assertions)]
-                data_sender.send(Datapoint::new(Datatype::ReceivedCan, id as u64, bytes_to_u64(frame.data()))).await;
+                data_sender
+                    .send(Datapoint::new(
+                        Datatype::ReceivedCan,
+                        id as u64,
+                        bytes_to_u64(frame.data()),
+                    ))
+                    .await;
                 #[cfg(debug_assertions)]
                 info!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
                 if DATA_IDS.contains(&id) {
@@ -90,7 +96,7 @@ pub async fn can_receiving_handler(
                                     timestamp.as_ticks(),
                                 )
                                 .await;
-                            } else if gfd_counter > 2 {
+                            } else if gfd_counter > 2 && frame.data()[2] == 0xFE {
                                 gfd_counter = 0;
                                 can_sender
                                     .send(

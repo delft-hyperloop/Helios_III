@@ -42,7 +42,21 @@
     let interval: NodeJS.Timeout;
 
     onMount(() => {
-        all_states = [boot_state, est_con_state, idle_state, run_conf_state, exit_state, hv_on_state, emerg_brake_state, levi_state, moving_st, moving_ls_cv, moving_ls_end, moving_st_end, moving_ls_st];
+        all_states = [
+            boot_state, 
+            est_con_state, 
+            run_conf_state, 
+            idle_state,
+            hv_on_state, 
+            levi_state, 
+            moving_st, 
+            moving_ls_st,
+            moving_ls_cv, 
+            moving_st_end, 
+            moving_ls_end, 
+            emerg_brake_state, 
+            exit_state
+        ];
 
         interval = setInterval(() => {
             turn_off_all(all_states);

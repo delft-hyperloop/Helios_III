@@ -6,6 +6,7 @@ use embassy_net::Stack;
 use embassy_stm32::eth::generic_smi::GenericSMI;
 use embassy_stm32::eth::Ethernet;
 use embassy_stm32::peripherals::ETH;
+use embassy_time::Instant;
 use embassy_time::Timer;
 use embedded_io_async::Write;
 use heapless::Deque;
@@ -15,9 +16,13 @@ use crate::core::communication::Datapoint;
 use crate::pconfig::embassy_socket_from_config;
 use crate::Command;
 use crate::DataReceiver;
+use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
+use crate::COMMAND_HASH;
+use crate::DATA_HASH;
+use crate::EVENTS_HASH;
 use crate::GS_IP_ADDRESS;
 use crate::IP_TIMEOUT;
 use crate::NETWORK_BUFFER_SIZE;
@@ -32,6 +37,7 @@ pub async fn tcp_connection_handler(
     stack: &'static Stack<Ethernet<'static, ETH, GenericSMI>>,
     event_sender: EventSender,
     data_receiver: DataReceiver,
+    data_sender: DataSender,
 ) -> ! {
     let mut last_valid_timestamp = embassy_time::Instant::now().as_millis();
     // info!("------------------------------------------------ TCP Connection Handler Started! ------------------------------------------");
@@ -69,6 +75,15 @@ pub async fn tcp_connection_handler(
             },
         }
         event_sender.send(Event::ConnectionEstablishedEvent).await;
+        data_sender
+            .send(Datapoint::new(Datatype::CommandHash, COMMAND_HASH, Instant::now().as_ticks()))
+            .await;
+        data_sender
+            .send(Datapoint::new(Datatype::DataHash, DATA_HASH, Instant::now().as_ticks()))
+            .await;
+        data_sender
+            .send(Datapoint::new(Datatype::EventsHash, EVENTS_HASH, Instant::now().as_ticks()))
+            .await;
         // let mut connection = client.connect(gs_addr).await.unwrap();
         // info!("----------------------------------------------------------------Connected to ground station==========================");
 
@@ -203,6 +218,11 @@ pub async fn tcp_connection_handler(
                                     info!("[tcp] Start Run command received");
                                     event_sender.send(Event::RunStarting).await;
                                 },
+                                Command::ContinueRun(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] Start Run command received");
+                                    event_sender.send(Event::ContinueRunEvent).await;
+                                },
                                 Command::Shutdown(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Shutdown command received");
@@ -218,6 +238,16 @@ pub async fn tcp_connection_handler(
                                     info!("[tcp] StopHV command received");
                                     event_sender.send(Event::TurnOffHVCommand).await;
                                     // TODO: no turn off HV exists??
+                                },
+                                Command::DcOn(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] DcOn command received");
+                                    event_sender.send(Event::DcOn).await;
+                                },
+                                Command::DcOff(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp] DcOff command received");
+                                    event_sender.send(Event::DcOff).await;
                                 },
                                 Command::EmitEvent(e) => {
                                     #[cfg(debug_assertions)]

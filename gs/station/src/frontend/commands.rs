@@ -112,28 +112,6 @@ pub fn quit_server() {
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn procedures() -> Vec<[String; 6]> {
-    let res =
-        Backend::load_procedures(PathBuf::from_str("../../config/procedures/").unwrap());
-    if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
-        if let Ok(x) = res {
-            backend_mutex.get_mut().unwrap().log_msg(&Message::Info("Loading procedures".into()));
-            x
-        } else {
-            backend_mutex
-                .get_mut()
-                .unwrap()
-                .log_msg(&Message::Error("Failed to load procedures".into()));
-            Vec::new()
-        }
-    } else {
-        res.unwrap()
-    }
-}
-
-#[macro_export]
-#[allow(unused)]
-#[tauri::command]
 pub fn save_to_file(path: &str) -> bool {
     if let Some(backend_mutex) = unsafe { BACKEND.as_ref() } {
         let log = &backend_mutex.lock().unwrap().log;
@@ -144,5 +122,33 @@ pub fn save_to_file(path: &str) -> bool {
         }
     } else {
         false
+    }
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn procedures() -> Vec<[String; 6]> {
+    let res = Backend::load_procedures(PathBuf::from("../../config/procedures/"));
+    if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
+        if let Ok(x) = res {
+            backend_mutex.get_mut().unwrap().log_msg(&Message::Info("Loading procedures".into()));
+            x
+        } else {
+            backend_mutex
+                .get_mut()
+                .unwrap()
+                .log_msg(&Message::Error("Failed to load procedures".into()));
+            vec![[
+                "Failed".into(),
+                "Failed to parse some procedures".into(),
+                "".into(),
+                "".into(),
+                "".into(),
+                format!("{:?}", res),
+            ]]
+        }
+    } else {
+        res.unwrap()
     }
 }

@@ -5,7 +5,7 @@ extern crate serde;
 use std::env;
 use std::fs;
 use std::path::Path;
-
+use anyhow::Result;
 use goose_utils::check_ids;
 use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
@@ -68,31 +68,31 @@ pub const DATATYPES_PATH: &str = "../config/datatypes.toml";
 pub const COMMANDS_PATH: &str = "../config/commands.toml";
 pub const EVENTS_PATH: &str = "../config/events.toml";
 
-fn main() {
+fn main() -> Result<()> {
     // if cfg!(debug_assertions) {
     //     env::set_var("DEFMT_LOG", "trace");
     // } else {
     //     env::set_var("DEFMT_LOG", "off");
     // }
 
-    let out_dir = env::var("OUT_DIR").unwrap();
+    let out_dir = env::var("OUT_DIR")?;
     let dest_path = Path::new(&out_dir).join("config.rs");
 
-    let ip_file = fs::read_to_string(CONFIG_PATH).unwrap();
-    let config: Config = toml::from_str(&ip_file).unwrap();
+    let ip_file = fs::read_to_string(CONFIG_PATH)?;
+    let config: Config = toml::from_str(&ip_file)?;
 
     let mut content = String::from("//@generated\n");
 
     let _ = check_ids(DATATYPES_PATH, COMMANDS_PATH, EVENTS_PATH);
 
     content.push_str(&configure_ip(&config));
-    content.push_str(&configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force));
+    content.push_str(&configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force)?);
     content.push_str(&configure_pod(&config));
     content.push_str(&configure_internal(&config));
-    content.push_str(&goose_utils::commands::generate_commands(COMMANDS_PATH, true));
-    content.push_str(&goose_utils::datatypes::generate_datatypes(DATATYPES_PATH, false));
-    content.push_str(&goose_utils::events::generate_events(EVENTS_PATH, true));
-    content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, false));
+    content.push_str(&goose_utils::commands::generate_commands(COMMANDS_PATH, true)?);
+    content.push_str(&goose_utils::datatypes::generate_datatypes(DATATYPES_PATH, false)?);
+    content.push_str(&goose_utils::events::generate_events(EVENTS_PATH, true)?);
+    content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, false)?);
     // content.push_str(&*can::main(&id_list));
 
     fs::write(dest_path.clone(), content).unwrap_or_else(|e| {
@@ -107,6 +107,8 @@ fn main() {
     println!("cargo:rustc-link-arg-bins=--nmagic");
     println!("cargo:rustc-link-arg-bins=-Tlink.x");
     println!("cargo:rustc-link-arg-bins=-Tdefmt.x");
+
+    Ok(())
 }
 
 fn configure_ip(config: &Config) -> String {

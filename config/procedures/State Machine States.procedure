@@ -1,0 +1,21 @@
+# Full Pushed-Run State Machine Demonstration
+
+Id:
+DH08.PROC.SC.SM
+
+People:
+1 Embedded Software Engineer as Ground Station Operator and Procedure lead
+1 Safety Officer at the end of track
+1 Person in the track to push the pod
+
+Items:
+Ground Station setup
+
+Procedures:
+<guus power on procedure>
+<ground station power on procedure>
+Ensure localisation is enabled and sends reasonable readings
+Bring the pod to ForwardA section of the track 
+... 
+
+

@@ -56,6 +56,9 @@
     let voffChart = new PlotBuffer(500, 60000, [8, 25], false)
     $chartStore.set('Offset Vertical', voffChart);
 
+    let accelChart = new PlotBuffer(500, 60000, [0, 25], false)
+    $chartStore.set('Acceleration', accelChart);
+
     let rolPitchChart = new PlotBuffer(500, 60000, [-0.8, 0.8], true, "roll")
     rolPitchChart.addSeries(StrokePresets.theoretical("pitch"))
     $chartStore.set("Roll Pitch", rolPitchChart)
@@ -64,11 +67,11 @@
     hoffChart.addSeries(StrokePresets.theoretical("cd"))
     $chartStore.set('Offset Horizontal', hoffChart);
 
-    let velChart = new PlotBuffer(500, 5*60*1000, [0, 100], false)
+    let velChart = new PlotBuffer(500, 60000, [0, 100], false)
     $chartStore.set('Velocity', velChart);
 
-    let leviChart = new PlotBuffer(500, 60000, [0, 13000], false);
-    $chartStore.set('Localisation', leviChart);
+    let localisationChart = new PlotBuffer(500, 60000, [0, 13000], false);
+    $chartStore.set('Localisation', localisationChart);
 
     let trr = new PlotBuffer(500, 60000, [0, 50], false)
     trr.addSeries(StrokePresets.theoretical())

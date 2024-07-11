@@ -55,6 +55,7 @@ features = ["defmt"]
 
 # Only for build.rs
 [build-dependencies]
+anyhow = "1.0.86"
 regex = "1.10.3"
 serde = { version = "1.0.197", features = ["derive"] }
 toml = "0.8.11"

@@ -107,6 +107,16 @@ impl App {
                         },
                         _ => {},
                     },
+                    Datatype::RoutePlan => {
+                        self.logs.push((
+                            Message::Info(format!(
+                                "Route: \n{:?}\ncurrently at {}",
+                                datapoint.value.to_be_bytes(),
+                                datapoint.timestamp,
+                            )),
+                            timestamp(),
+                        ));
+                    },
                     Datatype::FSMState => {
                         self.cur_state = state_to_string(datapoint.value).to_string();
                         self.logs.push((

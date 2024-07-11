@@ -7,12 +7,14 @@ pub mod events;
 pub mod info;
 pub mod ip;
 mod shared;
+pub mod limits;
+use anyhow::Result;
 
-pub fn check_ids(dp: &str, cp: &str, ep: &str) -> Vec<u16> {
+pub fn check_ids(dp: &str, cp: &str, ep: &str) -> Result<Vec<u16>> {
     let mut ids = vec![];
-    ids.extend(datatypes::get_data_ids(dp));
-    ids.extend(commands::get_command_ids(cp));
-    ids.extend(events::get_event_ids(ep));
+    ids.extend(datatypes::get_data_ids(dp)?);
+    ids.extend(commands::get_command_ids(cp)?);
+    ids.extend(events::get_event_ids(ep)?);
     let mut seen = HashSet::new();
     for id in &ids {
         if !seen.insert(id) {
@@ -30,7 +32,7 @@ pub fn check_ids(dp: &str, cp: &str, ep: &str) -> Vec<u16> {
             );
         }
     }
-    ids
+    Ok(ids)
 }
 
 fn nearest_id(id: u16, ids: &[u16]) -> u16 {
@@ -46,3 +48,4 @@ fn nearest_id(id: u16, ids: &[u16]) -> u16 {
     }
     panic!("There are no more available ids!")
 }
+

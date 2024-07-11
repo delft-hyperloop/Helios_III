@@ -385,7 +385,8 @@ mod tests {
             positions: LocationSequence::default(),
             current_position: 0,
             speeds: LocationSpeedMap(
-                [ (Location::ForwardA,195),
+                [
+                    (Location::ForwardA, 195),
                     (Location::BackwardsA, 194),
                     (Location::ForwardB, 0),
                     (Location::BackwardsB, 0),
@@ -413,31 +414,31 @@ mod tests {
             positions: LocationSequence([
                 Location::ForwardA,
                 Location::LaneSwitchStraight,
-                Location::LaneSwitchCurved,
-                Location::BackwardsC,
-                Location::BackwardsB,
+                Location::ForwardB,
                 Location::StopAndWait,
-                Location::BackwardsA,
+                Location::BackwardsB,
                 Location::LaneSwitchStraight,
+                Location::BackwardsA,
+                Location::BrakeHere,
+                Location::StopAndWait,
+                Location::ForwardA,
                 Location::LaneSwitchCurved,
                 Location::ForwardC,
-                Location::BackwardsC,
-                Location::ForwardB,
-                Location::BackwardsA,
-                Location::LaneSwitchStraight,
-                Location::LaneSwitchCurved,
-                Location::BackwardsC,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
             ]),
             current_position: 0,
             speeds: LocationSpeedMap(
                 [
-                    (Location::ForwardA,195),
+                    (Location::ForwardA, 195),
                     (Location::BackwardsA, 194),
-                    (Location::ForwardB, 0),
+                    (Location::ForwardB, 199),
                     (Location::BackwardsB, 0),
-                    (Location::ForwardC, 0),
+                    (Location::ForwardC, 199),
                     (Location::BackwardsC, 0),
-                    (Location::LaneSwitchStraight, 0),
+                    (Location::LaneSwitchStraight, 10),
                     (Location::LaneSwitchCurved, 0),
                     (Location::StopAndWait, 0),
                     (Location::BrakeHere, 0),
@@ -447,7 +448,7 @@ mod tests {
         };
         let s_bytes: u64 = route.speeds.clone().into();
         let r_bytes: u64 = route.positions.into();
-        // panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
         assert!(s_bytes > 0);
         assert!(r_bytes > 0);
     }

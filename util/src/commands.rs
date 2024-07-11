@@ -1,34 +1,41 @@
 #![allow(non_snake_case)]
 
 use std::fs;
-
+use std::hash::DefaultHasher;
+use std::hash::Hash;
+use std::hash::Hasher;
+use anyhow::Result;
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Hash)]
 pub struct Config {
     pub(crate) Command: Vec<Command>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Hash)]
 pub struct Command {
     pub name: String,
     pub id: u16,
 }
 
-pub fn get_command_ids(path: &str) -> Vec<u16> {
-    let config_str = fs::read_to_string(path).unwrap();
-    let config: Config = toml::from_str(&config_str).unwrap();
+pub fn get_command_ids(path: &str) -> Result<Vec<u16>> {
+    let config_str = fs::read_to_string(path)?;
+    let config: Config = toml::from_str(&config_str)?;
     let mut ids = Vec::new();
     for command in config.Command {
         ids.push(command.id);
     }
-    ids
+    Ok(ids)
 }
 
-pub fn generate_commands(path: &str, drv: bool) -> String {
-    let config_str = fs::read_to_string(path).unwrap();
-    let config: Config = toml::from_str(&config_str).unwrap();
+pub fn generate_commands(path: &str, drv: bool) -> Result<String> {
+    let config_str = fs::read_to_string(path)?;
+    let config: Config = toml::from_str(&config_str)?;
     // println!("{:?}", config);
+
+    let mut hasher = DefaultHasher::new();
+    config.hash(&mut hasher);
+    let hash = hasher.finish();
 
     let mut enum_definitions = String::new();
     let mut match_to_id = String::new();
@@ -57,7 +64,7 @@ pub fn generate_commands(path: &str, drv: bool) -> String {
         to_idx.push_str(&format!("            Command::{}(_) => {i},\n", &command.name));
     }
 
-    format!(
+    Ok(format!(
         "\n
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
@@ -117,4 +124,5 @@ pub const COMMANDS_LIST: [&str; {}] = [{}];
         to_idx,
         ids.len(), ids.join(", "), name_list.len(), name_list.join(", ")
     )
+    + &format!("\npub const COMMAND_HASH: u64 = {hash};"))
 }
