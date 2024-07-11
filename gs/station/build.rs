@@ -5,7 +5,7 @@ use std::env;
 use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
-
+use anyhow::Result;
 use goose_utils::check_ids;
 use goose_utils::commands::generate_commands;
 use goose_utils::datatypes::generate_datatypes;
@@ -51,34 +51,36 @@ pub const DATATYPES_PATH: &str = "../../config/datatypes.toml";
 pub const COMMANDS_PATH: &str = "../../config/commands.toml";
 pub const EVENTS_PATH: &str = "../../config/events.toml";
 
-fn main() {
+fn main() -> Result<()> {
     tauri_build::build();
-    let out_dir = env::var("OUT_DIR").unwrap();
+    let out_dir = env::var("OUT_DIR")?;
     let dest_path = Path::new(&out_dir).join("config.rs");
-    let gs_file = fs::read_to_string(CONFIG_PATH).unwrap();
+    let gs_file = fs::read_to_string(CONFIG_PATH)?;
 
     let _ = check_ids(DATATYPES_PATH, COMMANDS_PATH, EVENTS_PATH);
 
-    let config: Config = toml::from_str(&gs_file).unwrap();
+    let config: Config = toml::from_str(&gs_file)?;
 
     let mut content = String::from("//@generated\n");
 
     content.push_str(&configure_gs(&config));
-    content.push_str(&configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force));
-    content.push_str(&generate_datatypes(DATATYPES_PATH, true));
-    content.push_str(&generate_commands(COMMANDS_PATH, false));
-    content.push_str(&generate_events(EVENTS_PATH, false));
+    content.push_str(&configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force)?);
+    content.push_str(&generate_datatypes(DATATYPES_PATH, true)?);
+    content.push_str(&generate_commands(COMMANDS_PATH, false)?);
+    content.push_str(&generate_events(EVENTS_PATH, false)?);
     content.push_str(&configure_channels(&config));
-    content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, true));
+    content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, true)?);
 
     fs::write(dest_path.clone(), content).unwrap_or_else(|_| {
-        panic!("Couldn't write to {}! Build failed.", dest_path.to_str().unwrap())
+        panic!("Couldn't write to {}! Build failed.", dest_path.to_str().unwrap());
     });
 
     println!("cargo:rerun-if-changed={}", CONFIG_PATH);
     println!("cargo:rerun-if-changed={}", COMMANDS_PATH);
     println!("cargo:rerun-if-changed={}", DATATYPES_PATH);
     println!("cargo:rerun-if-changed={}", EVENTS_PATH);
+
+    Ok(())
 }
 
 fn configure_gs(config: &Config) -> String {
