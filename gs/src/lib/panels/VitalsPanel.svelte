@@ -1,13 +1,5 @@
 <script lang="ts">
-    import {
-        Chart,
-        Battery,
-        Table,
-        FSM,
-        TileGrid,
-        Tile,
-        Command, GrandDataDistributor
-    } from "$lib";
+    import {Battery, Table, FSM, TileGrid, Tile, Command, GrandDataDistributor, Localiser} from "$lib";
     import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
@@ -56,31 +48,39 @@
     const downDrawerVB = storeManager.getStore("Average_Temp_VB_Bottom");
     const outsideVB = storeManager.getStore("Ambient_temp");
 
-    let tableArr: any[][];
+    const hems1 = storeManager.getStore("Temp_HEMS_1");
+    const hems2 = storeManager.getStore("Temp_HEMS_2");
+    const hems3 = storeManager.getStore("Temp_HEMS_3");
+    const hems4 = storeManager.getStore("Temp_HEMS_4");
+    const ems1 = storeManager.getStore("Temp_EMS_2");
+    const ems2 = storeManager.getStore("Temp_EMS_2");
+
+    let tableTempsArr: any[][];
     let tableArr2: any[][];
 
     let tableBatteryTitles = ["", "HV Voltages", "HV Temp", "LV Voltages", "LV Temp"]
+
     $: tableBatteryVitals = [
         ["Min", $minVHigh + " V", $minTempHigh + " °C", $minVLow + " V", $minTempLow + " °C"],
         ["Max", $maxVHigh + " V", $maxTempHigh + " °C", $maxVLow + " V", $maxTempLow + " °C"],
         ["Avg", $avgVHigh + " V", $avgTempHigh + " °C", $avgVLow + " V", $avgTempLow + " °C"]
     ]
 
-    $: tableArr = [
-        ["Upper drawer VB", $upDrawerVB],
-        ["Bottom drawer VB", $downDrawerVB],
-        ["Outside of VB", $outsideVB],
-        ["Propulsion", $propTemp],
-        ["Levitation", $leviTemp],
-        ["Brake", $brakeTemp],
+    $: tableTempsArr = [
+        ["Upper drawer VB", $upDrawerVB, "HEMS 1", $hems1 + " °C"],
+        ["Bottom drawer VB", $downDrawerVB, "HEMS 2", $hems2 + " °C"],
+        ["Outside of VB", $outsideVB, "HEMS 3", $hems3 + " °C"],
+        ["Propulsion", $propTemp, "HEMS 4", $hems4 + " °C"],
+        ["Levitation", $leviTemp, "EMS 1", $ems1 + " °C"],
+        ["Brake", $brakeTemp, "EMS 2", $ems2 + " °C"],
     ]
 
     $: tableArr2 = [
-        ["Insulation", $ins],
-        ["Insulation+", $insp],
-        ["Insulation-", $insn],
-        ["IMD Voltage", $imdv],
+        ["Insulation", $ins, "Insulation-", $insn],
+        ["Insulation+", $insp, "IMD Voltage", $imdv],
     ]
+
+    const location = storeManager.getStore("Localisation");
 
     const toastStore = getToastStore();
 
@@ -122,12 +122,8 @@
         <div class="snap-x scroll-px-0.5 snap-mandatory overflow-x-auto h-[90vh]">
             <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="">
                 <!--     FSM       -->
-                <Tile bgToken={800} containerClass="col-span-2 px-16">
-                    {#if width > 550}
-                        <FSM size="sm"/>
-                    {:else}
-                        <FSM size="lg"/>
-                    {/if}
+                <Tile bgToken={800} containerClass="col-span-2">
+                    <Localiser turning={true} loc={$location} showLabels={false} />
                 </Tile>
                 <!--      Under FSM      -->
                 <Tile bgToken={700} containerClass="col-span-2">
@@ -159,36 +155,24 @@
                         <Command cmd="StartRun" />
                     </div>
                 </Tile>
-                <!-- <Tile containerClass="py-2 col-span-2" bgToken={800}> -->
-                <!--     <Chart title="Localisation"/> -->
-                <!-- </Tile> -->
                 <!--     TEMPERATURE TABLE      -->
                 <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
                     <Table titles={tableBatteryTitles} tableArr={tableBatteryVitals}/>
                 </Tile>
-                <Tile containerClass="pt-2 pb-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Table {tableArr}/>
+                <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
+                    <Table tableArr={tableTempsArr} titles={["Module", "Temp °C", "Module", "Temp °C"]}/>
                 </Tile>
-                <Tile containerClass="pt-2 pb-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Table titles={["Variable", "Status"]} tableArr={tableArr2}/>
+                <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
+                    <Table titles={["Variable", "Status", "Variable", "Status"]} tableArr={tableArr2}/>
                 </Tile>
-                <!--     OFFSET GRAPHS       -->
-                <!-- <Tile containerClass="py-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}> -->
-                <!--     <Chart title="Offset Horizontal" -->
-                <!--            refreshRate={100}/> -->
-                <!-- </Tile> -->
-                <!-- <Tile containerClass="py-1 h-full w-full col-span-{width < 550 ? 2 : 1}" bgToken={800}> -->
-                <!--     <Chart title="Offset Vertical"/> -->
-                <!-- </Tile> -->
-                <!-- <Tile containerClass="py-2 col-span-2" bgToken={800}> -->
-                <!--     <Chart title="Velocity" /> -->
-                <!-- </Tile> -->
-            <Tile containerClass="col-span-2">
-            <Chart title="HEMS Temperatures" background="bg-surface-900" />
-        </Tile>
-        <Tile containerClass="col-span-2">
-            <Chart title="EMS Temperatures" background="bg-surface-900" />
-        </Tile>
+                <Tile bgToken={800} containerClass="col-span-2 px-16">
+                    {#if width > 550}
+                        <FSM size="sm"/>
+                    {:else}
+                        <FSM size="lg"/>
+                    {/if}
+                </Tile>
+
             </TileGrid>
         </div>
     {/if}
