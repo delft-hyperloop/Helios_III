@@ -23,6 +23,11 @@ id = 0x7ff
 priority = 1
 
 [[Event]]
+name = "EndOfTrackTriggered"
+id = 0x121
+priority = 0
+
+[[Event]]
 name = "BootingCompleteEvent"
 id = 0xa1
 priority = 0
@@ -71,6 +76,11 @@ id = 0xb9
 priority = 1 
 
 [[Event]]
+name = "ContinueRunEvent"
+id = 0xbd
+priority = 1 
+
+[[Event]]
 name = "SystemResetCommand"
 id = 0xbE
 priority = 0
@@ -104,6 +114,16 @@ priority = 0
 id = 0x427
 name = "ReConfigureCommand"
 priority = 0 
+
+[[Event]]
+id = 0x429
+name = "DcOn"
+priority = 1 
+
+[[Event]]
+id = 0x42a
+name = "DcOff"
+priority = 1 
 
 # ###########################################
 # Events that carry configuration information

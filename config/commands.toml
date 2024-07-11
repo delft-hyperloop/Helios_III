@@ -122,6 +122,10 @@ name = "StartRun"
 id = 0x5d
 
 [[Command]]
+name = "ContinueRun"
+id = 0x5e
+
+[[Command]]
 name = "StartHV"
 id = 0x60
 

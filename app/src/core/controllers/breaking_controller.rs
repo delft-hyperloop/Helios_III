@@ -152,7 +152,7 @@ impl BrakingController {
         pf12: peripherals::PF12,
         adc: Adc<'static, ADC1>,
         _pb0: peripherals::PB0,
-        _pd5: peripherals::PD5,
+        pd5: peripherals::PD5,
         _ptime: TIM16,
     ) -> Self {
         info!("breaking controller started");
@@ -180,6 +180,9 @@ impl BrakingController {
 
         let braking_signal = Output::new(pb8, Level::High, Speed::Low);
         // pwm.enable(Channel::Ch1);
+
+        // VGA ground
+        let _ = Output::new(pd5, Level::Low, Speed::Low);
 
         try_spawn!(
             braking_sender,

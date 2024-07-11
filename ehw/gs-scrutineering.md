@@ -43,7 +43,7 @@
 - [x] PLEASE increase the hitbox for dragging the logs panel up and down
 - [ ] change the description under the title
 - [x] none of the keyboard shortcuts work
-- [ ] add a note that `Quit Server` doesn't kill an active connection
+- [x] add a note that `Quit Server` doesn't kill an active connection
 - [ ] add a button and a text field to `Save logs to file` (backend already implemented)
 
 ### Run tab
@@ -57,8 +57,8 @@
 
 ### Location tab
 - [x] rename tab to `Location` instead of `Location & IMU`
-- [ ] fix the graph (kiko is working on this)
-- [ ] fix the lighting up of the SVG with the new graph
+- [x] fix the graph (kiko is working on this)
+- [x] fix the lighting up of the SVG with the new graph
 - [ ] we need buttons to actually control levitation. ask sjoerd what buttons are necessary for manual use and what should instead be automated by the FSM
 
 ### Batteries tab
@@ -93,9 +93,9 @@
         5. content, one long string (`<p>` probably)
     
 ### Vitals
-- [ ] make fsm a bit smaller.
-- [ ] the location diagram should be visible here.
-- [ ] we really need buttons for other important actions:
+- [x] make fsm a bit smaller.
+- [x] the location diagram should be visible here.
+- [x] we really need buttons for other important actions:
     - turn off high voltage
     - arm brakes
     - continue run (`send_command StartRun`)

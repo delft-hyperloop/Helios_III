@@ -200,7 +200,7 @@ impl Backend {
     ) -> anyhow::Result<(String, String, String, String)> {
         let mut x = (String::new(), String::new(), String::new(), String::new());
 
-        let all = r#"[a-zA-Z0-9\n .;!,:(){}\"'_/+-=\[\]\t%]"#;
+        let all = r#"[a-zA-Z0-9\n .;!,:(){}\"'_/+-=\[\]\t%<>]"#;
 
         x.0 = Regex::new("\n[iI][dD][: ]*\n([a-zA-Z0-9\n ._]*)\n\n")
             .unwrap()
@@ -236,7 +236,10 @@ impl Backend {
             .get(1)
             .unwrap()
             .as_str()
-            .to_string();
+            .lines()
+            .map(|x| format!("<p>{x}</p><br>"))
+            .collect::<Vec<String>>()
+            .join("\n");
 
         Ok(x)
     }

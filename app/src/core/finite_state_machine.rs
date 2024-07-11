@@ -5,7 +5,9 @@ use embassy_time::Instant;
 
 use crate::core::communication::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
+use crate::core::fsm_status::Location;
 use crate::core::fsm_status::Route;
+use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
 use crate::DataSender;
 use crate::Datatype;
@@ -115,11 +117,56 @@ impl Fsm {
             State::RunConfig => self.entry_run_config(),
             State::HVOn => self.entry_hv_on(),
             State::Levitating => self.entry_levitating(),
-            State::MovingST => self.entry_mv_st(),
-            State::MovingLSST => self.entry_ls_st(),
-            State::MovingLSCV => self.entry_ls_cv(),
-            State::EndST => self.entry_end_st(),
-            State::EndLS => self.entry_end_ls(),
+            State::MovingST => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                self.entry_mv_st()
+            },
+            State::MovingLSST => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                self.entry_ls_st()
+            },
+            State::MovingLSCV => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                self.entry_ls_cv()
+            },
+            State::EndST => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                self.entry_end_st()
+            },
+            State::EndLS => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                self.entry_end_ls()
+            },
             State::EmergencyBraking => {
                 self.entry_emergency_braking();
                 self.pod_safe().await;
@@ -167,9 +214,51 @@ impl Fsm {
                 return;
             },
 
+            Event::DcOn => {
+                self.peripherals.hv_peripherals.dc_dc.set_high();
+            },
+
+            Event::DcOff => {
+                self.peripherals.hv_peripherals.dc_dc.set_low();
+            },
+
             ///////////////////
             // Debugging events
             Event::SetOverrides(overrides) => self.status.overrides.set(overrides),
+
+            Event::ContinueRunEvent => {
+                match self.route.next_position() {
+                    Location::ForwardA | Location::BackwardsA => {
+                        transit!(self, State::MovingST);
+                    },
+                    Location::ForwardB | Location::BackwardsB => {
+                        transit!(self, State::EndST);
+                    },
+                    Location::ForwardC | Location::BackwardsC => {
+                        transit!(self, State::EndLS);
+                    },
+                    Location::LaneSwitchStraight => {
+                        transit!(self, State::MovingLSST);
+                    },
+                    Location::LaneSwitchCurved => {
+                        transit!(self, State::MovingLSCV);
+                    },
+                    Location::StopAndWait => {
+                        transit!(self, State::Levitating);
+                    },
+                    Location::BrakeHere => {
+                        transit!(self, State::Exit);
+                    },
+                }
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                return;
+            },
 
             // Override enabling or disabling propulsion GPIO
             Event::DisablePropulsionCommand => {

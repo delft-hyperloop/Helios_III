@@ -1,15 +1,18 @@
 #![allow(non_snake_case)]
 
 use std::fs;
+use std::hash::DefaultHasher;
+use std::hash::Hash;
+use std::hash::Hasher;
 
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Hash)]
 pub struct Config {
     Event: Vec<Event>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Hash)]
 pub struct Event {
     name: String,
     id: u16,
@@ -28,6 +31,10 @@ pub fn get_event_ids(path: &str) -> Vec<u16> {
 
 pub fn generate_events(path: &str, drv: bool) -> String {
     let config: Config = get_events_config(path);
+
+    let mut hasher = DefaultHasher::new();
+    config.hash(&mut hasher);
+    let hash = hasher.finish();
 
     let mut enum_definitions = String::new();
     let mut match_to_id = String::new();
@@ -131,5 +138,5 @@ impl Event {{
         "\n\npub static EVENT_IDS : [u16;{}] = [{}];\n",
         event_ids.len(),
         event_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", ")
-    )
+    ) + &format!("\npub const EVENTS_HASH: u64 = {hash};")
 }

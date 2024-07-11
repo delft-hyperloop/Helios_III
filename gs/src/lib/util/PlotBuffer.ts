@@ -6,7 +6,7 @@ import uPlot from 'uplot';
  * It also takes care of buffering the data and updating the graph.
  */
 export class PlotBuffer {
-    private _plot: uPlot | undefined;
+    private _plots: Map<HTMLDivElement, uPlot> = new Map();
     private _intervalId: number | undefined;
     private readonly _data: uPlot.AlignedData;
     private readonly _opts: uPlot.Options;
@@ -67,7 +67,7 @@ export class PlotBuffer {
         const index: number = this._data.length;
         this._data.push(new Int32Array(this._data[0].length));
         this._opts.series.push(series);
-        this._plot?.addSeries(series);
+        this._plots?.forEach(plot => plot.addSeries(series));
         this.buffer[index] = [];
     }
 
@@ -97,16 +97,6 @@ export class PlotBuffer {
      */
     public addEntry(seriesIndex:number, value:number) {
         this.buffer[seriesIndex].push(value);
-        // let datum = this._data[seriesIndex];
-        //
-        // for (let i = 0; i < datum.length-1; i++) {
-        //     datum[i] = datum[i+1];
-        // }
-        //
-        // datum[datum.length-1] = value;
-        //
-        // // Redraw the chart with the updated data
-        // console.log("")
     }
 
     /**
@@ -117,16 +107,18 @@ export class PlotBuffer {
      * Documentation is severely lacking, but the examples should be helpful.
      */
     public draw(plotContainer: HTMLDivElement) {
-        this._plot = new uPlot(this._opts, this._data, plotContainer);
+        this._plots.set(plotContainer, new uPlot(this._opts, this._data, plotContainer));
 
         if (this.updateInterval === 0) {
             this.redraw();
             return;
         }
 
-        this._intervalId = window.setInterval(() => {
-            this.updateData();
-        }, this.updateInterval);
+        if (!this._intervalId) {
+            this._intervalId = window.setInterval(() => {
+                this.updateData();
+            }, this.updateInterval);
+        }
     }
 
     private updateData() {
@@ -135,14 +127,11 @@ export class PlotBuffer {
                 this.buffer[i].reduce((a, b) => a + b, 0) / this.buffer[i].length :
                 this.lastEntryOf(i);
 
-            // Update the _data array
             let datum = this._data[i];
             for (let j = 0; j < datum.length - 1; j++) {
                 datum[j] = datum[j + 1];
             }
             datum[datum.length - 1] = value;
-
-
 
             this.buffer[i] = [];
         }
@@ -159,23 +148,22 @@ export class PlotBuffer {
      * This method should be called when the data in the graph has to be drawn.
      */
     public redraw() {
-        if (this._plot) {
-            this._plot.batch(() => {
-                this._plot!.setData(this._data, true);
-                this._plot!.redraw(false, false);
-            });
-        }
+        this._plots.forEach(plot =>
+          plot.batch(() => {
+              plot.setData(this._data, true);
+              plot.redraw(false, false);
+          })
+        );
     }
 
     /**
      * Set the size of the graph.
+     * @param plotContainer The HTML element in which the graph is drawn.
      * @param width width in pixels
      * @param height height in pixels
      */
-    public setSize(width:number, height:number) {
-        if (this._plot) {
-            this._plot.setSize({width: width, height: height});
-        }
+    public setSize(plotContainer:HTMLDivElement, width:number, height:number) {
+        this._plots.get(plotContainer)?.setSize({width, height});
     }
 
     /**
@@ -183,10 +171,17 @@ export class PlotBuffer {
      * This method should be called when the graph is no longer needed.
      * It will stop the update interval and destroy the uPlot object.
      */
-    public destroy() {
-        this._plot?.destroy();
-        if (this._intervalId !== undefined) {
+    public destroy(plotContainer:HTMLDivElement) {
+        const plot = this._plots.get(plotContainer);
+
+        if (plot) {
+            plot.destroy();
+            this._plots.delete(plotContainer);
+        }
+
+        if (this._plots.size === 0 && this._intervalId !== undefined) {
             window.clearInterval(this._intervalId);
+            this._intervalId = undefined;
         }
     }
 }

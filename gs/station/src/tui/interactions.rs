@@ -98,8 +98,8 @@ impl App {
                 self.cmds[self.selected_row].value /= 10;
             },
             KeyCode::Char('p') => {
-                self.backend.send_command(Command::SetRoute(8356402650779983807));
-                self.backend.send_command(Command::SetSpeeds(215199336366080));
+                self.backend.send_command(Command::SetRoute(1822648539875311616));
+                self.backend.send_command(Command::SetSpeeds(14106055789030410752));
             },
             KeyCode::Char('o') => {
                 self.backend.send_command(Command::SetRoute(8328165916070586159));
