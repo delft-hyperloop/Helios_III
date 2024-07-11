@@ -305,10 +305,13 @@ id = 0x1d
 [[Datatype]]
 name = "BrakePressure"
 id = 0x15
+upper = 250
+lower = 1
 
 [[Datatype]]
 name = "UnknownCanId"
 id = 0x7F0
+
 [[Datatype]]
 name = "Info"
 id = 0x7FA
