@@ -7,6 +7,7 @@ pub mod events;
 pub mod info;
 pub mod ip;
 mod shared;
+pub mod limits;
 
 pub fn check_ids(dp: &str, cp: &str, ep: &str) -> Vec<u16> {
     let mut ids = vec![];

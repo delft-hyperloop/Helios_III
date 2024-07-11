@@ -1,11 +1,12 @@
 #![allow(non_snake_case, non_camel_case_types)]
-
+use std::fmt::Display;
 use std::fs;
 use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
-
 use serde::Deserialize;
+use std::fmt::Formatter;
+const NONE: fn() -> Limit = || Limit::No;
 
 #[derive(Deserialize, Hash)]
 pub struct Config {
@@ -16,8 +17,42 @@ pub struct Config {
 pub struct Datatype {
     pub name: String,
     pub id: u16,
-    pub lower: Option<u64>,
-    pub upper: Option<u64>,
+    #[serde(default = "NONE")]
+    pub lower: Limit,
+    #[serde(default = "NONE")]
+    pub upper: Limit,
+}
+
+#[derive(Hash, Clone, Copy)]
+pub enum Limit {
+    No,
+    Single(u64),
+    Multiple(Severities)
+}
+
+impl Display for Limit {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
+        match *self {
+            Limit::No => write!(f, "Limit::No"),
+            Limit::Single(x) => write!(f, "Limit::Single({x})"),
+            Limit::Multiple(y) => {
+                write!(f, 
+                    "Limit::Multiple(Severities {{ warn: {}, err: {}, brake: {} }})",
+                    y.warn.map(|x| format!("Some({x})")).unwrap_or("None".into()),
+                    y.err.map(|x| format!("Some({x})")).unwrap_or("None".into()),
+                    y.brake.map(|x| format!("Some({x})")).unwrap_or("None".into()),
+                )
+            }
+        }
+    }
+}
+
+
+#[derive(Deserialize, Hash, Clone, Copy)]
+pub struct Severities {
+    pub warn: Option<u64>,
+    pub err: Option<u64>,
+    pub brake: Option<u64>,
 }
 
 pub fn get_data_config(path: &str) -> Config {
@@ -50,39 +85,64 @@ pub fn generate_datatypes(path: &str, drv: bool) -> String {
         match_from_id.push_str(&format!("            {} => Datatype::{},\n", dtype.id, dtype.name));
         from_str.push_str(&format!("            {:?} => Datatype::{},\n", dtype.name, dtype.name));
         bounds.push_str(&format!(
-            "            Datatype::{} => {} {} {},\n",
+            "            Datatype::{} => ({}, {}),\n",
             dtype.name,
-            dtype.lower.map(|x| format!("other >= {}u64", x)).unwrap_or("".to_string()),
-            if dtype.lower.is_some() && dtype.upper.is_some() {
-                "&&".to_string()
-            } else {
-                "".to_string()
-            },
-            dtype.upper.map(|x| format!("other <= {}u64", x)).unwrap_or_else(|| {
-                if dtype.lower.is_none() && dtype.upper.is_none() {
-                    "true".to_string()
-                } else {
-                    "".to_string()
-                }
-            }),
+            dtype.upper,
+            dtype.lower,
         ));
-        if let Some(l) = dtype.lower {
-            if l == 0 {
-                panic!(
-                    "
-You set a lower bound of 0 for {}. \
-Since all values are treated as u64, \
-values less than 0 are impossible. 
-Please ommit specifying this to keep the config clean :)
-",
-                    dtype.name
-                );
-            }
-        }
+//         bounds.push_str(&format!(
+//             "            Datatype::{} => {} {} {},\n",
+//             dtype.name,
+//             dtype.lower.map(|x| format!("other >= {}u64", x)).unwrap_or("".to_string()),
+//             if dtype.lower.is_some() && dtype.upper.is_some() {
+//                 "&&".to_string()
+//             } else {
+//                 "".to_string()
+//             },
+//             dtype.upper.map(|x| format!("other <= {}u64", x)).unwrap_or_else(|| {
+//                 if dtype.lower.is_none() && dtype.upper.is_none() {
+//                     "true".to_string()
+//                 } else {
+//                     "".to_string()
+//                 }
+//             }),
+//         ));
+//         if let Some(l) = dtype.lower {
+//             if l == 0 {
+//                 panic!(
+//                     "
+// You set a lower bound of 0 for {}. \
+// Since all values are treated as u64, \
+// values less than 0 are impossible. 
+// Please ommit specifying this to keep the config clean :)
+// ",
+//                     dtype.name
+//                 );
+//             }
+//         }
     }
 
     format!(
         "\n
+pub enum Limit {{
+    No,
+    Single(u64),
+    Multiple(Severities)
+}}
+
+pub struct Severities {{
+    pub warn: Option<u64>,
+    pub err: Option<u64>,
+    pub brake: Option<u64>,
+}}
+
+pub enum ValueCheckResult {{
+    Fine,
+    Warn,
+    Error,
+    BrakeNow,
+}}
+
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
 {}
@@ -113,9 +173,53 @@ impl Datatype {{
     }}
 
 
-    pub fn check_bounds(&self, other: u64) -> bool {{
+    pub fn bounds(&self) -> (Limit, Limit) {{
         match *self {{
 {}
+        }}
+    }}
+
+    pub fn check_bounds(&self, value: u64) -> ValueCheckResult {{
+        let (up, low) = self.bounds();
+        let ok_up = match up {{
+            Limit::No => 0,
+            Limit::Single(x) => if value > x {{ 1 }} else {{ 0 }},
+            Limit::Multiple(Severities {{
+                warn: a,
+                err: b,
+                brake: c,
+            }}) => {{
+                if let Some(cc) = c {{
+                    if value > cc {{ 100 }} else {{ 0 }}
+                }} else if let Some(bb) = b {{
+                    if value > bb {{ 10 }} else {{ 0 }}
+                }} else if let Some(aa) = a {{
+                    if value > aa {{ 1 }} else {{ 0 }}
+                }} else {{ 0 }}
+            }}
+        }};
+        let ok_low = match low {{
+            Limit::No => 0,
+            Limit::Single(x) => if value < x {{ 1 }} else {{ 0 }},
+            Limit::Multiple(Severities {{
+                warn: a,
+                err: b,
+                brake: c,
+            }}) => {{
+                if let Some(cc) = c {{
+                    if value < cc {{ 100 }} else {{ 0 }}
+                }} else if let Some(bb) = b {{
+                    if value < bb {{ 10 }} else {{ 0 }}
+                }} else if let Some(aa) = a {{
+                    if value < aa {{ 1 }} else {{ 0 }}
+                }} else {{ 0 }}
+            }}
+        }};
+        match ok_up + ok_low {{
+            0 => ValueCheckResult::Fine,
+            1..10 => ValueCheckResult::Warn,
+            10..100 => ValueCheckResult::Error,
+            _ => ValueCheckResult::BrakeNow,
         }}
     }}
 }}

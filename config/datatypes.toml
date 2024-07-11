@@ -1,19 +1,52 @@
-## -
+##### -----
 # Format for new datatypes:
 # ```
 # [[Datatype]]
 # name = "YourNewDatatypeName"
-# id = 42 # must be unique. code will not compile if there is a collision. Values can be from 0-2047, or 0x000 to 0x7FF.
-# upper = 100 # an upper bound for the values of this datatype.
-# lower = 12 # a lower bound for the values of this datatype.
+# id = 42 # must be unique. 
+#         # the code will not compile if there is a collision. 
+#         # Values can be from 0-2047, or 0x000 to 0x7FF.
 # ```
-# when a datapoint is received there's a check if 
-#   lower <= value <= upper
-# If this is false, then an emergency brake is triggered.
-# Keep in mind that lower, value, and upper are all of type u64.
-# This means that:
-#   - everything has a lower bound of 0 
-#   - careful when setting bounds for floating point numbers.
+# 
+# Limits:
+# ---------
+# Every time a datapoint is received by the main pcb,
+# it checks the limits of that datatype, and produces 
+# an error if any of the limits are surpassed.
+#
+# There are 3 severities for surpassing bounds:
+# - warn: the associated field on the ground station will turn yellow
+# - err: the associated field on the ground station will turn red and blink
+# - brake: critical limit, the main pcb will immediately deploy emergency brakes
+# 
+# Not specifying a specific limit means nothing will happen.
+# 
+# ```
+[[Datatype]]
+name = "Example1"
+id = 50
+lower = 5 
+upper = { warn = 50, err = 60, brake = 100 }
+# ```
+# as you can see, you can either specify *one* limit (e.g. `lower = 5`),
+# which if surpassed will function equivalent to `warn`, just informing the 
+# ground station operator,
+# or you can specify multiple limits of different severities (as in `upper = { ... }`).
+#
+# If you don't want a certain severity to ever happen, 
+# just don't include the field:
+# ```
+# [[Datatype]]
+# name = "Example2"
+# id = 51
+# lower = { warn = 10, err = 4, brake = 3 }
+# ```
+# For this one, there will be 
+# - no upper limit, 
+# - a warning when it's below 10 
+# - a (ground station) error when it's below 4,
+# - and no emergency braking at any point.
+
 
 [[Datatype]]
 name = "DefaultDatatype"
@@ -826,4 +859,15 @@ id = 0x168
 name = "DataHash"
 id = 0x169
 
+[[Datatype]]
+name = "ValueError"
+id = 0x16a
+
+[[Datatype]]
+name = "ValueWarning"
+id = 0x16b
+
+[[Datatype]]
+name = "ValueCausedBraking"
+id = 0x16c
 
