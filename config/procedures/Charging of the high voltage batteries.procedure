@@ -1,3 +1,5 @@
+# Charging the high-voltage batteries
+
 Id: 
 PROC.HV.CHRG
 
@@ -35,3 +37,4 @@ When the batteries are fully charged, the power output of the power supply is se
 If necessary, the batteries will be further balanced by the BMS
 When balanced, both MID's are opened by person B wearing insulating gloves
 The two packs are placed back into the battery box.
+

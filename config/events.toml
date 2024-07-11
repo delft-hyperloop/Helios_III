@@ -4,6 +4,30 @@ id = 0x02
 priority = 0
 
 [[Event]]
+name = "Heartbeat"
+id = 0x420
+priority = 1
+
+[[Event]]
+name = "EmergencyBrake"
+id = 0xaB
+priority = 10
+
+
+# ####################
+# FSM Internal events.
+
+[[Event]]
+name = "ValueOutOfBounds"
+id = 0x7ff
+priority = 1
+
+[[Event]]
+name = "EndOfTrackTriggered"
+id = 0x121
+priority = 0
+
+[[Event]]
 name = "BootingCompleteEvent"
 id = 0xa1
 priority = 0
@@ -24,50 +48,9 @@ id = 0xa4
 priority = 0
 
 [[Event]]
-name = "SetRoute"
-id = 0xa5
-priority = 0
-params = "u64"
-
-[[Event]]
-name = "RunConfigCompleteEvent"
-id = 0xa6
-priority = 0
-
-[[Event]]
-name = "RunConfigFailedEvent"
-id = 0xa7
-priority = 0
-
-[[Event]]
-name = "LevitationErrorEvent"
-id = 0xa8
-priority = 4
-
-[[Event]]
-name = "PropulsionErrorEvent"
-id = 0xa9
-priority = 3
-
-[[Event]]
-name = "PowertrainErrorEvent"
-id = 0xaA
-priority = 2
-
-[[Event]]
-name = "EmergencyBrakeCommand"
-id = 0xaB
-priority = 10
-
-[[Event]]
 name = "ConnectionLossEvent"
 id = 0xaC
 priority = 1
-
-[[Event]]
-name = "LVLevitationReadyEvent"
-id = 0xaD
-priority = 0
 
 [[Event]]
 name = "LVPropulsionReadyEvent"
@@ -75,18 +58,41 @@ id = 0x3e1
 priority = 0
 
 [[Event]]
-name = "EnablePropulsionCommand"
-id = 0x3e2
-priority = 0
-
-[[Event]]
-name = "DisablePropulsionCommand"
-id = 0x3e3
-priority = 0
-
-[[Event]]
 name = "LVPowertrainReadyEvent"
 id = 0xaF
+priority = 0
+
+[[Event]]
+name = "HVPowertrainReadyEvent"
+id = 0xb3
+priority = 0
+
+# ###################################
+# User commands for the run procedure
+
+[[Event]]
+name = "RunStarting"
+id = 0xb9
+priority = 1 
+
+[[Event]]
+name = "ContinueRunEvent"
+id = 0xbd
+priority = 1 
+
+[[Event]]
+name = "SystemResetCommand"
+id = 0xbE
+priority = 0
+
+[[Event]]
+name = "RunConfigCompleteEvent"
+id = 0xa6
+priority = 0xc0
+
+[[Event]]
+name = "ExitEvent"
+id = 0xc1
 priority = 0
 
 [[Event]]
@@ -105,34 +111,73 @@ id = 0xb2
 priority = 0
 
 [[Event]]
-name = "HVPowertrainReadyEvent"
-id = 0xb3
+id = 0x427
+name = "ReConfigureCommand"
+priority = 0 
+
+[[Event]]
+id = 0x429
+name = "DcOn"
+priority = 1 
+
+[[Event]]
+id = 0x42a
+name = "DcOff"
+priority = 1 
+
+# ###########################################
+# Events that carry configuration information
+
+[[Event]]
+id = 0x422
+name = "SetRunConfigSpeed"
+priority = 0
+params = "u64"
+
+[[Event]]
+name = "SetRoute"
+id = 0xa5
+priority = 0
+params = "u64"
+
+[[Event]]
+name = "SetOverrides"
+id = 0x426
+priority = 0
+params = "u64"
+
+# ###########################################
+# Events triggered by the Localisation system
+
+[[Event]]
+name = "LaneSwitchForward"
+id = 0x502
 priority = 0
 
 [[Event]]
-name = "HVLevitationReadyEvent"
-id = 0xb4
+name = "LaneSwitchBackwardsB"
+id = 0x503
 priority = 0
 
 [[Event]]
-name = "StartLevitatingCommand"
-id = 0xb5
+name = "LaneSwitchBackwardsC"
+id = 0x504
 priority = 0
 
 [[Event]]
-name = "HVPropulsionReadyEvent"
-id = 0xb6
+name = "LaneSwitchEndedB"
+id = 0x505
 priority = 0
 
 [[Event]]
-name = "StartAcceleratingCommand"
-id = 0xb7
+name = "LaneSwitchEndedC"
+id = 0x507
 priority = 0
 
 [[Event]]
-name = "DesiredSpeedReachedEvent"
-id = 0xb8
-priority = 0
+name = "EndOfTrackReached"
+id = 0xc0
+priority = 5
 
 [[Event]]
 name = "BrakingPointReachedA"
@@ -164,78 +209,16 @@ name = "DirectionChangedEvent"
 id = 0xbC
 priority = 0
 
-[[Event]]
-name = "RunFinishedEvent"
-id = 0xbD
-priority = 0
-
-[[Event]]
-name = "SystemResetCommand"
-id = 0xbE
-priority = 0
+# #######################
+# Other Sensor Hub events
 
 [[Event]]
 name = "PodDropSwitchTriggered"
 id = 0xbF
 priority = 5
 
-
-[[Event]]
-name = "EndOfTrackReached"
-id = 0xc0
-priority = 5
-
-[[Event]]
-name = "ExitEvent"
-id = 0xc1
-priority = 0
-
-[[Event]]
-name = "LaneSwitchForward"
-id = 0x502
-priority = 0
-
-[[Event]]
-name = "LaneSwitchBackwardsB"
-id = 0x503
-priority = 0
-
-[[Event]]
-name = "LaneSwitchBackwardsC"
-id = 0x504
-priority = 0
-
-[[Event]]
-name = "LaneSwitchEndedB"
-id = 0x505
-priority = 0
-
-[[Event]]
-name = "LaneSwitchEndedC"
-id = 0x507
-priority = 0
-
-[[Event]]
-name = "Heartbeat"
-id = 0x420
-priority = 1
-
-[[Event]]
-name = "TurnAllHVRelaysOnEvent"
-id = 0x421
-priority = 1
-
-[[Event]]
-id = 0x422
-name = "SetRunConfigSpeed"
-priority = 0
-params = "u64"
-
-[[Event]]
-id = 0x428
-name = "SetCurrentSpeedCommand"
-priority = 0 
-params = "u64"
+# ########################################
+# Events triggered by Levitation subsystem
 
 [[Event]]
 id = 0x423
@@ -247,15 +230,36 @@ id = 0x424
 name = "LeviLandingEvent"
 priority = 0 
 
-[[Event]]
-id = 0x426
-name = "LeviEvent"
-priority = 0 
+# #####################################################
+# Status-related events triggered by the ground station
 
 [[Event]]
-id = 0x427
-name = "ReConfigureCommand"
-priority = 0 
+name = "LVLevitationReadyEvent"
+id = 0xaD
+priority = 0
+
+# ####################
+# Generic error events
+
+[[Event]]
+name = "LevitationErrorEvent"
+id = 0xa8
+priority = 4
+
+[[Event]]
+name = "PropulsionErrorEvent"
+id = 0xa9
+priority = 3
+
+[[Event]]
+name = "PowertrainErrorEvent"
+id = 0xaA
+priority = 2
+
+# #############################################
+# Debug events.
+# usually triggered by the `EmitEvent` command,
+# NOT TO BE USED IN DEMONSTRATION
 
 
 [[Event]]
@@ -268,3 +272,24 @@ id = 667
 name = "EnableBrakingComm"
 priority = 1
 
+[[Event]]
+id = 0x428
+name = "SetCurrentSpeedCommand"
+priority = 0 
+params = "u64"
+
+[[Event]]
+name = "EnablePropulsionCommand"
+id = 0x3e2
+priority = 0
+
+[[Event]]
+name = "DisablePropulsionCommand"
+id = 0x3e3
+priority = 0
+
+# [[Event]]
+# name = "Crying"
+# id = 1281
+# priority = 8 
+#

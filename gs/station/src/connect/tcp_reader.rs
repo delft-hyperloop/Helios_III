@@ -1,8 +1,10 @@
-use crate::api::Message;
-use crate::NETWORK_BUFFER_SIZE;
 use std::collections::VecDeque;
+
 use tokio::io::AsyncReadExt;
 use tokio::net::tcp::OwnedReadHalf;
+
+use crate::api::Message;
+use crate::NETWORK_BUFFER_SIZE;
 
 pub async fn get_messages_from_tcp(
     mut reader: OwnedReadHalf,
@@ -20,7 +22,7 @@ pub async fn get_messages_from_tcp(
                 message_transmitter
                     .send(Message::Error("Connection closed by client".to_string()))?;
                 break;
-            }
+            },
             Ok(n) => {
                 #[cfg(debug_assertions)]
                 // message_transmitter.send(Message::Info(format!("[TRACE] received {} bytes", n)))?;
@@ -33,12 +35,12 @@ pub async fn get_messages_from_tcp(
                     command_transmitter.clone(),
                 )
                 .await?;
-            }
+            },
             Err(e) => {
                 message_transmitter
                     .send(Message::Error(format!("Error reading from socket: {}", e)))?;
                 break;
-            }
+            },
         }
     }
     Ok(())

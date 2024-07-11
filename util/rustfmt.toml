@@ -3,3 +3,20 @@ imports_granularity = "Item"
 
 # imports are sorted to better work with line-based diffs like git
 group_imports = "StdExternalCrate"
+
+empty_item_single_line = true
+fn_single_line = true
+
+max_width = 100
+
+# Use 4 spaces for indentation
+tab_spaces = 4
+
+use_small_heuristics = "Max"
+use_try_shorthand = true
+reorder_impl_items = true
+newline_style = "Unix"
+match_block_trailing_comma = true
+
+# format_macro_bodies = false
+format_strings = false

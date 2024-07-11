@@ -1,6 +1,9 @@
-use crate::api::{Datapoint, Message};
-use crate::{Command, Datatype};
 use tokio::sync::broadcast::Sender;
+
+use crate::api::Datapoint;
+use crate::api::Message;
+use crate::Command;
+use crate::Datatype;
 
 pub fn handle_line_from_levi(
     line: &String,
@@ -12,27 +15,18 @@ pub fn handle_line_from_levi(
     match params[0] {
         "INFO" => {
             msg_send.send(Message::Info(format!("Levi: {}", params[1..].join(","))))?;
-        }
+        },
         "WARNING" => {
-            msg_send.send(Message::Warning(format!(
-                "Levi Warning: {}",
-                params[1..].join(",")
-            )))?;
-        }
+            msg_send.send(Message::Warning(format!("Levi Warning: {}", params[1..].join(","))))?;
+        },
         "ERROR" => {
             // cmd_send.send(Command::EmergencyBrake(3))?;
-            msg_send.send(Message::Error(format!(
-                "Levi Error: {}",
-                params[1..].join(",")
-            )))?;
-        }
+            msg_send.send(Message::Error(format!("Levi Error: {}", params[1..].join(","))))?;
+        },
         "CRITICAL" => {
             cmd_send.send(Command::EmergencyBrake(3))?;
-            msg_send.send(Message::Error(format!(
-                "LEVI CRITICAL: {}",
-                params[1..].join(",")
-            )))?;
-        }
+            msg_send.send(Message::Error(format!("LEVI CRITICAL: {}", params[1..].join(","))))?;
+        },
         "DATA" if params.len() > 2 => {
             if let Ok(x) = params[2].trim().replace(',', ".").parse::<f64>() {
                 msg_send.send(Message::Data(Datapoint::new(
@@ -46,11 +40,11 @@ pub fn handle_line_from_levi(
                     params[2].trim()
                 )))?;
             }
-        }
+        },
         _ => {
             msg_send.send(Message::Warning(format!("Unknown levi msg: {:?}", line)))?;
             return Ok(());
-        }
+        },
     }
     // msg_send.send(Message::Info(format!("[TRACE] Levi: {:?}", line)))?;
     Ok(())

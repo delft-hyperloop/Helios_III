@@ -1,3 +1,5 @@
+# Getting the pod off the track
+
 Id: 
 DH08.PROC.POD_OFF_TRACK
 
@@ -10,7 +12,6 @@ Ensures pod doesnt tip over
 Ensures pod doesnt tip over
 
 Items:
-PROCEDURE ID] item checklist
 PPE (safety glasses, helmet, safety shoes, vest)
 Lifting beam
 6 Tension straps

@@ -88,11 +88,7 @@ pub async fn ground_fault_detection_isolation_details(
         .await;
     let original_measurement_counter = data[4] as u64 | ((data[5] as u64) << 8);
     data_sender
-        .send(Datapoint::new(
-            Datatype::InsulationOriginal,
-            original_measurement_counter,
-            timestamp,
-        ))
+        .send(Datapoint::new(Datatype::InsulationOriginal, original_measurement_counter, timestamp))
         .await;
 }
 
@@ -102,13 +98,7 @@ pub async fn ground_fault_detection_voltage_details(
     timestamp: u64,
 ) {
     let hv_voltage = ((data[1] as u64) << 8) | (data[0] as u64);
-    data_sender
-        .send(Datapoint::new(
-            Datatype::IMDVoltageDetails,
-            hv_voltage,
-            timestamp,
-        ))
-        .await;
+    data_sender.send(Datapoint::new(Datatype::IMDVoltageDetails, hv_voltage, timestamp)).await;
 }
 
 //===============BMS===============//
@@ -126,27 +116,27 @@ impl BatteryController {
             Datatype::DefaultBMSLow | Datatype::DefaultBMSHigh => {
                 self.default_bms_startup_info(data, timestamp).await;
                 info!("Default BMS");
-            }
+            },
             Datatype::BatteryVoltageLow | Datatype::BatteryVoltageHigh => {
                 self.battery_voltage_overall_bms(data, timestamp).await;
                 info!("Battery Voltage")
-            }
+            },
             Datatype::DiagnosticBMSLow | Datatype::DiagnosticBMSHigh => {
                 self.diagnostic_bms(data, timestamp).await;
                 info!("Diagnostic BMS")
-            }
+            },
             Datatype::BatteryTemperatureLow | Datatype::BatteryTemperatureHigh => {
                 self.overall_temperature_bms(data, timestamp).await;
                 info!("Battery Temperature")
-            }
+            },
             Datatype::BatteryBalanceLow | Datatype::BatteryBalanceHigh => {
                 self.overall_balancing_status_bms(data, timestamp).await;
                 info!("Battery Balancing")
-            }
+            },
             Datatype::ChargeStateLow | Datatype::ChargeStateHigh => {
                 self.state_of_charge_bms(data, timestamp).await;
                 info!("Charge State")
-            }
+            },
             _x if Datatype::SingleCellTemperatureLow.to_id() == id
                 || (Datatype::SingleCellTemperatureHigh_1.to_id() <= id
                     && Datatype::SingleCellTemperatureHigh_14.to_id() >= id) =>
@@ -194,7 +184,7 @@ impl BatteryController {
                 }
 
                 info!("Individual Temperature")
-            }
+            },
             _x if Datatype::SingleCellVoltageLow.to_id() == id
                 || (Datatype::SingleCellVoltageHigh_1.to_id() <= id
                     && Datatype::SingleCellVoltageHigh_14.to_id() >= id) =>
@@ -236,27 +226,24 @@ impl BatteryController {
                 }
 
                 info!("Individual Voltage")
-            }
+            },
             Datatype::BatteryEventLow | Datatype::BatteryEventHigh => {
                 self.event_bms(data, timestamp).await;
                 info!("Battery Event")
-            }
+            },
             x => {
                 info!("Ignored BMS id: {:?}", x.to_id());
-            }
+            },
         }
     }
+
     pub async fn event_bms(&mut self, data: &[u8], timestamp: u64) {
         // let mut msg: u64 = 0;
-        let dt = if self.high_voltage {
-            Datatype::BatteryEventHigh
-        } else {
-            Datatype::BatteryEventLow
-        };
-        self.data_sender
-            .send(Datapoint::new(dt, bytes_to_u64(data), timestamp))
-            .await;
+        let dt =
+            if self.high_voltage { Datatype::BatteryEventHigh } else { Datatype::BatteryEventLow };
+        self.data_sender.send(Datapoint::new(dt, bytes_to_u64(data), timestamp)).await;
     }
+
     pub async fn battery_voltage_overall_bms(&mut self, data: &[u8], timestamp: u64) {
         let min_cell_voltage = data[0] as u64 + 200; //VOLTAGE scaled by 100
                                                      //Should be a decimal number so multiplying it by 100 is not such a bad idea
@@ -288,48 +275,28 @@ impl BatteryController {
             Datatype::TotalBatteryVoltageLow
         };
         self.data_sender
-            .send(Datapoint::new(
-                battery_voltage_dt,
-                avg_cell_voltage,
-                timestamp,
-            ))
+            .send(Datapoint::new(battery_voltage_dt, avg_cell_voltage, timestamp))
             .await;
         self.data_sender
-            .send(Datapoint::new(
-                battery_voltage_min,
-                min_cell_voltage,
-                timestamp,
-            ))
+            .send(Datapoint::new(battery_voltage_min, min_cell_voltage, timestamp))
             .await;
         self.data_sender
-            .send(Datapoint::new(
-                battery_voltage_max,
-                max_cell_voltage,
-                timestamp,
-            ))
+            .send(Datapoint::new(battery_voltage_max, max_cell_voltage, timestamp))
             .await;
         self.data_sender
-            .send(Datapoint::new(
-                total_battery_voltage_dt,
-                total_pack_voltage,
-                timestamp,
-            ))
+            .send(Datapoint::new(total_battery_voltage_dt, total_pack_voltage, timestamp))
             .await;
     }
+
     pub async fn default_bms_startup_info(&mut self, data: &[u8], timestamp: u64) {
-        let dt = if self.high_voltage {
-            Datatype::DefaultBMSHigh
-        } else {
-            Datatype::DefaultBMSLow
-        };
+        let dt = if self.high_voltage { Datatype::DefaultBMSHigh } else { Datatype::DefaultBMSLow };
         let mut msg: u64 = 0;
         for (i, &x) in data.iter().enumerate() {
             msg |= (x as u64) << (i * 8);
         }
-        self.data_sender
-            .send(Datapoint::new(dt, msg, timestamp))
-            .await;
+        self.data_sender.send(Datapoint::new(dt, msg, timestamp)).await;
     }
+
     pub async fn diagnostic_bms(&mut self, data: &[u8], timestamp: u64) {
         let dt = if self.high_voltage {
             Datatype::DiagnosticBMSHigh
@@ -340,10 +307,9 @@ impl BatteryController {
         for (i, &x) in data.iter().enumerate() {
             msg |= (x as u64) << (i * 8);
         }
-        self.data_sender
-            .send(Datapoint::new(dt, msg, timestamp))
-            .await;
+        self.data_sender.send(Datapoint::new(dt, msg, timestamp)).await;
     }
+
     pub async fn state_of_charge_bms(&mut self, data: &[u8], timestamp: u64) {
         let current = (data[0] as u64) << 8 | data[1] as u64; //AMPERES scaled by 0.1
         let estimated_charge = (data[2] as u64) << 8 | data[3] as u64; //AMPERES
@@ -353,29 +319,18 @@ impl BatteryController {
         } else {
             Datatype::BatteryCurrentLow
         };
-        let charge_state_dt = if self.high_voltage {
-            Datatype::ChargeStateHigh
-        } else {
-            Datatype::ChargeStateLow
-        };
+        let charge_state_dt =
+            if self.high_voltage { Datatype::ChargeStateHigh } else { Datatype::ChargeStateLow };
         let estimated_charge_dt = if self.high_voltage {
             Datatype::BatteryEstimatedChargeHigh
         } else {
             Datatype::BatteryEstimatedChargeLow
         };
 
+        self.data_sender.send(Datapoint::new(battery_current_dt, current, timestamp)).await;
+        self.data_sender.send(Datapoint::new(charge_state_dt, state_of_charge, timestamp)).await;
         self.data_sender
-            .send(Datapoint::new(battery_current_dt, current, timestamp))
-            .await;
-        self.data_sender
-            .send(Datapoint::new(charge_state_dt, state_of_charge, timestamp))
-            .await;
-        self.data_sender
-            .send(Datapoint::new(
-                estimated_charge_dt,
-                estimated_charge,
-                timestamp,
-            ))
+            .send(Datapoint::new(estimated_charge_dt, estimated_charge, timestamp))
             .await;
     }
 
@@ -400,15 +355,9 @@ impl BatteryController {
             Datatype::BatteryMaxTemperatureLow
         };
 
-        self.data_sender
-            .send(Datapoint::new(battery_temp_dt, avg_temp, timestamp))
-            .await;
-        self.data_sender
-            .send(Datapoint::new(battery_temp_min, min_temp, timestamp))
-            .await;
-        self.data_sender
-            .send(Datapoint::new(battery_temp_max, max_temp, timestamp))
-            .await;
+        self.data_sender.send(Datapoint::new(battery_temp_dt, avg_temp, timestamp)).await;
+        self.data_sender.send(Datapoint::new(battery_temp_min, min_temp, timestamp)).await;
+        self.data_sender.send(Datapoint::new(battery_temp_max, max_temp, timestamp)).await;
     }
 
     #[allow(dead_code)]
@@ -441,15 +390,9 @@ impl BatteryController {
         // max_temp = if (max_temp - 100) < 0 { 0 } else { max_temp - 100 };
         // avg_temp = if (avg_temp - 100) < 0 { 0 } else { avg_temp - 100 };
         let (avg_temp_dt, min_temp_dt, max_temp_dt) = Self::match_temp(module_id).await;
-        self.data_sender
-            .send(Datapoint::new(avg_temp_dt, avg_temp, timestamp))
-            .await;
-        self.data_sender
-            .send(Datapoint::new(min_temp_dt, min_temp, timestamp))
-            .await;
-        self.data_sender
-            .send(Datapoint::new(max_temp_dt, max_temp, timestamp))
-            .await;
+        self.data_sender.send(Datapoint::new(avg_temp_dt, avg_temp, timestamp)).await;
+        self.data_sender.send(Datapoint::new(min_temp_dt, min_temp, timestamp)).await;
+        self.data_sender.send(Datapoint::new(max_temp_dt, max_temp, timestamp)).await;
     }
 
     async fn send_module_voltage(&mut self, timestamp: u64) {
@@ -457,15 +400,9 @@ impl BatteryController {
         let (min_voltage, max_voltage, avg_voltage) =
             Self::module_data_calculation(self.module_buffer).await;
         let (avg_voltage_dt, min_voltage_dt, max_voltage_dt) = Self::match_voltage(module_id).await;
-        self.data_sender
-            .send(Datapoint::new(avg_voltage_dt, avg_voltage + 200, timestamp))
-            .await;
-        self.data_sender
-            .send(Datapoint::new(min_voltage_dt, min_voltage + 200, timestamp))
-            .await;
-        self.data_sender
-            .send(Datapoint::new(max_voltage_dt, max_voltage + 200, timestamp))
-            .await;
+        self.data_sender.send(Datapoint::new(avg_voltage_dt, avg_voltage + 200, timestamp)).await;
+        self.data_sender.send(Datapoint::new(min_voltage_dt, min_voltage + 200, timestamp)).await;
+        self.data_sender.send(Datapoint::new(max_voltage_dt, max_voltage + 200, timestamp)).await;
     }
 
     pub async fn match_temp(id: u16) -> (Datatype, Datatype, Datatype) {
@@ -510,13 +447,10 @@ impl BatteryController {
                 Datatype::Module8MinTemperature,
                 Datatype::Module8MaxTemperature,
             ),
-            _ => (
-                Datatype::DefaultDatatype,
-                Datatype::DefaultDatatype,
-                Datatype::DefaultDatatype,
-            ),
+            _ => (Datatype::DefaultDatatype, Datatype::DefaultDatatype, Datatype::DefaultDatatype),
         }
     }
+
     pub async fn match_voltage(id: u16) -> (Datatype, Datatype, Datatype) {
         match id {
             0 => (
@@ -559,11 +493,7 @@ impl BatteryController {
                 Datatype::Module8MinVoltage,
                 Datatype::Module8MaxVoltage,
             ),
-            _ => (
-                Datatype::DefaultDatatype,
-                Datatype::DefaultDatatype,
-                Datatype::DefaultDatatype,
-            ),
+            _ => (Datatype::DefaultDatatype, Datatype::DefaultDatatype, Datatype::DefaultDatatype),
         }
     }
 
@@ -635,14 +565,8 @@ impl BatteryController {
         } else {
             Datatype::BatteryMaxBalancingLow
         };
-        self.data_sender
-            .send(Datapoint::new(balancing_dt, avg_cell_balancing, timestamp))
-            .await;
-        self.data_sender
-            .send(Datapoint::new(balancing_min, min_cell_balancing, timestamp))
-            .await;
-        self.data_sender
-            .send(Datapoint::new(balancing_max, max_cell_balancing, timestamp))
-            .await;
+        self.data_sender.send(Datapoint::new(balancing_dt, avg_cell_balancing, timestamp)).await;
+        self.data_sender.send(Datapoint::new(balancing_min, min_cell_balancing, timestamp)).await;
+        self.data_sender.send(Datapoint::new(balancing_max, max_cell_balancing, timestamp)).await;
     }
 }

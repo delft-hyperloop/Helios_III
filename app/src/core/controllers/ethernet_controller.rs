@@ -17,6 +17,7 @@ use static_cell::StaticCell;
 use crate::core::communication::tcp::tcp_connection_handler;
 use crate::try_spawn;
 use crate::DataReceiver;
+use crate::DataSender;
 use crate::EventSender;
 use crate::Irqs;
 use crate::POD_MAC_ADDRESS;
@@ -40,15 +41,14 @@ pub struct EthernetPins {
 pub struct EthernetController {}
 
 #[embassy_executor::task]
-async fn net_task(stack: &'static Stack<Device>) -> ! {
-    stack.run().await
-}
+async fn net_task(stack: &'static Stack<Device>) -> ! { stack.run().await }
 
 impl EthernetController {
     pub async fn new(
         x: Spawner,
         sender: EventSender,
         receiver: DataReceiver,
+        data_sender: DataSender,
         pins: EthernetPins,
     ) -> Self {
         let mut rng = Rng::new(pins.p_rng, Irqs);
@@ -104,7 +104,7 @@ impl EthernetController {
 
         try_spawn!(
             sender,
-            x.spawn(tcp_connection_handler(x, stack, sender, receiver))
+            x.spawn(tcp_connection_handler(x, stack, sender, receiver, data_sender))
         );
         // unwrap!(x.spawn(udp_connection_handler(stack)));
 

@@ -4,8 +4,8 @@ use defmt::*;
 use embassy_time::Instant;
 
 use crate::core::communication::Datapoint;
-use crate::core::controllers::breaking_controller::ENABLE_BRAKING_COMM;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
+use crate::core::fsm_status::Location;
 use crate::core::fsm_status::Route;
 use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
@@ -18,10 +18,12 @@ use crate::Info;
 #[macro_export]
 macro_rules! transit {
     ($fsm:expr, $ns:expr) => {
-        info!("Exiting state: {:?}", $fsm.state);
-        info!("Entering state: {:?}", $ns);
-        $fsm.state = $ns;
-        $fsm.entry().await;
+        {
+            defmt::info!("Exiting state: {:?}", $fsm.state);
+            defmt::info!("Entering state: {:?}", $ns);
+            $fsm.state = $ns;
+            $fsm.entry().await;
+        }
     };
 }
 
@@ -46,86 +48,13 @@ pub enum State {
     Crashing,
 }
 
-/// All the functionalities states can have like converting to id's or format print statements should go here
-/// The actual implementation of each state should just be attached to the state machine in separate files
-impl State {}
-
-// [!!!!!] [April 3 2024] -> This is here as a reference only, if you want to add or edit events go to ../config/events.toml
-/*
-//Enum holding different events that the FSM can react to
-// #[derive(Debug, PartialEq, Eq)]
-// pub enum Event {
-//     DefaultEvent,
-//     // Boot state related events
-//     BootingCompleteEvent,
-//     BootingFailedEvent,
-//     // Establish Connection state related events
-//     ConnectionEstablishedEvent,
-//     ConnectionEstablishmentFailedEvent,
-//     // Run Config state related events
-//     SetRunConfig(u32),
-//     RunConfigCompleteEvent,
-//     RunConfigFailedEvent,
-//
-//     //Error Handling events
-//     LevitationErrorEvent,
-//     PropulsionErrorEvent,
-//     PowertrainErrorEvent,
-//     EmergencyBrakeCommand,
-//     ConnectionLossEvent,
-//
-//     // Idle state related events
-//     LVLevitationReadyEvent,
-//     LVPropulsionReadyEvent,
-//     LVPowertrainReadyEvent,
-//     ArmBrakesCommand,
-//     TurnOnHVCommand,
-//
-//
-//     // HV System Checking state
-//     HVPowertrainReadyEvent,
-//     HVLevitationReadyEvent,
-//     StartLevitatingCommand,
-//
-//     // Levitating
-//     HVPropulsionReadyEvent,
-//     StartAcceleratingCommand,
-//
-//     // Accelerating
-//     DesiredSpeedReachedEvent,
-//     BrakingPointReachedEvent,
-//
-//     // Cruising
-//     LaneSwitchingPointReachedEvent,
-//
-//
-//     //LaneSwitching
-//     LaneSwitchingCompleteEvent,
-//
-//     // Braking
-//     DirectionChangedEvent,
-//     RunFinishedEvent,
-//
-//     // EmergencyBraking
-//     SystemResetCommand,
-//
-//     ExitEvent,
-// }*/
-// Again some functionalities that might be useful for the events to have mut be here
-
-//TODO: Add all the parameters that the FSM might need to have
-// This bad boy will be a singleton and it will be passed around everywhere
-// Just be careful with the STD's
-
 impl PartialOrd for Event {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
+        Some(self.priority().cmp(&other.priority()))
     }
 }
 impl Ord for Event {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.priority().cmp(&other.priority())
-    }
+    fn cmp(&self, other: &Self) -> Ordering { self.priority().cmp(&other.priority()) }
 }
 
 #[allow(dead_code)]
@@ -138,8 +67,27 @@ pub struct Fsm {
     pub route: Route,
 }
 
-/// * Finite State Machine (FSM) for the DH08 POD -> Helios III
-/// * This FSM is a singleton and an entity. Its name is Megalo coming from the ancient greek word for "Big" and from the gods Megahni and Gonzalo
+/// # Finite State Machine (FSM)
+/// ### for the DH08 POD Helios III
+/// * This FSM is a singleton.
+/// * It is the main controller for the pod.
+///     Pretty closely following the principles of Event-Driven-Finite-State-Machine
+///     (EDFSM) architecture, other components are responsible for creating `event`s,
+///     and the FSM is responsible for `react`ing to them.
+///
+/// ## States
+/// Starting from the boot state, the fsm can go through the procedure of a run by receiving
+/// events and transitioning to different states.
+///
+/// A state here entails of:
+/// * entry() method: What to do when entering the state
+/// * react() method: What to do when receiving an event
+/// * a case clause in the FSM::entry() match statement
+/// * a case clause in the FSM::react() match statement
+///
+/// Important notes:
+/// * the entry() method must not be async to prevent recursive `Future`s
+///
 impl Fsm {
     pub fn new(p: FSMPeripherals, pq: EventReceiver, dq: DataSender) -> Self {
         Self {
@@ -157,16 +105,11 @@ impl Fsm {
         info!("entry called: {:?}", self.state);
 
         self.data_queue
-            .send(Datapoint::new(
-                Datatype::FSMState,
-                self.state as u64,
-                Instant::now().as_ticks(),
-            ))
+            .send(Datapoint::new(Datatype::FSMState, self.state as u64, Instant::now().as_ticks()))
             .await;
-        self.peripherals
-            .led_controller
-            .state_led(self.state as u8)
-            .await;
+
+        self.peripherals.led_controller.state_led(self.state as u8).await;
+
         match self.state {
             State::Boot => self.boot_entry(),
             State::EstablishConnection => self.entry_establish_connection(),
@@ -174,21 +117,68 @@ impl Fsm {
             State::RunConfig => self.entry_run_config(),
             State::HVOn => self.entry_hv_on(),
             State::Levitating => self.entry_levitating(),
-            State::MovingST => self.entry_accelerating(),
-            State::MovingLSST => self.entry_cruising(),
-            State::MovingLSCV => self.entry_ls_cv(),
-            State::EndST => self.entry_end_st(),
-            State::EndLS => self.entry_end_ls(),
+            State::MovingST => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                self.entry_mv_st()
+            },
+            State::MovingLSST => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                self.entry_ls_st()
+            },
+            State::MovingLSCV => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                self.entry_ls_cv()
+            },
+            State::EndST => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                self.entry_end_st()
+            },
+            State::EndLS => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                self.entry_end_ls()
+            },
             State::EmergencyBraking => {
                 self.entry_emergency_braking();
                 self.pod_safe().await;
-            }
+            },
             State::Exit => self.entry_exit(),
             State::Crashing => self.entry_exit(),
         };
     }
+
     pub(crate) async fn react(&mut self, event: Event) {
         info!("[fsm] reacting to {}", event.to_str());
+
         self.data_queue
             .send(Datapoint::new(
                 Datatype::FSMEvent,
@@ -196,54 +186,101 @@ impl Fsm {
                 Instant::now().as_ticks(),
             ))
             .await;
+
         match event {
-            Event::LevitationErrorEvent
+            Event::EmergencyBrake
+            | Event::EndOfTrackReached
+            | Event::LevitationErrorEvent
             | Event::PropulsionErrorEvent
             | Event::PowertrainErrorEvent
             | Event::ConnectionLossEvent
-            | Event::EmergencyBrakeCommand => {
+            | Event::ValueOutOfBounds => {
                 transit!(self, State::EmergencyBraking);
                 return;
-            }
-            Event::TurnAllHVRelaysOnEvent => {
-                self.peripherals.hv_peripherals.pin_4.set_high();
-                self.peripherals.hv_peripherals.pin_6.set_high();
-                self.peripherals.hv_peripherals.pin_7.set_high();
-            }
-
-            Event::LVPropulsionReadyEvent => {
-                let p = self.route.next_position();
-                let s = self.route.speed_at(p);
-                self.peripherals.propulsion_controller.set_speed(s);
-                self.send_data(Datatype::PropulsionSpeed, s as u64).await;
-            }
-
-            Event::PreventBrakingComm => unsafe {
-                ENABLE_BRAKING_COMM = false;
             },
-            Event::EnableBrakingComm => unsafe {
-                ENABLE_BRAKING_COMM = true;
+
+            Event::Heartbeat => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::FSMState,
+                        self.state as u64,
+                        Instant::now().as_ticks(),
+                    ))
+                    .await;
             },
-            // TODO: delete these two
+
+            Event::ExitEvent => {
+                transit!(self, State::Exit);
+                return;
+            },
+
+            Event::DcOn => {
+                self.peripherals.hv_peripherals.dc_dc.set_high();
+            },
+
+            Event::DcOff => {
+                self.peripherals.hv_peripherals.dc_dc.set_low();
+            },
+
+            ///////////////////
+            // Debugging events
+            Event::SetOverrides(overrides) => self.status.overrides.set(overrides),
+
+            Event::ContinueRunEvent => {
+                match self.route.next_position() {
+                    Location::ForwardA | Location::BackwardsA => {
+                        transit!(self, State::MovingST);
+                    },
+                    Location::ForwardB | Location::BackwardsB => {
+                        transit!(self, State::EndST);
+                    },
+                    Location::ForwardC | Location::BackwardsC => {
+                        transit!(self, State::EndLS);
+                    },
+                    Location::LaneSwitchStraight => {
+                        transit!(self, State::MovingLSST);
+                    },
+                    Location::LaneSwitchCurved => {
+                        transit!(self, State::MovingLSCV);
+                    },
+                    Location::StopAndWait => {
+                        transit!(self, State::Levitating);
+                    },
+                    Location::BrakeHere => {
+                        transit!(self, State::Exit);
+                    },
+                }
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+                return;
+            },
+
+            // Override enabling or disabling propulsion GPIO
             Event::DisablePropulsionCommand => {
                 self.peripherals.propulsion_controller.disable();
                 self.log(Info::DisablePropulsionGpio).await;
-                self.send_data(crate::Datatype::PropGPIODebug, 0).await;
-            }
+                self.send_data(Datatype::PropGPIODebug, 0).await;
+            },
             Event::EnablePropulsionCommand => {
                 self.peripherals.propulsion_controller.enable();
                 self.log(Info::EnablePropulsionGpio).await;
-                self.send_data(crate::Datatype::PropGPIODebug, 1).await;
-            }
-
+                self.send_data(Datatype::PropGPIODebug, 1).await;
+            },
+            // Override immediately setting the speed of the propulsion controller
             Event::SetCurrentSpeedCommand(x) => {
                 self.peripherals.propulsion_controller.set_speed(x as u8);
                 self.send_data(Datatype::PropulsionSpeed, x).await;
-            }
+            },
 
+            ///////////////////
             _ => {
                 trace!("Event has no override, continuing...");
-            }
+            },
         }
         match self.state {
             State::Boot => self.react_boot(event).await,
@@ -259,43 +296,39 @@ impl Fsm {
             State::EndLS => self.react_end_ls(event).await,
             State::Exit => self.react_exit(event).await,
             State::EmergencyBraking => self.react_emergency_braking(event).await,
-            State::Crashing => {
-                self.log(Info::Crashed).await;
-                info!("TRYING TO REACT WHILE CRASHING!!!!!!");
-            }
+            State::Crashing => self.log(Info::Crashed).await,
         }
     }
 
     /// # Send data to the ground station
     #[allow(unused)]
     pub async fn send_data(&mut self, dtype: Datatype, data: u64) {
-        self.data_queue
-            .send(Datapoint::new(dtype, data, Instant::now().as_ticks()))
-            .await;
+        self.data_queue.send(Datapoint::new(dtype, data, Instant::now().as_ticks())).await;
     }
 
     /// # Send a command to Levi
+    /// Send a command to the Levitation controller
     #[allow(unused)]
     pub async fn send_levi_cmd(&mut self, cmd: crate::Command) {
         self.data_queue
             .send(Datapoint::new(
-                crate::Datatype::LeviInstruction,
+                Datatype::LeviInstruction,
                 cmd.to_id() as u64,
                 Instant::now().as_ticks(),
             ))
             .await;
     }
 
-    pub async fn log(&self, info: crate::Info) {
+    /// # Log an info message
+    /// Send an info message to the ground station,
+    /// from the `enum Info`
+    pub async fn log(&self, info: Info) {
         self.data_queue
-            .send(Datapoint::new(
-                Datatype::Info,
-                info.to_idx(),
-                Instant::now().as_ticks(),
-            ))
+            .send(Datapoint::new(Datatype::Info, info.to_idx(), Instant::now().as_ticks()))
             .await;
     }
 
+    /// Tell the ground station that the pod is now safe to approach (HV off)
     pub async fn pod_safe(&self) {
         self.data_queue
             .send(Datapoint::new(
@@ -306,6 +339,7 @@ impl Fsm {
             .await;
     }
 
+    /// Tell the ground station that the pod is not safe to approach (HV on)
     pub async fn pod_unsafe(&self) {
         self.data_queue
             .send(Datapoint::new(
@@ -316,14 +350,3 @@ impl Fsm {
             .await;
     }
 }
-
-/*
-/// Function used to transit states of Megalo --> Comes from Megahni and Gonzalo
-    ///
-    pub async fn transit(&mut self, next_state: State) {
-        info!("Exiting state: {:?}", self.state);
-        info!("Entering state: {:?}", next_state);
-        self.state = next_state;
-        self.entry().await;
-    }
-    */

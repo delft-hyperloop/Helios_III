@@ -11,7 +11,6 @@
     import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
-    import Keydown from "svelte-keydown";
 
     let width: number;
 
@@ -87,14 +86,6 @@
 
 </script>
 
-<Keydown on:combo={({detail}) => {
-    if (detail === "Esc") { // todo: this doesn't work
-        invoke('send_command', {cmdName: "EmergencyBrake", val: 0}).then(() => {
-            console.log(`Triggered EmergencyBrake!!`);
-        })
-    }
-    }}/>
-
 <div bind:clientWidth={width} class="h-full bg-surface-700 text-surface-50">
     <AppBar padding="p-3" border="border-b border-b-surface-900" background="bg-surface-700">
         <svelte:fragment slot="lead">
@@ -123,15 +114,15 @@
             </button>
             <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
             <div class="flex flex-col gap-4">
-                <Battery orientation="vertical" height={55} perc={Number($lvBattery)}/>
-                <Battery orientation="vertical" height={55} perc={Number($hvBattery)}/>
+                <Battery fill="#3b669c" orientation="vertical" height={55} perc={Number($lvBattery)}/>
+                <Battery fill="#723f9c" orientation="vertical" height={55} perc={Number($hvBattery)}/>
             </div>
         </div>
     {:else}
         <div class="snap-x scroll-px-0.5 snap-mandatory overflow-x-auto h-[90vh]">
             <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="">
                 <!--     FSM       -->
-                <Tile bgToken={800} containerClass="col-span-2">
+                <Tile bgToken={800} containerClass="col-span-2 px-16">
                     {#if width > 550}
                         <FSM size="sm"/>
                     {:else}
@@ -155,14 +146,22 @@
                         </div>
                         <div style="grid-template-columns: 1fr 2fr 2fr;" class="grid gap-y-2">
                             <span>LV: </span>
-                            <Battery orientation="horizontal" perc={Number($lvBattery)}/>
+                            <Battery fill="#3b669c" orientation="horizontal" perc={Number($lvBattery)}/>
                             <span>Total: <span class="font-mono font-medium">{$totalLVV} V</span></span>
                             <span>HV: </span>
-                            <Battery orientation="horizontal" perc={Number($hvBattery)}/>
+                            <Battery fill="#723f9c" orientation="horizontal" perc={Number($hvBattery)}/>
                             <span>Total: <span class="font-mono font-medium">{$totalHVV} V</span></span>
                         </div>
                     </div>
+                    <div class="flex gap-4">
+                        <Command cmd="StopHV" />
+                        <Command cmd="ArmBrakes" />
+                        <Command cmd="StartRun" />
+                    </div>
                 </Tile>
+                <!-- <Tile containerClass="py-2 col-span-2" bgToken={800}> -->
+                <!--     <Chart title="Localisation"/> -->
+                <!-- </Tile> -->
                 <!--     TEMPERATURE TABLE      -->
                 <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
                     <Table titles={tableBatteryTitles} tableArr={tableBatteryVitals}/>
@@ -174,16 +173,22 @@
                     <Table titles={["Variable", "Status"]} tableArr={tableArr2}/>
                 </Tile>
                 <!--     OFFSET GRAPHS       -->
-                <Tile containerClass="py-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Chart title="Offset Horizontal"
-                           refreshRate={100}/>
-                </Tile>
-                <Tile containerClass="py-1 h-full w-full col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Chart title="Offset Vertical" refreshRate={100}/>
-                </Tile>
-                <Tile containerClass="py-2 col-span-2" bgToken={800}>
-                    <Chart title="Velocity" refreshRate={100}/>
-                </Tile>
+                <!-- <Tile containerClass="py-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}> -->
+                <!--     <Chart title="Offset Horizontal" -->
+                <!--            refreshRate={100}/> -->
+                <!-- </Tile> -->
+                <!-- <Tile containerClass="py-1 h-full w-full col-span-{width < 550 ? 2 : 1}" bgToken={800}> -->
+                <!--     <Chart title="Offset Vertical"/> -->
+                <!-- </Tile> -->
+                <!-- <Tile containerClass="py-2 col-span-2" bgToken={800}> -->
+                <!--     <Chart title="Velocity" /> -->
+                <!-- </Tile> -->
+            <Tile containerClass="col-span-2">
+            <Chart title="HEMS Temperatures" background="bg-surface-900" />
+        </Tile>
+        <Tile containerClass="col-span-2">
+            <Chart title="EMS Temperatures" background="bg-surface-900" />
+        </Tile>
             </TileGrid>
         </div>
     {/if}

@@ -23,7 +23,6 @@ import TitleBar from "$lib/components/TitleBar.svelte";
 import Chart from "$lib/components/generic/Chart.svelte";
 import Table from "$lib/components/generic/Table.svelte";
 import Command from "$lib/components/abstract/Command.svelte";
-import TheoreticalRun from "$lib/components/TheoreticalRun.svelte";
 import Status from "$lib/components/generic/Status.svelte";
 import Tile from "$lib/components/generic/Tile.svelte";
 import TileGrid from "$lib/components/generic/TileGrid.svelte";
@@ -39,7 +38,7 @@ import {tempParse, voltParse, addEntryToChart, u64ToDouble,pressureParse,sensorP
 
 // Types
 import type {NamedCommand, Log, LogType, IntervalFunction} from "$lib/types";
-import {EventChannel, RunMode} from "$lib/types";
+import {EventChannel, RunMode, RouteStep} from "$lib/types";
 
 // Stores
 import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn, serverStatus} from "$lib/stores/state";
@@ -90,9 +89,9 @@ export {
     inputSpeed,
     Pneumatics,
     Localiser,
-    TheoreticalRun,
     EventChannel,
     SpeedsInput,
-    RunMode
+    RunMode,
+    RouteStep
 }
 export type {NamedCommand, Log, LogType, IntervalFunction}

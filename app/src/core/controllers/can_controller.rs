@@ -18,7 +18,6 @@ use crate::CanOneInterrupts;
 use crate::CanReceiver;
 use crate::CanSender;
 use crate::CanTwoInterrupts;
-use crate::DataReceiver;
 use crate::DataSender;
 use crate::EventSender;
 
@@ -46,7 +45,6 @@ impl CanController {
         x: Spawner,
         event_sender: EventSender,
         data_sender: DataSender,
-        _data_receiver: DataReceiver,
         _can_one_sender: CanSender,
         can_one_receiver: CanReceiver,
         can_two_sender: CanSender,
@@ -75,9 +73,7 @@ impl CanController {
 
         let (mut c1_tx, c1_rx, _p1) = can1.split();
         let (c2_tx, c2_rx, _p2) = can2.split();
-        c1_tx
-            .write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap())
-            .await;
+        c1_tx.write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap()).await;
         try_spawn!(
             event_sender,
             x.spawn(can_receiving_handler(
@@ -106,14 +102,8 @@ impl CanController {
             ))
         );
 
-        try_spawn!(
-            event_sender,
-            x.spawn(can_transmitter(can_one_receiver, c1_tx))
-        );
-        try_spawn!(
-            event_sender,
-            x.spawn(can_transmitter(can_two_receiver, c2_tx))
-        );
+        try_spawn!(event_sender, x.spawn(can_transmitter(can_one_receiver, c1_tx)));
+        try_spawn!(event_sender, x.spawn(can_transmitter(can_two_receiver, c2_tx)));
 
         Self {}
     }

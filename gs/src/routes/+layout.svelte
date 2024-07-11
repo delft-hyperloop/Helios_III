@@ -12,6 +12,18 @@
     } from "$lib";
     import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
+    import {initProcedures} from "$lib/stores/data";
+    import {onDestroy} from "svelte";
+    import {listen} from "@tauri-apps/api/event";
+    import {parseShortCut} from "$lib/util/parsers";
+    import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
+    import { storePopup } from '@skeletonlabs/skeleton';
+
+    storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
+
+    initProcedures();
+
+    const unlisten = listen("shortcut_channel", (event: {payload: string}) => parseShortCut(event.payload));
 
     //////////////////////////////
     /////////// CHARTS ///////////
@@ -27,7 +39,7 @@
     hemsTempChart.addSeries(StrokePresets.blue("HEMS 4"))
     $chartStore.set("HEMS Temperatures", hemsTempChart);
 
-    let hemsCurrentChart = new PlotBuffer(500, 60000, [-11.3, 11.3], true, "a1");
+    let hemsCurrentChart = new PlotBuffer(500, 3*60000, [-11.3, 11.3], true, "a1");
     hemsCurrentChart.addSeries(StrokePresets.hyperloopGreenDashed("a2"))
     hemsCurrentChart.addSeries(StrokePresets.theoretical("b1"))
     hemsCurrentChart.addSeries(StrokePresets.theoreticalDashed("b2"))
@@ -37,12 +49,15 @@
     hemsCurrentChart.addSeries(StrokePresets.blueDashed("d2"))
     $chartStore.set("HEMS Current", hemsCurrentChart);
 
-    let emsCurrentChart = new PlotBuffer(500, 60000, [-11.3, 11.3], true);
+    let emsCurrentChart = new PlotBuffer(500, 3*60000, [-11.3, 11.3], true);
     emsCurrentChart.addSeries(StrokePresets.theoretical("cd"))
     $chartStore.set("EMS Current", emsCurrentChart);
 
     let voffChart = new PlotBuffer(500, 60000, [8, 25], false)
     $chartStore.set('Offset Vertical', voffChart);
+
+    let accelChart = new PlotBuffer(500, 60000, [0, 25], false)
+    $chartStore.set('Acceleration', accelChart);
 
     let rolPitchChart = new PlotBuffer(500, 60000, [-0.8, 0.8], true, "roll")
     rolPitchChart.addSeries(StrokePresets.theoretical("pitch"))
@@ -52,11 +67,11 @@
     hoffChart.addSeries(StrokePresets.theoretical("cd"))
     $chartStore.set('Offset Horizontal', hoffChart);
 
-    let velChart = new PlotBuffer(500, 5*60*1000, [0, 100], false)
+    let velChart = new PlotBuffer(500, 60000, [0, 100], false)
     $chartStore.set('Velocity', velChart);
 
-    let leviChart = new PlotBuffer(500, 60000, [0, 13000], false);
-    $chartStore.set('Localisation', leviChart);
+    let localisationChart = new PlotBuffer(500, 60000, [0, 13000], false);
+    $chartStore.set('Localisation', localisationChart);
 
     let trr = new PlotBuffer(500, 60000, [0, 50], false)
     trr.addSeries(StrokePresets.theoretical())
@@ -310,6 +325,9 @@
 
     gdd.stores.registerStore<number>("LowPressureSensor", 0, pressureParse);
     gdd.stores.registerStore<number>("HighPressureSensor", 0,  pressureParse);
+    gdd.stores.registerStore<number>("BrakingCommDebug", 0,  data => (Number(data) * 3.3) / 65535);
+    gdd.stores.registerStore<number>("BrakingSignalDebug", 0)
+    gdd.stores.registerStore<number>("BrakingRearmDebug", 0)
 
     ///////////////////////////////////////////////////////////////
     /////////////////// GROUND FAULT DETECTION ////////////////////
@@ -332,6 +350,11 @@
     gdd.start(100);
 
     initializeStores();
+
+    onDestroy(() => {
+      GrandDataDistributor.getInstance().kill();
+      unlisten();
+    })
 </script>
 
 
