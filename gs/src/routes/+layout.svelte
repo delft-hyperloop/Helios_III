@@ -347,13 +347,13 @@
 
     gdd.stores.registerStore<number>("FSMState", 0);
 
-    gdd.start(100);
+    gdd.start(50);
 
     initializeStores();
 
-    onDestroy(() => {
+    onDestroy(async () => {
       GrandDataDistributor.getInstance().kill();
-      unlisten();
+      (await unlisten)();
     })
 </script>
 

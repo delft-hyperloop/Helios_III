@@ -1,98 +1,49 @@
 <script lang="ts">
-    import {
-        Battery,
-        Chart,
-        GrandDataDistributor,
-        Status,
-        Table,
-        Tile,
-        TileGrid, ToggleCommand
-    } from "$lib";
+  import {
+    Battery,
+    Chart,
+    GrandDataDistributor,
+    Status, Store,
+    Table,
+    Tile,
+    TileGrid, ToggleCommand
+  } from "$lib";
+  const storeManager = GrandDataDistributor.getInstance().stores;
+  const lvBattery = storeManager.getStore("BatteryEstimatedChargeLow");
+  const hvBattery = storeManager.getStore("BatteryEstimatedChargeHigh");
 
-    const storeManager = GrandDataDistributor.getInstance().stores;
-    const lvBattery = storeManager.getStore("BatteryEstimatedChargeLow");
-    const hvBattery = storeManager.getStore("BatteryEstimatedChargeHigh");
+  const avg1Temp = "Module1AvgTemperature", max1Temp = "Module1MaxTemperature", min1Temp = "Module1MinTemperature",
+    avg1Vol = "Module1AvgVoltage", max1Vol = "Module1MaxVoltage", min1Vol = "Module1MinVoltage",
+    avg2Temp = "Module2AvgTemperature", max2Temp = "Module2MaxTemperature", min2Temp = "Module2MinTemperature",
+    avg2Vol = "Module2AvgVoltage", max2Vol = "Module2MaxVoltage", min2Vol = "Module2MinVoltage",
+    avg3Temp = "Module3AvgTemperature", max3Temp = "Module3MaxTemperature", min3Temp = "Module3MinTemperature",
+    avg3Vol = "Module3AvgVoltage", max3Vol = "Module3MaxVoltage", min3Vol = "Module3MinVoltage",
+    avg4Temp = "Module4AvgTemperature", max4Temp = "Module4MaxTemperature", min4Temp = "Module4MinTemperature",
+    avg4Vol = "Module4AvgVoltage", max4Vol = "Module4MaxVoltage", min4Vol = "Module4MinVoltage",
+    avg5Temp = "Module5AvgTemperature", max5Temp = "Module5MaxTemperature", min5Temp = "Module5MinTemperature",
+    avg5Vol = "Module5AvgVoltage", max5Vol = "Module5MaxVoltage", min5Vol = "Module5MinVoltage",
+    avg6Temp = "Module6AvgTemperature", max6Temp = "Module6MaxTemperature", min6Temp = "Module6MinTemperature",
+    avg6Vol = "Module6AvgVoltage", max6Vol = "Module6MaxVoltage", min6Vol = "Module6MinVoltage",
+    avg7Temp = "Module7AvgTemperature", max7Temp = "Module7MaxTemperature", min7Temp = "Module7MinTemperature",
+    avg7Vol = "Module7AvgVoltage", max7Vol = "Module7MaxVoltage", min7Vol = "Module7MinVoltage",
+    avg8Temp = "Module8AvgTemperature", max8Temp = "Module8MaxTemperature", min8Temp = "Module8MinTemperature",
+    avg8Vol = "Module8AvgVoltage", max8Vol = "Module8MaxVoltage", min8Vol = "Module8MinVoltage",
+    avgLvTemp = "BatteryTemperatureLow", minLvTemp = "BatteryMinTemperatureLow", maxLvTemp = "BatteryMaxTemperatureLow",
+    avgLvVol = "BatteryVoltageLow", minLvVol = "BatteryMinVoltageLow", maxLvVol = "BatteryMaxVoltageHigh";
 
-    const avg1Temp = storeManager.getStore("Module1AvgTemperature");
-    const max1Temp = storeManager.getStore("Module1MaxTemperature");
-    const min1Temp = storeManager.getStore("Module1MinTemperature");
-    const avg1Vol = storeManager.getStore("Module1AvgVoltage");
-    const max1Vol = storeManager.getStore("Module1MaxVoltage");
-    const min1Vol = storeManager.getStore("Module1MinVoltage");
 
-    const avg2Temp = storeManager.getStore("Module2AvgTemperature");
-    const max2Temp = storeManager.getStore("Module2MaxTemperature");
-    const min2Temp = storeManager.getStore("Module2MinTemperature");
-    const avg2Vol = storeManager.getStore("Module2AvgVoltage");
-    const max2Vol = storeManager.getStore("Module2MaxVoltage");
-    const min2Vol = storeManager.getStore("Module2MinVoltage");
-
-    const avg3Temp = storeManager.getStore("Module3AvgTemperature");
-    const max3Temp = storeManager.getStore("Module3MaxTemperature");
-    const min3Temp = storeManager.getStore("Module3MinTemperature");
-    const avg3Vol = storeManager.getStore("Module3AvgVoltage");
-    const max3Vol = storeManager.getStore("Module3MaxVoltage");
-    const min3Vol = storeManager.getStore("Module3MinVoltage");
-
-    const avg4Temp = storeManager.getStore("Module4AvgTemperature");
-    const max4Temp = storeManager.getStore("Module4MaxTemperature");
-    const min4Temp = storeManager.getStore("Module4MinTemperature");
-    const avg4Vol = storeManager.getStore("Module4AvgVoltage");
-    const max4Vol = storeManager.getStore("Module4MaxVoltage");
-    const min4Vol = storeManager.getStore("Module4MinVoltage");
-
-    const avg5Temp = storeManager.getStore("Module5AvgTemperature");
-    const max5Temp = storeManager.getStore("Module5MaxTemperature");
-    const min5Temp = storeManager.getStore("Module5MinTemperature");
-    const avg5Vol = storeManager.getStore("Module5AvgVoltage");
-    const max5Vol = storeManager.getStore("Module5MaxVoltage");
-    const min5Vol = storeManager.getStore("Module5MinVoltage");
-
-    const avg6Temp = storeManager.getStore("Module6AvgTemperature");
-    const max6Temp = storeManager.getStore("Module6MaxTemperature");
-    const min6Temp = storeManager.getStore("Module6MinTemperature");
-    const avg6Vol = storeManager.getStore("Module6AvgVoltage");
-    const max6Vol = storeManager.getStore("Module6MaxVoltage");
-    const min6Vol = storeManager.getStore("Module6MinVoltage");
-
-    const avg7Temp = storeManager.getStore("Module7AvgTemperature");
-    const max7Temp = storeManager.getStore("Module7MaxTemperature");
-    const min7Temp = storeManager.getStore("Module7MinTemperature");
-    const avg7Vol = storeManager.getStore("Module7AvgVoltage");
-    const max7Vol = storeManager.getStore("Module7MaxVoltage");
-    const min7Vol = storeManager.getStore("Module7MinVoltage");
-
-    const avg8Temp = storeManager.getStore("Module8AvgTemperature");
-    const max8Temp = storeManager.getStore("Module8MaxTemperature");
-    const min8Temp = storeManager.getStore("Module8MinTemperature");
-    const avg8Vol = storeManager.getStore("Module8AvgVoltage");
-    const max8Vol = storeManager.getStore("Module8MaxVoltage");
-    const min8Vol = storeManager.getStore("Module8MinVoltage");
-
-    const avgLvTemp = storeManager.getStore("BatteryTemperatureLow");
-    const minLvTemp = storeManager.getStore("BatteryMinTemperatureLow");
-    const maxLvTemp = storeManager.getStore("BatteryMaxTemperatureLow");
-    const avgLvVol = storeManager.getStore("BatteryVoltageLow");
-    const minLvVol = storeManager.getStore("BatteryMinVoltageLow");
-    const maxLvVol = storeManager.getStore("BatteryMaxVoltageHigh");
-
-    const lvCurrent = storeManager.getStore("BatteryCurrentLow");
-    const hvCurrent = storeManager.getStore("BatteryCurrentHigh");
-
-    const imdV = storeManager.getStore("IMDVoltageDetails");
-
-    let titles = ["Battery", "Avg cell V", "Max cell V", "Min cell V"
+  let titles = ["Battery", "Avg cell V", "Max cell V", "Min cell V"
         , "Avg cell °C", "Max cell °C", "Min cell °C"];
     $: tableArr = [
-        ["LV", $avgLvVol, $maxLvVol, $minLvVol, $avgLvTemp, $maxLvTemp, $minLvTemp],
-        ["HV mod 1", $avg1Vol, $max1Vol, $min1Vol, $avg1Temp, $max1Temp, $min1Temp],
-        ["HV mod 2", $avg2Vol, $max2Vol, $min2Vol, $avg2Temp, $max2Temp, $min2Temp],
-        ["HV mod 3", $avg3Vol, $max3Vol, $min3Vol, $avg3Temp, $max3Temp, $min3Temp],
-        ["HV mod 4", $avg4Vol, $max4Vol, $min4Vol, $avg4Temp, $max4Temp, $min4Temp],
-        ["HV mod 5", $avg5Vol, $max5Vol, $min5Vol, $avg5Temp, $max5Temp, $min5Temp],
-        ["HV mod 6", $avg6Vol, $max6Vol, $min6Vol, $avg6Temp, $max6Temp, $min6Temp],
-        ["HV mod 7", $avg7Vol, $max7Vol, $min7Vol, $avg7Temp, $max7Temp, $min7Temp],
-        ["HV mod 8", $avg8Vol, $max8Vol, $min8Vol, $avg8Temp, $max8Temp, $min8Temp],
+        ["LV", avgLvVol, maxLvVol, minLvVol, avgLvTemp, maxLvTemp, minLvTemp],
+        ["HV mod 1", avg1Vol, max1Vol, min1Vol, avg1Temp, max1Temp, min1Temp],
+        ["HV mod 2", avg2Vol, max2Vol, min2Vol, avg2Temp, max2Temp, min2Temp],
+        ["HV mod 3", avg3Vol, max3Vol, min3Vol, avg3Temp, max3Temp, min3Temp],
+        ["HV mod 4", avg4Vol, max4Vol, min4Vol, avg4Temp, max4Temp, min4Temp],
+        ["HV mod 5", avg5Vol, max5Vol, min5Vol, avg5Temp, max5Temp, min5Temp],
+        ["HV mod 6", avg6Vol, max6Vol, min6Vol, avg6Temp, max6Temp, min6Temp],
+        ["HV mod 7", avg7Vol, max7Vol, min7Vol, avg7Temp, max7Temp, min7Temp],
+        ["HV mod 8", avg8Vol, max8Vol, min8Vol, avg8Temp, max8Temp, min8Temp],
     ]
 
     let dcStatus:boolean = false;
@@ -125,9 +76,9 @@
         </Tile>
         <Tile insideClass="flex h-full items-center">
             <div class="flex flex-col ml-4">
-                <p>LV Current: {$lvCurrent}</p>
-                <p>HV Current: {$hvCurrent}</p>
-                <p>IMD Voltage: {$imdV}</p>
+                <p>LV Current: <Store datatype="BatteryCurrentLow" /></p>
+                <p>HV Current: <Store datatype="BatteryCurrentHigh" /></p>
+                <p>IMD Voltage: <Store datatype="IMDVoltageDetails" /></p>
             </div>
         </Tile>
         <Tile containerClass="col-span-4" heading="Battery stats">
