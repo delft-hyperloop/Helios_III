@@ -6,6 +6,8 @@ use std::hash::Hash;
 use std::hash::Hasher;
 use serde::Deserialize;
 use std::fmt::Formatter;
+use anyhow::Result;
+
 const NONE: fn() -> Limit = || Limit::No;
 
 #[derive(Deserialize, Hash)]
@@ -55,17 +57,17 @@ pub struct Severities {
     pub brake: Option<u64>,
 }
 
-pub fn get_data_config(path: &str) -> Config {
-    let config_str = fs::read_to_string(path).unwrap();
-    toml::from_str(&config_str).unwrap()
+pub fn get_data_config(path: &str) -> Result<Config> {
+    let config_str = fs::read_to_string(path)?;
+    Ok(toml::from_str(&config_str)?)
 }
 
-pub fn get_data_ids(path: &str) -> Vec<u16> {
-    get_data_config(path).Datatype.iter().map(|x| x.id).collect()
+pub fn get_data_ids(path: &str) -> Result<Vec<u16>> {
+    Ok(get_data_config(path)?.Datatype.iter().map(|x| x.id).collect())
 }
 
-pub fn generate_datatypes(path: &str, drv: bool) -> String {
-    let config: Config = get_data_config(path);
+pub fn generate_datatypes(path: &str, drv: bool) -> Result<String> {
+    let config: Config = get_data_config(path)?;
 
     let mut hasher = DefaultHasher::new();
     config.hash(&mut hasher);
@@ -122,7 +124,7 @@ pub fn generate_datatypes(path: &str, drv: bool) -> String {
 //         }
     }
 
-    format!(
+    Ok(format!(
         "\n
 pub enum Limit {{
     No,
@@ -217,8 +219,8 @@ impl Datatype {{
         }};
         match ok_up + ok_low {{
             0 => ValueCheckResult::Fine,
-            1..10 => ValueCheckResult::Warn,
-            10..100 => ValueCheckResult::Error,
+            1..=9 => ValueCheckResult::Warn,
+            10..=99 => ValueCheckResult::Error,
             _ => ValueCheckResult::BrakeNow,
         }}
     }}
@@ -238,5 +240,5 @@ impl Datatype {{
         "pub static DATA_IDS : [u16;{}] = [{}];\n",
         data_ids.len(),
         data_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", ")
-    ) + &format!("\npub const DATA_HASH: u64 = {hash};")
+    ) + &format!("\npub const DATA_HASH: u64 = {hash};"))
 }

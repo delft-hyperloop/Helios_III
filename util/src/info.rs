@@ -1,6 +1,6 @@
 #![allow(non_snake_case)]
 
-use serde::Deserialize;
+use serde::Deserialize;use anyhow::Result;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -13,9 +13,9 @@ pub struct Info {
     pub colour: Option<String>,
 }
 
-pub fn generate_info(path: &str, drv: bool) -> String {
-    let config_str = std::fs::read_to_string(path).unwrap();
-    let config: Config = toml::from_str(&config_str).unwrap();
+pub fn generate_info(path: &str, drv: bool) -> Result<String> {
+    let config_str = std::fs::read_to_string(path)?;
+    let config: Config = toml::from_str(&config_str)?;
 
     let mut enum_definitions = String::new();
     let mut match_to_id = String::new();
@@ -32,7 +32,7 @@ pub fn generate_info(path: &str, drv: bool) -> String {
         }
     }
 
-    format!(
+    Ok(format!(
         "
 pub const INFO_COLOURS: [&str; {}] = [{}\"yellow\"];
 
@@ -71,5 +71,5 @@ impl Info {{
         enum_definitions,
         match_to_id,
         match_from_id
-    )
+    ))
 }

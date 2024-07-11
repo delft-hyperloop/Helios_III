@@ -64,7 +64,6 @@ id = 0x1b2
 [[Datatype]]
 name = "PropulsionCurrent"
 id = 0x1b3
-upper = 
 
 [[Datatype]]
 name = "PropulsionVRefInt"

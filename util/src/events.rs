@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-
+use anyhow::Result;
 use std::fs;
 use std::hash::DefaultHasher;
 use std::hash::Hash;
@@ -20,17 +20,17 @@ pub struct Event {
     params: Option<String>,
 }
 
-pub fn get_events_config(path: &str) -> Config {
-    let config_str = fs::read_to_string(path).unwrap();
-    toml::from_str(&config_str).unwrap()
+pub fn get_events_config(path: &str) -> Result<Config> {
+    let config_str = fs::read_to_string(path)?;
+    Ok(toml::from_str(&config_str)?)
 }
 
-pub fn get_event_ids(path: &str) -> Vec<u16> {
-    get_events_config(path).Event.iter().map(|x| x.id).collect()
+pub fn get_event_ids(path: &str) -> Result<Vec<u16>> {
+    Ok(get_events_config(path)?.Event.iter().map(|x| x.id).collect())
 }
 
-pub fn generate_events(path: &str, drv: bool) -> String {
-    let config: Config = get_events_config(path);
+pub fn generate_events(path: &str, drv: bool) -> Result<String> {
+    let config: Config = get_events_config(path)?;
 
     let mut hasher = DefaultHasher::new();
     config.hash(&mut hasher);
@@ -81,7 +81,7 @@ pub fn generate_events(path: &str, drv: bool) -> String {
         to_str.push_str(&format!("\"{}\",", event.name));
     }
 
-    format!(
+    Ok(format!(
         "\n\npub const EVENTS_DISPLAY: [&str; {}] = [{}\"Unknown\"];\n",
         event_count + 1,
         to_str
@@ -138,5 +138,5 @@ impl Event {{
         "\n\npub static EVENT_IDS : [u16;{}] = [{}];\n",
         event_ids.len(),
         event_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", ")
-    ) + &format!("\npub const EVENTS_HASH: u64 = {hash};")
+    ) + &format!("\npub const EVENTS_HASH: u64 = {hash};"))
 }
