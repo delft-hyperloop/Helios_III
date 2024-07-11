@@ -2,7 +2,7 @@ import { writable, type Writable } from 'svelte/store';
 import {RunMode} from "$lib/types";
 import {PlotBuffer} from "$lib";
 
-export const detailTabSet: Writable<number> = writable(1);
+export const detailTabSet: Writable<number> = writable(0);
 export const inputSpeed: Writable<number> = writable(50);
 export const inputEmerg: Writable<number> = writable(-1);
 export const inputTurn: Writable<RunMode> = writable(RunMode.ShortRun);
