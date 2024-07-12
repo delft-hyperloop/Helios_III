@@ -1,14 +1,14 @@
-use tokio::sync::broadcast::Sender;
-
 use crate::api::Datapoint;
 use crate::api::Message;
 use crate::Command;
+use crate::CommandSender;
 use crate::Datatype;
+use crate::MessageSender;
 
 pub fn handle_line_from_levi(
     line: &String,
-    msg_send: Sender<Message>,
-    cmd_send: Sender<Command>,
+    msg_send: MessageSender,
+    cmd_send: CommandSender,
 ) -> anyhow::Result<()> {
     let params = line.split(':').collect::<Vec<&str>>();
 

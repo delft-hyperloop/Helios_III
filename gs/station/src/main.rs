@@ -1,6 +1,7 @@
 // Prevents an additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use crate::api::Message;
 use crate::backend::Backend;
 #[cfg(feature = "backend")]
 use crate::frontend::app::tauri_main;
@@ -17,6 +18,11 @@ mod levi;
 pub mod tui;
 
 include!(concat!(env!("OUT_DIR"), "/config.rs"));
+
+pub type CommandSender = tokio::sync::broadcast::Sender<Command>;
+pub type CommandReceiver = tokio::sync::broadcast::Receiver<Command>;
+pub type MessageSender = tokio::sync::broadcast::Sender<Message>;
+pub type MessageReceiver = tokio::sync::broadcast::Receiver<Message>;
 
 /// Entry point of the application
 #[tokio::main]

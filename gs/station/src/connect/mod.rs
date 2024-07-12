@@ -10,11 +10,14 @@ use crate::api::gs_socket;
 use crate::api::Message;
 use crate::connect::tcp_reader::get_messages_from_tcp;
 use crate::connect::tcp_writer::transmit_commands_to_tcp;
+use crate::CommandReceiver;
+use crate::CommandSender;
+use crate::MessageSender;
 
 pub async fn connect_main(
-    message_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
-    command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
-    command_transmitter: tokio::sync::broadcast::Sender<crate::Command>,
+    message_transmitter: MessageSender,
+    command_receiver: CommandReceiver,
+    command_transmitter: CommandSender,
 ) -> anyhow::Result<()> {
     // Bind the listener to the address
     message_transmitter
@@ -38,9 +41,9 @@ pub async fn connect_main(
 
 async fn process(
     socket: TcpStream,
-    message_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
-    command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
-    command_transmitter: tokio::sync::broadcast::Sender<crate::Command>,
+    message_transmitter: MessageSender,
+    command_receiver: CommandReceiver,
+    command_transmitter: CommandSender,
 ) {
     let (reader, writer) = socket.into_split();
     let transmit = message_transmitter.clone();
