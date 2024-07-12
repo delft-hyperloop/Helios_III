@@ -848,6 +848,14 @@ name = "levi_volt_avg"
 id = 0x157
 
 [[Datatype]]
+name = "levi_location"
+id = 0x117 
+
+[[Datatype]]
+name = "levi_speed"
+id = 0x116
+
+[[Datatype]]
 name = "BrakingCommDebug"
 id = 0x158
 
