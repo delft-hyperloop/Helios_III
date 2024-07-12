@@ -91,6 +91,7 @@ impl Backend {
                 self.message_transmitter.clone(),
                 self.command_transmitter.clone(),
                 self.command_receiver.resubscribe(),
+                self.message_receiver.resubscribe(),
             ) {
                 Ok(lh) => {
                     self.levi_handle = Some(lh);

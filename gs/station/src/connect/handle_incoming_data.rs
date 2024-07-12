@@ -2,6 +2,7 @@
 
 use crate::api::Datapoint;
 use crate::api::Message;
+use crate::data::process::process;
 use crate::Command;
 use crate::Datatype;
 use crate::Info;
@@ -16,7 +17,7 @@ pub async fn handle_incoming_data(
     msg_sender: MessageSender,
     cmd_sender: CommandSender,
 ) -> anyhow::Result<()> {
-    msg_sender.send(Message::Data(data.clone()))?;
+    msg_sender.send(Message::Data(process(&data)))?;
 
     match data.datatype {
         Datatype::LeviInstruction => {

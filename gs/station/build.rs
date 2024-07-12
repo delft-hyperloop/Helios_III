@@ -22,12 +22,18 @@ struct Config {
 
 #[derive(Debug, Deserialize)]
 struct Pod {
-    net: NetConfig,
+    // net: NetConfig,
+    comm: CommConfig,
 }
+// #[derive(Debug, Deserialize)]
+// struct NetConfig {
+//     // ip: [u8; 4],
+//     // port: u16,
+// }
+
 #[derive(Debug, Deserialize)]
-struct NetConfig {
-    ip: [u8; 4],
-    port: u16,
+struct CommConfig {
+    levi_requested_data: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -35,7 +41,6 @@ struct GS {
     ip: [u8; 4],
     force: bool,
     port: u16,
-    // udp_port: u16,
     buffer_size: usize,
     timeout: u64,
     heartbeat: u64,
@@ -86,20 +91,22 @@ fn main() -> Result<()> {
 
 fn configure_gs(config: &Config) -> String {
     // format!("pub fn gs_socket() -> std::net::SocketAddr {{ std::net::SocketAddr::new(std::net::IpAddr::from([{},{},{},{}]),{}) }}\n", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port)
-    format!(
-        "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
-        config.pod.net.ip[0],
-        config.pod.net.ip[1],
-        config.pod.net.ip[2],
-        config.pod.net.ip[3],
-        config.pod.net.port
-    ) + &*format!("pub const NETWORK_BUFFER_SIZE: usize = {};\n", config.gs.buffer_size)
-        + &*format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
-        + &*format!("pub const HEARTBEAT: u64 = {};\n", config.gs.heartbeat)
-        + &*format!(
+    // format!(
+    //     "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+    //     config.pod.net.ip[0],
+    //     config.pod.net.ip[1],
+    //     config.pod.net.ip[2],
+    //     config.pod.net.ip[3],
+    //     config.pod.net.port
+    // ) + &*
+    format!("pub const NETWORK_BUFFER_SIZE: usize = {};\n", config.gs.buffer_size)
+        + &format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
+        + &format!("pub const HEARTBEAT: u64 = {};\n", config.gs.heartbeat)
+        + &format!(
             "pub const LEVI_EXEC_PATH: &str = \"{}\";\n",
             config.gs.levi_exec_path.to_str().unwrap()
         )
+    + &format!("\npub const LEVI_REQUESTED_DATA: [Datatype; {}] = [{}];\n", config.pod.comm.levi_requested_data.len(), config.pod.comm.levi_requested_data.iter().map(|x| format!("Datatype::{x}, ")).collect::<String>())
 }
 
 fn configure_channels(config: &Config) -> String {

@@ -29,7 +29,7 @@ pub async fn connect_main(
         // The second item contains the IP and port of the new connection.
         let (socket, client_addr) = listener.accept().await?;
         message_transmitter.send(Message::Info(format!("New connection from: {}", client_addr)))?;
-        process(
+        process_stream(
             socket,
             message_transmitter.clone(),
             command_receiver.resubscribe(),
@@ -39,7 +39,7 @@ pub async fn connect_main(
     }
 }
 
-async fn process(
+async fn process_stream(
     socket: TcpStream,
     message_transmitter: MessageSender,
     command_receiver: CommandReceiver,
