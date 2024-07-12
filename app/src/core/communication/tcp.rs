@@ -145,17 +145,6 @@ pub async fn tcp_connection_handler(
                             let cmd = Command::from_bytes(&x);
                             #[cfg(debug_assertions)]
                             info!("[tcp] Command received: {:?}", cmd);
-                            #[cfg(debug_assertions)]
-                            let _ = socket
-                                .write_all(
-                                    &Datapoint::new(
-                                        Datatype::Info,
-                                        cmd.to_id() as u64,
-                                        embassy_time::Instant::now().as_ticks(),
-                                    )
-                                    .as_bytes(),
-                                )
-                                .await;
                             match cmd {
                                 Command::EmergencyBrake(_) => {
                                     event_sender.send(Event::EmergencyBrake).await;
@@ -274,7 +263,7 @@ pub async fn tcp_connection_handler(
                                             &Datapoint::new(
                                                 Datatype::ResponseHeartbeat,
                                                 x,
-                                                embassy_time::Instant::now().as_ticks(),
+                                                Instant::now().as_ticks(),
                                             )
                                             .as_bytes(),
                                         )

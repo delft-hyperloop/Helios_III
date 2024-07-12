@@ -17,11 +17,11 @@ pub async fn transmit_commands_to_tcp(
                 last_send_timestamp = std::time::Instant::now();
                 match writer.write_all(&Command::as_bytes(&Command::Heartbeat(42))).await {
                     Ok(_) => {
-                        status_transmitter
-                            .send(crate::api::Message::Info(
-                                "[TRACE][tcp] Sent keepalive".to_string(),
-                            ))
-                            .expect("messaging channel closed, cannot recover");
+                        // status_transmitter
+                        //     .send(crate::api::Message::Info(
+                        //         "[TRACE][tcp] Sent keepalive".to_string(),
+                        //     ))
+                        //     .expect("messaging channel closed, cannot recover");
                     },
                     Err(e) => {
                         //eprintln!("Error sending keepalive over tcp: {:?}", e);
