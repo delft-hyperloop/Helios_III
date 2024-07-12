@@ -71,11 +71,13 @@ fn main() -> Result<()> {
 
     content.push_str(&configure_gs(&config));
     content.push_str(&configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force)?);
-    content.push_str(&generate_datatypes(DATATYPES_PATH, true)?);
+    let dt = generate_datatypes(DATATYPES_PATH, true)?;
+    content.push_str(&dt);
     content.push_str(&generate_commands(COMMANDS_PATH, false)?);
     content.push_str(&generate_events(EVENTS_PATH, false)?);
     content.push_str(&configure_channels(&config));
     content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, true)?);
+    content.push_str(&levi_req_data(&config, dt)?);
 
     fs::write(dest_path.clone(), content).unwrap_or_else(|_| {
         panic!("Couldn't write to {}! Build failed.", dest_path.to_str().unwrap());
@@ -87,6 +89,29 @@ fn main() -> Result<()> {
     println!("cargo:rerun-if-changed={}", EVENTS_PATH);
 
     Ok(())
+}
+
+fn levi_req_data(config: &Config, dt: String) -> Result<String> {
+    for data in config.pod.comm.levi_requested_data.iter() {
+        if !dt.contains(data) {
+            return Err(anyhow::anyhow!(
+                "Data type {:?} not found in datatypes.toml
+            Check that the (case-sensitive) spelling is correct, and that the datatype exists.",
+                data
+            ));
+        }
+    }
+    Ok(format!(
+        "\npub const LEVI_REQUESTED_DATA: [Datatype; {}] = [{}];\n",
+        config.pod.comm.levi_requested_data.len(),
+        config
+            .pod
+            .comm
+            .levi_requested_data
+            .iter()
+            .map(|x| format!("Datatype::{x}, "))
+            .collect::<String>()
+    ))
 }
 
 fn configure_gs(config: &Config) -> String {
@@ -106,7 +131,6 @@ fn configure_gs(config: &Config) -> String {
             "pub const LEVI_EXEC_PATH: &str = \"{}\";\n",
             config.gs.levi_exec_path.to_str().unwrap()
         )
-    + &format!("\npub const LEVI_REQUESTED_DATA: [Datatype; {}] = [{}];\n", config.pod.comm.levi_requested_data.len(), config.pod.comm.levi_requested_data.iter().map(|x| format!("Datatype::{x}, ")).collect::<String>())
 }
 
 fn configure_channels(config: &Config) -> String {

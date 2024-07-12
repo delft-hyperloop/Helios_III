@@ -6,8 +6,9 @@ use anyhow::anyhow;
 use tokio::task::AbortHandle;
 
 use crate::api::Message;
-use crate::{CommandReceiver, MessageReceiver};
+use crate::CommandReceiver;
 use crate::CommandSender;
+use crate::MessageReceiver;
 use crate::MessageSender;
 use crate::LEVI_EXEC_PATH;
 
