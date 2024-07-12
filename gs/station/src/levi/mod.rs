@@ -6,7 +6,7 @@ use anyhow::anyhow;
 use tokio::task::AbortHandle;
 
 use crate::api::Message;
-use crate::CommandReceiver;
+use crate::{CommandReceiver, MessageReceiver};
 use crate::CommandSender;
 use crate::MessageSender;
 use crate::LEVI_EXEC_PATH;
@@ -15,6 +15,7 @@ pub fn levi_main(
     message_transmitter: MessageSender,
     command_transmitter: CommandSender,
     command_receiver: CommandReceiver,
+    message_receiver: MessageReceiver,
 ) -> anyhow::Result<(AbortHandle, AbortHandle)> {
     let mut lcmd = tokio::process::Command::new(LEVI_EXEC_PATH);
     message_transmitter.send(Message::Info(format!("starting levi at {}", LEVI_EXEC_PATH)))?;
@@ -33,6 +34,7 @@ pub fn levi_main(
             stdin,
             transmitter.clone(),
             command_receiver,
+            message_receiver,
         )
         .await
         {
