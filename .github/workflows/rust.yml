@@ -10,13 +10,24 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  app:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: rustup target add thumbv7em-none-eabihf && cd app && cargo build --verbose
+      run: rustup target add thumbv7em-none-eabihf && cd app && cargo build
     # - name: Run tests
       # run: cargo test --verbose
+
+  station:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: cd gs/station && cargo build --features full
+    - name: Run tests
+      run: cd gs/station cargo test --features full
