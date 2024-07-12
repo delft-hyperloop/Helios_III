@@ -4,10 +4,12 @@ use tokio::net::tcp::OwnedWriteHalf;
 use crate::api::Message;
 use crate::api::Message::Error;
 use crate::Command;
+use crate::CommandReceiver;
+use crate::MessageSender;
 
 pub async fn transmit_commands_to_tcp(
-    mut command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
-    status_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
+    mut command_receiver: CommandReceiver,
+    status_transmitter: MessageSender,
     mut writer: OwnedWriteHalf,
 ) -> anyhow::Result<()> {
     tokio::spawn(async move {

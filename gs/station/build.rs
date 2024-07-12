@@ -5,6 +5,7 @@ use std::env;
 use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
+
 use anyhow::Result;
 use goose_utils::check_ids;
 use goose_utils::commands::generate_commands;

@@ -1,18 +1,20 @@
 #![allow(clippy::single_match)]
-use tokio::sync::broadcast::Sender;
 
 use crate::api::Datapoint;
 use crate::api::Message;
-use crate::{Command, Info};
+use crate::Command;
+use crate::CommandSender;
 use crate::Datatype;
+use crate::Info;
+use crate::MessageSender;
 use crate::COMMAND_HASH;
 use crate::DATA_HASH;
 use crate::EVENTS_HASH;
 
 pub async fn handle_incoming_data(
     data: Datapoint,
-    msg_sender: Sender<Message>,
-    cmd_sender: Sender<Command>,
+    msg_sender: MessageSender,
+    cmd_sender: CommandSender,
 ) -> anyhow::Result<()> {
     msg_sender.send(Message::Data(data.clone()))?;
 
