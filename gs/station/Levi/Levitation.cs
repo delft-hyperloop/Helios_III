@@ -5,6 +5,8 @@ using Pmp;
 using System.Threading;
 using System.IO;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+using System.Linq.Expressions;
 
 namespace PmpGettingStartedCs
 {
@@ -76,7 +78,22 @@ namespace PmpGettingStartedCs
         public ISignal Volt_E { set; get; }
 
         public ISignal VerticalZeroResetSignal { set; get; }
+
         public ISignal LateralZeroResetSignal { set; get; }
+
+        public ISignal PropulsionCurrent { set; get; }
+
+        public ISignal SenseconLocation { set; get; }
+
+        public ISignal SenseconSpeed { set; get; }
+
+        public ISignal LeviLocation { set; get; }
+
+        public ISignal LeviSpeed { set; get; }
+
+
+
+        
 
 
 
@@ -340,10 +357,43 @@ namespace PmpGettingStartedCs
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine("CRITICAL:set_signal_error\n");
+                        Console.WriteLine("WARNING:set_data_error\n");
                     }
                     break;
+                case string data_str when data_str.Contains("data:"):
+                    try
+                    {
+                        data_str = data_str.Trim();
+                        char[] seperator = { ':' };
+                        string[] data_list = data_str.Split(seperator,
+                                StringSplitOptions.RemoveEmptyEntries);
+                        string data_id = data_list[1];
+                        double data_value = Convert.ToDouble(data_list[2]);
+                        if (data_id.ToLower().Contains("current"))
+                        {
+                            this.SetPropulsionCurrent(data_value);
+                        }
+                        else if (data_id.ToLower().Contains("speed"))
+                        {
+                            this.SetSenseconSpeed(data_value);
+                        }
 
+                        else if (data_id.ToLower().Contains("location"))
+                        {
+                            this.SetSenseconLocation(data_value);
+                        }
+                        
+                        else
+                        {
+                            Console.WriteLine("WARNING:set_data_error\n");
+                        }
+
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("WARNING:set_data_error\n");
+                    }
+                    break;
                 default:
                     Console.WriteLine("WARNING:invalid\n");
                     break;
@@ -410,10 +460,15 @@ namespace PmpGettingStartedCs
 
             this.Offset_AB = LateralController.Signals["OffsetFront"];
             this.Offset_CD = LateralController.Signals["OffsetBack"];
+            this.LeviSpeed = LateralController.Signals["x_speed"];
+            this.LeviLocation = LateralController.Signals["x_location"];
+            this.SenseconLocation = LateralController.Signals["location_raw"];
+            this.SenseconSpeed = LateralController.Signals["speed_raw"];
 
             this.Airgap = VerticalController.Signals["Airgap"];
             this.Pitch = VerticalController.Signals["Pitch"];
             this.Roll = VerticalController.Signals["Roll"];
+            this.PropulsionCurrent = VerticalController.Signals["PropulsionCurrent"];
             this.Power_Vert = VerticalController.Signals["Power_avg"];
             this.Power_Lat = LateralController.Signals["Power_Lat_avg"];
 
@@ -444,6 +499,12 @@ namespace PmpGettingStartedCs
         return true;
     }
 
+        public bool SetPropulsionCurrent(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.PropulsionCurrent, value);
+            return true;
+        }
+
         public bool SetVerticalZeroReset(double value)
         {
             Acquisition.ChangeSignalFromSignal(this.VerticalZeroResetSignal, value);
@@ -459,6 +520,18 @@ namespace PmpGettingStartedCs
         public bool SetPropulsion(double value)
         {
             Acquisition.ChangeSignalFromSignal(this.Motor_Enabled, value);
+            return true;
+        }
+
+        public bool SetSenseconSpeed(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.SenseconSpeed, value);
+            return true;
+        }
+
+        public bool SetSenseconLocation(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.SenseconLocation, value);
             return true;
         }
 
@@ -533,6 +606,20 @@ namespace PmpGettingStartedCs
             {
                 string datatype = voltageString.ToLower();
                 string value = editedVoltageList[i].ToString();
+                sendData(datatype, value);
+                i++;
+            }
+        }
+
+        public void getLocalization()
+        {
+            double[] localizationList = { this.LeviLocation.ValueDouble, this.LeviSpeed.ValueDouble };
+            string[] localizationStrings = { "levi_location", "levi_speed" };
+            int i = 0;
+            foreach (string localizationString in localizationStrings)
+            {
+                string datatype = localizationString.ToLower();
+                string value = localizationString[i].ToString();
                 sendData(datatype, value);
                 i++;
             }
