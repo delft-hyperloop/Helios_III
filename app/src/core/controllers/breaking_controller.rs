@@ -120,7 +120,7 @@ async fn read_braking_communication(
         if edge && is_activated {
             edge = false; // braking comm value is low, so we don't brake until it goes high again
             if unsafe { !DISABLE_BRAKING_COMMUNICATION } {
-                event_sender.send(Event::EmergencyBrake).await;
+                event_sender.send(Event::EmergencyBraking).await;
             }
             Timer::after_millis(1000).await;
         }

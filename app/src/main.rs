@@ -192,7 +192,7 @@ pub async fn your_mom(_ds: DataSender, es: EventSender) {
     loop {
         info!("Your mom");
         Timer::after_secs(10).await;
-        es.send(Event::Heartbeat).await;
+        es.send(Event::Heartbeating).await;
         // ds.send(Datapoint::new(
         //     Datatype::BatteryVoltageHigh,
         //     42,

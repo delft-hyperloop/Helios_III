@@ -4,12 +4,12 @@ id = 0x02
 priority = 0
 
 [[Event]]
-name = "Heartbeat"
+name = "Heartbeating"
 id = 0x420
 priority = 1
 
 [[Event]]
-name = "EmergencyBrake"
+name = "EmergencyBraking"
 id = 0xaB
 priority = 10
 
@@ -23,7 +23,7 @@ id = 0x7ff
 priority = 1
 
 [[Event]]
-name = "EndOfTrackTriggered"
+name = "EndOfTrackTriggeredEvent"
 id = 0x121
 priority = 0
 
@@ -117,12 +117,12 @@ priority = 0
 
 [[Event]]
 id = 0x429
-name = "DcOn"
+name = "DcTurnedOn"
 priority = 1 
 
 [[Event]]
 id = 0x42a
-name = "DcOff"
+name = "DcTurnedOff"
 priority = 1 
 
 # ###########################################
@@ -130,18 +130,18 @@ priority = 1
 
 [[Event]]
 id = 0x422
-name = "SetRunConfigSpeed"
+name = "SettingSpeeds"
 priority = 0
 params = "u64"
 
 [[Event]]
-name = "SetRoute"
+name = "SettingRoute"
 id = 0xa5
 priority = 0
 params = "u64"
 
 [[Event]]
-name = "SetOverrides"
+name = "SettingOverrides"
 id = 0x426
 priority = 0
 params = "u64"

@@ -131,7 +131,7 @@ impl App {
                         self.logs.push((Message::Data(datapoint), timestamp()))
                     },
                     Datatype::FSMEvent => {
-                        if datapoint.value == Event::Heartbeat.to_id() as u64 {
+                        if datapoint.value == Event::Heartbeating.to_id() as u64 {
                             self.last_heartbeat = timestamp();
                         } else if self
                             .special_data

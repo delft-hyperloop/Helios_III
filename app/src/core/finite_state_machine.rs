@@ -198,7 +198,7 @@ impl Fsm {
             .await;
 
         match event {
-            Event::EmergencyBrake
+            Event::EmergencyBraking
             | Event::EndOfTrackReached
             | Event::LevitationErrorEvent
             | Event::PropulsionErrorEvent
@@ -209,7 +209,7 @@ impl Fsm {
                 return;
             },
 
-            Event::Heartbeat => {
+            Event::Heartbeating => {
                 self.data_queue
                     .send(Datapoint::new(
                         Datatype::FSMState,
@@ -224,17 +224,17 @@ impl Fsm {
                 return;
             },
 
-            Event::DcOn => {
+            Event::DcTurnedOn => {
                 self.peripherals.hv_peripherals.dc_dc.set_high();
             },
 
-            Event::DcOff => {
+            Event::DcTurnedOff => {
                 self.peripherals.hv_peripherals.dc_dc.set_low();
             },
 
             ///////////////////
             // Debugging events
-            Event::SetOverrides(overrides) => self.status.overrides.set(overrides),
+            Event::SettingOverrides(overrides) => self.status.overrides.set(overrides),
 
             Event::ContinueRunEvent => {
                 match self.route.next_position() {
