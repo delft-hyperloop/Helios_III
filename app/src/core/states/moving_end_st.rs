@@ -4,7 +4,7 @@ use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::core::fsm_status::Location;
 use crate::core::fsm_status::RouteUse;
-use crate::transit;
+use crate::{Info, transit};
 use crate::Event;
 
 impl Fsm {
@@ -27,6 +27,7 @@ impl Fsm {
 
                 _ => {
                     info!("Invalid configuration!");
+                    self.log(Info::InvalidRouteConfigurationAbortingRun).await;
                     transit!(self, State::Exit);
                 },
             },
@@ -40,8 +41,12 @@ impl Fsm {
                 },
                 _ => {
                     info!("Invalid configuration!");
+                    self.log(Info::InvalidRouteConfigurationAbortingRun).await;
                     transit!(self, State::Exit);
                 },
+            },
+            Event::LeviLandingEvent => {
+                transit!(self, State::HVOn);
             },
             _ => {
                 info!("The current state ignores {}", event.to_str());

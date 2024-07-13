@@ -46,4 +46,5 @@ jobs:
     - name: Build
       run: cd gs/station && cargo build --features full
     - name: Run tests
-      run: cd gs/station cargo test --features full
+      run: cd gs/station && cargo test --features full
+

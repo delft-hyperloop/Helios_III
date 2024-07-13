@@ -165,14 +165,14 @@ id = 0x504
 priority = 0
 
 [[Event]]
-name = "LaneSwitchEndedB"
+name = "LaneSwitchEnded"
 id = 0x505
 priority = 0
 
-[[Event]]
-name = "LaneSwitchEndedC"
-id = 0x507
-priority = 0
+# [[Event]]
+# name = "LaneSwitchEndedC"
+# id = 0x507
+# priority = 0
 
 [[Event]]
 name = "EndOfTrackReached"

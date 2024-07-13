@@ -128,3 +128,7 @@ colour = "green"
 label = "EventsHashPassed"
 colour = "green"
 
+[[Info]]
+label = "InvalidRouteConfigurationAbortingRun"
+colour = "red"
+
