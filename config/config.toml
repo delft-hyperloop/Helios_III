@@ -82,7 +82,7 @@ colour = "green"
 [[Info]]
 label = "Unsafe"
 colour = "magenta"
-[]
+
 [[Info]]
 label = "EnablePropulsionGpio"
 colour = "yellow"

@@ -2,8 +2,9 @@ use std::collections::BTreeMap;
 
 use ratatui::Frame;
 
-use crate::api::{LocationSequence, state_to_string};
+use crate::api::state_to_string;
 use crate::api::Datapoint;
+use crate::api::LocationSequence;
 use crate::api::Message;
 use crate::backend::Backend;
 use crate::tui::render::CmdRow;
@@ -106,7 +107,10 @@ impl App {
                             self.safe = false;
                         },
                         x => {
-                            self.logs.push((Message::Status(x), format!("[info: {} at {}]", datapoint.value, datapoint.timestamp)));
+                            self.logs.push((
+                                Message::Status(x),
+                                format!("[info: {} at {}]", datapoint.value, datapoint.timestamp),
+                            ));
                         },
                     },
                     Datatype::RoutePlan => {
@@ -146,7 +150,7 @@ impl App {
                     },
                     Datatype::ResponseHeartbeat => {
                         self.special_data.insert(Datatype::ResponseHeartbeat, datapoint.timestamp);
-                    }
+                    },
                     x if self.special_data.keys().collect::<Vec<&Datatype>>().contains(&&x) => {
                         self.special_data.insert(x, datapoint.value);
                     },

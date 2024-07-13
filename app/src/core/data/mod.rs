@@ -5,13 +5,13 @@
 
 mod batteries;
 mod sources;
-use crate::Datatype;
-use crate::ValueCheckResult;
 use crate::DataReceiver;
 use crate::DataSender;
+use crate::Datapoint;
+use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
-use crate::Datapoint;
+use crate::ValueCheckResult;
 /// ## Individual handling of datapoints
 /// A lot of the subsystems on the pod use their own "encoding" for data.
 /// In order to make a reasonable matching between semantic meaning of
@@ -30,14 +30,14 @@ pub async fn data_middle_step(
             ValueCheckResult::Fine => {},
             ValueCheckResult::Warn => {
                 outgoing.send(value_warning(data.datatype, data.value)).await;
-            }
+            },
             ValueCheckResult::Error => {
                 outgoing.send(value_error(data.datatype, data.value)).await;
-            }
+            },
             ValueCheckResult::BrakeNow => {
                 event_sender.send(Event::ValueOutOfBounds).await;
                 outgoing.send(value_critical(data.datatype, data.value)).await;
-            }
+            },
         }
         // 2. check specific data types
 

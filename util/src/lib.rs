@@ -6,14 +6,14 @@ pub mod datatypes;
 pub mod events;
 pub mod info;
 pub mod ip;
-mod shared;
 pub mod limits;
-use anyhow::{Result};
+mod shared;
+use anyhow::Result;
 
 pub fn check_ids(dp: &str, cp: &str, ep: &str) -> Result<()> {
     let mut items = vec![];
     let d = datatypes::get_data_items(dp)?;
-    let c  = commands::get_command_items(cp)?;
+    let c = commands::get_command_items(cp)?;
     let e = events::get_event_items(ep)?;
     items.extend(&d);
     items.extend(&c);
@@ -26,23 +26,43 @@ pub fn check_ids(dp: &str, cp: &str, ep: &str) -> Result<()> {
                 "\nDuplicate id found: {} ({}). Closest available id is: {}\n",
                 format_args!("{:#05x}", id),
                 format_args!("{:#05x}", id),
-                format_args!("{:#05x}", nearest_id(*id, &items.iter().map(|x| x.0).collect::<Vec<u16>>())),
+                format_args!(
+                    "{:#05x}",
+                    nearest_id(*id, &items.iter().map(|x| x.0).collect::<Vec<u16>>())
+                ),
             );
         } else if *id > 2u16.pow(11) {
             panic!(
                 "\nId out of range: {}. Allowed ids are 0x000-0x7ff. Closest available id is: {}\n",
                 format_args!("{:#05x}", id),
-                format_args!("{:#05x}", nearest_id(*id, &items.iter().map(|x| x.0).collect::<Vec<u16>>())),
+                format_args!(
+                    "{:#05x}",
+                    nearest_id(*id, &items.iter().map(|x| x.0).collect::<Vec<u16>>())
+                ),
             );
         }
         if !seen_names.insert(name) {
-            let other = items.iter().find(|x| x.1.eq(name)).unwrap_or_else(|| unreachable!("The hash set should only contain entries that exist in the items vector"));
+            let other = items.iter().find(|x| x.1.eq(name)).unwrap_or_else(|| {
+                unreachable!(
+                    "The hash set should only contain entries that exist in the items vector"
+                )
+            });
             panic!(
                 "\nDuplicate entry found:\n1: {} {}->{} \n2: {} {}->{}\n",
-                category(&d.iter().map(|x| x.0).collect::<Vec<u16>>(), &c.iter().map(|x| x.0).collect::<Vec<u16>>(), &e.iter().map(|x| x.0).collect::<Vec<u16>>(), *id),
+                category(
+                    &d.iter().map(|x| x.0).collect::<Vec<u16>>(),
+                    &c.iter().map(|x| x.0).collect::<Vec<u16>>(),
+                    &e.iter().map(|x| x.0).collect::<Vec<u16>>(),
+                    *id
+                ),
                 name,
                 format_args!("{:#05x}", id),
-                category(&d.iter().map(|x| x.0).collect::<Vec<u16>>(), &c.iter().map(|x| x.0).collect::<Vec<u16>>(), &e.iter().map(|x| x.0).collect::<Vec<u16>>(), other.0),
+                category(
+                    &d.iter().map(|x| x.0).collect::<Vec<u16>>(),
+                    &c.iter().map(|x| x.0).collect::<Vec<u16>>(),
+                    &e.iter().map(|x| x.0).collect::<Vec<u16>>(),
+                    other.0
+                ),
                 other.1,
                 format_args!("{:#05x}", other.0),
             );

@@ -1,10 +1,10 @@
 #![allow(non_snake_case)]
-use anyhow::Result;
 use std::fs;
 use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
 
+use anyhow::Result;
 use serde::Deserialize;
 
 #[derive(Deserialize, Hash)]

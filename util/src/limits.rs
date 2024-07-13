@@ -1,6 +1,11 @@
-use serde::de::{self, Deserializer, Visitor, MapAccess};
-use serde::{Deserialize, };
 use std::fmt;
+
+use serde::de::Deserializer;
+use serde::de::MapAccess;
+use serde::de::Visitor;
+use serde::de::{self};
+use serde::Deserialize;
+
 use crate::datatypes::Limit;
 use crate::datatypes::Severities;
 
@@ -36,7 +41,8 @@ impl<'de> Deserialize<'de> for Limit {
             where
                 M: MapAccess<'de>,
             {
-                let severities = Severities::deserialize(de::value::MapAccessDeserializer::new(map))?;
+                let severities =
+                    Severities::deserialize(de::value::MapAccessDeserializer::new(map))?;
                 Ok(Limit::Multiple(severities))
             }
 
@@ -54,4 +60,3 @@ impl<'de> Deserialize<'de> for Limit {
         deserializer.deserialize_any(LimitVisitor)
     }
 }
-

@@ -126,7 +126,7 @@ impl Fsm {
                     .await;
 
                 self.entry_levitating();
-            }
+            },
             State::MovingST => {
                 self.data_queue
                     .send(Datapoint::new(

@@ -3,8 +3,9 @@ use tokio::sync::broadcast::Sender;
 
 use crate::api::Datapoint;
 use crate::api::Message;
-use crate::{Command, Info};
+use crate::Command;
 use crate::Datatype;
+use crate::Info;
 use crate::COMMAND_HASH;
 use crate::DATA_HASH;
 use crate::EVENTS_HASH;
