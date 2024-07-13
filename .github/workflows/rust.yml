@@ -30,7 +30,7 @@ jobs:
 
     - name: install dependencies
       run: |
-        echo "deb http://archive.ubuntu.com/ubuntu focal-updates main" >> /etc/apt/sources.list
+        sudo echo "deb http://archive.ubuntu.com/ubuntu focal-updates main" >> /etc/apt/sources.list
         sudo apt-get update
         sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libgdk-3-dev
         export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
