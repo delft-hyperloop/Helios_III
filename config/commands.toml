@@ -178,5 +178,9 @@ name = "SetCurrentSpeed"
 id = 0x5a
 
 [[Command]]
+name = "CreateDatapoint"
+id = 0x5b
+
+[[Command]]
 name = "EmitEvent"
 id = 0x7A0

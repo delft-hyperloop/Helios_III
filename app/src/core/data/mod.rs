@@ -16,7 +16,7 @@ use crate::Event;
 use crate::EventSender;
 use crate::ValueCheckResult;
 
-type HB = Vec<(Datatype, Duration, Instant), { HEARTBEATS_LEN }>;
+type HB = Vec<(Datatype, Duration, Option<Instant>), { HEARTBEATS_LEN }>;
 
 /// ## Individual handling of datapoints
 /// A lot of the subsystems on the pod use their own "encoding" for data.
@@ -54,16 +54,15 @@ pub async fn data_middle_step(
         for (dt, out, last) in hb.iter_mut() {
             if !seen && *dt == data.datatype {
                 seen = true;
-                *last = Instant::now();
-            } else {
-                if last.elapsed() > *out {
+                *last = Some(Instant::now());
+            } else if last.is_some_and(|l| l.elapsed() > *out) {
                     event_sender.send(Event::EmergencyBraking).await;
                     outgoing.send(Datapoint::new(Datatype::HeartbeatExpired, dt.to_id() as u64, Instant::now().as_ticks())).await;
-                }
+                *last = None;
             }
         }
         if !seen {
-            match hb.push((data.datatype, timeout(data.datatype), Instant::now())) {
+            match hb.push((data.datatype, timeout(data.datatype), None)) {
                 Ok(_) => {},
                 Err(_) => outgoing.send(Datapoint::new(Datatype::Info, Info::lamp_error_unreachable.to_idx(), Instant::now().as_ticks())).await,
             }
