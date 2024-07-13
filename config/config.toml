@@ -144,3 +144,8 @@ colour = "green"
 label = "PodNotLevitating"
 colour = "red"
 
+[[Info]]
+label = "lamp_error_unreachable"
+colour = "magenta"
+
+

@@ -927,3 +927,7 @@ id = 0x16e
 name = "SensorHubHeartbeat"
 id = 0x16f
 
+[[Datatype]]
+name = "HeartbeatExpired"
+id = 0x7fd
+

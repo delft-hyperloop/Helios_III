@@ -3,6 +3,7 @@ use anyhow::anyhow;
 
 extern crate serde;
 
+use std::collections::BTreeMap;
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -11,7 +12,6 @@ use anyhow::Result;
 use goose_utils::check_ids;
 use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
-use std::collections::BTreeMap;
 
 /*
    BUILD CONFIGURATION
@@ -163,12 +163,26 @@ fn configure_internal(config: &Config) -> String {
         + &*format!(
             "pub const LV_IDS: [u16;{}] = [{}];\n",
             config.pod.comm.bms_lv_ids.len(),
-            config.pod.comm.bms_lv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", ")
+            config
+                .pod
+                .comm
+                .bms_lv_ids
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join(", ")
         )
         + &*format!(
             "pub const HV_IDS: [u16;{}] = [{}];\n",
             config.pod.comm.bms_hv_ids.len(),
-            config.pod.comm.bms_hv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", ")
+            config
+                .pod
+                .comm
+                .bms_hv_ids
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join(", ")
         )
         + &*format!(
             "pub const GFD_IDS: [u16;{}] = [{}];\n",
@@ -187,8 +201,22 @@ fn configure_internal(config: &Config) -> String {
             config.pod.comm.bms_lv_ids.len()
                 + config.pod.comm.bms_hv_ids.len()
                 + config.pod.comm.gfd_ids.len(),
-            config.pod.comm.bms_lv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "),
-            config.pod.comm.bms_hv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "),
+            config
+                .pod
+                .comm
+                .bms_lv_ids
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join(", "),
+            config
+                .pod
+                .comm
+                .bms_hv_ids
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join(", "),
             config
                 .pod
                 .comm
