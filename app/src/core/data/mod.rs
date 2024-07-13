@@ -6,15 +6,20 @@
 mod batteries;
 mod sources;
 
-use embassy_time::{Duration, Instant};
+use embassy_time::Duration;
+use embassy_time::Instant;
 use heapless::Vec;
-use crate::{DataReceiver, HEARTBEATS, HEARTBEATS_LEN, Info};
+
+use crate::DataReceiver;
 use crate::DataSender;
 use crate::Datapoint;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
+use crate::Info;
 use crate::ValueCheckResult;
+use crate::HEARTBEATS;
+use crate::HEARTBEATS_LEN;
 
 type HB = Vec<(Datatype, Duration, Option<Instant>), { HEARTBEATS_LEN }>;
 
@@ -56,15 +61,29 @@ pub async fn data_middle_step(
                 seen = true;
                 *last = Some(Instant::now());
             } else if last.is_some_and(|l| l.elapsed() > *out) {
-                    event_sender.send(Event::EmergencyBraking).await;
-                    outgoing.send(Datapoint::new(Datatype::HeartbeatExpired, dt.to_id() as u64, Instant::now().as_ticks())).await;
+                event_sender.send(Event::EmergencyBraking).await;
+                outgoing
+                    .send(Datapoint::new(
+                        Datatype::HeartbeatExpired,
+                        dt.to_id() as u64,
+                        Instant::now().as_ticks(),
+                    ))
+                    .await;
                 *last = None;
             }
         }
         if !seen {
             match hb.push((data.datatype, timeout(data.datatype), None)) {
                 Ok(_) => {},
-                Err(_) => outgoing.send(Datapoint::new(Datatype::Info, Info::lamp_error_unreachable.to_idx(), Instant::now().as_ticks())).await,
+                Err(_) => {
+                    outgoing
+                        .send(Datapoint::new(
+                            Datatype::Info,
+                            Info::lamp_error_unreachable.to_idx(),
+                            Instant::now().as_ticks(),
+                        ))
+                        .await
+                },
             }
         }
 
@@ -81,8 +100,8 @@ fn timeout(dt: Datatype) -> Duration {
         }
     }
     Duration::from_millis(0) // This is unreachable,
-    // but as to not panic we return zero timeout.
-    // Since this will always be expired, it will always cause emergency braking
+                             // but as to not panic we return zero timeout.
+                             // Since this will always be expired, it will always cause emergency braking
 }
 
 fn value_warning(dt: Datatype, v: u64) -> Datapoint {

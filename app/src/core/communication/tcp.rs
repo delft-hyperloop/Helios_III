@@ -246,8 +246,14 @@ pub async fn tcp_connection_handler(
                                         .await;
                                 },
                                 Command::CreateDatapoint(x) => {
-                                    data_sender.send(Datapoint::new(Datatype::from_id(x as u16), x, Instant::now().as_ticks())).await;
-                                }
+                                    data_sender
+                                        .send(Datapoint::new(
+                                            Datatype::from_id(x as u16),
+                                            x,
+                                            Instant::now().as_ticks(),
+                                        ))
+                                        .await;
+                                },
                                 Command::SystemReset(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] SystemReset command received");

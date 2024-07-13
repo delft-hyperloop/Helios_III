@@ -124,7 +124,8 @@ impl App {
                         ));
                     },
                     Datatype::FSMState => {
-                        self.cur_state = state_to_string(datapoint.value.round() as u64).to_string();
+                        self.cur_state =
+                            state_to_string(datapoint.value.round() as u64).to_string();
                         self.logs.push((
                             Message::Warning(format!(
                                 "State is now: {:?}",
@@ -135,7 +136,9 @@ impl App {
                         self.logs.push((Message::Data(datapoint), timestamp()))
                     },
                     Datatype::FSMEvent => {
-                        if (datapoint.value - Event::Heartbeating.to_id() as f64).abs() <= f64::EPSILON * 2.0 {
+                        if (datapoint.value - Event::Heartbeating.to_id() as f64).abs()
+                            <= f64::EPSILON * 2.0
+                        {
                             self.last_heartbeat = timestamp();
                         } else if self
                             .special_data
@@ -149,7 +152,8 @@ impl App {
                         }
                     },
                     Datatype::ResponseHeartbeat => {
-                        self.special_data.insert(Datatype::ResponseHeartbeat, datapoint.timestamp as f64);
+                        self.special_data
+                            .insert(Datatype::ResponseHeartbeat, datapoint.timestamp as f64);
                     },
                     x if self.special_data.keys().collect::<Vec<&Datatype>>().contains(&&x) => {
                         self.special_data.insert(x, datapoint.value);

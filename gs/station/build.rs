@@ -2,6 +2,7 @@
 
 extern crate serde;
 use std::env;
+use std::fmt::Write;
 use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
@@ -104,13 +105,10 @@ fn levi_req_data(config: &Config, dt: String) -> Result<String> {
     Ok(format!(
         "\npub const LEVI_REQUESTED_DATA: [Datatype; {}] = [{}];\n",
         config.pod.comm.levi_requested_data.len(),
-        config
-            .pod
-            .comm
-            .levi_requested_data
-            .iter()
-            .map(|x| format!("Datatype::{x}, "))
-            .collect::<String>()
+        config.pod.comm.levi_requested_data.iter().fold(String::new(), |mut acc, x| {
+            let _ = write!(acc, "Datatype::{}, ", x);
+            acc
+        })
     ))
 }
 
