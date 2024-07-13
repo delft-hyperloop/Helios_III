@@ -82,7 +82,7 @@ colour = "green"
 [[Info]]
 label = "Unsafe"
 colour = "magenta"
-
+[]
 [[Info]]
 label = "EnablePropulsionGpio"
 colour = "yellow"
@@ -130,5 +130,13 @@ colour = "green"
 
 [[Info]]
 label = "InvalidRouteConfigurationAbortingRun"
+colour = "red"
+
+[[Info]]
+label = "SettingLSMode"
+colour = "green"
+
+[[Info]]
+label = "PodNotLevitating"
 colour = "red"
 
