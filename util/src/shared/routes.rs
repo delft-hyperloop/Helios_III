@@ -455,8 +455,12 @@ mod tests {
         };
         let s_bytes: u64 = route.speeds.clone().into();
         let r_bytes: u64 = route.positions.into();
-        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
-        assert!(s_bytes > 0);
-        assert!(r_bytes > 0);
+        // panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+        
+        let mut r = Route::default();
+        r.speeds_from(s_bytes);
+        r.positions_from(r_bytes);
+
+        assert_eq!(r, route);
     }
 }

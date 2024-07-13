@@ -17,7 +17,7 @@ impl Fsm {
             },
 
             Event::LeviLandingEvent => {
-                transit!(self, State::Idle);
+                transit!(self, State::HVOn);
             },
 
             _ => {

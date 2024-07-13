@@ -22,6 +22,7 @@ impl Fsm {
         self.status.brakes_armed = false;
         self.status.route_set = false;
         self.status.speeds_set = false;
+        self.status.levitating = false;
 
         error!("------ Emergency Braking!! ------");
         warn!("Emergency Braking!!!");
