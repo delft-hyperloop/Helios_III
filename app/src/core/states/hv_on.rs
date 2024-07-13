@@ -39,6 +39,7 @@ impl Fsm {
                 }
 
                 self.enter_moving().await;
+                self.set_ls_mode().await;
             },
 
             _ => {

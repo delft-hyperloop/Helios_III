@@ -17,19 +17,16 @@ impl Fsm {
             Event::LaneSwitchEnded => match self.route.next_position() {
                 Location::ForwardC => {
                     info!("Entering straight track after curved lane-switch!");
-                    self.send_levi_cmd(Command::ls0(0)).await;
                     transit!(self, State::EndST);
                 },
 
                 Location::BackwardsA => {
                     info!("Entering straight track after curved lane-switch!");
-                    self.send_levi_cmd(Command::ls0(0)).await;
                     transit!(self, State::MovingST);
                 },
 
                 Location::StopAndWait => {
                     self.peripherals.propulsion_controller.stop();
-                    self.send_levi_cmd(Command::ls0(0)).await;
                     self.send_levi_cmd(Command::LeviPropulsionStop(0)).await;
                     transit!(self, State::Levitating);
                 },

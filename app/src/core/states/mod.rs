@@ -18,7 +18,7 @@ mod moving {
     use crate::core::finite_state_machine::State;
     use crate::core::fsm_status::Location;
     use crate::core::fsm_status::RouteUse;
-    use crate::{Datatype, transit};
+    use crate::{Command, Datatype, transit};
     use crate::Info;
 
     impl Fsm {
@@ -37,6 +37,17 @@ mod moving {
                     self.send_dp(Datatype::NextPositionDebug, x as u64, self.route.current_position as u64).await;
                     transit!(self, State::Exit);
                 },
+            }
+        }
+
+        /// Only used in ForwardA, BackwardB, BackwardC positions.
+        /// Tells levi which LS mode to use.
+        pub async fn set_ls_mode(&mut self) {
+            self.log(Info::SettingLSMode).await;
+            match self.route.peek_next_position() {
+                Location::LaneSwitchStraight => self.send_levi_cmd(Command::ls1(0)).await,
+                Location::LaneSwitchCurved => self.send_levi_cmd(Command::ls2(0)).await,
+                _ => self.send_levi_cmd(Command::ls0(0)).await,
             }
         }
     }
