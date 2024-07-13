@@ -124,6 +124,7 @@ impl defmt::Format for Route {
     }
 }
 
+#[allow(dead_code)]
 impl Route {
     pub fn speeds_from(&mut self, val: u64) { self.speeds = LocationSpeedMap::from(val); }
 

@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+use anyhow::anyhow;
 
 extern crate serde;
 
@@ -9,6 +10,7 @@ use anyhow::Result;
 use goose_utils::check_ids;
 use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
+use std::collections::BTreeMap;
 
 /*
    BUILD CONFIGURATION
@@ -37,6 +39,7 @@ struct Pod {
     net: NetConfig,
     internal: InternalConfig,
     comm: Comm,
+    heartbeats: BTreeMap<String, u64>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -83,9 +86,11 @@ fn main() -> Result<()> {
     content.push_str(&configure_pod(&config));
     content.push_str(&configure_internal(&config));
     content.push_str(&goose_utils::commands::generate_commands(COMMANDS_PATH, true)?);
-    content.push_str(&goose_utils::datatypes::generate_datatypes(DATATYPES_PATH, false)?);
+    let dt = goose_utils::datatypes::generate_datatypes(DATATYPES_PATH, false)?;
+    content.push_str(&dt);
     content.push_str(&goose_utils::events::generate_events(EVENTS_PATH, true)?);
     content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, false)?);
+    content.push_str(&configure_heartbeats(&config, &dt)?);
     // content.push_str(&*can::main(&id_list));
 
     fs::write(dest_path.clone(), content).unwrap_or_else(|e| {
@@ -102,6 +107,18 @@ fn main() -> Result<()> {
     println!("cargo:rustc-link-arg-bins=-Tdefmt.x");
 
     Ok(())
+}
+
+fn configure_heartbeats(config: &Config, dt: &str) -> Result<String> {
+    let mut x = format!("\npub const HEARTBEATS_LEN: usize = {};\npub const HEARTBEATS: [(Datatype, u64); HEARTBEATS_LEN] = [", config.pod.heartbeats.len());
+    for (key, val) in &config.pod.heartbeats {
+        if !dt.contains(key) {
+            return Err(anyhow!("\n\nFound heartbeat for non-existing datatype: {:?}\nYou can only add a timeout for datatypes present in /config/datatypes.toml (check your spelling)\n", key));
+        }
+        x.push_str(&format!("(Datatype::{}, {}), ", key, val));
+    }
+    x.push_str("];\n");
+    Ok(x)
 }
 
 fn configure_ip(config: &Config) -> String {
