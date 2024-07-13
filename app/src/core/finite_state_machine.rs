@@ -116,7 +116,17 @@ impl Fsm {
             State::Idle => self.entry_idle(),
             State::RunConfig => self.entry_run_config(),
             State::HVOn => self.entry_hv_on(),
-            State::Levitating => self.entry_levitating(),
+            State::Levitating => {
+                self.data_queue
+                    .send(Datapoint::new(
+                        Datatype::RoutePlan,
+                        self.route.positions.into(),
+                        self.route.current_position as u64,
+                    ))
+                    .await;
+
+                self.entry_levitating();
+            }
             State::MovingST => {
                 self.data_queue
                     .send(Datapoint::new(
@@ -188,7 +198,7 @@ impl Fsm {
             .await;
 
         match event {
-            Event::EmergencyBrake
+            Event::EmergencyBraking
             | Event::EndOfTrackReached
             | Event::LevitationErrorEvent
             | Event::PropulsionErrorEvent
@@ -199,7 +209,7 @@ impl Fsm {
                 return;
             },
 
-            Event::Heartbeat => {
+            Event::Heartbeating => {
                 self.data_queue
                     .send(Datapoint::new(
                         Datatype::FSMState,
@@ -214,17 +224,17 @@ impl Fsm {
                 return;
             },
 
-            Event::DcOn => {
+            Event::DcTurnedOn => {
                 self.peripherals.hv_peripherals.dc_dc.set_high();
             },
 
-            Event::DcOff => {
+            Event::DcTurnedOff => {
                 self.peripherals.hv_peripherals.dc_dc.set_low();
             },
 
             ///////////////////
             // Debugging events
-            Event::SetOverrides(overrides) => self.status.overrides.set(overrides),
+            Event::SettingOverrides(overrides) => self.status.overrides.set(overrides),
 
             Event::ContinueRunEvent => {
                 match self.route.next_position() {
@@ -304,6 +314,12 @@ impl Fsm {
     #[allow(unused)]
     pub async fn send_data(&mut self, dtype: Datatype, data: u64) {
         self.data_queue.send(Datapoint::new(dtype, data, Instant::now().as_ticks())).await;
+    }
+
+    /// ### Send data to the ground station while also specifying the timestamp
+    #[allow(unused)]
+    pub async fn send_dp(&mut self, dtype: Datatype, d: u64, t: u64) {
+        self.data_queue.send(Datapoint::new(dtype, d, t)).await;
     }
 
     /// # Send a command to Levi

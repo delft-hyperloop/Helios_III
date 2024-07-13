@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use ratatui::Frame;
 
-use crate::api::state_to_string;
+use crate::api::{LocationSequence, state_to_string};
 use crate::api::Datapoint;
 use crate::api::Message;
 use crate::backend::Backend;
@@ -105,13 +105,15 @@ impl App {
                         Info::Unsafe => {
                             self.safe = false;
                         },
-                        _ => {},
+                        x => {
+                            self.logs.push((Message::Status(x), format!("[info: {} at {}]", datapoint.value, datapoint.timestamp)));
+                        },
                     },
                     Datatype::RoutePlan => {
                         self.logs.push((
                             Message::Info(format!(
-                                "Route: \n{:?}\ncurrently at {}",
-                                datapoint.value.to_be_bytes(),
+                                "Route: \n{}\ncurrently at {}",
+                                LocationSequence::from(datapoint.value),
                                 datapoint.timestamp,
                             )),
                             timestamp(),
@@ -129,7 +131,7 @@ impl App {
                         self.logs.push((Message::Data(datapoint), timestamp()))
                     },
                     Datatype::FSMEvent => {
-                        if datapoint.value == Event::Heartbeat.to_id() as u64 {
+                        if datapoint.value == Event::Heartbeating.to_id() as u64 {
                             self.last_heartbeat = timestamp();
                         } else if self
                             .special_data
@@ -142,14 +144,9 @@ impl App {
                             self.logs.push((Message::Data(datapoint), timestamp()))
                         }
                     },
-                    Datatype::PropulsionCurrent => {
-                        self.special_data
-                            .insert(Datatype::PropulsionCurrent, datapoint.value / 680);
-                    },
-                    Datatype::PropulsionVoltage => {
-                        self.special_data
-                            .insert(Datatype::PropulsionVoltage, datapoint.value / 340);
-                    },
+                    Datatype::ResponseHeartbeat => {
+                        self.special_data.insert(Datatype::ResponseHeartbeat, datapoint.timestamp);
+                    }
                     x if self.special_data.keys().collect::<Vec<&Datatype>>().contains(&&x) => {
                         self.special_data.insert(x, datapoint.value);
                     },

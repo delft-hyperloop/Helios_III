@@ -145,20 +145,9 @@ pub async fn tcp_connection_handler(
                             let cmd = Command::from_bytes(&x);
                             #[cfg(debug_assertions)]
                             info!("[tcp] Command received: {:?}", cmd);
-                            #[cfg(debug_assertions)]
-                            let _ = socket
-                                .write_all(
-                                    &Datapoint::new(
-                                        Datatype::Info,
-                                        cmd.to_id() as u64,
-                                        embassy_time::Instant::now().as_ticks(),
-                                    )
-                                    .as_bytes(),
-                                )
-                                .await;
                             match cmd {
                                 Command::EmergencyBrake(_) => {
-                                    event_sender.send(Event::EmergencyBrake).await;
+                                    event_sender.send(Event::EmergencyBraking).await;
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] EmergencyBrake command received!!");
                                     if let Err(e) = socket
@@ -198,15 +187,15 @@ pub async fn tcp_connection_handler(
                                 Command::SetRoute(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Configure command received");
-                                    event_sender.send(Event::SetRoute(x)).await;
+                                    event_sender.send(Event::SettingRoute(x)).await;
                                 },
                                 Command::SetSpeeds(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Configure command received");
-                                    event_sender.send(Event::SetRunConfigSpeed(x)).await;
+                                    event_sender.send(Event::SettingSpeeds(x)).await;
                                 },
                                 Command::SetOverrides(x) => {
-                                    event_sender.send(Event::SetOverrides(x)).await;
+                                    event_sender.send(Event::SettingOverrides(x)).await;
                                 },
                                 Command::SetCurrentSpeed(x) => {
                                     #[cfg(debug_assertions)]
@@ -242,12 +231,12 @@ pub async fn tcp_connection_handler(
                                 Command::DcOn(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] DcOn command received");
-                                    event_sender.send(Event::DcOn).await;
+                                    event_sender.send(Event::DcTurnedOn).await;
                                 },
                                 Command::DcOff(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] DcOff command received");
-                                    event_sender.send(Event::DcOff).await;
+                                    event_sender.send(Event::DcTurnedOff).await;
                                 },
                                 Command::EmitEvent(e) => {
                                     #[cfg(debug_assertions)]
@@ -274,7 +263,7 @@ pub async fn tcp_connection_handler(
                                             &Datapoint::new(
                                                 Datatype::ResponseHeartbeat,
                                                 x,
-                                                embassy_time::Instant::now().as_ticks(),
+                                                Instant::now().as_ticks(),
                                             )
                                             .as_bytes(),
                                         )

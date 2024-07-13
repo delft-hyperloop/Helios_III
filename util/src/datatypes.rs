@@ -62,8 +62,8 @@ pub fn get_data_config(path: &str) -> Result<Config> {
     Ok(toml::from_str(&config_str)?)
 }
 
-pub fn get_data_ids(path: &str) -> Result<Vec<u16>> {
-    Ok(get_data_config(path)?.Datatype.iter().map(|x| x.id).collect())
+pub fn get_data_items(path: &str) -> Result<Vec<(u16, String)>> {
+    Ok(get_data_config(path)?.Datatype.iter().map(|x| (x.id, x.name.clone())).collect())
 }
 
 pub fn generate_datatypes(path: &str, drv: bool) -> Result<String> {

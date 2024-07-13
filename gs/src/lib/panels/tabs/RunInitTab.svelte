@@ -58,7 +58,7 @@
                 <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="SystemReset" className="btn flex-grow rounded-md bg-surface-700" />
                 <Command cmd="ArmBrakes" className="btn flex-grow rounded-md bg-surface-700" />
-                <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal} disabled={$state !== 0}>
+                <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal} disabled={$state !== 2}>
                     Configure Run
                 </button>
             </div>

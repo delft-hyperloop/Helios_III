@@ -13,8 +13,11 @@ impl Fsm {
             BRAKE = true;
         }
         self.peripherals.hv_peripherals.power_hv_off();
-        self.status.brakes_armed = false;
         self.peripherals.propulsion_controller.disable();
+        self.status.brakes_armed = false;
+        self.status.route_set = false;
+        self.status.speeds_set = false;
+        self.status.levitating = false;
         info!("In exit state...");
     }
 

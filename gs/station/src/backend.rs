@@ -237,7 +237,7 @@ impl Backend {
             .unwrap()
             .as_str()
             .lines()
-            .map(|x| format!("<p>{x}</p><br>"))
+            .map(|x| format!("<p><input type=\"checkbox\"> {x}</p>"))
             .collect::<Vec<String>>()
             .join("\n");
 

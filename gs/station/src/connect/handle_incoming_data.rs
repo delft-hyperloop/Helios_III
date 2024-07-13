@@ -3,7 +3,7 @@ use tokio::sync::broadcast::Sender;
 
 use crate::api::Datapoint;
 use crate::api::Message;
-use crate::Command;
+use crate::{Command, Info};
 use crate::Datatype;
 use crate::COMMAND_HASH;
 use crate::DATA_HASH;
@@ -23,16 +23,22 @@ pub async fn handle_incoming_data(
         Datatype::CommandHash => {
             if data.value != COMMAND_HASH {
                 msg_sender.send(Message::Error("Command hash mismatch".to_string()))?;
+            } else {
+                msg_sender.send(Message::Status(Info::CommandHashPassed))?;
             }
         },
         Datatype::DataHash => {
             if data.value != DATA_HASH {
                 msg_sender.send(Message::Error("Data hash mismatch".to_string()))?;
+            } else {
+                msg_sender.send(Message::Status(Info::DataHashPassed))?;
             }
         },
         Datatype::EventsHash => {
             if data.value != EVENTS_HASH {
                 msg_sender.send(Message::Error("Event hash mismatch".to_string()))?;
+            } else {
+                msg_sender.send(Message::Status(Info::EventsHashPassed))?;
             }
         },
         _ => {},
