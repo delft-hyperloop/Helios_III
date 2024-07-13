@@ -4,18 +4,17 @@ import {detailTabSet} from "$lib";
 import {invoke} from "@tauri-apps/api/tauri";
 const MAX_VALUE = 4_294_967_295;
 
-const tempParse: dataConvFun<number> = (data: bigint) => {
+const tempParse: dataConvFun<number> = (data: number) => {
     return Number(data) - 100;
 }
 
-const voltParse: dataConvFun<string> = (data: bigint) => {
+const voltParse: dataConvFun<string> = (data: number) => {
     return Number(data) === 200 ? "INVALID" : (Number(data) / 100).toString();
 }
 
-const addEntryToChart = (chart: PlotBuffer, data: bigint, index: number) => {
-    const curr = u64ToDouble(data);
-    chart.addEntry(index, curr);
-    return curr;
+const addEntryToChart = (chart: PlotBuffer, data: number, index: number) => {
+    chart.addEntry(index, data);
+    return data;
 }
 
 const u64ToDouble = (u64: bigint): number => {

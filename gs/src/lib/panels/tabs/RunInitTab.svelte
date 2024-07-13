@@ -72,9 +72,3 @@
         </Tile>
     </TileGrid>
 </div>
-
-<style lang="scss">
-  .active {
-    background-color: rgb(77, 156, 137);
-  }
-</style>

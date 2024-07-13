@@ -7,7 +7,6 @@
         StrokePresets,
         TitleBar,
         addEntryToChart,
-        u64ToDouble,
     } from "$lib";
     import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
     import {chartStore} from "$lib/stores/state";
@@ -297,14 +296,12 @@
     gdd.stores.registerStore<number>("levi_hems_pitch", 0.0, data => addEntryToChart(rolPitchChart, data, 2))
 
     gdd.stores.registerStore<number>("levi_ems_offset_ab", 0.0, data => {
-        const curr: number = u64ToDouble(data);
-        hoffChart.addEntry(1, curr);
-        return curr;
+        hoffChart.addEntry(1, data);
+        return data;
     })
     gdd.stores.registerStore<number>("levi_ems_offset_cd", 0.0, data => {
-        const curr = u64ToDouble(data);
-        hoffChart.addEntry(2, curr);
-        return curr;
+        hoffChart.addEntry(2, data);
+        return data;
     })
 
     gdd.stores.registerStore<number>("levi_hems_power", 0.0)

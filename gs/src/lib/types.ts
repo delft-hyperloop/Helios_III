@@ -89,14 +89,14 @@ export type Log = {
 }
 
 export enum RouteStep {
-    STRAIGHT_START = 'StraightStart',
+    FORWARD_A = 'ForwardA',
+    FORWARD_B = 'ForwardB',
+    FORWARD_C = 'ForwardC',
+    BACKWARD_A = 'BackwardsA',
+    BACKWARD_B = 'BackwardsB',
+    BACKWARD_C = 'BackwardsC',
     LANE_SWITCH_STRAIGHT = 'LaneSwitchStraight',
     LANE_SWITCH_CURVED = 'LaneSwitchCurved',
-    STRAIGHT_END_TRACK = 'StraightEndTrack',
-    LANE_SWITCH_END_TRACK = 'LaneSwitchEndTrack',
-    STRAIGHT_BACKWARDS = 'StraightBackwards',
-    STOP_AND_WAIT = 'StopAndWait',
-    BRAKE_HERE = 'BrakeHere'
 }
 
 export type Procedure = {
