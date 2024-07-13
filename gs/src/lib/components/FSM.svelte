@@ -21,7 +21,7 @@
 
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const fsmState = storeManager.getStore("FSMState");
+    const fsmState = storeManager.getWritable("FSMState");
 
     function turn_on(state:SVGGElement) {
         if (!state || !state.style) return;

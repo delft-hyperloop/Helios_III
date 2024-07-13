@@ -12,7 +12,7 @@
 
     const storeManager = GrandDataDistributor.getInstance().stores;
 
-    const state = storeManager.getStore("FSMState");
+    const state = storeManager.getWritable("FSMState");
 
     let tableArr2:any[][];
     $: tableArr2 = [

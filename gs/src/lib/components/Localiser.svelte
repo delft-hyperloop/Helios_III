@@ -2,7 +2,6 @@
     import {onMount} from "svelte";
     import util from "$lib/util/util";
     import {inputEmerg} from "$lib/stores/state";
-    import {GrandDataDistributor} from "$lib";
 
     export let max:number = 13000;
     export let loc:number = 1000; /* should be < 16000 */
@@ -91,9 +90,6 @@
             emergYPosition = progress_straight.getPointAtLength(emergPosition).y;
         }
     }
-
-    const storeManager = GrandDataDistributor.getInstance().stores;
-    const velocity = storeManager.getStore("Velocity");
 </script>
 
 <div class="w-full">

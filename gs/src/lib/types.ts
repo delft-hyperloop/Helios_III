@@ -13,8 +13,9 @@ export const NamedDatatypeValues = ["YourNewDatatypeName", "DefaultDatatype", "P
  */
 export type Datapoint = {
     datatype: NamedDatatype,
-    value: bigint,
+    value: number,
     timestamp: number,
+    style: string
 }
 
 /**
@@ -30,7 +31,7 @@ export const EventChannel = {
 /**
  * Function to convert data received at DATAPOINT.value to a given type
  */
-export type dataConvFun<T> = (data: bigint, old:T) => T;
+export type dataConvFun<T> = (data: number, old:T) => T;
 
 /**
  * BMS Module Voltage

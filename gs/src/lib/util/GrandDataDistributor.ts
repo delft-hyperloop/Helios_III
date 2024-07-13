@@ -1,7 +1,6 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import {get, type Writable, writable} from "svelte/store";
-import {type dataConvFun, type Datapoint, EventChannel, type NamedDatatype} from "$lib/types";
-import {emit} from "@tauri-apps/api/event";
+import {type dataConvFun, type Datapoint, type NamedDatatype} from "$lib/types";
 
 /**
  * The GrandDataDistributor class is responsible for fetching data from the backend
@@ -85,7 +84,7 @@ export class GrandDataDistributor {
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
             // emit(EventChannel.INFO, `Datapoint received: ${datapoint.datatype} - ${datapoint.value}`);
-            this.StoreManager.updateStore(datapoint.datatype, datapoint.value);
+            this.StoreManager.updateStore(datapoint.datatype, datapoint.style, datapoint.value);
         });
     }
 
@@ -114,23 +113,28 @@ class StoreManager {
      * @param processFunction - the function to process the data
      */
     public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>) {
-        // if (this.stores.has(name)) throw new Error(`Store with name ${name} already exists`);
-        this.stores.set(name, new Store(initial, processFunction));
+        this.stores.set(name, new Store(initial, '', processFunction));
     }
 
     /**
      * Update a store
      * @param name - the name of the store
+     * @param style
      * @param data - the data to update the store with
      */
-    public updateStore(name: NamedDatatype, data: bigint) {
+    public updateStore(name: NamedDatatype, style:string, data: number) {
         const store = this.stores.get(name);
-        if (store) store.set(data);
+        if (store) store.set(data, style);
     }
 
-    public getStore(name: NamedDatatype):Writable<any> {
+    public getWritable(name: NamedDatatype):Writable<any> {
         if (!this.stores.has(name)) throw new Error(`Store with name ${name} does not exist`);
-        return this.stores.get(name)!.getWritable;
+        return this.stores.get(name)!.writable;
+    }
+
+    public getStore(name: NamedDatatype):Store<any> {
+        if (!this.stores.has(name)) throw new Error(`Store with name ${name} does not exist`);
+        return this.stores.get(name)!;
     }
 }
 
@@ -141,18 +145,25 @@ class StoreManager {
  */
 class Store<T> {
     private readonly processFunction: dataConvFun<T>;
-    private readonly writable: Writable<T>;
+    private readonly _writable: Writable<T>;
+    private _style: string;
 
-    constructor(initial:T, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
-        this.writable = writable<T>(initial);
+    constructor(initial:T, style:string, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
+        this._writable = writable<T>(initial);
         this.processFunction = processFunction;
+        this._style = style;
     }
 
-    public set(data: bigint) {
+    public set(data: number, style: string) {
         this.writable.set(this.processFunction(data, get(this.writable)));
+        this._style = style;
     }
 
-    public get getWritable():Writable<T> {
-        return this.writable;
+    public get writable():Writable<T> {
+        return this._writable;
+    }
+
+    public get style():string {
+        return this._style;
     }
 }

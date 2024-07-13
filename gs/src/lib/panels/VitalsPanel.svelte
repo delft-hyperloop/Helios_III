@@ -8,8 +8,8 @@
     let width: number;
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const lvBattery = storeManager.getStore("BatteryEstimatedChargeLow");
-    const hvBattery = storeManager.getStore("BatteryEstimatedChargeHigh");
+    const lvBattery = storeManager.getWritable("BatteryEstimatedChargeLow");
+    const hvBattery = storeManager.getWritable("BatteryEstimatedChargeHigh");
 
     let tableTempsArr: any[][];
     let tableArr2: any[][];
@@ -36,7 +36,7 @@
         ["IMD Voltage", DE.IMDVOLTAGEDETAILS, "Insulation+", DE.INSULATIONPOSITIVE],
     ]
 
-    const location = storeManager.getStore("Localisation");
+    const location = storeManager.getWritable("Localisation");
 
     const toastStore = getToastStore();
 

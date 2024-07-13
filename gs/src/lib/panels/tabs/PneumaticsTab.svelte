@@ -3,8 +3,8 @@
     import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const lowPressure = storeManager.getStore("LowPressureSensor");
-    const highPressure = storeManager.getStore("HighPressureSensor");
+    const lowPressure = storeManager.getWritable("LowPressureSensor");
+    const highPressure = storeManager.getWritable("HighPressureSensor");
 
     $: pressureTable = [
         ["Low Pressure", DE.LOWPRESSURESENSOR],
