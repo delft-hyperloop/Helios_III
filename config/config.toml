@@ -28,6 +28,13 @@ gfd_ids = [0x37,0x38,0x39]
 sensor_hub = [0x1b,0x1c,0x1d,0x15]
 levi_requested_data = ["Localisation", "PropulsionCurrent", "AccelerationX", "AccelerationY", "AccelerationZ"]
 
+[pod.heartbeats]
+# syntax:
+# <datatype name> = <timeout in milliseconds>
+LocalisationHeartbeat = 1000 
+# SensorHubHeartbeat = 1000
+
+
 [[Info]]
 label = "ServerStarted"
 colour = "Green"

@@ -919,3 +919,11 @@ id = 0x16c
 name = "NextPositionDebug"
 id = 0x16d
 
+[[Datatype]]
+name = "LocalisationHeartbeat"
+id = 0x16e
+
+[[Datatype]]
+name = "SensorHubHeartbeat"
+id = 0x16f
+
