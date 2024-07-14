@@ -507,8 +507,7 @@ namespace PmpGettingStartedCs
             this.SenseconLocation = LateralController.Signals["x_location_raw"];
             this.LeviLocation = LateralController.Signals["x_location"];
             this.LeviSpeed = LateralController.Signals["x_speed"];
-            this.SenseconLocation = LateralController.Signals["x_location_raw"];
-            this.LS_signal = LateralController.Signals["ls_signal"];
+            this.LS_signal = LateralController.Signals["LS_signal"];
             this.PropulsionCurrent = VerticalController.Signals["PropulsionCurrent"];
 
             this.Airgap = VerticalController.Signals["Airgap"];
@@ -517,8 +516,8 @@ namespace PmpGettingStartedCs
             this.Power_Vert = VerticalController.Signals["Power_avg"];
             this.Power_Lat = LateralController.Signals["Power_Lat_avg"];
 
-            this.VerticalZeroResetSignal = VerticalController.Signals["Undo_0current"];
-            this.LateralZeroResetSignal = LateralController.Signals["lat_zero_reset"];
+/*            this.VerticalZeroResetSignal = VerticalController.Signals["Undo_0current"];
+            this.LateralZeroResetSignal = LateralController.Signals["lat_zero_reset"];*/
 
 
             this.Volt_A = CygnusA.Sensors["VBus"].Signals["Voltage"];
@@ -694,10 +693,24 @@ namespace PmpGettingStartedCs
 
         public void Initialize()
         {
-            this.SetNameAdress();
-            this.SetPaths();
-            this.TopController = ControllerDiscoveryAndInit.DiscoveryAndInit(this);
-            this.SetSignals();
+            try
+            {
+                this.SetNameAdress();
+                this.SetPaths();
+                this.TopController = ControllerDiscoveryAndInit.DiscoveryAndInit(this);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("WARNING:init_error");
+            }
+            try
+            {
+                this.SetSignals();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("WARNING:init_signal_error");
+            }
         }
 public static void Main()
         {
