@@ -77,7 +77,7 @@ impl Backend {
                     .abort_handle(),
             );
             // self.status(crate::api::Status::ServerStarted);
-            self.info(format!("Server handle: {:?}", self.server_handle));
+            // self.info(format!("Server handle: {:?}", self.server_handle));
             true
         } else {
             self.warn("Server already running".to_string());
@@ -108,7 +108,9 @@ impl Backend {
     }
 
     pub fn send_command(&mut self, cmd: Command) {
-        self.info(format!("[TRACE] enqueuing command {:?}", cmd));
+        // self.info(format!("[TRACE] enqueuing command {:?}", cmd));
+        #[cfg(all(feature = "backend", not(feature = "tui")))]
+        eprintln!("[backend] sending command {:?}", &cmd);
         self.command_transmitter.send(cmd).unwrap();
         self.log_cmd(&cmd);
     }

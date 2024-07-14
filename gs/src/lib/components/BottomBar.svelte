@@ -19,16 +19,16 @@
     const fsmState = storeManager.getWritable("FSMState");
 </script>
 
-
-<button class="btn" on:click={() => bigErrorStatus.set(0)}>
-    change to 0
-</button>
-<button class="btn" on:click={() => bigErrorStatus.set(1)}>
-    change to 1
-</button>
-<button class="btn" on:click={() => bigErrorStatus.set(2)}>
-    change to 2
-</button>
+<!---->
+<!-- <button class="btn" on:click={() => bigErrorStatus.set(0)}> -->
+<!--     change to 0 -->
+<!-- </button> -->
+<!-- <button class="btn" on:click={() => bigErrorStatus.set(1)}> -->
+<!--     change to 1 -->
+<!-- </button> -->
+<!-- <button class="btn" on:click={() => bigErrorStatus.set(2)}> -->
+<!--     change to 2 -->
+<!-- </button> -->
 
 <footer class="text-zinc-100 text-sm {$bigErrorStatus === 0 ? 'bg-primary-600' :
                $bigErrorStatus === 1 ? 'bg-warning-500' : 'bg-error-500'} w-full flex

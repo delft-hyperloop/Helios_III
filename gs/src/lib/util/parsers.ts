@@ -43,7 +43,7 @@ const metersPerMinuteToByte = (mpm: number): number => {
 
     const speed_min = -500;
     const speed_max = 500;
-    const byte_min = 0;
+    const byte_min = 50;
     const byte_max = 255;
 
     let mappedValue = ((mpm - speed_min) / (speed_max - speed_min)) * (byte_max - byte_min) + byte_min;
@@ -74,6 +74,8 @@ const parseShortCut = async (shortcut:string):Promise<void> => {
     } else if (shortcut === "emergency_brake") {
         console.log("Emergency brake");
         await invoke('send_command', {cmdName: "EmergencyBrake", val: 0});
+    } else if (shortcut === "heartbeat") {
+        await invoke('send_command', {cmdName: "FrontendHeartbeat", val: 0});
     }
 
 }

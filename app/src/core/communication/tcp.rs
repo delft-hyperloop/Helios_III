@@ -67,7 +67,7 @@ pub async fn tcp_connection_handler(
 
     let mut buf = [0; { NETWORK_BUFFER_SIZE }];
     'netstack: loop {
-        info!("[netstack] loop starting");
+        debug!("[netstack] loop starting");
 
         match socket.connect(gs_addr).await {
             Ok(_) => {
@@ -120,8 +120,7 @@ pub async fn tcp_connection_handler(
                     send_event(event_sender, Event::ConnectionLossEvent);
                     break 'connection;
                 }
-                #[cfg(debug_assertions)]
-                info!("[tcp] !!!!!!!!!!!!!!! Received::  {:?}", &buf[..n]);
+                trace!("[tcp] !!!!!!!!!!!!!!! Received::  {:?}", &buf[..n]);
 
                 buf[0..n].iter().for_each(|x| {
                     parsing_buffer.push_back(*x).unwrap();
@@ -139,13 +138,12 @@ pub async fn tcp_connection_handler(
                             // parsing_buffer.iter().take(20).enumerate().for_each(|(i, y)| { x[i] = *y });
 
                             let cmd = Command::from_bytes(&x);
-                            #[cfg(debug_assertions)]
-                            info!("[tcp] Command received: {:?}", cmd);
+                            trace!("[tcp] Command received: {:?}", cmd);
                             match cmd {
                                 Command::EmergencyBrake(_) => {
                                     send_event(event_sender, Event::EmergencyBraking);
                                     #[cfg(debug_assertions)]
-                                    info!("[tcp] EmergencyBrake command received!!");
+                                    warn!("[tcp] EmergencyBrake command received!!");
                                     if let Err(e) = socket
                                         .write_all(
                                             &Datapoint::new(
@@ -162,7 +160,6 @@ pub async fn tcp_connection_handler(
                                     let _ = socket.flush().await;
                                 },
                                 Command::DefaultCommand(_) => {
-                                    #[cfg(debug_assertions)]
                                     info!("[tcp] DefaultCommand received, unsure what to do with it...");
                                     let _ = socket.flush().await;
                                     let _ = socket
@@ -171,70 +168,57 @@ pub async fn tcp_connection_handler(
                                     let _ = socket.flush().await;
                                 },
                                 Command::launch(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] Levitate command received");
+                                    debug!("[tcp] Levitate command received");
                                     send_event(event_sender, Event::LeviLaunchingEvent);
                                 },
                                 Command::land(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] StopLevitating command received");
+                                    debug!("[tcp] StopLevitating command received");
                                     send_event(event_sender, Event::LeviLandingEvent);
                                 },
                                 Command::SetRoute(x) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] Configure command received");
+                                    debug!("[tcp] Configure command received");
                                     send_event(event_sender, Event::SettingRoute(x));
                                 },
                                 Command::SetSpeeds(x) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] Configure command received");
+                                    debug!("[tcp] Configure command received");
                                     send_event(event_sender, Event::SettingSpeeds(x));
                                 },
                                 Command::SetOverrides(x) => {
                                     send_event(event_sender, Event::SettingOverrides(x));
                                 },
                                 Command::SetCurrentSpeed(x) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] SetCurrentSpeed command received");
+                                    debug!("[tcp] SetCurrentSpeed command received");
                                     send_event(event_sender, Event::SetCurrentSpeedCommand(x));
                                 },
                                 Command::StartRun(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] Start Run command received");
+                                    debug!("[tcp] Start Run command received");
                                     send_event(event_sender, Event::RunStarting);
                                 },
                                 Command::ContinueRun(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] Start Run command received");
+                                    debug!("[tcp] Start Run command received");
                                     send_event(event_sender, Event::ContinueRunEvent);
                                 },
                                 Command::Shutdown(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] Shutdown command received");
+                                    debug!("[tcp] Shutdown command received");
                                     send_event(event_sender, Event::ExitEvent);
                                 },
                                 Command::StartHV(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] StartHV command received");
+                                    debug!("[tcp] StartHV command received");
                                     send_event(event_sender, Event::TurnOnHVCommand);
                                 },
                                 Command::StopHV(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] StopHV command received");
+                                    debug!("[tcp] StopHV command received");
                                     send_event(event_sender, Event::TurnOffHVCommand);
                                 },
                                 Command::DcOn(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] DcOn command received");
+                                    debug!("[tcp] DcOn command received");
                                     send_event(event_sender, Event::DcTurnedOn);
                                 },
                                 Command::DcOff(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] DcOff command received");
+                                    debug!("[tcp] DcOff command received");
                                     send_event(event_sender, Event::DcTurnedOff);
                                 },
                                 Command::EmitEvent(e) => {
-                                    #[cfg(debug_assertions)]
                                     info!("[tcp] EmitEvent command received");
                                     send_event(
                                         event_sender,
@@ -245,18 +229,15 @@ pub async fn tcp_connection_handler(
                                     send_data!(data_sender, Datatype::from_id(x as u16), x);
                                 },
                                 Command::SystemReset(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] SystemReset command received");
+                                    debug!("[tcp] SystemReset command received");
                                     send_event(event_sender, Event::SystemResetCommand);
                                 },
                                 Command::FinishRunConfig(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] FinishRunConfig command received");
+                                    debug!("[tcp] FinishRunConfig command received");
                                     send_event(event_sender, Event::RunConfigCompleteEvent);
                                 },
                                 Command::Heartbeat(x) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] Heartbeat command received {} :)", x);
+                                    trace!("[tcp] Heartbeat command received {} :)", x);
                                     match socket
                                         .write_all(
                                             &Datapoint::new(
@@ -279,8 +260,7 @@ pub async fn tcp_connection_handler(
                                     send_data!(data_sender, Datatype::FrontendHeartbeating, x);
                                 },
                                 Command::ArmBrakes(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp] ArmBrakesCommand command received");
+                                    debug!("[tcp] ArmBrakesCommand command received");
                                     queue_event(event_sender, Event::ArmBrakesCommand).await;
                                 },
                                 _ => {}, // TODO: DELETE THIS
@@ -297,12 +277,10 @@ pub async fn tcp_connection_handler(
                     if x {
                         if let Ok(data) = data_receiver.try_receive() {
                             let data = data.as_bytes();
-                            #[cfg(debug_assertions)]
-                            info!("[tcp:mpmc] Sending data: {:?}", data);
+                            trace!("[tcp:mpmc] Sending data: {:?}", data);
                             match socket.write_all(&data).await {
                                 Ok(_) => {
-                                    #[cfg(debug_assertions)]
-                                    info!("[tcp:socket] Data written successfully");
+                                    trace!("[tcp:socket] Data written successfully");
                                 },
                                 Err(e) => {
                                     error!("[tcp:socket] Failed to write data: {:?}", e);
@@ -322,6 +300,6 @@ pub async fn tcp_connection_handler(
             }
         }
         // if this is reached, it means that the connection was dropped
-        info!("D:");
+        error!("D:");
     }
 }

@@ -69,6 +69,8 @@ pub fn send_command(cmd_name: String, val: u64) {
     let c = Command::from_string(&cmd_name, val);
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
         backend_mutex.get_mut().unwrap().send_command(c);
+    } else {
+        panic!("kys");
     }
 }
 
@@ -152,4 +154,12 @@ pub fn procedures() -> Vec<[String; 6]> {
     } else {
         res.unwrap()
     }
+}
+
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn test_panic() {
+    panic!("kill yourself");
 }

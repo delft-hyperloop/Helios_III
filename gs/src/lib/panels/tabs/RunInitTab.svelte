@@ -34,6 +34,13 @@
             title: "Run Configuration",
         })
     }
+    let finishRunConfig = () => {
+        invoke('send_command', {cmdName: "FinishRunConfig", val: 0}).then(() => {
+            console.log(`Command FinishRunConfig sent`);
+            modalStore.close();
+        });
+    }
+
 </script>
 
 <div class="p-4 h-full">
@@ -45,8 +52,11 @@
                 <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="SystemReset" className="btn flex-grow rounded-md bg-surface-700" />
                 <Command cmd="ArmBrakes" className="btn flex-grow rounded-md bg-surface-700" />
-                <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal} disabled={$state !== 2}>
+                <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal} disabled={false}>
                     Configure Run
+                </button>
+                <button class="btn rounded-md bg-primary-500 col-span-2" on:click={finishRunConfig} disabled={false}>
+                    Submit Configuration
                 </button>
             </div>
         </Tile>

@@ -40,7 +40,7 @@
     const inputs: SpeedFormKey[] = Object.keys(speedForm) as SpeedFormKey[];
 
     function onRouteStepClick(step: RouteStep): void {
-      if (routeSteps.length < 21) {
+      if (routeSteps.length < 16) {
         routeSteps = [...routeSteps, step];
       }
     }
@@ -50,8 +50,11 @@
     }
 
     function onFormSubmit(): void {
+        //invoke('test_panic');
         if (Object.values(speedForm).some(v => v < -500 || v > 500)) {
             console.log(`Invalid values in form`);
+            invoke('test_panic');
+
             return;
         } else {
             let speeds_u64 = BigInt(0);
@@ -78,10 +81,6 @@
                 modalStore.close();
             })
 
-            invoke('send_command', {cmdName: "FinishRunConfig", val: 0}).then(() => {
-                console.log(`Command FinishRunConfig sent`);
-                modalStore.close();
-            })
         }
     }
 
@@ -230,6 +229,7 @@
                 {/each}
             </div>
         </div>
+
 
 
 
