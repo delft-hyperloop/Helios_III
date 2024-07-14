@@ -904,6 +904,10 @@ name = "DataHash"
 id = 0x169
 
 [[Datatype]]
+name = "ConfigHash"
+id = 0x171
+
+[[Datatype]]
 name = "ValueError"
 id = 0x16a
 
@@ -918,4 +922,20 @@ id = 0x16c
 [[Datatype]]
 name = "NextPositionDebug"
 id = 0x16d
+
+[[Datatype]]
+name = "LocalisationHeartbeat"
+id = 0x16e
+
+[[Datatype]]
+name = "SensorHubHeartbeat"
+id = 0x16f
+
+[[Datatype]]
+name = "FrontendHeartbeating"
+id = 0x170
+
+[[Datatype]]
+name = "HeartbeatExpired"
+id = 0x7fd
 

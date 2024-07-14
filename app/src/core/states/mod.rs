@@ -18,7 +18,9 @@ mod moving {
     use crate::core::finite_state_machine::State;
     use crate::core::fsm_status::Location;
     use crate::core::fsm_status::RouteUse;
-    use crate::{Command, Datatype, transit};
+    use crate::transit;
+    use crate::Command;
+    use crate::Datatype;
     use crate::Info;
 
     impl Fsm {
@@ -34,7 +36,12 @@ mod moving {
                 Location::StopAndWait => self.peripherals.propulsion_controller.stop(),
                 x => {
                     self.log(Info::InvalidRouteConfiguration).await;
-                    self.send_dp(Datatype::NextPositionDebug, x as u64, self.route.current_position as u64).await;
+                    self.send_dp(
+                        Datatype::NextPositionDebug,
+                        x as u64,
+                        self.route.current_position as u64,
+                    )
+                    .await;
                     transit!(self, State::Exit);
                 },
             }

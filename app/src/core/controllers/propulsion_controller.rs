@@ -13,10 +13,9 @@ use embassy_stm32::peripherals::PA4;
 use embassy_stm32::peripherals::PA5;
 use embassy_stm32::peripherals::PA6;
 use embassy_stm32::peripherals::PB1;
-use embassy_time::Instant;
 use embassy_time::Timer;
 
-use crate::core::communication::Datapoint;
+use crate::send_data;
 use crate::try_spawn;
 use crate::DataSender;
 use crate::Datatype;
@@ -94,29 +93,15 @@ pub async fn read_prop_adc(
     mut pa5: PA5,
     mut pa6: PA6,
 ) {
+    Timer::after_millis(5000).await;
     loop {
         let v_ref_int = adc.read_internal(&mut v_ref_int_channel);
         let v = adc.read(&mut pa5) as u64;
         let i = adc.read(&mut pa6) as u64;
-        // #[cfg(debug_assertions)]
-        // defmt::info!(
-        //     "Propulsion:\n\t voltage (pc0): {} \n\t current (pf3): {} \n\t reference: {}\n",
-        //     v, i, v_ref_int
-        // );
-        data_sender
-            .send(Datapoint::new(Datatype::PropulsionVoltage, v, Instant::now().as_ticks()))
-            .await;
-        data_sender
-            .send(Datapoint::new(Datatype::PropulsionCurrent, i, Instant::now().as_ticks()))
-            .await;
-        data_sender
-            .send(Datapoint::new(
-                Datatype::PropulsionVRefInt,
-                v_ref_int as u64,
-                Instant::now().as_ticks(),
-            ))
-            .await;
+        send_data!(data_sender, Datatype::PropulsionVoltage, v; 1000);
+        send_data!(data_sender, Datatype::PropulsionCurrent, i; 1000);
+        send_data!(data_sender, Datatype::PropulsionVRefInt, v_ref_int as u64; 1000);
 
-        Timer::after_millis(250).await;
+        Timer::after_millis(100).await;
     }
 }

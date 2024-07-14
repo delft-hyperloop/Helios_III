@@ -16,8 +16,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+<<<<<<< HEAD
+    - name: Build & Lint
+      run: rustup target add thumbv7em-none-eabihf && cd app && cargo clippy -- -D warnings
+
+=======
     - name: Build
       run: rustup target add thumbv7em-none-eabihf && cd app && cargo build
+>>>>>>> 441ec3870e99a4435b7c6742938ceacc8c9d3b10
 
   station:
 
@@ -32,8 +38,13 @@ jobs:
         sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libgtk-3-dev
         export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
+<<<<<<< HEAD
+    - name: Build & Lint
+      run: cd gs/station && cargo clippy --features full -- -D warnings 
+=======
     - name: Build
       run: cd gs/station && cargo build --features full
+>>>>>>> 441ec3870e99a4435b7c6742938ceacc8c9d3b10
     - name: Test
       run: cd gs/station && cargo test --features full
 

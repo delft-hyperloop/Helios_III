@@ -88,7 +88,7 @@ pub enum Location {
     LaneSwitchStraight = 0b1001, // 0x9
     LaneSwitchCurved = 0b1010,   // 0xA
     StopAndWait = 0b1011,        // 0xB
-    BrakeHere = 0b0000, // no next position, just stop here.
+    BrakeHere = 0b0000,          // no next position, just stop here.
 }
 
 /// A full configuration of the propulsion subsystem for a run.
@@ -124,6 +124,7 @@ impl defmt::Format for Route {
     }
 }
 
+#[allow(dead_code)]
 impl Route {
     pub fn speeds_from(&mut self, val: u64) { self.speeds = LocationSpeedMap::from(val); }
 
@@ -133,11 +134,11 @@ impl Route {
 #[cfg(not(target_os = "none"))]
 impl std::fmt::Display for LocationSequence {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::write!(f, "Route {{\n")?;
+        writeln!(f, "Route {{")?;
         for l in self.0.into_iter() {
             std::write!(f, " -> {:?} (0x{:x})", l, l as u64)?;
         }
-        std::write!(f, "}}\n ")
+        writeln!(f, "}}")
     }
 }
 
@@ -456,7 +457,7 @@ mod tests {
         let s_bytes: u64 = route.speeds.clone().into();
         let r_bytes: u64 = route.positions.into();
         // panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
-        
+
         let mut r = Route::default();
         r.speeds_from(s_bytes);
         r.positions_from(r_bytes);
