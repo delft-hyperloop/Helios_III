@@ -140,3 +140,60 @@ colour = "green"
 label = "PodNotLevitating"
 colour = "red"
 
+
+[[Info]]
+label = "UndervoltageLvBattery"
+colour = "red"
+
+[[Info]]
+label = "OvervoltageLvBattery"
+colour = "red"
+
+[[Info]]
+label = "UndervoltageHvBattery"
+colour = "red"
+
+[[Info]]
+label = "OvervoltageHvBattery"
+colour = "red"
+
+[[Info]]
+label = "OvercurrentHvBattery"
+colour = "red"
+
+[[Info]]
+label = "OvercurrentLvBattery"
+colour = "red"
+
+[[Info]]
+label = "OverheatHvBattery"
+colour = "red"
+
+[[Info]]
+label = "OverheatLvBattery"
+colour = "red"
+
+[[Info]]
+label = "LeakageHvBattery"
+colour = "red"
+
+[[Info]]
+label = "LeakageLvBattery"
+colour = "red"
+
+[[Info]]
+label = "NoCellComunnicationLvBattery"
+colour = "red"
+
+[[Info]]
+label = "NoCellComunnicationHvBattery"
+colour = "red"
+
+[[Info]]
+label = "DischargeOvercurrentHvBattery"
+colour = "red"
+
+[[Info]]
+label = "DischargeOvercurrentLvBattery"
+colour = "red"
+

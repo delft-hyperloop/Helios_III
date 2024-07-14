@@ -1,9 +1,10 @@
+use core::num::FpCategory::Infinite;
 use defmt::debug;
 use defmt::info;
-
+use embassy_time::Instant;
 use crate::core::communication::Datapoint;
 use crate::pconfig::bytes_to_u64;
-use crate::DataSender;
+use crate::{DataSender, Info};
 use crate::Datatype;
 use crate::EventSender;
 
@@ -298,16 +299,43 @@ impl BatteryController {
     }
 
     pub async fn diagnostic_bms(&mut self, data: &[u8], timestamp: u64) {
-        let dt = if self.high_voltage {
-            Datatype::DiagnosticBMSHigh
+        let high_voltage_checks = [
+            (0, 0b1, Info::UndervoltageHvBattery),
+            (0, 0b10, Info::OvervoltageHvBattery),
+            (0, 0b100, Info::DischargeOvercurrentHvBattery),
+            (0, 0b1000, Info::OvercurrentHvBattery),
+            (0, 0b10000, Info::LeakageHvBattery),
+            (0, 0b100000, Info::NoCellComunnicationHvBattery),
+            (2, 0b1000, Info::OverheatHvBattery),
+        ];
+
+        let low_voltage_checks = [
+            (0, 0b1, Info::UndervoltageLvBattery),
+            (0, 0b10, Info::OvervoltageLvBattery),
+            (0, 0b100, Info::DischargeOvercurrentLvBattery),
+            (0, 0b1000, Info::OvercurrentLvBattery),
+            (0, 0b10000, Info::LeakageLvBattery),
+            (0, 0b100000, Info::NoCellComunnicationLvBattery),
+            (2, 0b1000, Info::OverheatLvBattery),
+        ];
+
+        let checks = if self.high_voltage {
+            &high_voltage_checks
         } else {
-            Datatype::DiagnosticBMSLow
+            &low_voltage_checks
         };
-        let mut msg: u64 = 0;
-        for (i, &x) in data.iter().enumerate() {
-            msg |= (x as u64) << (i * 8);
+
+        for &(byte_index, bit_mask, info) in checks {
+            if data[byte_index] & bit_mask != 0 {
+                self.data_sender.send(Datapoint::new(
+                    Datatype::Info,
+                    info as u64,
+                    Instant::now().as_ticks(),
+                ))
+                    .await
+
+            }
         }
-        self.data_sender.send(Datapoint::new(dt, msg, timestamp)).await;
     }
 
     pub async fn state_of_charge_bms(&mut self, data: &[u8], timestamp: u64) {
