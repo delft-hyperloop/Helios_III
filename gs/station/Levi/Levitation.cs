@@ -706,7 +706,7 @@ public static void Main()
 
   try
   {
-/*                arcas.Initialize();*/
+                arcas.Initialize();
 
                 /* Console.WriteLine("SampleCount: {0}", arcas.TopController.Signals["SampleCount"].ValueUint32);
  */
@@ -735,11 +735,12 @@ public static void Main()
                     try
                     {
                         Thread.Sleep(2000);
-/*                        arcas.getVerticalAirgaps();
+                        arcas.getVerticalAirgaps();
                         arcas.getLateralAirgaps();
                         arcas.getCurrents();
                         arcas.getDegreesOfFreedom();
-                        arcas.getVoltages();*/
+                        arcas.getVoltages();
+                        arcas.getLocalization();
 
                     }
                     catch (Exception)
