@@ -13,10 +13,7 @@
     let routeSteps: RouteStep[] = [];
 
     function onDrop({ detail: { from, to } }: CustomEvent<DropEvent>) {
-      if (!to || from === to) {
-        return;
-      }
-
+      if (!to || from === to) return;
       routeSteps = reorder(routeSteps, from.index, to.index);
     }
 
@@ -25,7 +22,18 @@
     export let parent: SvelteComponent;
     const modalStore = getModalStore();
 
-    const speedForm = {
+    type SpeedFormType = {
+        BackwardC: number,
+        ForwardB: number,
+        ForwardA: number,
+        LaneSwitchCurved: number,
+        ForwardC: number,
+        LaneSwitchStraight: number,
+        BackwardA: number,
+        BackwardB: number
+    }
+
+    const speedForm:SpeedFormType = {
         ForwardA: 0,
         BackwardA: 0,
         ForwardB: 0,
@@ -82,6 +90,27 @@
             })
 
         }
+    }
+
+    /**
+     * Import the configuration from the backend
+     * @param speeds this should be a struct with the same keys as SpeedFormType.
+     * The values for these keys will be set on the keys of the component one
+     * @param steps the route steps. These will be displayed in the list.
+     */
+    function import_config(speeds:SpeedFormType, steps:RouteStep[]):void {
+        const inputs: SpeedFormKey[] = Object.keys(speeds) as SpeedFormKey[];
+
+        for (const input of inputs) {
+            speedForm[input] = speeds[input];
+        }
+
+        routeSteps = steps;
+    }
+
+    function export_config() {
+        const return_value = {speeds: speedForm, steps: routeSteps};
+        // todo: @Andreas please figure it out
     }
 
     const cBase = 'card p-4 w-modal shadow-xl space-y-4';
