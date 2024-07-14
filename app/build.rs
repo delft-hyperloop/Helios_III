@@ -1,12 +1,15 @@
 #![allow(non_snake_case)]
+use anyhow::anyhow;
 
 extern crate serde;
 
+use std::collections::BTreeMap;
 use std::env;
 use std::fs;
 use std::path::Path;
+
 use anyhow::Result;
-use goose_utils::check_ids;
+use goose_utils::check_config;
 use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
 
@@ -27,7 +30,6 @@ struct GS {
     ip: [u8; 4],
     force: bool,
     port: u16,
-    // udp_port: u16,
     buffer_size: usize,
     timeout: u64,
     heartbeat: u64,
@@ -37,21 +39,22 @@ struct GS {
 struct Pod {
     net: NetConfig,
     internal: InternalConfig,
-    bms: Bms,
+    comm: Comm,
+    heartbeats: BTreeMap<String, u64>,
 }
 
 #[derive(Debug, Deserialize)]
-struct Bms {
-    lv_ids: Vec<u16>,
-    hv_ids: Vec<u16>,
+struct Comm {
+    bms_lv_ids: Vec<u16>,
+    bms_hv_ids: Vec<u16>,
     gfd_ids: Vec<u16>,
 }
 
 #[derive(Debug, Deserialize)]
 struct NetConfig {
-    ip: [u8; 4],
-    port: u16,
-    udp_port: u16,
+    // ip: [u8; 4],
+    // port: u16,
+    // udp_port: u16,
     mac_addr: [u8; 6],
     keep_alive: u64,
 }
@@ -69,12 +72,6 @@ pub const COMMANDS_PATH: &str = "../config/commands.toml";
 pub const EVENTS_PATH: &str = "../config/events.toml";
 
 fn main() -> Result<()> {
-    // if cfg!(debug_assertions) {
-    //     env::set_var("DEFMT_LOG", "trace");
-    // } else {
-    //     env::set_var("DEFMT_LOG", "off");
-    // }
-
     let out_dir = env::var("OUT_DIR")?;
     let dest_path = Path::new(&out_dir).join("config.rs");
 
@@ -83,16 +80,18 @@ fn main() -> Result<()> {
 
     let mut content = String::from("//@generated\n");
 
-    let _ = check_ids(DATATYPES_PATH, COMMANDS_PATH, EVENTS_PATH);
+    content.push_str(&check_config(DATATYPES_PATH, COMMANDS_PATH, EVENTS_PATH, CONFIG_PATH)?);
 
     content.push_str(&configure_ip(&config));
     content.push_str(&configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force)?);
     content.push_str(&configure_pod(&config));
     content.push_str(&configure_internal(&config));
     content.push_str(&goose_utils::commands::generate_commands(COMMANDS_PATH, true)?);
-    content.push_str(&goose_utils::datatypes::generate_datatypes(DATATYPES_PATH, false)?);
+    let dt = goose_utils::datatypes::generate_datatypes(DATATYPES_PATH, false)?;
+    content.push_str(&dt);
     content.push_str(&goose_utils::events::generate_events(EVENTS_PATH, true)?);
     content.push_str(&goose_utils::info::generate_info(CONFIG_PATH, false)?);
+    content.push_str(&configure_heartbeats(&config, &dt)?);
     // content.push_str(&*can::main(&id_list));
 
     fs::write(dest_path.clone(), content).unwrap_or_else(|e| {
@@ -111,27 +110,41 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+fn configure_heartbeats(config: &Config, dt: &str) -> Result<String> {
+    let mut x = format!("\npub const HEARTBEATS_LEN: usize = {};\npub const HEARTBEATS: [(Datatype, u64); HEARTBEATS_LEN] = [", config.pod.heartbeats.len());
+    for (key, val) in &config.pod.heartbeats {
+        if !dt.contains(key) {
+            return Err(anyhow!("\n\nFound heartbeat for non-existing datatype: {:?}\nYou can only add a timeout for datatypes present in /config/datatypes.toml (check your spelling)\n", key));
+        }
+        x.push_str(&format!("(Datatype::{}, {}), ", key, val));
+    }
+    x.push_str("];\n");
+    Ok(x)
+}
+
 fn configure_ip(config: &Config) -> String {
     format!("pub const NETWORK_BUFFER_SIZE: usize = {};\n", config.gs.buffer_size)
         + &*format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
 }
 
 fn configure_pod(config: &Config) -> String {
+    // format!(
+    //     "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+    //     config.pod.net.ip[0],
+    //     config.pod.net.ip[1],
+    //     config.pod.net.ip[2],
+    //     config.pod.net.ip[3],
+    //     config.pod.net.port
+    // )
+    //     + &*format!(
+    //     "pub static POD_UDP_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+    //     config.pod.net.ip[0],
+    //     config.pod.net.ip[1],
+    //     config.pod.net.ip[2],
+    //     config.pod.net.ip[3],
+    //     config.pod.net.udp_port
+    // ) +
     format!(
-        "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
-        config.pod.net.ip[0],
-        config.pod.net.ip[1],
-        config.pod.net.ip[2],
-        config.pod.net.ip[3],
-        config.pod.net.port
-    ) + &*format!(
-        "pub static POD_UDP_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
-        config.pod.net.ip[0],
-        config.pod.net.ip[1],
-        config.pod.net.ip[2],
-        config.pod.net.ip[3],
-        config.pod.net.udp_port
-    ) + &*format!(
         "pub static POD_MAC_ADDRESS: [u8;6] = [{},{},{},{},{},{}];\n",
         config.pod.net.mac_addr[0],
         config.pod.net.mac_addr[1],
@@ -139,8 +152,8 @@ fn configure_pod(config: &Config) -> String {
         config.pod.net.mac_addr[3],
         config.pod.net.mac_addr[4],
         config.pod.net.mac_addr[5]
-    ) + &*format!("pub const KEEP_ALIVE: u64 = {};\n", config.pod.net.keep_alive)
-        + &*format!("pub const HEARTBEAT: u64 = {};\n", config.gs.heartbeat)
+    ) + &format!("pub const KEEP_ALIVE: u64 = {};\n", config.pod.net.keep_alive)
+        + &format!("pub const HEARTBEAT: u64 = {};\n", config.gs.heartbeat)
 }
 
 fn configure_internal(config: &Config) -> String {
@@ -149,20 +162,34 @@ fn configure_internal(config: &Config) -> String {
         + &*format!("pub const CAN_QUEUE_SIZE: usize = {};\n", config.pod.internal.can_queue_size)
         + &*format!(
             "pub const LV_IDS: [u16;{}] = [{}];\n",
-            config.pod.bms.lv_ids.len(),
-            config.pod.bms.lv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", ")
+            config.pod.comm.bms_lv_ids.len(),
+            config
+                .pod
+                .comm
+                .bms_lv_ids
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join(", ")
         )
         + &*format!(
             "pub const HV_IDS: [u16;{}] = [{}];\n",
-            config.pod.bms.hv_ids.len(),
-            config.pod.bms.hv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", ")
+            config.pod.comm.bms_hv_ids.len(),
+            config
+                .pod
+                .comm
+                .bms_hv_ids
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join(", ")
         )
         + &*format!(
             "pub const GFD_IDS: [u16;{}] = [{}];\n",
-            config.pod.bms.gfd_ids.len(),
+            config.pod.comm.gfd_ids.len(),
             config
                 .pod
-                .bms
+                .comm
                 .gfd_ids
                 .iter()
                 .map(|x| x.to_string())
@@ -171,14 +198,28 @@ fn configure_internal(config: &Config) -> String {
         )
         + &*format!(
             "pub const BATTERY_GFD_IDS: [u16;{}] = [{},{},{}];\n",
-            config.pod.bms.lv_ids.len()
-                + config.pod.bms.hv_ids.len()
-                + config.pod.bms.gfd_ids.len(),
-            config.pod.bms.lv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "),
-            config.pod.bms.hv_ids.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "),
+            config.pod.comm.bms_lv_ids.len()
+                + config.pod.comm.bms_hv_ids.len()
+                + config.pod.comm.gfd_ids.len(),
             config
                 .pod
-                .bms
+                .comm
+                .bms_lv_ids
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join(", "),
+            config
+                .pod
+                .comm
+                .bms_hv_ids
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join(", "),
+            config
+                .pod
+                .comm
                 .gfd_ids
                 .iter()
                 .map(|x| x.to_string())

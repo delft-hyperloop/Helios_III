@@ -51,7 +51,7 @@
 [[Datatype]]
 name = "DefaultDatatype"
 id = 0x00
-upper = 42001
+upper = 42002
 
 [[Datatype]]
 name = "ConnectionStatus"
@@ -336,63 +336,75 @@ upper = 80000 # (e-2) degrees
 [[Datatype]]
 name = "Temp_HEMS_1"
 id = 0x20a
-upper = 10000 # (e-2) degrees
+lower = {err = 0 }# (e-2) degrees # the idea here is that we blink red if we read below 0 (sensor disconnect)
+upper = { warn = 6000, err = 8000 }# (e-2) degrees
 
 [[Datatype]]
 name = "Temp_HEMS_2"
 id = 0x20b
-upper = 10000 # (e-2) degrees
+lower = {err = 0 }# (e-2) degrees
+upper = { warn = 6000, err = 8000 }# (e-2) degrees
 
 [[Datatype]]
 name = "Temp_HEMS_3"
 id = 0x20c
-upper = 10000 # (e-2) degrees
+lower = {err = 0 }# (e-2) degrees
+upper = { warn = 6000, err = 8000 }# (e-2) degrees
 
 [[Datatype]]
 name = "Temp_HEMS_4"
 id = 0x20d
-upper = 10000 # (e-2) degrees
-
+lower = {err = 0 }# (e-2) degrees
+upper = { warn = 6000, err = 8000 } # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_Motor_1"
 id = 0x20e
-upper = 10000 # (e-2) degrees
+lower = {err = 0 }
+upper = { warn = 6000, err = 8000 }
 
 [[Datatype]]
 name = "Temp_Motor_2"
 id = 0x20f
-upper = 10000 # (e-2) degrees
+lower = {err = 0 } # (e-2) degrees
+upper = { warn = 6000, err = 8000 } # (e-2) degrees
 
 [[Datatype]]
 name = "Ambient_presure"
 id = 0x220
 # no limit necessary
+lower = {warn = 90, err =  50} #(e-2) bar
+upper = { warn = 120, err = 200 } #(e-2) bar
 
 [[Datatype]]
 name = "Ambient_temp"
 id = 0x224
-# no limit necessary
+lower = {err =  0} # (e-2) degrees
+upper = {err = 5000 } # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_EMS_1"
 id = 0x222
-upper = 10000 # (e-2) degrees
+lower = {err = 0 } # (e-2) degrees
+upper = { warn = 6000, err = 8000 } # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_EMS_2"
 id = 0x223
-upper = 10000 # (e-2) degrees
+lower = {err = 0 } # (e-2) degrees
+upper = { warn = 6000, err = 8000 } # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_EMS_3"
 id = 0x225
-upper = 10000 # (e-2) degrees
+lower = {err = 0 } # (e-2) degrees
+upper = { warn = 6000, err = 8000 } # (e-2) degrees
 
 [[Datatype]]
 name = "Temp_EMS_4"
 id = 0x226
-upper = 10000 # (e-2) degrees
+lower = {err = 0 } # (e-2) degrees
+upper = { warn = 6000, err = 8000 } # (e-2) degrees
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_1"
@@ -709,17 +721,19 @@ id = 0x777
 [[Datatype]]
 name = "LowPressureSensor"
 id = 0x127
-# lower = 40 #bar
-# upper = 52 #bar
+lower = {warn = 40, err = 35 } #(e-2) bar
+upper = { warn = 52, err = 56} #(e-2) bar
 
 [[Datatype]]
 name = "HighPressureSensor"
 id = 0x128
 # lower = 80 #bar
 # upper = 180 #bar
-
+lower = {warn = 90, err = 70 } #(e-2) bar
+upper = { warn = 170, err = 180} #(e-2) bar
 
 # SJOERD LEVITATION DATATYPES
+#Sjoerd needs to add or tell us limits here
 
 [[Datatype]]
 name = "levi_hems_gap_a"
@@ -834,6 +848,14 @@ name = "levi_volt_avg"
 id = 0x157
 
 [[Datatype]]
+name = "levi_location"
+id = 0x117 
+
+[[Datatype]]
+name = "levi_speed"
+id = 0x116
+
+[[Datatype]]
 name = "BrakingCommDebug"
 id = 0x158
 
@@ -882,6 +904,10 @@ name = "DataHash"
 id = 0x169
 
 [[Datatype]]
+name = "ConfigHash"
+id = 0x171
+
+[[Datatype]]
 name = "ValueError"
 id = 0x16a
 
@@ -892,4 +918,24 @@ id = 0x16b
 [[Datatype]]
 name = "ValueCausedBraking"
 id = 0x16c
+
+[[Datatype]]
+name = "NextPositionDebug"
+id = 0x16d
+
+[[Datatype]]
+name = "LocalisationHeartbeat"
+id = 0x16e
+
+[[Datatype]]
+name = "SensorHubHeartbeat"
+id = 0x16f
+
+[[Datatype]]
+name = "FrontendHeartbeating"
+id = 0x170
+
+[[Datatype]]
+name = "HeartbeatExpired"
+id = 0x7fd
 

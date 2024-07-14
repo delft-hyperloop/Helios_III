@@ -1,8 +1,10 @@
 use std::sync::Mutex;
+use std::time::Duration;
 
 use tauri::GlobalShortcutManager;
 use tauri::Manager;
 use tauri::WindowEvent;
+use tokio::time::sleep;
 
 use crate::api::Message;
 use crate::backend::Backend;
@@ -10,6 +12,7 @@ use crate::frontend::commands::*;
 use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
 use crate::ERROR_CHANNEL;
+use crate::HEARTBEAT;
 use crate::INFO_CHANNEL;
 use crate::SHORTCUT_CHANNEL;
 use crate::STATUS_CHANNEL;
@@ -30,7 +33,8 @@ pub fn tauri_main(backend: Backend) {
             start_levi,
             quit_server,
             quit_levi,
-            procedures
+            procedures,
+            test_panic
         ])
         .setup(move |app| {
             let app_handle = app.handle();
@@ -41,8 +45,17 @@ pub fn tauri_main(backend: Backend) {
                 BACKEND.replace(Mutex::new(backend));
             }
 
-            // set up shortcuts
+            let s = app_handle.clone();
 
+            // set up heartbeat
+            tokio::spawn(async move {
+                loop {
+                    s.emit_all(SHORTCUT_CHANNEL, "heartbeat").unwrap();
+                    sleep(Duration::from_millis(HEARTBEAT)).await;
+                }
+            });
+
+            // set up shortcuts
             let s = app_handle.clone();
             let shortcuts = app_handle.global_shortcut_manager();
 
@@ -54,14 +67,16 @@ pub fn tauri_main(backend: Backend) {
                         let ss = s.clone();
                         sh.register("Space", move || {
                             send_command("EmergencyBrake".into(), 0);
-                            ss.emit_all(SHORTCUT_CHANNEL, "emergency_brake").unwrap();
+                            // ss.emit_all(SHORTCUT_CHANNEL, "emergency_brake").unwrap();
+                            ss.emit_all(ERROR_CHANNEL, "Emergency Brake triggered!").unwrap()
                         })
                         .expect("Could not register shortcut");
 
                         let ss = s.clone();
                         sh.register("Esc", move || {
                             send_command("EmergencyBrake".into(), 0);
-                            ss.emit_all(SHORTCUT_CHANNEL, "emergency_brake").unwrap();
+                            // ss.emit_all(SHORTCUT_CHANNEL, "emergency_brake").unwrap();
+                            ss.emit_all(ERROR_CHANNEL, "Emergency Brake triggered!").unwrap()
                         })
                         .expect("Could not register shortcut");
 
@@ -109,7 +124,7 @@ pub fn tauri_main(backend: Backend) {
                                         .push(Message::Data(dp));
                                 },
                                 Message::Status(s) => app_handle
-                                    .emit_all(STATUS_CHANNEL, &*format!("{:?}", s))
+                                    .emit_all(STATUS_CHANNEL, &*format!("{:?};{}", s, s.to_colour_str()))
                                     .unwrap(),
                                 Message::Info(i) => {
                                     app_handle.emit_all(INFO_CHANNEL, i.to_string()).unwrap()

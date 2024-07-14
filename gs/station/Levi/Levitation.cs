@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading.Tasks;
 using static Pmp.Unmanaged.Abi;
 
+
 namespace PmpGettingStartedCs
 {
     internal class Levitation
@@ -77,6 +78,7 @@ namespace PmpGettingStartedCs
         public ISignal Volt_E { set; get; }
 
         public ISignal VerticalZeroResetSignal { set; get; }
+
         public ISignal LateralZeroResetSignal { set; get; }
 
         public ISignal SenseconLocation { set; get; }
@@ -85,6 +87,7 @@ namespace PmpGettingStartedCs
 
         public ISignal LeviLocation { set; get; }
         public ISignal LeviSpeed { set; get; }
+
 
 
     public void SetNameAdress()
@@ -376,9 +379,26 @@ namespace PmpGettingStartedCs
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine("CRITICAL:set_signal_error\n");
+                        Console.WriteLine("WARNING:set_data_error\n");
                     }
                     break;
+                case string data_str when data_str.Contains("data:"):
+                    try
+                    {
+                        data_str = data_str.Trim();
+                        char[] seperator = { ':' };
+                        string[] data_list = data_str.Split(seperator,
+                                StringSplitOptions.RemoveEmptyEntries);
+                        string data_id = data_list[1];
+                        double data_value = Convert.ToDouble(data_list[2]);
+                        if (data_id.ToLower().Contains("current"))
+                        {
+                            this.SetPropulsionCurrent(data_value);
+                        }
+                        else if (data_id.ToLower().Contains("speed"))
+                        {
+                            this.SetSenseconSpeed(data_value);
+                        }
 
                 case "EmergencyBrake":
                     try
@@ -438,6 +458,7 @@ namespace PmpGettingStartedCs
                     break;
 
                     default:
+
                     Console.WriteLine("WARNING:invalid\n");
                     break;
 
@@ -503,6 +524,10 @@ namespace PmpGettingStartedCs
 
             this.Offset_AB = LateralController.Signals["OffsetFront"];
             this.Offset_CD = LateralController.Signals["OffsetBack"];
+            this.LeviSpeed = LateralController.Signals["x_speed"];
+            this.LeviLocation = LateralController.Signals["x_location"];
+            this.SenseconLocation = LateralController.Signals["location_raw"];
+            this.SenseconSpeed = LateralController.Signals["speed_raw"];
 
             this.SenseconLocation = LateralController.Signals["x_location_raw"];
             this.LeviLocation = LateralController.Signals["x_location"];
@@ -513,6 +538,7 @@ namespace PmpGettingStartedCs
             this.Airgap = VerticalController.Signals["Airgap"];
             this.Pitch = VerticalController.Signals["Pitch"];
             this.Roll = VerticalController.Signals["Roll"];
+            this.PropulsionCurrent = VerticalController.Signals["PropulsionCurrent"];
             this.Power_Vert = VerticalController.Signals["Power_avg"];
             this.Power_Lat = LateralController.Signals["Power_Lat_avg"];
 
@@ -543,6 +569,12 @@ namespace PmpGettingStartedCs
         return true;
     }
 
+        public bool SetPropulsionCurrent(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.PropulsionCurrent, value);
+            return true;
+        }
+
         public bool SetVerticalZeroReset(double value)
         {
             Acquisition.ChangeSignalFromSignal(this.VerticalZeroResetSignal, value);
@@ -564,6 +596,7 @@ namespace PmpGettingStartedCs
         public bool SetPropulsionCurrent(double value)
         {
             Acquisition.ChangeSignalFromSignal(this.PropulsionCurrent, value);
+
             return true;
         }
 
@@ -676,8 +709,7 @@ namespace PmpGettingStartedCs
                 sendData(datatype, value);
                 i++;
             }
-    }
-
+        }
 
         public bool SetVerticalMode(double value)
         {

@@ -25,20 +25,17 @@ impl Fsm {
                         #[cfg(debug_assertions)]
                         info!("Entering a lane switch!");
                         // self.peripherals.propulsion_controller.turn_off();
-                        self.send_levi_cmd(Command::ls1(0)).await;
                         transit!(self, State::MovingLSST);
                     },
                     Location::LaneSwitchCurved => {
                         #[cfg(debug_assertions)]
                         info!("Entering a lane switch!");
-                        self.send_levi_cmd(Command::ls2(0)).await;
                         transit!(self, State::MovingLSCV);
                     },
                     Location::StopAndWait => {
                         #[cfg(debug_assertions)]
                         info!("Stopping and waiting");
                         self.peripherals.propulsion_controller.stop();
-                        self.send_levi_cmd(Command::ls0(0)).await;
                         self.send_levi_cmd(Command::LeviPropulsionStop(0)).await;
                         transit!(self, State::Levitating);
                     },
@@ -49,7 +46,7 @@ impl Fsm {
                     },
                     _ => {
                         error!("Invalid configuration!");
-                        self.log(Info::InvalidRouteConfiguration).await;
+                        self.log(Info::InvalidRouteConfigurationAbortingRun).await;
                         transit!(self, State::EmergencyBraking);
                     },
                 }
@@ -59,9 +56,13 @@ impl Fsm {
                 #[cfg(debug_assertions)]
                 info!("Braking point reached");
                 self.peripherals.propulsion_controller.stop();
-                self.send_levi_cmd(crate::Command::ls0(0)).await;
-                self.send_levi_cmd(crate::Command::LeviPropulsionStop(0)).await;
+                self.send_levi_cmd(Command::ls0(0)).await;
+                self.send_levi_cmd(Command::LeviPropulsionStop(0)).await;
                 transit!(self, State::Levitating);
+            },
+
+            Event::LeviLandingEvent => {
+                transit!(self, State::HVOn);
             },
 
             _ => {

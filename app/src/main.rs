@@ -1,22 +1,8 @@
 #![no_std]
 #![no_main]
-#![allow(
-// unused_must_use,
-//     unused_imports,
-//     unused_variables,
-//     unused_mut,
-//     dead_code,
-//     unreachable_code,
-//     unused_doc_comments,
-//     incomplete_features,
-    clippy::too_many_arguments
-)]
+#![allow(clippy::too_many_arguments)]
 #![deny(clippy::async_yields_async)]
 #![deny(rustdoc::broken_intra_doc_links)]
-// #[warn(unused_must_use)]
-
-// Import absolutely EVERYTHING
-
 use ::core::borrow::Borrow;
 use defmt::*;
 use defmt_rtt as _;
@@ -61,13 +47,18 @@ bind_interrupts!(struct CanTwoInterrupts {
     FDCAN2_IT1 => can::IT1InterruptHandler<FDCAN2>;
 });
 
-/// Custom Data types-----------------------
+// Custom Data types-----------------------
+
+/// A transmitter for the [`Datapoint`] MPMC [`DATA_QUEUE`]
 type DataSender =
     embassy_sync::channel::Sender<'static, NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>;
+/// A receiver for the [`Datapoint`] MPMC [`DATA_QUEUE`]
 type DataReceiver =
     embassy_sync::channel::Receiver<'static, NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>;
+/// A transmitter for the [`Event`] MPMC [`EVENT_QUEUE`]
 type EventSender =
     embassy_sync::priority_channel::Sender<'static, NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }>;
+/// A receiver for the [`Event`] MPMC [`EVENT_QUEUE`]
 type EventReceiver = embassy_sync::priority_channel::Receiver<
     'static,
     NoopRawMutex,
@@ -75,25 +66,33 @@ type EventReceiver = embassy_sync::priority_channel::Receiver<
     Max,
     { EVENT_QUEUE_SIZE },
 >;
+/// A transmitter for the [`can::frame::Frame`] MPMC [`CAN_ONE_QUEUE`]/[`CAN_TWO_QUEUE`]
 type CanSender =
     embassy_sync::channel::Sender<'static, NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>;
+/// A receiver for the [`can::frame::Frame`] MPMC [`CAN_ONE_QUEUE`]/[`CAN_TWO_QUEUE`]
 type CanReceiver =
     embassy_sync::channel::Receiver<'static, NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>;
 
-/// Static Allocations - MPMC queues
+// Static Allocations - MPMC queues
+/// The allocation for [`Event`]-[`embassy_sync::channel`]
 static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }>> =
     StaticCell::new();
+
+/// The allocation for [`Datapoint`]-[`embassy_sync::channel`]
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
     StaticCell::new();
-
+/// The allocation for a [`Datapoint`]-[`embassy_sync::channel`]
 static PARSED_DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
     StaticCell::new();
 
+/// The allocation for [`can::frame::Frame`]-[`embassy_sync::channel`]
 static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
     StaticCell::new();
+/// The allocation for [`can::frame::Frame`]-[`embassy_sync::channel`]
 static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
     StaticCell::new();
 
+/// Util struct for initialising [`FSMPeripherals`]
 pub struct InternalMessaging {
     event_sender: EventSender,
     data_sender: DataSender,
@@ -192,7 +191,7 @@ pub async fn your_mom(_ds: DataSender, es: EventSender) {
     loop {
         info!("Your mom");
         Timer::after_secs(10).await;
-        es.send(Event::Heartbeat).await;
+        es.send(Event::Heartbeating).await;
         // ds.send(Datapoint::new(
         //     Datatype::BatteryVoltageHigh,
         //     42,

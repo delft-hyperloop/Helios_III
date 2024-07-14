@@ -6,6 +6,7 @@ use crate::core::fsm_status::Location;
 use crate::core::fsm_status::RouteUse;
 use crate::transit;
 use crate::Event;
+use crate::Info;
 
 impl Fsm {
     pub fn entry_ls_st(&mut self) {
@@ -16,7 +17,12 @@ impl Fsm {
         self.send_levi_cmd(crate::Command::ls0(0)).await;
 
         match event {
-            Event::LaneSwitchEndedB => match self.route.next_position() {
+            Event::LaneSwitchEnded => match self.route.next_position() {
+                Location::BackwardsA => {
+                    info!("Exiting a straight run LS!");
+                    transit!(self, State::MovingST);
+                },
+
                 Location::ForwardB => {
                     info!("Exiting a straight run LS!");
                     transit!(self, State::EndST);
@@ -29,8 +35,12 @@ impl Fsm {
 
                 _ => {
                     info!("Invalid configuration!");
+                    self.log(Info::InvalidRouteConfigurationAbortingRun).await;
                     transit!(self, State::Exit);
                 },
+            },
+            Event::LeviLandingEvent => {
+                transit!(self, State::HVOn);
             },
             _ => {
                 info!("The current state ignores {}", event.to_str());

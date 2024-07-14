@@ -31,7 +31,7 @@ pub struct LocationSpeedMap(std::collections::BTreeMap<Location, u8>);
 /// A sequence of locations that the pod will travel through
 ///
 /// Part of the route configuration (see [Route](struct.Route.html))
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, core::fmt::Debug)]
 pub struct LocationSequence([Location; 16]);
 
 #[allow(dead_code)]
@@ -79,16 +79,16 @@ pub trait RouteUse {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Copy, Ord)]
 #[cfg_attr(target_os = "none", derive(defmt::Format))]
 pub enum Location {
-    ForwardA = 0b0001,
-    BackwardsA = 0b0011,
-    ForwardB = 0b0100,
-    BackwardsB = 0b0101,
-    ForwardC = 0b0111,
-    BackwardsC = 0b1000,
-    LaneSwitchStraight = 0b1001,
-    LaneSwitchCurved = 0b1010,
-    StopAndWait = 0b1011,
-    BrakeHere = 0b0000, // no next position, just stop here.
+    ForwardA = 0b0001,           // 0x1
+    BackwardsA = 0b0011,         // 0x2
+    ForwardB = 0b0100,           // 0x3
+    BackwardsB = 0b0101,         // 0x5
+    ForwardC = 0b0111,           // 0x7
+    BackwardsC = 0b1000,         // 0x8
+    LaneSwitchStraight = 0b1001, // 0x9
+    LaneSwitchCurved = 0b1010,   // 0xA
+    StopAndWait = 0b1011,        // 0xB
+    BrakeHere = 0b0000,          // no next position, just stop here.
 }
 
 /// A full configuration of the propulsion subsystem for a run.
@@ -101,7 +101,7 @@ pub enum Location {
 /// * Speeds for each location on the track
 /// * See [Speeds](enum.LocationSpeedMap.html).
 /// * To get the speed for the current position, use [`route.current_speed()`](trait.RouteUse.html#tymethod.current_speed).
-#[derive(Debug, PartialEq, Eq, Default)]
+#[derive(core::fmt::Debug, PartialEq, Eq, Default)]
 pub struct Route {
     pub positions: LocationSequence,
     pub current_position: usize,
@@ -124,14 +124,22 @@ impl defmt::Format for Route {
     }
 }
 
+#[allow(dead_code)]
 impl Route {
     pub fn speeds_from(&mut self, val: u64) { self.speeds = LocationSpeedMap::from(val); }
 
     pub fn positions_from(&mut self, val: u64) { self.positions = LocationSequence::from(val); }
 }
 
-impl From<Route> for (u64, u64) {
-    fn from(_r: Route) -> Self { todo!() }
+#[cfg(not(target_os = "none"))]
+impl std::fmt::Display for LocationSequence {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "Route {{")?;
+        for l in self.0.into_iter() {
+            std::write!(f, " -> {:?} (0x{:x})", l, l as u64)?;
+        }
+        writeln!(f, "}}")
+    }
 }
 
 impl From<LocationSequence> for u64 {
@@ -225,19 +233,19 @@ fn parse_locations(bytes: u64) -> [Location; 16] {
 
 impl RouteUse for Route {
     fn next_position(&mut self) -> Location {
-        if self.current_position >= 15 {
+        if self.current_position > 15 {
             Location::BrakeHere
         } else {
             self.current_position += 1;
-            self.positions.0[self.current_position]
+            self.positions.0[self.current_position - 1]
         }
     }
 
     fn current_position(&self) -> Location {
-        if self.current_position > 15 {
+        if self.current_position > 16 {
             Location::BrakeHere
         } else {
-            self.positions.0[self.current_position]
+            self.positions.0[self.current_position - 1]
         }
     }
 
@@ -254,10 +262,10 @@ impl RouteUse for Route {
     fn current_speed(&self) -> u8 { self.speed_at(self.current_position()) }
 
     fn peek_next_position(&mut self) -> Location {
-        if self.current_position > 15 {
+        if self.current_position > 16 {
             Location::BrakeHere
         } else {
-            self.positions.0[self.current_position + 1]
+            self.positions.0[self.current_position]
         }
     }
 }
@@ -448,8 +456,12 @@ mod tests {
         };
         let s_bytes: u64 = route.speeds.clone().into();
         let r_bytes: u64 = route.positions.into();
-        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
-        assert!(s_bytes > 0);
-        assert!(r_bytes > 0);
+        // panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+
+        let mut r = Route::default();
+        r.speeds_from(s_bytes);
+        r.positions_from(r_bytes);
+
+        assert_eq!(r, route);
     }
 }

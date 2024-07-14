@@ -1,10 +1,10 @@
 #![allow(non_snake_case)]
-use anyhow::Result;
 use std::fs;
 use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
 
+use anyhow::Result;
 use serde::Deserialize;
 
 #[derive(Deserialize, Hash)]
@@ -25,8 +25,8 @@ pub fn get_events_config(path: &str) -> Result<Config> {
     Ok(toml::from_str(&config_str)?)
 }
 
-pub fn get_event_ids(path: &str) -> Result<Vec<u16>> {
-    Ok(get_events_config(path)?.Event.iter().map(|x| x.id).collect())
+pub fn get_event_items(path: &str) -> Result<Vec<(u16, String)>> {
+    Ok(get_events_config(path)?.Event.iter().map(|x| (x.id, x.name.clone())).collect())
 }
 
 pub fn generate_events(path: &str, drv: bool) -> Result<String> {

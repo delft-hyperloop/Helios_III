@@ -14,10 +14,11 @@ impl Fsm {
             Event::RunStarting => {
                 self.send_levi_cmd(Command::LeviPropulsionStart(0)).await;
                 self.enter_moving().await;
+                self.set_ls_mode().await;
             },
 
             Event::LeviLandingEvent => {
-                transit!(self, State::Idle);
+                transit!(self, State::HVOn);
             },
 
             _ => {

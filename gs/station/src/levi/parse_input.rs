@@ -1,14 +1,15 @@
-use tokio::sync::broadcast::Sender;
-
 use crate::api::Datapoint;
 use crate::api::Message;
+use crate::data::process::process;
 use crate::Command;
+use crate::CommandSender;
 use crate::Datatype;
+use crate::MessageSender;
 
 pub fn handle_line_from_levi(
     line: &String,
-    msg_send: Sender<Message>,
-    cmd_send: Sender<Command>,
+    msg_send: MessageSender,
+    cmd_send: CommandSender,
 ) -> anyhow::Result<()> {
     let params = line.split(':').collect::<Vec<&str>>();
 
@@ -29,11 +30,11 @@ pub fn handle_line_from_levi(
         },
         "DATA" if params.len() > 2 => {
             if let Ok(x) = params[2].trim().replace(',', ".").parse::<f64>() {
-                msg_send.send(Message::Data(Datapoint::new(
+                msg_send.send(Message::Data(process(&Datapoint::new(
                     Datatype::from_str(params[1]),
                     x.to_bits(),
                     chrono::offset::Local::now().timestamp() as u64,
-                )))?;
+                ))))?;
             } else {
                 msg_send.send(Message::Warning(format!(
                     "Levi data not a number: {:?}",

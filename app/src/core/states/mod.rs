@@ -19,11 +19,14 @@ mod moving {
     use crate::core::fsm_status::Location;
     use crate::core::fsm_status::RouteUse;
     use crate::transit;
+    use crate::Command;
+    use crate::Datatype;
     use crate::Info;
 
     impl Fsm {
         /// Check the planned route and transition from a not-moving state to the correct moving state
         pub async fn enter_moving(&mut self) {
+            self.log(Info::EnterMoving).await;
             match self.route.next_position() {
                 Location::ForwardA | Location::BackwardsA => transit!(self, State::MovingST),
                 Location::ForwardB | Location::BackwardsB => {
@@ -31,10 +34,27 @@ mod moving {
                 },
                 Location::ForwardC | Location::BackwardsC => transit!(self, State::EndLS),
                 Location::StopAndWait => self.peripherals.propulsion_controller.stop(),
-                _ => {
+                x => {
                     self.log(Info::InvalidRouteConfiguration).await;
+                    self.send_dp(
+                        Datatype::NextPositionDebug,
+                        x as u64,
+                        self.route.current_position as u64,
+                    )
+                    .await;
                     transit!(self, State::Exit);
                 },
+            }
+        }
+
+        /// Only used in ForwardA, BackwardB, BackwardC positions.
+        /// Tells levi which LS mode to use.
+        pub async fn set_ls_mode(&mut self) {
+            self.log(Info::SettingLSMode).await;
+            match self.route.peek_next_position() {
+                Location::LaneSwitchStraight => self.send_levi_cmd(Command::ls1(0)).await,
+                Location::LaneSwitchCurved => self.send_levi_cmd(Command::ls2(0)).await,
+                _ => self.send_levi_cmd(Command::ls0(0)).await,
             }
         }
     }

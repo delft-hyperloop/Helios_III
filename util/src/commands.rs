@@ -4,6 +4,7 @@ use std::fs;
 use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
+
 use anyhow::Result;
 use serde::Deserialize;
 
@@ -18,19 +19,18 @@ pub struct Command {
     pub id: u16,
 }
 
-pub fn get_command_ids(path: &str) -> Result<Vec<u16>> {
+fn get_command_config(path: &str) -> Result<Config> {
     let config_str = fs::read_to_string(path)?;
-    let config: Config = toml::from_str(&config_str)?;
-    let mut ids = Vec::new();
-    for command in config.Command {
-        ids.push(command.id);
-    }
-    Ok(ids)
+    Ok(toml::from_str(&config_str)?)
+}
+
+pub fn get_command_items(path: &str) -> Result<Vec<(u16, String)>> {
+    let config: Config = get_command_config(path)?;
+    Ok(config.Command.iter().map(|x| (x.id, x.name.clone())).collect())
 }
 
 pub fn generate_commands(path: &str, drv: bool) -> Result<String> {
-    let config_str = fs::read_to_string(path)?;
-    let config: Config = toml::from_str(&config_str)?;
+    let config: Config = get_command_config(path)?;
     // println!("{:?}", config);
 
     let mut hasher = DefaultHasher::new();
