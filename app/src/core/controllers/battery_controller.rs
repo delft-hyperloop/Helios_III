@@ -1,6 +1,6 @@
 use defmt::debug;
 use defmt::trace;
-
+use crate::Info;
 use crate::core::communication::Datapoint;
 use crate::pconfig::bytes_to_u64;
 use crate::pconfig::queue_dp;
@@ -256,16 +256,47 @@ impl BatteryController {
     }
 
     pub async fn diagnostic_bms(&mut self, data: &[u8], timestamp: u64) {
-        let dt = if self.high_voltage {
-            Datatype::DiagnosticBMSHigh
+        let high_voltage_checks = [
+            (0, 0b1, Info::UndervoltageHvBattery),
+            (0, 0b10, Info::OvervoltageHvBattery),
+            (0, 0b100, Info::DischargeOvercurrentHvBattery),
+            (0, 0b1000, Info::OvercurrentHvBattery),
+            (0, 0b10000, Info::LeakageHvBattery),
+            (0, 0b100000, Info::NoCellComunnicationHvBattery),
+            (2, 0b1000, Info::OverheatHvBattery),
+        ];
+
+        let low_voltage_checks = [
+            (0, 0b1, Info::UndervoltageLvBattery),
+            (0, 0b10, Info::OvervoltageLvBattery),
+            (0, 0b100, Info::DischargeOvercurrentLvBattery),
+            (0, 0b1000, Info::OvercurrentLvBattery),
+            (0, 0b10000, Info::LeakageLvBattery),
+            (0, 0b100000, Info::NoCellComunnicationLvBattery),
+            (2, 0b1000, Info::OverheatLvBattery),
+        ];
+
+        let checks = if self.high_voltage {
+            &high_voltage_checks
         } else {
-            Datatype::DiagnosticBMSLow
+            &low_voltage_checks
         };
-        let mut msg: u64 = 0;
-        for (i, &x) in data.iter().enumerate() {
-            msg |= (x as u64) << (i * 8);
+
+        for &(byte_index, bit_mask, info) in checks {
+            if data[byte_index] & bit_mask != 0 {
+                self.data_sender.send(Datapoint::new(
+                    Datatype::Info,
+                    info as u64,
+                    timestamp,
+                ))
+                    .await
+
+            }
         }
-        queue_dp(self.data_sender, dt, msg, timestamp).await;
+// <<<<<<< HEAD
+// =======
+//         queue_dp(self.data_sender, dt, msg, timestamp).await;
+// >>>>>>> aeb7a9ed26f4fcc5d4d4bb733b0ae8cbfb77d275
     }
 
     pub async fn state_of_charge_bms(&mut self, data: &[u8], timestamp: u64) {
@@ -315,27 +346,6 @@ impl BatteryController {
         queue_dp(self.data_sender, battery_temp_min, min_temp, timestamp).await;
         queue_dp(self.data_sender, battery_temp_max, max_temp, timestamp).await;
     }
-
-    /*pub async fn individual_temperature_bms(&mut self, data: &[u8], timestamp: u64) {
-        for &x in data.iter() {
-            if self.single_cell_id < 8 {
-                self.module_buffer[self.current_number_of_cells] = x as u64;
-                if self.current_number_of_cells == 13 {
-                    self.current_number_of_cells = 0;
-                    self.send_module_temp(timestamp).await;
-                    info!("Module {:?} Temperature sent", self.single_cell_id + 1);
-                    self.single_cell_id += 1;
-                } else {
-                    self.current_number_of_cells += 1;
-                }
-            } else {
-                self.single_cell_id = 0;
-                self.receive_single_cell_id = true;
-                self.module_buffer = [0; 14];
-                break;
-            }
-        }
-    }*/
 
     async fn send_module_temp(&mut self, timestamp: u64) {
         let module_id = self.single_cell_id;
