@@ -92,10 +92,25 @@
         }
     }
 
-    function import_config(speeds:number[], steps:RouteStep[]):void {
-        for (const speedsKey in speeds) {
-            speedForm
+    /**
+     * Import the configuration from the backend
+     * @param speeds this should be a struct with the same keys as SpeedFormType.
+     * The values for these keys will be set on the keys of the component one
+     * @param steps the route steps. These will be displayed in the list.
+     */
+    function import_config(speeds:SpeedFormType, steps:RouteStep[]):void {
+        const inputs: SpeedFormKey[] = Object.keys(speeds) as SpeedFormKey[];
+
+        for (const input of inputs) {
+            speedForm[input] = speeds[input];
         }
+
+        routeSteps = steps;
+    }
+
+    function export_config() {
+        const return_value = {speeds: speedForm, steps: routeSteps};
+        // todo: @Andreas please figure it out
     }
 
     const cBase = 'card p-4 w-modal shadow-xl space-y-4';
