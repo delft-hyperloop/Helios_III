@@ -9,6 +9,7 @@ use crate::Datatype;
 use crate::Info;
 use crate::MessageSender;
 use crate::COMMAND_HASH;
+use crate::CONFIG_HASH;
 use crate::DATA_HASH;
 use crate::EVENTS_HASH;
 
@@ -42,6 +43,13 @@ pub async fn handle_incoming_data(
                 msg_sender.send(Message::Error("Event hash mismatch".to_string()))?;
             } else {
                 msg_sender.send(Message::Status(Info::EventsHashPassed))?;
+            }
+        },
+        Datatype::ConfigHash => {
+            if data.value != CONFIG_HASH {
+                msg_sender.send(Message::Error("Config hash mismatch".to_string()))?;
+            } else {
+                msg_sender.send(Message::Status(Info::ConfigHashPassed))?;
             }
         },
         _ => {},

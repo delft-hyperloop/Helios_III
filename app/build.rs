@@ -9,7 +9,7 @@ use std::fs;
 use std::path::Path;
 
 use anyhow::Result;
-use goose_utils::check_ids;
+use goose_utils::check_config;
 use goose_utils::ip::configure_gs_ip;
 use serde::Deserialize;
 
@@ -80,7 +80,7 @@ fn main() -> Result<()> {
 
     let mut content = String::from("//@generated\n");
 
-    let _ = check_ids(DATATYPES_PATH, COMMANDS_PATH, EVENTS_PATH);
+    content.push_str(&check_config(DATATYPES_PATH, COMMANDS_PATH, EVENTS_PATH, CONFIG_PATH)?);
 
     content.push_str(&configure_ip(&config));
     content.push_str(&configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force)?);

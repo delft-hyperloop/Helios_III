@@ -10,7 +10,7 @@ use embassy_time::Duration;
 use embassy_time::Instant;
 use heapless::Vec;
 
-use crate::DataReceiver;
+use crate::{DataReceiver, send_data};
 use crate::DataSender;
 use crate::Datapoint;
 use crate::Datatype;
@@ -20,6 +20,7 @@ use crate::Info;
 use crate::ValueCheckResult;
 use crate::HEARTBEATS;
 use crate::HEARTBEATS_LEN;
+use crate::pconfig::{queue_event, ticks};
 
 type HB = Vec<(Datatype, Duration, Option<Instant>), { HEARTBEATS_LEN }>;
 
@@ -42,15 +43,11 @@ pub async fn data_middle_step(
         // 1. check thresholds
         match data.datatype.check_bounds(data.value) {
             ValueCheckResult::Fine => {},
-            ValueCheckResult::Warn => {
-                outgoing.send(value_warning(data.datatype, data.value)).await;
-            },
-            ValueCheckResult::Error => {
-                outgoing.send(value_error(data.datatype, data.value)).await;
-            },
+            ValueCheckResult::Warn => send_data!(outgoing, Datatype::ValueWarning, data.datatype.to_id() as u64, data.value),
+            ValueCheckResult::Error => send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value),
             ValueCheckResult::BrakeNow => {
-                event_sender.send(Event::ValueOutOfBounds).await;
-                outgoing.send(value_critical(data.datatype, data.value)).await;
+                queue_event(event_sender, Event::ValueOutOfBounds).await;
+                send_data!(outgoing, Datatype::ValueCausedBraking, data.datatype.to_id() as u64, data.value);
             },
         }
         // 2. check heartbeats
@@ -66,7 +63,7 @@ pub async fn data_middle_step(
                     .send(Datapoint::new(
                         Datatype::HeartbeatExpired,
                         dt.to_id() as u64,
-                        Instant::now().as_ticks(),
+                        ticks(),
                     ))
                     .await;
                 *last = None;
@@ -76,13 +73,7 @@ pub async fn data_middle_step(
             match hb.push((data.datatype, timeout(data.datatype), None)) {
                 Ok(_) => {},
                 Err(_) => {
-                    outgoing
-                        .send(Datapoint::new(
-                            Datatype::Info,
-                            Info::lamp_error_unreachable.to_idx(),
-                            Instant::now().as_ticks(),
-                        ))
-                        .await
+                    send_data!(outgoing, Datatype::Info, Info::lamp_error_unreachable.to_idx());
                 },
             }
         }
@@ -100,18 +91,18 @@ fn timeout(dt: Datatype) -> Duration {
         }
     }
     Duration::from_millis(0) // This is unreachable,
-                             // but as to not panic we return zero timeout.
-                             // Since this will always be expired, it will always cause emergency braking
+    // but as to not panic we return zero timeout.
+    // Since this will always be expired, it will always cause emergency braking
 }
-
-fn value_warning(dt: Datatype, v: u64) -> Datapoint {
-    Datapoint::new(Datatype::ValueWarning, dt.to_id() as u64, v)
-}
-
-fn value_error(dt: Datatype, v: u64) -> Datapoint {
-    Datapoint::new(Datatype::ValueError, dt.to_id() as u64, v)
-}
-
-fn value_critical(dt: Datatype, v: u64) -> Datapoint {
-    Datapoint::new(Datatype::ValueCausedBraking, dt.to_id() as u64, v)
-}
+//
+// fn value_warning(dt: Datatype, v: u64) -> Datapoint {
+//     Datapoint::new(Datatype::ValueWarning, dt.to_id() as u64, v)
+// }
+//
+// fn value_error(dt: Datatype, v: u64) -> Datapoint {
+//     Datapoint::new(Datatype::ValueError, dt.to_id() as u64, v)
+// }
+//
+// fn value_critical(dt: Datatype, v: u64) -> Datapoint {
+//     Datapoint::new(Datatype::ValueCausedBraking, dt.to_id() as u64, v)
+// }

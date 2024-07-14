@@ -8,7 +8,7 @@ use std::path::Path;
 use std::path::PathBuf;
 
 use anyhow::Result;
-use goose_utils::check_ids;
+use goose_utils::check_config;
 use goose_utils::commands::generate_commands;
 use goose_utils::datatypes::generate_datatypes;
 use goose_utils::events::generate_events;
@@ -64,11 +64,11 @@ fn main() -> Result<()> {
     let dest_path = Path::new(&out_dir).join("config.rs");
     let gs_file = fs::read_to_string(CONFIG_PATH)?;
 
-    let _ = check_ids(DATATYPES_PATH, COMMANDS_PATH, EVENTS_PATH);
-
     let config: Config = toml::from_str(&gs_file)?;
 
     let mut content = String::from("//@generated\n");
+
+    content.push_str(&check_config(DATATYPES_PATH, COMMANDS_PATH, EVENTS_PATH, CONFIG_PATH)?);
 
     content.push_str(&configure_gs(&config));
     content.push_str(&configure_gs_ip(config.gs.ip, config.gs.port, config.gs.force)?);

@@ -1,8 +1,10 @@
 use std::sync::Mutex;
+use std::time::Duration;
 
 use tauri::GlobalShortcutManager;
 use tauri::Manager;
 use tauri::WindowEvent;
+use tokio::time::sleep;
 
 use crate::api::Message;
 use crate::backend::Backend;
@@ -14,6 +16,7 @@ use crate::INFO_CHANNEL;
 use crate::SHORTCUT_CHANNEL;
 use crate::STATUS_CHANNEL;
 use crate::WARNING_CHANNEL;
+use crate::HEARTBEAT;
 
 pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
@@ -41,8 +44,17 @@ pub fn tauri_main(backend: Backend) {
                 BACKEND.replace(Mutex::new(backend));
             }
 
-            // set up shortcuts
+            let s = app_handle.clone();
 
+            // set up heartbeat
+            tokio::spawn(async move {
+                loop {
+                    s.emit_all(SHORTCUT_CHANNEL, "heartbeat").unwrap();
+                    sleep(Duration::from_millis(HEARTBEAT)).await;
+                }
+            });
+
+            // set up shortcuts
             let s = app_handle.clone();
             let shortcuts = app_handle.global_shortcut_manager();
 

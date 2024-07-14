@@ -1,3 +1,4 @@
+use std::ops::Div;
 use ratatui::prelude::*;
 use ratatui::symbols::border;
 use ratatui::widgets::block::*;
@@ -15,9 +16,7 @@ pub struct CmdRow {
 }
 
 impl CmdRow {
-    pub fn to_row(&self) -> ratatui::widgets::Row {
-        ratatui::widgets::Row::new(vec![self.name.clone(), self.value.to_string()])
-    }
+    pub fn to_row(&self) -> Row { Row::new(vec![self.name.clone(), self.value.to_string()]) }
 
     pub fn as_cmd(&self) -> Command { Command::from_string(self.name.trim(), self.value) }
 }
@@ -39,22 +38,25 @@ impl Widget for &App {
         let title = Title::from(" Goose™ Ground Station ultimate ".light_green().bold());
         let instructions = Title::from(Line::from(vec![
             "Scroll Up".light_blue(),
-            " <I> ".light_cyan().bold(),
+            " <k> ".light_cyan().bold(),
             " –– ".set_style(safety_style),
-            "Scroll Down".light_blue(),
-            " <J> ".light_cyan().bold(),
+            "Down".light_blue(),
+            " <j> ".light_cyan().bold(),
             " –– ".set_style(safety_style),
-            "Scroll to End".light_blue(),
-            " <M, U> ".light_cyan().bold(),
+            "to end".light_blue(),
+            " <h, l> ".light_cyan().bold(),
             " –– ".set_style(safety_style),
-            "Emergency Brake".red(),
+            "Brake".red(),
             " <Esc> ".light_red().bold(),
             " –– ".set_style(safety_style),
-            "Launch Station".light_green(),
-            " <S> ".light_green().bold(),
+            "Launch (station, levi)".light_green(),
+            " <s, o> ".light_green().bold(),
             " –– ".set_style(safety_style),
             "Quit".magenta(),
-            " <Q> ".light_magenta().bold(),
+            " <q> ".light_magenta().bold(),
+            " ––– ".set_style(safety_style),
+            "throughput".green(),
+            format!(" <{:.2} bytes/s> ", (self.received_bytes as f64).div(self.last_sent_heartbeat.elapsed().as_secs_f64())).green(),
             " ––––––– ".set_style(safety_style),
             "timestamp:".light_blue(),
             format!(" <{}> ", timestamp()).light_blue(),

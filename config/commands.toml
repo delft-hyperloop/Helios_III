@@ -6,6 +6,10 @@ id = 0x01
 name = "Heartbeat"
 id = 0x042
 
+[[Command]]
+name = "FrontendHeartbeat"
+id = 0x043
+
 # LEVITATION COMMANDS
 
 [[Command]]

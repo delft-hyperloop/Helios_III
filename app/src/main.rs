@@ -13,9 +13,8 @@
 )]
 #![deny(clippy::async_yields_async)]
 #![deny(rustdoc::broken_intra_doc_links)]
-// #[warn(unused_must_use)]
+#[warn(unused_must_use)]
 
-// Import absolutely EVERYTHING
 
 use ::core::borrow::Borrow;
 use defmt::*;
@@ -61,13 +60,18 @@ bind_interrupts!(struct CanTwoInterrupts {
     FDCAN2_IT1 => can::IT1InterruptHandler<FDCAN2>;
 });
 
-/// Custom Data types-----------------------
+// Custom Data types-----------------------
+
+/// A transmitter for the [`Datapoint`] MPMC [`DATA_QUEUE`]
 type DataSender =
     embassy_sync::channel::Sender<'static, NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>;
+/// A receiver for the [`Datapoint`] MPMC [`DATA_QUEUE`]
 type DataReceiver =
     embassy_sync::channel::Receiver<'static, NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>;
+/// A transmitter for the [`Event`] MPMC [`EVENT_QUEUE`]
 type EventSender =
     embassy_sync::priority_channel::Sender<'static, NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }>;
+/// A receiver for the [`Event`] MPMC [`EVENT_QUEUE`]
 type EventReceiver = embassy_sync::priority_channel::Receiver<
     'static,
     NoopRawMutex,
@@ -75,25 +79,33 @@ type EventReceiver = embassy_sync::priority_channel::Receiver<
     Max,
     { EVENT_QUEUE_SIZE },
 >;
+/// A transmitter for the [`can::frame::Frame`] MPMC [`CAN_ONE_QUEUE`]/[`CAN_TWO_QUEUE`]
 type CanSender =
     embassy_sync::channel::Sender<'static, NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>;
+/// A receiver for the [`can::frame::Frame`] MPMC [`CAN_ONE_QUEUE`]/[`CAN_TWO_QUEUE`]
 type CanReceiver =
     embassy_sync::channel::Receiver<'static, NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>;
 
-/// Static Allocations - MPMC queues
+// Static Allocations - MPMC queues
+/// The allocation for [`Event`]-[`embassy_sync::channel`]
 static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }>> =
     StaticCell::new();
+
+/// The allocation for [`Datapoint`]-[`embassy_sync::channel`]
 static DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
     StaticCell::new();
-
+/// The allocation for a [`Datapoint`]-[`embassy_sync::channel`]
 static PARSED_DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
     StaticCell::new();
 
+/// The allocation for [`can::frame::Frame`]-[`embassy_sync::channel`]
 static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
     StaticCell::new();
+/// The allocation for [`can::frame::Frame`]-[`embassy_sync::channel`]
 static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
     StaticCell::new();
 
+/// Util struct for initialising [`FSMPeripherals`]
 pub struct InternalMessaging {
     event_sender: EventSender,
     data_sender: DataSender,

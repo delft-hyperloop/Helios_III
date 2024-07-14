@@ -13,9 +13,9 @@ use crate::core::communication::Datapoint;
 use crate::core::controllers::battery_controller::ground_fault_detection_isolation_details;
 use crate::core::controllers::battery_controller::ground_fault_detection_voltage_details;
 use crate::core::controllers::can_controller::CanTwoUtils;
-use crate::pconfig::bytes_to_u64;
+use crate::pconfig::{bytes_to_u64, send_event};
 use crate::pconfig::id_as_value;
-use crate::CanReceiver;
+use crate::{CanReceiver, send_data};
 use crate::CanSender;
 use crate::DataSender;
 use crate::Datatype;
@@ -53,21 +53,13 @@ pub async fn can_receiving_handler(
     let mut error_counter = 0u64;
     let mut gfd_counter = 0u64;
     loop {
-        // #[cfg(debug_assertions)]
         match bus.read().await {
             Ok(envelope) => {
                 error_counter = 0;
                 let (frame, timestamp) = envelope.parts();
-                // frame.header().format();
                 let id = id_as_value(frame.id());
                 #[cfg(debug_assertions)]
-                data_sender
-                    .send(Datapoint::new(
-                        Datatype::ReceivedCan,
-                        id as u64,
-                        bytes_to_u64(frame.data()),
-                    ))
-                    .await;
+                send_data!(data_sender, Datatype::ReceivedCan, id as u64, bytes_to_u64(frame.data()));
                 #[cfg(debug_assertions)]
                 info!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
                 if DATA_IDS.contains(&id) {
@@ -125,17 +117,12 @@ pub async fn can_receiving_handler(
                             .await;
                     }
                 } else if EVENT_IDS.contains(&id) {
-                    event_sender.send(Event::from_id(id, Some(69420))).await; // since we are never supposed to change the speed through the can bus (and run config is the only event with an actual value), i want a magic number that i can filter out from the run config handler just to make sure the pod doesn't do something stupid
+                    // since we are never supposed to change the speed through the can bus (and run config is the only event with an actual value), i want a magic number that i can filter out from the run config handler just to make sure the pod doesn't do something stupid
+                    send_event(event_sender, Event::from_id(id, Some(69420)));
                 } else {
                     #[cfg(debug_assertions)]
                     info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
-                    data_sender
-                        .send(Datapoint::new(
-                            Datatype::UnknownCanId,
-                            id as u64,
-                            bytes_to_u64(frame.data()),
-                        ))
-                        .await;
+                    send_data!(data_sender, Datatype::UnknownCanId, id as u64, bytes_to_u64(frame.data()));
                 }
             },
             Err(e) => {

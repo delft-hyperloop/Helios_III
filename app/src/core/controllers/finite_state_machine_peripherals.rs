@@ -84,9 +84,6 @@ impl FSMPeripherals {
         )
         .await;
 
-        // let mut b = Output::new(p.PB0, Level::High, Speed::High);
-        // b.set_high();
-
         debug!("creating can controller");
         // the can controller configures both buses and then spawns all 4 read/write tasks.
         let can_controller = CanController::new(
@@ -120,7 +117,18 @@ impl FSMPeripherals {
         .await;
 
         // the propulsion controller spawns tasks for reading current and voltage, and holds functions for setting the speed through the DAC
-        // let propulsion_controller = PropulsionController::new();
+        let propulsion_controller = PropulsionController::new(
+            *x,
+            i.data_sender,
+            i.event_sender,
+            p.PA4,
+            p.DAC1,
+            p.ADC2,
+            p.PA5,
+            p.PA6,
+            p.PB1,
+        )
+            .await;
 
         debug!("peripherals initialised.");
         // return this struct back to the FSM
@@ -136,18 +144,7 @@ impl FSMPeripherals {
                 dc_dc: Output::new(p.PD2, Level::Low, Speed::Low),
             },
             red_led: Output::new(p.PB14, Level::Low, Speed::High),
-            propulsion_controller: PropulsionController::new(
-                *x,
-                i.data_sender,
-                i.event_sender,
-                p.PA4,
-                p.DAC1,
-                p.ADC2,
-                p.PA5,
-                p.PA6,
-                p.PB1,
-            )
-            .await,
+            propulsion_controller,
             led_controller,
         }
     }

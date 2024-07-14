@@ -1,4 +1,6 @@
 use std::collections::BTreeMap;
+use std::time::Duration;
+use std::time::Instant;
 
 use ratatui::Frame;
 
@@ -10,10 +12,12 @@ use crate::backend::Backend;
 use crate::tui::render::CmdRow;
 use crate::tui::timestamp;
 use crate::tui::Tui;
+use crate::Command;
 use crate::Datatype;
 use crate::Event;
 use crate::Info;
 use crate::COMMANDS_LIST;
+use crate::HEARTBEAT;
 
 #[allow(dead_code)]
 pub struct App {
@@ -30,6 +34,9 @@ pub struct App {
     pub special_data: BTreeMap<Datatype, f64>,
     pub backend: Backend,
     pub safe: bool,
+    pub last_sent_heartbeat: Instant,
+    pub received_bytes: u64,
+    pub throughput: f64,
 }
 
 impl App {
@@ -46,6 +53,7 @@ impl App {
             cur_state: "None Yet".to_string(),
             last_heartbeat: "None Yet".to_string(),
             special_data: BTreeMap::from([
+                (Datatype::FrontendHeartbeating, 0.0),
                 (Datatype::InsulationNegative, 0.0),
                 (Datatype::InsulationPositive, 0.0),
                 (Datatype::InsulationOriginal, 0.0),
@@ -79,6 +87,9 @@ impl App {
             ]),
             backend,
             safe: true,
+            last_sent_heartbeat: Instant::now(),
+            received_bytes: 0,
+            throughput: 0.0,
         }
     }
 
@@ -96,6 +107,7 @@ impl App {
 
     fn receive_data(&mut self) {
         while let Ok(msg) = self.backend.message_receiver.try_recv() {
+            self.received_bytes = self.received_bytes.wrapping_add(20);
             self.backend.log_msg(&msg);
             match msg {
                 Message::Data(datapoint) => match datapoint.datatype {
@@ -166,6 +178,14 @@ impl App {
                     self.logs.push((msg, timestamp()));
                 },
             }
+        }
+        if self.last_sent_heartbeat.elapsed() > Duration::from_millis(HEARTBEAT) {
+            self.backend
+                .command_transmitter
+                .send(Command::FrontendHeartbeat(10))
+                .expect("backend failed");
+            self.last_sent_heartbeat = Instant::now();
+            self.received_bytes = 0;
         }
     }
 

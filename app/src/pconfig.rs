@@ -1,4 +1,4 @@
-use defmt::info;
+use defmt::{error, info};
 use embassy_net::IpAddress::Ipv4;
 use embassy_net::IpEndpoint;
 use embassy_net::Ipv4Address;
@@ -7,10 +7,13 @@ use embassy_stm32::rcc;
 use embassy_stm32::rcc::Pll;
 use embassy_stm32::rcc::*;
 use embassy_stm32::Config;
+use embassy_time::{Instant, Timer};
 use embedded_can::ExtendedId;
 use embedded_nal_async::Ipv4Addr;
 use embedded_nal_async::SocketAddr;
 use embedded_nal_async::SocketAddrV4;
+use crate::{DataSender, Datatype, Event, EventSender};
+use crate::core::communication::Datapoint;
 
 #[inline]
 pub fn default_configuration() -> Config {
@@ -142,4 +145,119 @@ macro_rules! try_spawn {
             }
         }
     };
+}
+
+pub fn ticks() -> u64 {
+    Instant::now().as_ticks()
+}
+
+
+/// Instantly sends an event through the MPMC queue.
+/// * If the queue is full, the event will be discarded.
+/// * This function will *not* block
+pub fn send_event(event_sender: EventSender, event: Event) {
+    match event_sender.try_send(event) {
+        Ok(_) => {}
+        Err(e) => {
+            error!("[send] event channel full: {:?}", e)
+        }
+    }
+}
+
+// /// Instantly sends a datapoint through the MPMC queue.
+// /// * If the queue is full, the event will be discarded.
+// /// * This function will *not* block.
+// /// * The current timestamp will be used.
+// /// * If a specific value for timestamp is needed, use [`send_dp`] instead.
+// pub fn send_data(data_sender: DataSender, t: Datatype, data: u64) {
+//     match data_sender.try_send(Datapoint::new(t, data, ticks())) {
+//         Ok(_) => {}
+//         Err(e) => {
+//             error!("[send] data channel full: {:?}", e)
+//         }
+//     }
+// }
+
+#[macro_export]
+macro_rules! send_data {
+    ($data_sender:expr, $dtype:expr, $data:expr) => {
+        {
+            if let Err(e) = $data_sender.try_send(
+                Datapoint::new($dtype, $data, crate::pconfig::ticks())
+            ) {
+                defmt::error!("[send] data channel full: {:?}", e);
+            }
+        }
+    };
+    ($data_sender:expr, $dtype:expr, $data:expr, $timestamp:expr) => {
+        {
+            if let Err(e) = $data_sender.try_send(
+                Datapoint::new($dtype, $data, $timestamp)
+            ) {
+                defmt::error!("[send] data channel full: {:?}", e);
+            }
+        }
+    };
+    ($data_sender:expr, $dtype:expr, $data:expr; $timeout:expr) => {
+        {
+            if let Err(e) = $data_sender.try_send(
+                Datapoint::new($dtype, $data, crate::pconfig::ticks())
+            ) {
+                defmt::error!("[send] data channel full: {:?}", e);
+                Timer::after_millis($timeout).await;
+            }
+        }
+    };
+    ($data_sender:expr, $dtype:expr, $data:expr, $timestamp:expr; $timeout:expr) => {
+        {
+            if let Err(e) = $data_sender.try_send(
+                Datapoint::new($dtype, $data, $timestamp)
+            ) {
+                defmt::error!("[send] data channel full: {:?}", e);
+                Timer::after_millis($timeout).await;
+            }
+        }
+    };
+}
+
+// /// Instantly sends a datapoint through the MPMC queue.
+// /// * If the queue is full, the event will be discarded.
+// /// * This function will *not* block.
+// /// * You need to specify a value for the timestamp (doesn't have to be a timestamp)
+// /// * If you just want a timestamp as the timestamp, use [`send_data`] instead.
+// pub fn send_dp(data_sender: DataSender, t: Datatype, d: u64, p: u64) {
+//     match data_sender.try_send(Datapoint::new(t, d, p)) {
+//         Ok(_) => {}
+//         Err(e) => {
+//             error!("[send] data channel full: {:?}", e)
+//         }
+//     }
+// }
+
+/// Block the current task in order to send an event through the MPMC queue.
+/// * If there's space in the event queue, this will complete instantly
+/// * Otherwise it will `await` until there's space.
+/// * *If the event isn't critical and the current task
+///   shouldn't block, please use [`send_event`] instead*
+pub async fn queue_event(event_sender: EventSender, event: Event) {
+    event_sender.send(event).await
+}
+
+/// Block the current task in order to send a datapoint through the MPMC queue.
+/// * If there's space in the event queue, this will complete instantly
+/// * Otherwise it will `await` until there's space.
+/// * *If the event isn't critical and the current task
+///   shouldn't block, please use [`send_event`] instead*
+pub async fn queue_data(data_sender: DataSender, t: Datatype, data: u64) {
+    data_sender.send(Datapoint::new(t, data, ticks())).await
+}
+
+/// Block the current task in order to send a datapoint through the MPMC queue.
+/// * If there's space in the event queue, this will complete instantly
+/// * Otherwise it will `await` until there's space.
+/// * *If the event isn't critical and the current task
+///   shouldn't block, please use [`send_event`] instead*
+/// * If you don't need to specify a specific timestamp, use [`queue_data`] instead
+pub async fn queue_dp(data_sender: DataSender, t: Datatype, d: u64, p: u64) {
+    data_sender.send(Datapoint::new(t, d, p)).await
 }
