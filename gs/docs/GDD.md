@@ -82,11 +82,12 @@ After registering a store to listen to and defining its type, one can later subs
 front-end! This is done using the `$storeName` syntax. For example, if you have a store named `BatteryBalanceLow`:
 
 ```sveltehtml
+
 <script lang="js">
-    import { GrandDataDistributor } from "$lib";
-    
+    import {GrandDataDistributor} from "$lib";
+
     let storeManager = GrandDataDistributor.getInstance().stores;
-    let lvBattery = $storeManager.getStore("BatteryBalanceLow");
+    let lvBattery = $storeManager.getWritable("BatteryBalanceLow");
 </script>
 
 <p>{$lvBattery}</p>

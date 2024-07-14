@@ -14,5 +14,5 @@ fn import_procedures() {
     assert_eq!(example[2], "DH08.PROC.SC.x");
     assert_eq!(example[3], "Kiko\nKiril\n");
     assert_eq!(example[4], "Andreas\n");
-    assert_eq!(example[5], "<p>1. I refuse to elaborate.</p><br>\n<p>2. :)</p><br>\n<p>3. if in trouble just call me</p><br>\n<p>just text is also fine in a procedure.</p><br>");
+    assert_eq!(example[5], "<p><input type=\"checkbox\"> 1. I refuse to elaborate.</p>\n<p><input type=\"checkbox\"> 2. :)</p>\n<p><input type=\"checkbox\"> 3. if in trouble just call me</p>\n<p><input type=\"checkbox\"> just text is also fine in a procedure.</p>");
 }

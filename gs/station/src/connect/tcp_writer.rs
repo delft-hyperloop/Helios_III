@@ -4,10 +4,12 @@ use tokio::net::tcp::OwnedWriteHalf;
 use crate::api::Message;
 use crate::api::Message::Error;
 use crate::Command;
+use crate::CommandReceiver;
+use crate::MessageSender;
 
 pub async fn transmit_commands_to_tcp(
-    mut command_receiver: tokio::sync::broadcast::Receiver<crate::Command>,
-    status_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
+    mut command_receiver: CommandReceiver,
+    status_transmitter: MessageSender,
     mut writer: OwnedWriteHalf,
 ) -> anyhow::Result<()> {
     tokio::spawn(async move {
@@ -17,11 +19,11 @@ pub async fn transmit_commands_to_tcp(
                 last_send_timestamp = std::time::Instant::now();
                 match writer.write_all(&Command::as_bytes(&Command::Heartbeat(42))).await {
                     Ok(_) => {
-                        status_transmitter
-                            .send(crate::api::Message::Info(
-                                "[TRACE][tcp] Sent keepalive".to_string(),
-                            ))
-                            .expect("messaging channel closed, cannot recover");
+                        // status_transmitter
+                        //     .send(crate::api::Message::Info(
+                        //         "[TRACE][tcp] Sent keepalive".to_string(),
+                        //     ))
+                        //     .expect("messaging channel closed, cannot recover");
                     },
                     Err(e) => {
                         //eprintln!("Error sending keepalive over tcp: {:?}", e);
@@ -46,15 +48,18 @@ pub async fn transmit_commands_to_tcp(
                     match writer.write_all(&bytes).await {
                         Ok(_) => {
                             last_send_timestamp = std::time::Instant::now();
-                            status_transmitter
-                                .send(crate::api::Message::Info(format!(
-                                    "[tcp] Sent command: {:?}",
-                                    command
-                                )))
-                                .expect("messaging channel closed, cannot recover");
+                            // status_transmitter
+                            //     .send(Message::Info(format!(
+                            //         "[tcp] Sent command: {:?}",
+                            //         command
+                            //     )))
+                            //     .expect("messaging channel closed, cannot recover");
                         },
                         Err(e) => {
-                            eprintln!("Error sending command over tcp: {:?}", e);
+                            // eprintln!("Error sending command over tcp: {:?}", e);
+                            status_transmitter
+                                .send(Error(format!("Error sending command over tcp: {:?}", e)))
+                                .expect("message channel closed");
                             break;
                         },
                     }

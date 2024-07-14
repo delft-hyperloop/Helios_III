@@ -27,8 +27,6 @@ impl HVPeripherals {
         #[cfg(debug_assertions)]
         info!("HV Powered on");
         info!("HV Powered on");
-        info!("HV Powered on");
-        info!("HV Powered on");
     }
 
     pub fn power_hv_off(&mut self) {

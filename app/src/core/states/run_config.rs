@@ -14,14 +14,14 @@ impl Fsm {
 
     pub async fn react_run_config(&mut self, event: Event) {
         match event {
-            Event::SetRoute(x) => {
+            Event::SettingRoute(x) => {
                 #[cfg(debug_assertions)]
                 debug!("Setting run config: {:?}", x);
                 self.route.positions_from(x);
                 self.route.current_position = 0;
                 self.status.route_set = true;
             },
-            Event::SetRunConfigSpeed(x) => {
+            Event::SettingSpeeds(x) => {
                 debug!("Setting run config speed: {:?}", x);
                 self.route.speeds_from(x);
                 self.status.speeds_set = true;

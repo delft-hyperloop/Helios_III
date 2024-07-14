@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
-use serde::Deserialize;use anyhow::Result;
+use anyhow::Result;
+use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
