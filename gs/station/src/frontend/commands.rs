@@ -6,6 +6,7 @@ use tauri::State;
 
 use crate::api::Datapoint;
 use crate::api::Message;
+use crate::api::ProcessedData;
 use crate::backend::Backend;
 use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
@@ -48,7 +49,7 @@ pub fn generate_test_data() -> Vec<Datapoint> {
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn unload_buffer(state: State<BackendState>) -> Vec<Datapoint> {
+pub fn unload_buffer(state: State<BackendState>) -> Vec<ProcessedData> {
     let mut data_buffer = state.data_buffer.lock().unwrap();
     let mut datapoints = Vec::new();
     for msg in data_buffer.iter() {

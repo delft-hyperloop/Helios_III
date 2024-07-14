@@ -228,7 +228,7 @@ impl Datatype {{
         if drv {
             "#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize, PartialOrd, Ord)]"
         } else {
-            "#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]"
+            "#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, defmt::Format)]"
         },
         enum_definitions,
         match_to_id,

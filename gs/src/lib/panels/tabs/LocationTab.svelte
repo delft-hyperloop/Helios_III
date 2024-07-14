@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Table, Localiser, TileGrid, Tile, Chart, inputTurn, GrandDataDistributor} from "$lib";
+    import {Localiser, TileGrid, Tile, Chart, inputTurn, GrandDataDistributor} from "$lib";
     import {RunMode} from "$lib/types";
 
     let tableArr2:any[][];
@@ -16,7 +16,7 @@
     ]
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const location = storeManager.getStore("Localisation");
+    const location = storeManager.getWritable("Localisation");
 </script>
 
 <div class="p-4">

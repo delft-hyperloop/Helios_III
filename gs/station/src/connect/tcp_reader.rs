@@ -4,12 +4,14 @@ use tokio::io::AsyncReadExt;
 use tokio::net::tcp::OwnedReadHalf;
 
 use crate::api::Message;
+use crate::CommandSender;
+use crate::MessageSender;
 use crate::NETWORK_BUFFER_SIZE;
 
 pub async fn get_messages_from_tcp(
     mut reader: OwnedReadHalf,
-    message_transmitter: tokio::sync::broadcast::Sender<crate::api::Message>,
-    command_transmitter: tokio::sync::broadcast::Sender<crate::Command>,
+    message_transmitter: MessageSender,
+    command_transmitter: CommandSender,
 ) -> anyhow::Result<()> {
     let mut buffer = [0; { NETWORK_BUFFER_SIZE }];
     let mut byte_queue: VecDeque<u8> = VecDeque::new();

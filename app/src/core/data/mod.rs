@@ -5,13 +5,27 @@
 
 mod batteries;
 mod sources;
+
+use embassy_time::Duration;
+use embassy_time::Instant;
+use heapless::Vec;
+
+use crate::pconfig::queue_event;
+use crate::pconfig::ticks;
+use crate::send_data;
 use crate::DataReceiver;
 use crate::DataSender;
 use crate::Datapoint;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
+use crate::Info;
 use crate::ValueCheckResult;
+use crate::HEARTBEATS;
+use crate::HEARTBEATS_LEN;
+
+type HB = Vec<(Datatype, Duration, Option<Instant>), { HEARTBEATS_LEN }>;
+
 /// ## Individual handling of datapoints
 /// A lot of the subsystems on the pod use their own "encoding" for data.
 /// In order to make a reasonable matching between semantic meaning of
@@ -22,37 +36,83 @@ pub async fn data_middle_step(
     outgoing: DataSender,
     event_sender: EventSender,
 ) -> ! {
+    let mut hb = HB::new();
+    let hb_dt = HEARTBEATS.iter().map(|x| x.0).collect::<Vec<Datatype, { HEARTBEATS_LEN }>>();
+
     loop {
         let data = incoming.receive().await;
 
         // 1. check thresholds
         match data.datatype.check_bounds(data.value) {
             ValueCheckResult::Fine => {},
-            ValueCheckResult::Warn => {
-                outgoing.send(value_warning(data.datatype, data.value)).await;
-            },
+            ValueCheckResult::Warn => send_data!(
+                outgoing,
+                Datatype::ValueWarning,
+                data.datatype.to_id() as u64,
+                data.value
+            ),
             ValueCheckResult::Error => {
-                outgoing.send(value_error(data.datatype, data.value)).await;
+                send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
             },
             ValueCheckResult::BrakeNow => {
-                event_sender.send(Event::ValueOutOfBounds).await;
-                outgoing.send(value_critical(data.datatype, data.value)).await;
+                queue_event(event_sender, Event::ValueOutOfBounds).await;
+                send_data!(
+                    outgoing,
+                    Datatype::ValueCausedBraking,
+                    data.datatype.to_id() as u64,
+                    data.value
+                );
             },
         }
-        // 2. check specific data types
+        // 2. check heartbeats
+        let mut seen = !hb_dt.contains(&data.datatype);
+
+        for (dt, out, last) in hb.iter_mut() {
+            if !seen && *dt == data.datatype {
+                seen = true;
+                *last = Some(Instant::now());
+            } else if last.is_some_and(|l| l.elapsed() > *out) {
+                event_sender.send(Event::EmergencyBraking).await;
+                outgoing
+                    .send(Datapoint::new(Datatype::HeartbeatExpired, dt.to_id() as u64, ticks()))
+                    .await;
+                *last = None;
+            }
+        }
+        if !seen {
+            match hb.push((data.datatype, timeout(data.datatype), None)) {
+                Ok(_) => {},
+                Err(_) => {
+                    send_data!(outgoing, Datatype::Info, Info::lamp_error_unreachable.to_idx());
+                },
+            }
+        }
+
+        // 3. check for special cases
 
         outgoing.send(data).await;
     }
 }
 
-fn value_warning(dt: Datatype, v: u64) -> Datapoint {
-    Datapoint::new(Datatype::ValueWarning, dt.to_id() as u64, v)
+fn timeout(dt: Datatype) -> Duration {
+    for (d, t) in HEARTBEATS {
+        if d == dt {
+            return Duration::from_millis(t);
+        }
+    }
+    Duration::from_millis(0) // This is unreachable,
+                             // but as to not panic we return zero timeout.
+                             // Since this will always be expired, it will always cause emergency braking
 }
-
-fn value_error(dt: Datatype, v: u64) -> Datapoint {
-    Datapoint::new(Datatype::ValueError, dt.to_id() as u64, v)
-}
-
-fn value_critical(dt: Datatype, v: u64) -> Datapoint {
-    Datapoint::new(Datatype::ValueCausedBraking, dt.to_id() as u64, v)
-}
+//
+// fn value_warning(dt: Datatype, v: u64) -> Datapoint {
+//     Datapoint::new(Datatype::ValueWarning, dt.to_id() as u64, v)
+// }
+//
+// fn value_error(dt: Datatype, v: u64) -> Datapoint {
+//     Datapoint::new(Datatype::ValueError, dt.to_id() as u64, v)
+// }
+//
+// fn value_critical(dt: Datatype, v: u64) -> Datapoint {
+//     Datapoint::new(Datatype::ValueCausedBraking, dt.to_id() as u64, v)
+// }

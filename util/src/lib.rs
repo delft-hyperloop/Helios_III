@@ -1,5 +1,9 @@
 use std::cmp::min;
 use std::collections::HashSet;
+use std::fs::read_to_string;
+use std::hash::DefaultHasher;
+use std::hash::Hash;
+use std::hash::Hasher;
 
 pub mod commands;
 pub mod datatypes;
@@ -10,7 +14,7 @@ pub mod limits;
 mod shared;
 use anyhow::Result;
 
-pub fn check_ids(dp: &str, cp: &str, ep: &str) -> Result<()> {
+pub fn check_config(dp: &str, cp: &str, ep: &str, conf: &str) -> Result<String> {
     let mut items = vec![];
     let d = datatypes::get_data_items(dp)?;
     let c = commands::get_command_items(cp)?;
@@ -68,7 +72,12 @@ pub fn check_ids(dp: &str, cp: &str, ep: &str) -> Result<()> {
             );
         }
     }
-    Ok(())
+
+    let cs = read_to_string(conf)?;
+    let mut hasher = DefaultHasher::new();
+    cs.hash(&mut hasher);
+    let hash = hasher.finish();
+    Ok(format!("\npub const CONFIG_HASH: u64 = {};\n", hash))
 }
 
 fn nearest_id(id: u16, ids: &[u16]) -> u16 {

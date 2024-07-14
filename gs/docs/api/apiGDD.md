@@ -42,7 +42,7 @@ the stores can only have names of this type. This is ensured by the `NamedDataty
 |-------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
 | `registerStore(name: NamedDatatype, initial: T, dataConvFun?: (data: bigint, current: T) => T): void` | Register a store with the given name, initial value, and an optional process function. |
 | `updateStore(name: NamedDatatype, data: bigint)`                                                      | Update a store with the given name and data.                                           |
-| `getStore(name: NamedDatatype):Writable<any>`                                                         | Get a store with the given name. (Which is any of `NamedDatatype`                      |
+| `getWritable(name: NamedDatatype):Writable<any>`                                                         | Get a store with the given name. (Which is any of `NamedDatatype`                      |
 
 
 ## Store

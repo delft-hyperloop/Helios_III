@@ -45,14 +45,14 @@ impl App {
             KeyCode::Esc => self.backend.send_command(crate::Command::EmergencyBrake(0)),
             KeyCode::Up => self.scroll_up(1),
             KeyCode::Down => self.scroll_down(1),
-            KeyCode::Char('k') | KeyCode::Char('j') => self.scroll_down(10),
-            KeyCode::Char('m') => self.scroll_down(10000),
-            KeyCode::Char('u') => self.scroll_up(10000),
-            KeyCode::Char('i') => self.scroll_up(10),
+            KeyCode::Char('j') => self.scroll_down(10),
+            KeyCode::Char('h') => self.scroll_down(10000),
+            KeyCode::Char('l') => self.scroll_up(10000),
+            KeyCode::Char('k') => self.scroll_up(10),
             KeyCode::Char('s') => {
                 self.backend.start_server();
             },
-            KeyCode::Char('l') => self.backend.start_levi(),
+            KeyCode::Char('o') => self.backend.start_levi(),
             // KeyCode::Char('t') => self.logs.push((LogType::Warning, format!("{}:  this is a testing goose",Util::Now()).parse()?)),
             KeyCode::Tab => {
                 self.selected_row = (self.selected_row + 1) % self.cmds.len();
@@ -101,10 +101,10 @@ impl App {
                 self.backend.send_command(Command::SetRoute(1822648539875311616));
                 self.backend.send_command(Command::SetSpeeds(14106055789030410752));
             },
-            KeyCode::Char('o') => {
-                self.backend.send_command(Command::SetRoute(8328165916070586159));
-                self.backend.send_command(Command::SetSpeeds(46542390612732));
-            },
+            // KeyCode::Char('o') => {
+            //     self.backend.send_command(Command::SetRoute(8328165916070586159));
+            //     self.backend.send_command(Command::SetSpeeds(46542390612732));
+            // },
             KeyCode::Char('w') => {
                 self.logs.push((self.backend.save().unwrap(), timestamp()));
             },

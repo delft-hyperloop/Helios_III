@@ -7,6 +7,10 @@ use tokio::task::AbortHandle;
 
 use crate::api::Message;
 use crate::Command;
+use crate::CommandReceiver;
+use crate::CommandSender;
+use crate::MessageReceiver;
+use crate::MessageSender;
 
 // /// Any frontend that interfaces with this backend needs to comply to this trait
 // pub trait Frontend {
@@ -21,10 +25,10 @@ use crate::Command;
 pub struct Backend {
     pub server_handle: Option<AbortHandle>,
     pub levi_handle: Option<(AbortHandle, AbortHandle)>,
-    pub message_transmitter: tokio::sync::broadcast::Sender<Message>,
-    pub message_receiver: tokio::sync::broadcast::Receiver<Message>,
-    pub command_transmitter: tokio::sync::broadcast::Sender<Command>,
-    pub command_receiver: tokio::sync::broadcast::Receiver<Command>,
+    pub message_transmitter: MessageSender,
+    pub message_receiver: MessageReceiver,
+    pub command_transmitter: CommandSender,
+    pub command_receiver: CommandReceiver,
     pub log: Log,
     pub save_path: PathBuf,
 }
@@ -87,6 +91,7 @@ impl Backend {
                 self.message_transmitter.clone(),
                 self.command_transmitter.clone(),
                 self.command_receiver.resubscribe(),
+                self.message_receiver.resubscribe(),
             ) {
                 Ok(lh) => {
                     self.levi_handle = Some(lh);

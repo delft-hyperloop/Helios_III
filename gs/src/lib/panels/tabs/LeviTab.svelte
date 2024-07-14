@@ -1,41 +1,24 @@
 <script lang="ts">
-    import {Chart, TileGrid, Tile, Table, GrandDataDistributor} from "$lib";
-
-    const gdd = GrandDataDistributor.getInstance().stores;
-    const emsGapA = gdd.getStore("levi_ems_gap_a");
-    const emsGapB = gdd.getStore("levi_ems_gap_b");
-    const emsGapC = gdd.getStore("levi_ems_gap_c");
-    const emsGapD = gdd.getStore("levi_ems_gap_d");
-    const hemsGapA = gdd.getStore("levi_hems_gap_a");
-    const hemsGapB = gdd.getStore("levi_hems_gap_b");
-    const hemsGapC = gdd.getStore("levi_hems_gap_c");
-    const hemsGapD = gdd.getStore("levi_hems_gap_d");
+    import {Chart, TileGrid, Tile, Table} from "$lib";
+    import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
 
     $: tableGaps = [
-        ["A", $emsGapA, $hemsGapA],
-        ["B", $emsGapB, $hemsGapB],
-        ["C", $emsGapC, $hemsGapC],
-        ["D", $emsGapD, $hemsGapD],
+        ["A", DE.LEVI_EMS_GAP_A, DE.LEVI_HEMS_GAP_A],
+        ["B", DE.LEVI_EMS_GAP_B, DE.LEVI_HEMS_GAP_B],
+        ["C", DE.LEVI_EMS_GAP_C, DE.LEVI_HEMS_GAP_C],
+        ["D", DE.LEVI_EMS_GAP_D, DE.LEVI_HEMS_GAP_D],
     ]
-
-    const leviVA = gdd.getStore("levi_volt_min");
-    const leviVB = gdd.getStore("levi_volt_max");
-    const leviVC = gdd.getStore("levi_volt_avg");
 
     $: leviVolt = [
-        ["Min", $leviVA],
-        ["Max", $leviVB],
-        ["Avg", $leviVC],
+        ["Min", DE.LEVI_VOLT_MIN],
+        ["Max", DE.LEVI_VOLT_MAX],
+        ["Avg", DE.LEVI_VOLT_AVG],
     ]
 
-    const leviHemsAG = gdd.getStore("levi_hems_airgap");
-    const leviHemsPT = gdd.getStore("levi_hems_pitch");
-    const leviHemsRL = gdd.getStore("levi_hems_roll");
-
     $: leviHems = [
-        ["Air Gap", $leviHemsAG],
-        ["Pitch", $leviHemsPT],
-        ["Roll", $leviHemsRL],
+        ["Air Gap", DE.LEVI_HEMS_AIRGAP],
+        ["Pitch", DE.LEVI_HEMS_PITCH],
+        ["Roll", DE.LEVI_HEMS_ROLL],
     ]
 </script>
 
