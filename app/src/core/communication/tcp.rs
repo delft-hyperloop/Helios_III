@@ -6,7 +6,6 @@ use embassy_net::Stack;
 use embassy_stm32::eth::generic_smi::GenericSMI;
 use embassy_stm32::eth::Ethernet;
 use embassy_stm32::peripherals::ETH;
-use embassy_sync::channel::TrySendError;
 use embassy_time::Instant;
 use embassy_time::Timer;
 use embedded_io_async::Write;
@@ -15,13 +14,19 @@ use heapless::Deque;
 use panic_probe as _;
 
 use crate::core::communication::Datapoint;
-use crate::pconfig::{embassy_socket_from_config, queue_data, queue_event, send_event, ticks};
-use crate::{Command, Info, send_data};
+use crate::pconfig::embassy_socket_from_config;
+use crate::pconfig::queue_data;
+use crate::pconfig::queue_event;
+use crate::pconfig::send_event;
+use crate::pconfig::ticks;
+use crate::send_data;
+use crate::Command;
 use crate::DataReceiver;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
+use crate::Info;
 use crate::COMMAND_HASH;
 use crate::CONFIG_HASH;
 use crate::DATA_HASH;
@@ -87,7 +92,6 @@ pub async fn tcp_connection_handler(
         queue_data(data_sender, Datatype::EventsHash, EVENTS_HASH).await;
         queue_data(data_sender, Datatype::DataHash, DATA_HASH).await;
         queue_data(data_sender, Datatype::ConfigHash, CONFIG_HASH).await;
-
 
         // Begin relying on the frontend
         queue_data(data_sender, Datatype::FrontendHeartbeating, 0).await;
@@ -232,8 +236,10 @@ pub async fn tcp_connection_handler(
                                 Command::EmitEvent(e) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] EmitEvent command received");
-                                    send_event(event_sender, Event::from_id((e & 0xFFFF) as u16, Some(69420)));
-
+                                    send_event(
+                                        event_sender,
+                                        Event::from_id((e & 0xFFFF) as u16, Some(69420)),
+                                    );
                                 },
                                 Command::CreateDatapoint(x) => {
                                     send_data!(data_sender, Datatype::from_id(x as u16), x);

@@ -13,9 +13,11 @@ use crate::core::communication::Datapoint;
 use crate::core::controllers::battery_controller::ground_fault_detection_isolation_details;
 use crate::core::controllers::battery_controller::ground_fault_detection_voltage_details;
 use crate::core::controllers::can_controller::CanTwoUtils;
-use crate::pconfig::{bytes_to_u64, send_event};
+use crate::pconfig::bytes_to_u64;
 use crate::pconfig::id_as_value;
-use crate::{CanReceiver, send_data};
+use crate::pconfig::send_event;
+use crate::send_data;
+use crate::CanReceiver;
 use crate::CanSender;
 use crate::DataSender;
 use crate::Datatype;
@@ -59,7 +61,12 @@ pub async fn can_receiving_handler(
                 let (frame, timestamp) = envelope.parts();
                 let id = id_as_value(frame.id());
                 #[cfg(debug_assertions)]
-                send_data!(data_sender, Datatype::ReceivedCan, id as u64, bytes_to_u64(frame.data()));
+                send_data!(
+                    data_sender,
+                    Datatype::ReceivedCan,
+                    id as u64,
+                    bytes_to_u64(frame.data())
+                );
                 #[cfg(debug_assertions)]
                 info!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
                 if DATA_IDS.contains(&id) {
@@ -122,7 +129,12 @@ pub async fn can_receiving_handler(
                 } else {
                     #[cfg(debug_assertions)]
                     info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
-                    send_data!(data_sender, Datatype::UnknownCanId, id as u64, bytes_to_u64(frame.data()));
+                    send_data!(
+                        data_sender,
+                        Datatype::UnknownCanId,
+                        id as u64,
+                        bytes_to_u64(frame.data())
+                    );
                 }
             },
             Err(e) => {

@@ -57,7 +57,9 @@ pub async fn transmit_commands_to_tcp(
                         },
                         Err(e) => {
                             // eprintln!("Error sending command over tcp: {:?}", e);
-                            status_transmitter.send(Error(format!("Error sending command over tcp: {:?}", e))).expect("message channel closed");
+                            status_transmitter
+                                .send(Error(format!("Error sending command over tcp: {:?}", e)))
+                                .expect("message channel closed");
                             break;
                         },
                     }

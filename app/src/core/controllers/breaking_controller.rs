@@ -12,13 +12,13 @@ use embassy_time::Duration;
 use embassy_time::Instant;
 use embassy_time::Timer;
 
-use crate::core::communication::Datapoint;
-use crate::{send_data, try_spawn};
+use crate::pconfig::queue_event;
+use crate::send_data;
+use crate::try_spawn;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
-use crate::pconfig::{queue_event};
 
 pub static mut BRAKE: bool = false;
 
@@ -78,7 +78,9 @@ async fn read_braking_communication(
         let is_activated = v < 25000; // when braking comm goes low, someone else triggered brakes (eg big red button)
         if edge && is_activated {
             edge = false; // braking comm value is low, so we don't brake until it goes high again
-            if unsafe { !DISABLE_BRAKING_COMMUNICATION } { queue_event(event_sender, Event::EmergencyBraking).await; }
+            if unsafe { !DISABLE_BRAKING_COMMUNICATION } {
+                queue_event(event_sender, Event::EmergencyBraking).await;
+            }
             Timer::after_millis(1000).await;
         }
         if !edge && !is_activated {

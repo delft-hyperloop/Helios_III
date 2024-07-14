@@ -1,8 +1,9 @@
-use defmt::{debug, trace};
-use defmt::info;
+use defmt::debug;
+use defmt::trace;
 
 use crate::core::communication::Datapoint;
-use crate::pconfig::{bytes_to_u64, queue_data, queue_dp};
+use crate::pconfig::bytes_to_u64;
+use crate::pconfig::queue_dp;
 use crate::DataSender;
 use crate::Datatype;
 use crate::EventSender;
@@ -211,7 +212,7 @@ impl BatteryController {
 
     pub async fn battery_voltage_overall_bms(&mut self, data: &[u8], timestamp: u64) {
         let min_cell_voltage = data[0] as u64 + 200; //VOLTAGE scaled by 100
-        //Should be a decimal number so multiplying it by 100 is not such a bad idea
+                                                     //Should be a decimal number so multiplying it by 100 is not such a bad idea
         let max_cell_voltage = data[1] as u64 + 200; //VOLTAGE
         let avg_cell_voltage = data[0] as u64 + 200; //VOLTAGE
         let total_pack_voltage = (((data[5] as u64) << 24)

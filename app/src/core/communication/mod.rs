@@ -1,4 +1,5 @@
 use defmt::Formatter;
+
 use crate::Datatype;
 
 pub mod can;
@@ -37,6 +38,12 @@ impl Datapoint {
 
 impl defmt::Format for Datapoint {
     fn format(&self, fmt: Formatter) {
-        defmt::write!(fmt, "Datapoint {{ datatype: {:?}, value: {:?}, timestamp: {:?} }}", self.datatype, self.value, self.timestamp)
+        defmt::write!(
+            fmt,
+            "Datapoint {{ datatype: {:?}, value: {:?}, timestamp: {:?} }}",
+            self.datatype,
+            self.value,
+            self.timestamp
+        )
     }
 }

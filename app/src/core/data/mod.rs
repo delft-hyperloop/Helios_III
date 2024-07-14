@@ -10,7 +10,10 @@ use embassy_time::Duration;
 use embassy_time::Instant;
 use heapless::Vec;
 
-use crate::{DataReceiver, send_data};
+use crate::pconfig::queue_event;
+use crate::pconfig::ticks;
+use crate::send_data;
+use crate::DataReceiver;
 use crate::DataSender;
 use crate::Datapoint;
 use crate::Datatype;
@@ -20,7 +23,6 @@ use crate::Info;
 use crate::ValueCheckResult;
 use crate::HEARTBEATS;
 use crate::HEARTBEATS_LEN;
-use crate::pconfig::{queue_event, ticks};
 
 type HB = Vec<(Datatype, Duration, Option<Instant>), { HEARTBEATS_LEN }>;
 
@@ -43,11 +45,23 @@ pub async fn data_middle_step(
         // 1. check thresholds
         match data.datatype.check_bounds(data.value) {
             ValueCheckResult::Fine => {},
-            ValueCheckResult::Warn => send_data!(outgoing, Datatype::ValueWarning, data.datatype.to_id() as u64, data.value),
-            ValueCheckResult::Error => send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value),
+            ValueCheckResult::Warn => send_data!(
+                outgoing,
+                Datatype::ValueWarning,
+                data.datatype.to_id() as u64,
+                data.value
+            ),
+            ValueCheckResult::Error => {
+                send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
+            },
             ValueCheckResult::BrakeNow => {
                 queue_event(event_sender, Event::ValueOutOfBounds).await;
-                send_data!(outgoing, Datatype::ValueCausedBraking, data.datatype.to_id() as u64, data.value);
+                send_data!(
+                    outgoing,
+                    Datatype::ValueCausedBraking,
+                    data.datatype.to_id() as u64,
+                    data.value
+                );
             },
         }
         // 2. check heartbeats
@@ -60,11 +74,7 @@ pub async fn data_middle_step(
             } else if last.is_some_and(|l| l.elapsed() > *out) {
                 event_sender.send(Event::EmergencyBraking).await;
                 outgoing
-                    .send(Datapoint::new(
-                        Datatype::HeartbeatExpired,
-                        dt.to_id() as u64,
-                        ticks(),
-                    ))
+                    .send(Datapoint::new(Datatype::HeartbeatExpired, dt.to_id() as u64, ticks()))
                     .await;
                 *last = None;
             }
@@ -91,8 +101,8 @@ fn timeout(dt: Datatype) -> Duration {
         }
     }
     Duration::from_millis(0) // This is unreachable,
-    // but as to not panic we return zero timeout.
-    // Since this will always be expired, it will always cause emergency braking
+                             // but as to not panic we return zero timeout.
+                             // Since this will always be expired, it will always cause emergency braking
 }
 //
 // fn value_warning(dt: Datatype, v: u64) -> Datapoint {

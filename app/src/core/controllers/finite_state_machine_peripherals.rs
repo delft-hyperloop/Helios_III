@@ -128,7 +128,7 @@ impl FSMPeripherals {
             p.PA6,
             p.PB1,
         )
-            .await;
+        .await;
 
         debug!("peripherals initialised.");
         // return this struct back to the FSM

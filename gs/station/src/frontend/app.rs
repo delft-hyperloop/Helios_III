@@ -12,11 +12,11 @@ use crate::frontend::commands::*;
 use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
 use crate::ERROR_CHANNEL;
+use crate::HEARTBEAT;
 use crate::INFO_CHANNEL;
 use crate::SHORTCUT_CHANNEL;
 use crate::STATUS_CHANNEL;
 use crate::WARNING_CHANNEL;
-use crate::HEARTBEAT;
 
 pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");

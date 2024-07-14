@@ -13,16 +13,14 @@ use embassy_stm32::peripherals::PA4;
 use embassy_stm32::peripherals::PA5;
 use embassy_stm32::peripherals::PA6;
 use embassy_stm32::peripherals::PB1;
-use embassy_time::Instant;
 use embassy_time::Timer;
 
-use crate::core::communication::Datapoint;
-use crate::{send_data, try_spawn};
+use crate::send_data;
+use crate::try_spawn;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
-
 
 pub struct PropulsionController {
     pub speed_set_pin: embassy_stm32::dac::DacCh1<'static, DAC1>,

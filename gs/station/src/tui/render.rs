@@ -1,4 +1,5 @@
 use std::ops::Div;
+
 use ratatui::prelude::*;
 use ratatui::symbols::border;
 use ratatui::widgets::block::*;
@@ -56,7 +57,11 @@ impl Widget for &App {
             " <q> ".light_magenta().bold(),
             " ––– ".set_style(safety_style),
             "throughput".green(),
-            format!(" <{:.2} bytes/s> ", (self.received_bytes as f64).div(self.last_sent_heartbeat.elapsed().as_secs_f64())).green(),
+            format!(
+                " <{:.2} bytes/s> ",
+                (self.received_bytes as f64).div(self.last_sent_heartbeat.elapsed().as_secs_f64())
+            )
+            .green(),
             " ––––––– ".set_style(safety_style),
             "timestamp:".light_blue(),
             format!(" <{}> ", timestamp()).light_blue(),

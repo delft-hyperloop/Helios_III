@@ -1,21 +1,8 @@
 #![no_std]
 #![no_main]
-#![allow(
-// unused_must_use,
-//     unused_imports,
-//     unused_variables,
-//     unused_mut,
-//     dead_code,
-//     unreachable_code,
-//     unused_doc_comments,
-//     incomplete_features,
-    clippy::too_many_arguments
-)]
+#![allow(clippy::too_many_arguments)]
 #![deny(clippy::async_yields_async)]
 #![deny(rustdoc::broken_intra_doc_links)]
-#[warn(unused_must_use)]
-
-
 use ::core::borrow::Borrow;
 use defmt::*;
 use defmt_rtt as _;

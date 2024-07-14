@@ -18,7 +18,7 @@ mod moving {
     use crate::core::finite_state_machine::State;
     use crate::core::fsm_status::Location;
     use crate::core::fsm_status::RouteUse;
-    use crate::{send_data, transit};
+    use crate::transit;
     use crate::Command;
     use crate::Datatype;
     use crate::Info;
