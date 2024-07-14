@@ -13,10 +13,7 @@
     let routeSteps: RouteStep[] = [];
 
     function onDrop({ detail: { from, to } }: CustomEvent<DropEvent>) {
-      if (!to || from === to) {
-        return;
-      }
-
+      if (!to || from === to) return;
       routeSteps = reorder(routeSteps, from.index, to.index);
     }
 
@@ -25,7 +22,18 @@
     export let parent: SvelteComponent;
     const modalStore = getModalStore();
 
-    const speedForm = {
+    type SpeedFormType = {
+        BackwardC: number,
+        ForwardB: number,
+        ForwardA: number,
+        LaneSwitchCurved: number,
+        ForwardC: number,
+        LaneSwitchStraight: number,
+        BackwardA: number,
+        BackwardB: number
+    }
+
+    const speedForm:SpeedFormType = {
         ForwardA: 0,
         BackwardA: 0,
         ForwardB: 0,
@@ -81,6 +89,12 @@
                 modalStore.close();
             })
 
+        }
+    }
+
+    function import_config(speeds:number[], steps:RouteStep[]):void {
+        for (const speedsKey in speeds) {
+            speedForm
         }
     }
 
