@@ -8,33 +8,20 @@
     SpeedsInput, GrandDataDistributor, Chart
   } from "$lib";
     import {getModalStore, type ModalComponent} from "@skeletonlabs/skeleton";
+  import {DatatypeEnum} from "$lib/namedDatatypeEnum";
 
     const storeManager = GrandDataDistributor.getInstance().stores;
 
-    const accelX = storeManager.getStore("AccelerationX")
-    const accelY = storeManager.getStore("AccelerationY")
-    const accelZ = storeManager.getStore("AccelerationZ")
-    const gyroX = storeManager.getStore("GyroscopeX")
-    const gyroY = storeManager.getStore("GyroscopeY")
-    const gyroZ = storeManager.getStore("GyroscopeZ")
-
-    const state = storeManager.getStore("FSMState");
-
-    // const mainpcb_connected = storeManager.getStore("");
-    // const propulsion_connected = storeManager.getStore("PropulsionVRefInt");
-    // const levitation_connected = storeManager.getStore("");
-    // const mainpcb_connected = storeManager.getStore("");
-    // const mainpcb_connected = storeManager.getStore("");
-    
+    const state = storeManager.getWritable("FSMState");
 
     let tableArr2:any[][];
     $: tableArr2 = [
-        ["Acceleration X", $accelX],
-        ["Acceleration Y", $accelY],
-        ["Acceleration Z", $accelZ],
-        ["Gyroscope X", $gyroX],
-        ["Gyroscope Y", $gyroY],
-        ["Gyroscope Z", $gyroZ],
+        ["Acceleration X", DatatypeEnum.ACCELERATIONX],
+        ["Acceleration Y", DatatypeEnum.ACCELERATIONY],
+        ["Acceleration Z", DatatypeEnum.ACCELERATIONZ],
+        ["Gyroscope X", DatatypeEnum.GYROSCOPEX],
+        ["Gyroscope Y", DatatypeEnum.GYROSCOPEY],
+        ["Gyroscope Z", DatatypeEnum.GYROSCOPEZ],
     ]
 
     const modalStore = getModalStore();
@@ -85,9 +72,3 @@
         </Tile>
     </TileGrid>
 </div>
-
-<style lang="scss">
-  .active {
-    background-color: rgb(77, 156, 137);
-  }
-</style>

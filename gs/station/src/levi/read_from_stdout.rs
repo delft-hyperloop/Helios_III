@@ -2,14 +2,15 @@ use tokio::io::AsyncBufReadExt;
 
 use crate::api::Message;
 use crate::levi::parse_input::handle_line_from_levi;
-use crate::Command;
+use crate::CommandSender;
+use crate::MessageSender;
 
 /// # Read from levi child stdout
 /// reads from the stdout of the levi child process, and sends the messages to the message_transmitter.
 pub async fn read_from_levi_child_stdout(
     stdout: tokio::process::ChildStdout,
-    message_transmitter: tokio::sync::broadcast::Sender<Message>,
-    command_transmitter: tokio::sync::broadcast::Sender<Command>,
+    message_transmitter: MessageSender,
+    command_transmitter: CommandSender,
 ) -> anyhow::Result<()> {
     let mut reader = tokio::io::BufReader::new(stdout);
     let mut line = String::new();

@@ -1,0 +1,3 @@
+C:\Rust\Helios_III\gs\station\Levi\obj\x86\debug\PmpGettingStartedCs.csproj.AssemblyReference.cache
+C:\Rust\Helios_III\gs\station\Levi\obj\x86\debug\PmpGettingStartedCs.csproj.SuggestedBindingRedirects.cache
+C:\Rust\Helios_III\gs\station\Levi\obj\x86\debug\PmpGettingStartedCs.csproj.CoreCompileInputs.cache

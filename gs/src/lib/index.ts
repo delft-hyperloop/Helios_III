@@ -29,6 +29,7 @@ import TileGrid from "$lib/components/generic/TileGrid.svelte";
 import ToggleCommand from "$lib/components/abstract/ToggleCommand.svelte";
 import TauriCommand from "$lib/components/abstract/TauriCommand.svelte";
 import SpeedsInput from "$lib/components/SpeedsInput.svelte";
+import Store from "$lib/components/generic/Store.svelte";
 
 // Utils
 import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
@@ -91,6 +92,7 @@ export {
     Localiser,
     EventChannel,
     SpeedsInput,
+    Store,
     RunMode,
     RouteStep
 }

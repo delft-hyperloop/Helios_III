@@ -37,8 +37,16 @@ impl Datapoint {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ProcessedData {
+    pub datatype: Datatype,
+    pub value: f64,
+    pub timestamp: u64,
+    pub style: String,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub enum Message {
-    Data(Datapoint),
+    Data(ProcessedData),
     Status(Info),
     Info(String),
     Warning(String),

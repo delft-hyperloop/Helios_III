@@ -9,18 +9,26 @@ use embassy_stm32::peripherals::ETH;
 use embassy_time::Instant;
 use embassy_time::Timer;
 use embedded_io_async::Write;
+use embedded_io_async::WriteReady;
 use heapless::Deque;
 use panic_probe as _;
 
 use crate::core::communication::Datapoint;
 use crate::pconfig::embassy_socket_from_config;
+use crate::pconfig::queue_data;
+use crate::pconfig::queue_event;
+use crate::pconfig::send_event;
+use crate::pconfig::ticks;
+use crate::send_data;
 use crate::Command;
 use crate::DataReceiver;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
+use crate::Info;
 use crate::COMMAND_HASH;
+use crate::CONFIG_HASH;
 use crate::DATA_HASH;
 use crate::EVENTS_HASH;
 use crate::GS_IP_ADDRESS;
@@ -39,7 +47,7 @@ pub async fn tcp_connection_handler(
     data_receiver: DataReceiver,
     data_sender: DataSender,
 ) -> ! {
-    let mut last_valid_timestamp = embassy_time::Instant::now().as_millis();
+    let mut last_valid_timestamp = Instant::now().as_millis();
     // info!("------------------------------------------------ TCP Connection Handler Started! ------------------------------------------");
     stack.wait_config_up().await;
 
@@ -52,68 +60,56 @@ pub async fn tcp_connection_handler(
     // let mut socket: TcpSocket =
     //     TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
 
+    let mut rx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
+    let mut tx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
+
+    let mut socket: TcpSocket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+
     let mut buf = [0; { NETWORK_BUFFER_SIZE }];
     'netstack: loop {
-        // info!("====================================================Connecting to ground station______________________________");
-        let mut rx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
-        let mut tx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
-
-        let mut socket: TcpSocket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+        info!("[netstack] loop starting");
 
         match socket.connect(gs_addr).await {
             Ok(_) => {
-                last_valid_timestamp = embassy_time::Instant::now().as_millis();
+                last_valid_timestamp = Instant::now().as_millis();
             },
             Err(e) => {
-                let d = embassy_time::Instant::now().as_millis() - last_valid_timestamp;
+                let d = Instant::now().as_millis() - last_valid_timestamp;
                 error!("[tcp:stack] error connecting to gs: {:?} (diff={})", e, d);
                 if d > IP_TIMEOUT {
-                    event_sender.send(Event::ConnectionLossEvent).await;
+                    send_event(event_sender, Event::ConnectionLossEvent);
                 }
-                Timer::after_millis(500).await;
+                Timer::after_millis(100).await;
                 continue 'netstack;
             },
         }
-        event_sender.send(Event::ConnectionEstablishedEvent).await;
-        data_sender
-            .send(Datapoint::new(Datatype::CommandHash, COMMAND_HASH, Instant::now().as_ticks()))
-            .await;
-        data_sender
-            .send(Datapoint::new(Datatype::DataHash, DATA_HASH, Instant::now().as_ticks()))
-            .await;
-        data_sender
-            .send(Datapoint::new(Datatype::EventsHash, EVENTS_HASH, Instant::now().as_ticks()))
-            .await;
-        // let mut connection = client.connect(gs_addr).await.unwrap();
-        // info!("----------------------------------------------------------------Connected to ground station==========================");
+        send_event(event_sender, Event::ConnectionEstablishedEvent);
 
-        // socket.set_keep_alive(Some(Duration::from_millis(KEEP_ALIVE)));
-        // socket.set_timeout(Some(Duration::from_millis(IP_TIMEOUT)));
+        // Handshake
+        // Exchange hashes of the configuration files
+        // in order to confirm that the exchanged ids are correct
+        queue_data(data_sender, Datatype::CommandHash, COMMAND_HASH).await;
+        queue_data(data_sender, Datatype::EventsHash, EVENTS_HASH).await;
+        queue_data(data_sender, Datatype::DataHash, DATA_HASH).await;
+        queue_data(data_sender, Datatype::ConfigHash, CONFIG_HASH).await;
 
-        /*// let (mut tcp_reader,mut tcp_writer) = unsafe { socket.split() };
-        // spawn the writer task: it will take messages from the channel and send them over the TCP connection
-        // x.spawn(ground_station_message_dispatcher(tcp_writer, data_receiver.clone())).unwrap();*/
+        // Begin relying on the frontend
+        queue_data(data_sender, Datatype::FrontendHeartbeating, 0).await;
 
-        #[cfg(debug_assertions)]
-        match socket.write(b"aaaaaaaaaaaaaaa0").await {
-            Ok(_) => {
-                info!("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]Data sent successfully")
-            },
-            Err(e) => {
-                info!(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Failed to send data: {:?}", e)
-            },
-        }
         let mut parsing_buffer = Deque::<u8, { NETWORK_BUFFER_SIZE }>::new();
 
         // loop to receive data from the TCP connection
         'connection: loop {
             Timer::after_millis(1).await;
-            if !socket.may_recv() || !socket.may_send() {
+            if !socket.may_recv()
+                || !socket.may_send()
+                || Instant::now().as_millis() - last_valid_timestamp > IP_TIMEOUT
+            {
                 error!("[tcp] may_recv: connection closed");
                 break 'connection;
             }
             if socket.can_recv() {
-                last_valid_timestamp = embassy_time::Instant::now().as_millis();
+                last_valid_timestamp = Instant::now().as_millis();
                 let n = socket.read(&mut buf).await.unwrap_or(420000);
                 if n == 42000 {
                     error!("[tcp] Failed to read from socket");
@@ -121,7 +117,7 @@ pub async fn tcp_connection_handler(
                 }
                 if n == 0 {
                     info!("[tcp] Connection closed by ground station..");
-                    event_sender.send(Event::ConnectionLossEvent).await;
+                    send_event(event_sender, Event::ConnectionLossEvent);
                     break 'connection;
                 }
                 #[cfg(debug_assertions)]
@@ -147,15 +143,15 @@ pub async fn tcp_connection_handler(
                             info!("[tcp] Command received: {:?}", cmd);
                             match cmd {
                                 Command::EmergencyBrake(_) => {
-                                    event_sender.send(Event::EmergencyBraking).await;
+                                    send_event(event_sender, Event::EmergencyBraking);
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] EmergencyBrake command received!!");
                                     if let Err(e) = socket
                                         .write_all(
                                             &Datapoint::new(
                                                 Datatype::Info,
-                                                crate::Info::EmergencyBrakeReceived.to_idx(),
-                                                embassy_time::Instant::now().as_ticks(),
+                                                Info::EmergencyBrakeReceived.to_idx(),
+                                                ticks(),
                                             )
                                             .as_bytes(),
                                         )
@@ -177,83 +173,86 @@ pub async fn tcp_connection_handler(
                                 Command::launch(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Levitate command received");
-                                    event_sender.send(Event::LeviLaunchingEvent).await;
+                                    send_event(event_sender, Event::LeviLaunchingEvent);
                                 },
                                 Command::land(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] StopLevitating command received");
-                                    event_sender.send(Event::LeviLandingEvent).await;
+                                    send_event(event_sender, Event::LeviLandingEvent);
                                 },
                                 Command::SetRoute(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Configure command received");
-                                    event_sender.send(Event::SettingRoute(x)).await;
+                                    send_event(event_sender, Event::SettingRoute(x));
                                 },
                                 Command::SetSpeeds(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Configure command received");
-                                    event_sender.send(Event::SettingSpeeds(x)).await;
+                                    send_event(event_sender, Event::SettingSpeeds(x));
                                 },
                                 Command::SetOverrides(x) => {
-                                    event_sender.send(Event::SettingOverrides(x)).await;
+                                    send_event(event_sender, Event::SettingOverrides(x));
                                 },
                                 Command::SetCurrentSpeed(x) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] SetCurrentSpeed command received");
-                                    event_sender.send(Event::SetCurrentSpeedCommand(x)).await;
+                                    send_event(event_sender, Event::SetCurrentSpeedCommand(x));
                                 },
                                 Command::StartRun(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Start Run command received");
-                                    event_sender.send(Event::RunStarting).await;
+                                    send_event(event_sender, Event::RunStarting);
                                 },
                                 Command::ContinueRun(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Start Run command received");
-                                    event_sender.send(Event::ContinueRunEvent).await;
+                                    send_event(event_sender, Event::ContinueRunEvent);
                                 },
                                 Command::Shutdown(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] Shutdown command received");
-                                    event_sender.send(Event::ExitEvent).await;
+                                    send_event(event_sender, Event::ExitEvent);
                                 },
                                 Command::StartHV(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] StartHV command received");
-                                    event_sender.send(Event::TurnOnHVCommand).await;
+                                    send_event(event_sender, Event::TurnOnHVCommand);
                                 },
                                 Command::StopHV(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] StopHV command received");
-                                    event_sender.send(Event::TurnOffHVCommand).await;
-                                    // TODO: no turn off HV exists??
+                                    send_event(event_sender, Event::TurnOffHVCommand);
                                 },
                                 Command::DcOn(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] DcOn command received");
-                                    event_sender.send(Event::DcTurnedOn).await;
+                                    send_event(event_sender, Event::DcTurnedOn);
                                 },
                                 Command::DcOff(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] DcOff command received");
-                                    event_sender.send(Event::DcTurnedOff).await;
+                                    send_event(event_sender, Event::DcTurnedOff);
                                 },
                                 Command::EmitEvent(e) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] EmitEvent command received");
-                                    event_sender
-                                        .send(Event::from_id((e & 0xFFFF) as u16, Some(69420)))
-                                        .await;
+                                    send_event(
+                                        event_sender,
+                                        Event::from_id((e & 0xFFFF) as u16, Some(69420)),
+                                    );
+                                },
+                                Command::CreateDatapoint(x) => {
+                                    send_data!(data_sender, Datatype::from_id(x as u16), x);
                                 },
                                 Command::SystemReset(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] SystemReset command received");
-                                    event_sender.send(Event::SystemResetCommand).await;
+                                    send_event(event_sender, Event::SystemResetCommand);
                                 },
                                 Command::FinishRunConfig(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] FinishRunConfig command received");
-                                    event_sender.send(Event::RunConfigCompleteEvent).await;
+                                    send_event(event_sender, Event::RunConfigCompleteEvent);
                                 },
                                 Command::Heartbeat(x) => {
                                     #[cfg(debug_assertions)]
@@ -276,10 +275,13 @@ pub async fn tcp_connection_handler(
                                         },
                                     }
                                 },
+                                Command::FrontendHeartbeat(x) => {
+                                    send_data!(data_sender, Datatype::FrontendHeartbeating, x);
+                                },
                                 Command::ArmBrakes(_) => {
                                     #[cfg(debug_assertions)]
                                     info!("[tcp] ArmBrakesCommand command received");
-                                    event_sender.send(Event::ArmBrakesCommand).await;
+                                    queue_event(event_sender, Event::ArmBrakesCommand).await;
                                 },
                                 _ => {}, // TODO: DELETE THIS
                             }
@@ -290,21 +292,34 @@ pub async fn tcp_connection_handler(
                 }
             }
 
-            if let Ok(data) = data_receiver.try_receive() {
-                let data = data.as_bytes();
-                #[cfg(debug_assertions)]
-                info!("[tcp:mpmc] Sending data: {:?}", data);
-                match socket.write_all(&data).await {
-                    Ok(_) => {
-                        #[cfg(debug_assertions)]
-                        info!("[tcp:socket] Data written successfully");
-                    },
-                    Err(e) => {
-                        error!("[tcp:socket] Failed to write data: {:?}", e);
-                    },
-                }
-            } // the else case is of empty MPMC channel queue,
-              // which triggers very often, so we ignore it.
+            match socket.write_ready() {
+                Ok(x) => {
+                    if x {
+                        if let Ok(data) = data_receiver.try_receive() {
+                            let data = data.as_bytes();
+                            #[cfg(debug_assertions)]
+                            info!("[tcp:mpmc] Sending data: {:?}", data);
+                            match socket.write_all(&data).await {
+                                Ok(_) => {
+                                    #[cfg(debug_assertions)]
+                                    info!("[tcp:socket] Data written successfully");
+                                },
+                                Err(e) => {
+                                    error!("[tcp:socket] Failed to write data: {:?}", e);
+                                },
+                            }
+                        } // the else case is of empty MPMC channel queue,
+                          // which triggers very often, so we ignore it.
+                    } else {
+                        error!("[tcp] socket not writeable");
+                        Timer::after_millis(500).await;
+                    }
+                },
+                Err(y) => {
+                    error!("[tcp] error getting socket write status: {:?}", y);
+                    Timer::after_millis(500).await;
+                },
+            }
         }
         // if this is reached, it means that the connection was dropped
         info!("D:");

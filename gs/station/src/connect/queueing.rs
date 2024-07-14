@@ -1,11 +1,9 @@
 use std::collections::VecDeque;
 
-use tokio::sync::broadcast::Sender;
-
 use crate::api::Datapoint;
-use crate::api::Message;
 use crate::connect::handle_incoming_data::handle_incoming_data;
-use crate::Command;
+use crate::CommandSender;
+use crate::MessageSender;
 
 /// # Unloads from the buffer and transmits any messages found
 /// ```
@@ -18,8 +16,8 @@ use crate::Command;
 /// ```
 pub async fn parse(
     parsing_buffer: &mut VecDeque<u8>,
-    msg_sender: Sender<Message>,
-    cmd_sender: Sender<Command>,
+    msg_sender: MessageSender,
+    cmd_sender: CommandSender,
 ) -> anyhow::Result<()> {
     while let Some(p) = parsing_buffer.front() {
         if *p == 0xFF {

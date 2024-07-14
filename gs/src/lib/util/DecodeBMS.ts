@@ -4,7 +4,7 @@ import type {dataConvFun, BMSDiagnostic, BMSEvent, BmsModuleVoltage} from "$lib/
  * DATATYPE BMS MODULE VOLTAGE
  * @param data - the data to be converted received at the DATAPOINT.value
  */
-export const moduleVoltage: dataConvFun<BmsModuleVoltage> = (data: bigint) => {
+export const moduleVoltage: dataConvFun<BmsModuleVoltage> = (data: number) => {
     let id = BigInt(data) >> BigInt(48);
     let voltage = BigInt(data) & BigInt(0x0000FFFFFFFFFFFF);
     let max = ((BigInt(voltage) & BigInt(0x000000000000FFFF)) + BigInt(200)) * BigInt(0.1);
@@ -18,7 +18,7 @@ export const moduleVoltage: dataConvFun<BmsModuleVoltage> = (data: bigint) => {
  * DATATYPE BMS MODULE TEMPERATURE
  * @param data - the data to be converted received at the DATAPOINT.value
  */
-export const moduleTemperature = (data: bigint): BmsModuleVoltage => {
+export const moduleTemperature = (data: number): BmsModuleVoltage => {
     let id = BigInt(data) >> BigInt(48);
     let temperature = BigInt(data) & BigInt(0x0000FFFFFFFFFFFF);
     let max = BigInt(temperature) & BigInt(0x000000000000FFFF) - BigInt(100);
@@ -27,28 +27,12 @@ export const moduleTemperature = (data: bigint): BmsModuleVoltage => {
     return {id, max, min, avg};
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * DATATYPE DIAGNOSTIC
  * @param data
  * @constructor
  */
-export const BMSDiagnosticTranslation: dataConvFun<BMSDiagnostic> = (data: bigint): BMSDiagnostic => {
+export const BMSDiagnosticTranslation: dataConvFun<BMSDiagnostic> = (data: number): BMSDiagnostic => {
     let possibleErrors = ["Under-voltage – some cell is below critical minimum voltage",
         "Over-voltage – some cell is above critical maximum volta",
         "Discharge Over-current -  discharge current (negative current) exceeds the critical discharge current setting",
@@ -71,7 +55,7 @@ export const BMSDiagnosticTranslation: dataConvFun<BMSDiagnostic> = (data: bigin
     let errors = [];
     let important: number[] = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 19, 20, 21, 24, 25, 26, 27, 28, 29]
     for (let i of important) {
-        if ((data & BigInt(1)) << BigInt(i)) {
+        if ((data & 1) << i) {
             errors.push(possibleErrors[i]);
         }
     }
