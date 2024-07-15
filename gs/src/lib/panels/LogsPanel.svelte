@@ -36,15 +36,15 @@
             const message:string[] = event.payload.split(";");
             toastStore.trigger({
                 message: message[0],
-                background: message[1],
+                background: message[1] || "bg-surface-600",
                 timeout: 3000
             });
 
             switch (message[0]) {
-                case "UNSAFE":
+                case "Unsafe":
                     bigErrorStatus.set(ErrorStatus.UNSAFE)
                     break;
-                case "SAFE":
+                case "Safe":
                     bigErrorStatus.set(ErrorStatus.SAFE)
                     break;
             }

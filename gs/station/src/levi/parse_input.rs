@@ -1,6 +1,5 @@
-use crate::api::Datapoint;
 use crate::api::Message;
-use crate::data::process::process;
+use crate::api::ProcessedData;
 use crate::Command;
 use crate::CommandSender;
 use crate::Datatype;
@@ -30,11 +29,8 @@ pub fn handle_line_from_levi(
         },
         "DATA" if params.len() > 2 => {
             if let Ok(x) = params[2].trim().replace(',', ".").parse::<f64>() {
-                msg_send.send(Message::Data(process(&Datapoint::new(
-                    Datatype::from_str(params[1]),
-                    x.to_bits(),
-                    chrono::offset::Local::now().timestamp() as u64,
-                ))))?;
+                msg_send
+                    .send(Message::Data(process_levi_data(x, Datatype::from_str(params[1]))))?;
             } else {
                 msg_send.send(Message::Warning(format!(
                     "Levi data not a number: {:?}",
@@ -49,4 +45,14 @@ pub fn handle_line_from_levi(
     }
     // msg_send.send(Message::Info(format!("[TRACE] Levi: {:?}", line)))?;
     Ok(())
+}
+
+fn process_levi_data(x: f64, dtype: Datatype) -> ProcessedData {
+    ProcessedData {
+        datatype: dtype,
+        value: x,
+        timestamp: chrono::offset::Local::now().timestamp() as u64,
+        style: "".to_string(),
+        units: dtype.unit(),
+    }
 }
