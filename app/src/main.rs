@@ -13,6 +13,7 @@ use embassy_stm32::eth;
 use embassy_stm32::peripherals;
 use embassy_stm32::peripherals::*;
 use embassy_stm32::rng;
+use embassy_stm32::usart::Uart;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
 use embassy_sync::priority_channel::PriorityChannel;
@@ -112,6 +113,9 @@ async fn main(spawner: Spawner) -> ! {
     // `p` is the most important object in our code; treat it with respect and caution
     let config = default_configuration();
     let p = embassy_stm32::init(config);
+
+
+    let mut usart = Uart::new(p.UART7, p.PF6, p.PF7, Irqs, p.DMA1_CH0, p.DMA1_CH1, config).unwrap();
 
     // -- Static allocations
     // The communication channels get initialized and their endpoints are passed
