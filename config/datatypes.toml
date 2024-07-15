@@ -46,6 +46,23 @@
 # - a warning when it's below 10 
 # - a (ground station) error when it's below 4,
 # - and no emergency braking at any point.
+#
+#
+# Units:
+# ---------
+# Purely for display purposes, you can optionally add units to datatypes.
+# These are not the units of the raw data you're sending, 
+# rather the little letters that will be displayed next to the values
+# on the frontend, after processing.
+#
+# If there's no unit, the number will be displayed as a raw value.
+# ```
+# [[Datatype]]
+# name = "Example3"
+# id = 52
+# display_units = "mV"
+# ```
+#
 
 
 [[Datatype]]
@@ -60,14 +77,17 @@ id = 0x7fe
 [[Datatype]]
 name = "PropulsionVoltage"
 id = 0x1b2
+display_units = "V"
 
 [[Datatype]]
 name = "PropulsionCurrent"
 id = 0x1b3
+display_units = "A"
 
 [[Datatype]]
 name = "PropulsionVRefInt"
 id = 0x1b4
+display_units = "V"
 
 [[Datatype]]
 name = "LevitationTemperature"
@@ -858,6 +878,7 @@ id = 0x116
 [[Datatype]]
 name = "BrakingCommDebug"
 id = 0x158
+display_units = "V"
 
 [[Datatype]]
 name = "BrakingSignalDebug"

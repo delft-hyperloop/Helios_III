@@ -52,8 +52,9 @@ struct Comm {
 
 #[derive(Debug, Deserialize)]
 struct NetConfig {
-    // ip: [u8; 4],
-    // port: u16,
+    ip: [u8; 4],
+    port: u16,
+    dhcp: bool,
     // udp_port: u16,
     mac_addr: [u8; 6],
     keep_alive: u64,
@@ -128,14 +129,15 @@ fn configure_ip(config: &Config) -> String {
 }
 
 fn configure_pod(config: &Config) -> String {
-    // format!(
-    //     "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
-    //     config.pod.net.ip[0],
-    //     config.pod.net.ip[1],
-    //     config.pod.net.ip[2],
-    //     config.pod.net.ip[3],
-    //     config.pod.net.port
-    // )
+    format!(
+        "pub const POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+        config.pod.net.ip[0],
+        config.pod.net.ip[1],
+        config.pod.net.ip[2],
+        config.pod.net.ip[3],
+        config.pod.net.port
+    )
+        + &format!("\npub const USE_DHCP: bool = {}\n;", config.pod.net.dhcp)
     //     + &*format!(
     //     "pub static POD_UDP_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
     //     config.pod.net.ip[0],
@@ -144,7 +146,7 @@ fn configure_pod(config: &Config) -> String {
     //     config.pod.net.ip[3],
     //     config.pod.net.udp_port
     // ) +
-    format!(
+    + &format!(
         "pub static POD_MAC_ADDRESS: [u8;6] = [{},{},{},{},{},{}];\n",
         config.pod.net.mac_addr[0],
         config.pod.net.mac_addr[1],

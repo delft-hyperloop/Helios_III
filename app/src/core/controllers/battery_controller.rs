@@ -1,12 +1,13 @@
 use defmt::debug;
 use defmt::trace;
-use crate::Info;
+
 use crate::core::communication::Datapoint;
 use crate::pconfig::bytes_to_u64;
 use crate::pconfig::queue_dp;
 use crate::DataSender;
 use crate::Datatype;
 use crate::EventSender;
+use crate::Info;
 
 #[allow(dead_code)]
 pub struct BatteryController {
@@ -276,27 +277,17 @@ impl BatteryController {
             (2, 0b1000, Info::OverheatLvBattery),
         ];
 
-        let checks = if self.high_voltage {
-            &high_voltage_checks
-        } else {
-            &low_voltage_checks
-        };
+        let checks = if self.high_voltage { &high_voltage_checks } else { &low_voltage_checks };
 
         for &(byte_index, bit_mask, info) in checks {
             if data[byte_index] & bit_mask != 0 {
-                self.data_sender.send(Datapoint::new(
-                    Datatype::Info,
-                    info as u64,
-                    timestamp,
-                ))
-                    .await
-
+                self.data_sender.send(Datapoint::new(Datatype::Info, info as u64, timestamp)).await
             }
         }
-// <<<<<<< HEAD
-// =======
-//         queue_dp(self.data_sender, dt, msg, timestamp).await;
-// >>>>>>> aeb7a9ed26f4fcc5d4d4bb733b0ae8cbfb77d275
+        // <<<<<<< HEAD
+        // =======
+        //         queue_dp(self.data_sender, dt, msg, timestamp).await;
+        // >>>>>>> aeb7a9ed26f4fcc5d4d4bb733b0ae8cbfb77d275
     }
 
     pub async fn state_of_charge_bms(&mut self, data: &[u8], timestamp: u64) {
