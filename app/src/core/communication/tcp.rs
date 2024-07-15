@@ -60,14 +60,14 @@ pub async fn tcp_connection_handler(
     // let mut socket: TcpSocket =
     //     TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
 
-    let mut rx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
-    let mut tx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
-
-    let mut socket: TcpSocket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
-
     let mut buf = [0; { NETWORK_BUFFER_SIZE }];
     'netstack: loop {
         debug!("[netstack] loop starting");
+
+        let mut rx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
+        let mut tx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
+
+        let mut socket: TcpSocket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
 
         match socket.connect(gs_addr).await {
             Ok(_) => {
@@ -78,6 +78,7 @@ pub async fn tcp_connection_handler(
                 error!("[tcp:stack] error connecting to gs: {:?} (diff={})", e, d);
                 if d > IP_TIMEOUT {
                     send_event(event_sender, Event::ConnectionLossEvent);
+                    Timer::after_millis(900).await;
                 }
                 Timer::after_millis(100).await;
                 continue 'netstack;

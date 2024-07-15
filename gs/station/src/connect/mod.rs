@@ -3,9 +3,11 @@ mod queueing;
 mod tcp_reader;
 mod tcp_writer;
 
+use anyhow::Result;
 use tokio::net::TcpListener;
 use tokio::net::TcpStream;
-
+use tokio::task::{AbortHandle, JoinHandle};
+use crate::Info;
 use crate::api::gs_socket;
 use crate::api::Message;
 use crate::connect::tcp_reader::get_messages_from_tcp;
@@ -18,25 +20,28 @@ pub async fn connect_main(
     message_transmitter: MessageSender,
     command_receiver: CommandReceiver,
     command_transmitter: CommandSender,
-) -> anyhow::Result<()> {
+) -> Result<()> {
     // Bind the listener to the address
     message_transmitter
         .send(Message::Warning(format!("trying to connect... {:?}", gs_socket())))?;
     let listener = TcpListener::bind(gs_socket()).await?;
-    message_transmitter.send(Message::Status(crate::Info::ServerStarted))?;
+    message_transmitter.send(Message::Status(Info::ServerStarted))?;
     message_transmitter.send(Message::Info(format!("Server Listening on: {}", gs_socket())))?;
-    loop {
-        // The second item contains the IP and port of the new connection.
-        let (socket, client_addr) = listener.accept().await?;
-        message_transmitter.send(Message::Info(format!("New connection from: {}", client_addr)))?;
-        process_stream(
-            socket,
-            message_transmitter.clone(),
-            command_receiver.resubscribe(),
-            command_transmitter.clone(),
-        )
-        .await;
-    }
+    // The second item contains the IP and port of the new connection.
+    let (socket, client_addr) = listener.accept().await?;
+    message_transmitter.send(Message::Info(format!("New connection from: {}", client_addr)))?;
+    let (x, y) = process_stream(
+        socket,
+        message_transmitter.clone(),
+        command_receiver.resubscribe(),
+        command_transmitter.clone(),
+    )
+    .await?;
+
+    x.await?;
+    y.await?;
+
+    Ok(())
 }
 
 async fn process_stream(
@@ -44,10 +49,10 @@ async fn process_stream(
     message_transmitter: MessageSender,
     command_receiver: CommandReceiver,
     command_transmitter: CommandSender,
-) {
+) -> Result<(JoinHandle<()>, JoinHandle<()>)> {
     let (reader, writer) = socket.into_split();
     let transmit = message_transmitter.clone();
-    tokio::spawn(async move {
+    let a = tokio::spawn(async move {
         match get_messages_from_tcp(reader, transmit.clone(), command_transmitter.clone()).await {
             Ok(_) => {
                 transmit
@@ -67,7 +72,7 @@ async fn process_stream(
         }
     });
     let transmit = message_transmitter.clone();
-    tokio::spawn(async move {
+    let b = tokio::spawn(async move {
         match transmit_commands_to_tcp(command_receiver, transmit.clone(), writer).await {
             Ok(_) => {
                 transmit
@@ -86,4 +91,6 @@ async fn process_stream(
             },
         }
     });
+
+    Ok((a, b))
 }

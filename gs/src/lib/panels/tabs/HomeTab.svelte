@@ -44,7 +44,7 @@
         <TauriCommand cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />
         <TauriCommand cmd="quit_levi" />
         <TauriCommand cmd="quit_server"
-                      hoverContent="This will not kill active connections!"
+                      hoverContent="This will kill any active connection!"
                       successCallback={() => serverStatus.set(false)} />
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
