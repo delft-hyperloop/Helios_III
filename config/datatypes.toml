@@ -758,122 +758,177 @@ upper = { warn = 170, err = 180} #(e-2) bar
 [[Datatype]]
 name = "levi_hems_gap_a"
 id = 0x130
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_hems_gap_b"
 id = 0x131
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_hems_gap_c"
 id = 0x132
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_hems_gap_d"
 id = 0x133
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_ems_gap_a"
 id = 0x134
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_ems_gap_b"
 id = 0x135
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_ems_gap_c"
 id = 0x136
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_ems_gap_d"
 id = 0x137
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_hems_current_a1"
 id = 0x138
+display_units = "A"
 
 [[Datatype]]
 name = "levi_hems_current_a2"
 id = 0x139
+display_units = "A"
 
 [[Datatype]]
 name = "levi_hems_current_b1"
 id = 0x140
+display_units = "A"
 
 [[Datatype]]
 name = "levi_hems_current_b2"
 id = 0x141
+display_units = "A"
 
 [[Datatype]]
 name = "levi_hems_current_c1"
 id = 0x142
+display_units = "A"
 
 [[Datatype]]
 name = "levi_hems_current_c2"
 id = 0x143
+display_units = "A"
 
 [[Datatype]]
 name = "levi_hems_current_d1"
 id = 0x144
+display_units = "A"
 
 [[Datatype]]
 name = "levi_hems_current_d2"
 id = 0x145
+display_units = "A"
 
 [[Datatype]]
 name = "levi_ems_current_ab"
 id = 0x146
+display_units = "A"
 
 [[Datatype]]
 name = "levi_ems_current_cd"
 id = 0x147
+display_units = "A"
 
 [[Datatype]]
 name = "levi_hems_airgap"
 id = 0x148
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_hems_pitch"
 id = 0x149
+display_units = "˚"
 
 [[Datatype]]
 name = "levi_hems_roll"
 id = 0x150
+display_units = "˚"
 
 [[Datatype]]
 name = "levi_ems_offset_ab"
 id = 0x151
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_ems_offset_cd"
 id = 0x152
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_hems_power"
 id = 0x153
+display_units = "W"
 
 [[Datatype]]
 name = "levi_ems_power"
 id = 0x154
+display_units = "W"
 
 [[Datatype]]
 name = "levi_volt_min"
 id = 0x155
+display_units = "V"
 
 [[Datatype]]
 name = "levi_volt_max"
 id = 0x156
+display_units = "V"
 
 [[Datatype]]
 name = "levi_volt_avg"
 id = 0x157
+display_units = "V"
+
+[[Datatype]]
+name = "levi_volt_A"
+id = 0x118
+display_units = "V"
+
+[[Datatype]]
+name = "levi_volt_B"
+id = 0x118
+display_units = "V"
+
+[[Datatype]]
+name = "levi_volt_C"
+id = 0x118
+display_units = "V"
+
+[[Datatype]]
+name = "levi_volt_D"
+id = 0x118
+display_units = "V"
+
+[[Datatype]]
+name = "levi_volt_E"
+id = 0x118
+display_units = "V"
 
 [[Datatype]]
 name = "levi_location"
 id = 0x117 
+display_units = "mm"
 
 [[Datatype]]
 name = "levi_speed"
 id = 0x116
+display_units = "m/s"
 
 [[Datatype]]
 name = "BrakingCommDebug"
