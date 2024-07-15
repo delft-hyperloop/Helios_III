@@ -24,6 +24,7 @@ pub struct Datatype {
     pub lower: Limit,
     #[serde(default = "NONE")]
     pub upper: Limit,
+    pub display_units: Option<String>,
 }
 
 #[derive(Hash, Clone, Copy)]
@@ -80,6 +81,7 @@ pub fn generate_datatypes(path: &str, drv: bool) -> Result<String> {
     let mut data_ids = vec![];
     let mut from_str = String::new();
     let mut bounds = String::new();
+    let mut units = String::from("    pub fn unit(&self) -> String {\n        match *self {\n");
 
     for dtype in config.Datatype {
         data_ids.push(dtype.id);
@@ -91,37 +93,15 @@ pub fn generate_datatypes(path: &str, drv: bool) -> Result<String> {
             "            Datatype::{} => ({}, {}),\n",
             dtype.name, dtype.upper, dtype.lower,
         ));
-        //         bounds.push_str(&format!(
-        //             "            Datatype::{} => {} {} {},\n",
-        //             dtype.name,
-        //             dtype.lower.map(|x| format!("other >= {}u64", x)).unwrap_or("".to_string()),
-        //             if dtype.lower.is_some() && dtype.upper.is_some() {
-        //                 "&&".to_string()
-        //             } else {
-        //                 "".to_string()
-        //             },
-        //             dtype.upper.map(|x| format!("other <= {}u64", x)).unwrap_or_else(|| {
-        //                 if dtype.lower.is_none() && dtype.upper.is_none() {
-        //                     "true".to_string()
-        //                 } else {
-        //                     "".to_string()
-        //                 }
-        //             }),
-        //         ));
-        //         if let Some(l) = dtype.lower {
-        //             if l == 0 {
-        //                 panic!(
-        //                     "
-        // You set a lower bound of 0 for {}. \
-        // Since all values are treated as u64, \
-        // values less than 0 are impossible.
-        // Please ommit specifying this to keep the config clean :)
-        // ",
-        //                     dtype.name
-        //                 );
-        //             }
-        //         }
+        if let Some(u) = dtype.display_units {
+            units.push_str(&format!(
+                "            Datatype::{} => String::from({:?}),\n",
+                dtype.name, u
+            ));
+        }
     }
+
+    units.push_str("            _ => String::new(),\n        }\n    }");
 
     Ok(format!(
         "\n
@@ -223,6 +203,7 @@ impl Datatype {{
             _ => ValueCheckResult::BrakeNow,
         }}
     }}
+{}
 }}
 ",
         if drv {
@@ -235,6 +216,7 @@ impl Datatype {{
         match_from_id,
         from_str,
         bounds,
+        if drv { units } else { "".into() }
     ) + &format!(
         "pub static DATA_IDS : [u16;{}] = [{}];\n",
         data_ids.len(),

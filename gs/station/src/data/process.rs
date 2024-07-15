@@ -33,5 +33,11 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
         _ => x,
     };
 
-    ProcessedData { datatype: datapoint.datatype, value, timestamp: datapoint.timestamp, style }
+    ProcessedData {
+        datatype: datapoint.datatype,
+        value,
+        timestamp: datapoint.timestamp,
+        style,
+        units: datapoint.datatype.unit(),
+    }
 }

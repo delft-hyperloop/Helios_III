@@ -60,15 +60,14 @@ pub async fn can_receiving_handler(
                 error_counter = 0;
                 let (frame, timestamp) = envelope.parts();
                 let id = id_as_value(frame.id());
-                #[cfg(debug_assertions)]
-                send_data!(
-                    data_sender,
-                    Datatype::ReceivedCan,
-                    id as u64,
-                    bytes_to_u64(frame.data())
-                );
-                #[cfg(debug_assertions)]
-                info!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
+                // #[cfg(debug_assertions)]
+                // send_data!(
+                //     data_sender,
+                //     Datatype::ReceivedCan,
+                //     id as u64,
+                //     bytes_to_u64(frame.data())
+                // );
+                trace!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
                 if DATA_IDS.contains(&id) {
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
                         let ut = utils.as_mut().unwrap();
@@ -114,7 +113,7 @@ pub async fn can_receiving_handler(
                             }
                         }
                     } else {
-                        debug!("#{}", bytes_to_u64(frame.data()));
+                        trace!("#{}", bytes_to_u64(frame.data()));
                         data_sender
                             .send(Datapoint::new(
                                 Datatype::from_id(id),

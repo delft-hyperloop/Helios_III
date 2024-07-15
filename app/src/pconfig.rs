@@ -120,9 +120,9 @@ pub fn extended_as_value(id: &ExtendedId) -> u16 {
     }
     let temp = id.as_raw();
     let big_id = (temp & (0xFFFF000)) >> 16;
-    info!("big_id {:?}", big_id);
+    // info!("big_id {:?}", big_id);
     let mut small_id = temp & 0xFF;
-    info!("small_id {:?}", small_id);
+    // info!("small_id {:?}", small_id);
     let dt = temp & 0x0000F00;
     #[allow(clippy::self_assignment)]
     match dt {

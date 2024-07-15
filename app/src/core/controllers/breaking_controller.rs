@@ -52,12 +52,12 @@ pub async fn control_braking_heartbeat(
         }
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(1000) {
             match braking_signal.get_output_level() {
-                Level::Low => send_data!(data_sender, Datatype::BrakingSignalDebug, 0),
-                Level::High => send_data!(data_sender, Datatype::BrakingSignalDebug, 1),
+                Level::Low => send_data!(data_sender, Datatype::BrakingSignalDebug, 0; 5000),
+                Level::High => send_data!(data_sender, Datatype::BrakingSignalDebug, 1; 5000),
             }
             match unsafe { BRAKE } {
-                true => send_data!(data_sender, Datatype::BrakingBoolDebug, 1),
-                false => send_data!(data_sender, Datatype::BrakingBoolDebug, 0),
+                true => send_data!(data_sender, Datatype::BrakingBoolDebug, 1; 5000),
+                false => send_data!(data_sender, Datatype::BrakingBoolDebug, 0; 5000),
             }
             last_timestamp = Instant::now();
         }

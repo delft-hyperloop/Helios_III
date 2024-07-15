@@ -156,7 +156,6 @@ pub fn procedures() -> Vec<[String; 6]> {
     }
 }
 
-
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
