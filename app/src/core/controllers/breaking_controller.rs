@@ -12,7 +12,8 @@ use embassy_time::Duration;
 use embassy_time::Instant;
 use embassy_time::Timer;
 
-use crate::core::communication::Datapoint;
+use crate::pconfig::queue_event;
+use crate::send_data;
 use crate::try_spawn;
 use crate::DataSender;
 use crate::Datatype;
@@ -35,25 +36,15 @@ pub async fn control_braking_heartbeat(
     data_sender: DataSender,
     mut braking_signal: Output<'static>,
 ) {
-    // pub async fn control_braking_heartbeat(sender: EventSender, mut braking_heartbeat: SimplePwm<'static, TIM16>) {
     info!("----------------- Start Braking Heartbeat! -----------------");
     let mut booting = true;
     let mut last_timestamp = Instant::now();
     loop {
         Timer::after_micros(10).await;
-        // if adc.read(&mut pf12) > 30000 {
-        //     braking_signal.set_low();
-        //     // info!("------------ BRAKE ! ------------");
-        // } else
         if unsafe { !BRAKE } {
             braking_signal.set_high();
-            // braking_heartbeat.set_duty(Channel::Ch1, braking_heartbeat.get_max_duty()/2);
         } else {
             braking_signal.set_low();
-
-            // braking_heartbeat.set_duty(Channel::Ch1, 0);
-            // sender.send(Event::EmergencyBrakeCommand).await;
-            // info!("------------ BRAKE ! ------------");
         }
         if booting {
             sender.send(Event::BootingCompleteEvent).await;
@@ -61,44 +52,12 @@ pub async fn control_braking_heartbeat(
         }
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(1000) {
             match braking_signal.get_output_level() {
-                Level::Low => {
-                    data_sender
-                        .send(Datapoint::new(
-                            Datatype::BrakingSignalDebug,
-                            0,
-                            Instant::now().as_ticks(),
-                        ))
-                        .await;
-                },
-                Level::High => {
-                    data_sender
-                        .send(Datapoint::new(
-                            Datatype::BrakingSignalDebug,
-                            1,
-                            Instant::now().as_ticks(),
-                        ))
-                        .await;
-                },
+                Level::Low => send_data!(data_sender, Datatype::BrakingSignalDebug, 0; 5000),
+                Level::High => send_data!(data_sender, Datatype::BrakingSignalDebug, 1; 5000),
             }
             match unsafe { BRAKE } {
-                true => {
-                    data_sender
-                        .send(Datapoint::new(
-                            Datatype::BrakingBoolDebug,
-                            1,
-                            Instant::now().as_ticks(),
-                        ))
-                        .await;
-                },
-                false => {
-                    data_sender
-                        .send(Datapoint::new(
-                            Datatype::BrakingBoolDebug,
-                            0,
-                            Instant::now().as_ticks(),
-                        ))
-                        .await;
-                },
+                true => send_data!(data_sender, Datatype::BrakingBoolDebug, 1; 5000),
+                false => send_data!(data_sender, Datatype::BrakingBoolDebug, 0; 5000),
             }
             last_timestamp = Instant::now();
         }
@@ -120,7 +79,7 @@ async fn read_braking_communication(
         if edge && is_activated {
             edge = false; // braking comm value is low, so we don't brake until it goes high again
             if unsafe { !DISABLE_BRAKING_COMMUNICATION } {
-                event_sender.send(Event::EmergencyBraking).await;
+                queue_event(event_sender, Event::EmergencyBraking).await;
             }
             Timer::after_millis(1000).await;
         }
@@ -130,13 +89,7 @@ async fn read_braking_communication(
         }
         Timer::after_micros(10).await;
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(500) {
-            data_sender
-                .send(Datapoint::new(
-                    Datatype::BrakingCommDebug,
-                    v as u64,
-                    Instant::now().as_ticks(),
-                ))
-                .await;
+            send_data!(data_sender, Datatype::BrakingCommDebug, v as u64);
             last_timestamp = Instant::now();
         }
     }
@@ -159,27 +112,7 @@ impl BrakingController {
         // If we want to keep it alive we send a 10khz digital clock signal
         let braking_rearm: Output = Output::new(pg1, Level::High, Speed::Low); // <--- To keep the breaks not rearmed we send a 1, if we want to arm the breaks we send a 0
 
-        //let mut led: Output = Output::new(pb0, Level::High, Speed::Low);
-        // let mut led2 : Output = Output::new(pd5,Level::High,Speed::Low);
-        //led.set_high();
-        //info!("set led on pb0 to high");
-        // let mut pwm = SimplePwm::new(
-        //     ptime,
-        //     Some(PwmPin::new_ch1(pb8, OutputType::PushPull)),
-        //     None,
-        //     None,
-        //     None,
-        //     khz(30),
-        //     Default::default(),
-        // );
-        // let braking_communication = Input::new(pf12, Pull::None); // <--- If its HIGH it means that breaks are rearmed, if its low it , means we are breaking
-        // Finally if we set the heartbeat to LOW, and we still receive a 1 is basically means we are crashing so lets actually make use of the crashing state
-
-        // let mut braking_communication = Adc::new();
-        // braking_communication
-
         let braking_signal = Output::new(pb8, Level::High, Speed::Low);
-        // pwm.enable(Channel::Ch1);
 
         // VGA ground
         let _ = Output::new(pd5, Level::Low, Speed::Low);
@@ -199,23 +132,10 @@ impl BrakingController {
 
     pub async fn arm_breaks(&mut self) {
         self.braking_rearm.set_low();
-        self.data_sender
-            .send(Datapoint::new(Datatype::BrakingRearmDebug, 0, Instant::now().as_ticks()))
-            .await;
-        Timer::after_micros(10).await;
+        send_data!(self.data_sender, Datatype::BrakingRearmDebug, 0);
+        Timer::after_micros(50).await; // braking pcb only takes an instant to rearm the brakes
         self.braking_rearm.set_high();
-        self.data_sender
-            .send(Datapoint::new(Datatype::BrakingRearmDebug, 1, Instant::now().as_ticks()))
-            .await;
-
-        // let time_stamp = Instant::now();
-        // while (Instant::now() - time_stamp) < Duration::from_millis(100) {
-        //     if self.braking_communication.is_high() {
-        //         self.brakes_extended = true;
-        //         return true;
-        //     }
-        // }
-        // false
+        send_data!(self.data_sender, Datatype::BrakingRearmDebug, 1);
     }
 
     #[allow(dead_code)]

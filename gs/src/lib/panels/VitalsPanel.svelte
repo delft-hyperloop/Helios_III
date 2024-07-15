@@ -1,86 +1,42 @@
 <script lang="ts">
-    import {
-        Chart,
-        Battery,
-        Table,
-        FSM,
-        TileGrid,
-        Tile,
-        Command, GrandDataDistributor
-    } from "$lib";
+  import {Battery, Table, FSM, TileGrid, Tile, Command, GrandDataDistributor, Localiser, Store} from "$lib";
     import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
+    import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
 
     let width: number;
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const lvBattery = storeManager.getStore("BatteryEstimatedChargeLow");
-    const hvBattery = storeManager.getStore("BatteryEstimatedChargeHigh");
+    const lvBattery = storeManager.getWritable("BatteryEstimatedChargeLow");
+    const hvBattery = storeManager.getWritable("BatteryEstimatedChargeHigh");
 
-    const minVHigh = storeManager.getStore("BatteryMinVoltageHigh");
-    const maxVHigh = storeManager.getStore("BatteryMaxVoltageHigh");
-    const avgVHigh = storeManager.getStore("BatteryVoltageHigh");
-
-    const minTempHigh = storeManager.getStore("BatteryMinTemperatureHigh");
-    const maxTempHigh = storeManager.getStore("BatteryMaxTemperatureHigh");
-    const avgTempHigh = storeManager.getStore("BatteryTemperatureHigh");
-
-    const maxVLow = storeManager.getStore("BatteryMaxVoltageLow")
-    const minVLow = storeManager.getStore("BatteryMinVoltageLow")
-    const avgVLow = storeManager.getStore("BatteryVoltageLow")
-
-    const maxTempLow = storeManager.getStore("BatteryMaxTemperatureLow")
-    const minTempLow = storeManager.getStore("BatteryMinTemperatureLow")
-    const avgTempLow = storeManager.getStore("BatteryTemperatureLow")
-
-    const currentLow = storeManager.getStore("BatteryCurrentLow")
-    const currentHigh = storeManager.getStore("BatteryCurrentHigh")
-
-    const speed = storeManager.getStore("Velocity");
-    const position = storeManager.getStore("Localisation");
-
-    const propTemp = storeManager.getStore("PropulsionCurrent");
-    const leviTemp = storeManager.getStore("LevitationTemperature");
-    const brakeTemp = storeManager.getStore("BrakeTemperature");
-
-    const ins = storeManager.getStore("InsulationOriginal")
-    const insp = storeManager.getStore("InsulationPositive")
-    const insn = storeManager.getStore("InsulationNegative")
-    const imdv = storeManager.getStore("IMDVoltageDetails")
-
-    const totalLVV = storeManager.getStore("TotalBatteryVoltageLow");
-    const totalHVV = storeManager.getStore("TotalBatteryVoltageHigh");
-
-    const upDrawerVB = storeManager.getStore("Average_Temp_VB_top");
-    const downDrawerVB = storeManager.getStore("Average_Temp_VB_Bottom");
-    const outsideVB = storeManager.getStore("Ambient_temp");
-
-    let tableArr: any[][];
+    let tableTempsArr: any[][];
     let tableArr2: any[][];
 
     let tableBatteryTitles = ["", "HV Voltages", "HV Temp", "LV Voltages", "LV Temp"]
+
     $: tableBatteryVitals = [
-        ["Min", $minVHigh + " V", $minTempHigh + " °C", $minVLow + " V", $minTempLow + " °C"],
-        ["Max", $maxVHigh + " V", $maxTempHigh + " °C", $maxVLow + " V", $maxTempLow + " °C"],
-        ["Avg", $avgVHigh + " V", $avgTempHigh + " °C", $avgVLow + " V", $avgTempLow + " °C"]
+        ["Min", DE.BATTERYMINVOLTAGEHIGH, DE.BATTERYMINTEMPERATUREHIGH, DE.BATTERYMINVOLTAGELOW, DE.BATTERYMINTEMPERATURELOW],
+        ["Max", DE.BATTERYMAXVOLTAGEHIGH, DE.BATTERYMINTEMPERATUREHIGH, DE.BATTERYMAXVOLTAGELOW, DE.BATTERYMAXTEMPERATURELOW],
+        ["Avg", DE.BATTERYVOLTAGEHIGH, DE.BATTERYMINTEMPERATUREHIGH, DE.BATTERYVOLTAGELOW, DE.BATTERYTEMPERATURELOW]
     ]
 
-    $: tableArr = [
-        ["Upper drawer VB", $upDrawerVB],
-        ["Bottom drawer VB", $downDrawerVB],
-        ["Outside of VB", $outsideVB],
-        ["Propulsion", $propTemp],
-        ["Levitation", $leviTemp],
-        ["Brake", $brakeTemp],
+    $: tableTempsArr = [
+        ["Upper drawer VB", DE.AVERAGE_TEMP_VB_BOTTOM, "HEMS 1", DE.TEMP_HEMS_1],
+        ["Bottom drawer VB", DE.AVERAGE_TEMP_VB_BOTTOM, "HEMS 2", DE.TEMP_HEMS_2],
+        ["Outside of VB", DE.AMBIENT_TEMP, "HEMS 3", DE.TEMP_HEMS_3],
+        ["Propulsion", DE.PROPULSIONCURRENT, "HEMS 4", DE.TEMP_HEMS_4],
+        ["Levitation", DE.LEVITATIONTEMPERATURE, "EMS 1", DE.TEMP_EMS_1],
+        ["Brake", DE.BRAKETEMPERATURE, "EMS 2", DE.TEMP_EMS_2],
     ]
 
     $: tableArr2 = [
-        ["Insulation", $ins],
-        ["Insulation+", $insp],
-        ["Insulation-", $insn],
-        ["IMD Voltage", $imdv],
+        ["Insulation", DE.INSULATIONORIGINAL, "Insulation-", DE.INSULATIONNEGATIVE],
+        ["IMD Voltage", DE.IMDVOLTAGEDETAILS, "Insulation+", DE.INSULATIONPOSITIVE],
     ]
+
+    const location = storeManager.getWritable("Localisation");
 
     const toastStore = getToastStore();
 
@@ -122,35 +78,31 @@
         <div class="snap-x scroll-px-0.5 snap-mandatory overflow-x-auto h-[90vh]">
             <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="">
                 <!--     FSM       -->
-                <Tile bgToken={800} containerClass="col-span-2 px-16">
-                    {#if width > 550}
-                        <FSM size="sm"/>
-                    {:else}
-                        <FSM size="lg"/>
-                    {/if}
+                <Tile bgToken={800} containerClass="col-span-2">
+                    <Localiser turning={true} loc={$location} showLabels={false} />
                 </Tile>
                 <!--      Under FSM      -->
                 <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4">
                             <p>
-                                Velocity: <span class="font-mono font-medium">{$speed}</span>
+                                Velocity: <Store datatype="Velocity" />
                                 <br>
-                                Position: <span class="font-mono font-medium">{$position}</span>
+                                Position: <Store datatype="Localisation" />
                             </p>
                             <p>
-                                HV Current: <span class="font-mono font-medium">{$currentHigh}</span>
+                                HV Current: <Store datatype="BatteryCurrentHigh" />
                                 <br>
-                                LV Current: <span class="font-mono font-medium">{$currentLow}</span>
+                                LV Current: <Store datatype="BatteryCurrentLow" />
                             </p>
                         </div>
                         <div style="grid-template-columns: 1fr 2fr 2fr;" class="grid gap-y-2">
                             <span>LV: </span>
                             <Battery fill="#3b669c" orientation="horizontal" perc={Number($lvBattery)}/>
-                            <span>Total: <span class="font-mono font-medium">{$totalLVV} V</span></span>
+                            <span>Total: <Store datatype="TotalBatteryVoltageLow" /></span>
                             <span>HV: </span>
                             <Battery fill="#723f9c" orientation="horizontal" perc={Number($hvBattery)}/>
-                            <span>Total: <span class="font-mono font-medium">{$totalHVV} V</span></span>
+                            <span>Total: <Store datatype="TotalBatteryVoltageHigh" /></span>
                         </div>
                     </div>
                     <div class="flex gap-4">
@@ -159,36 +111,24 @@
                         <Command cmd="StartRun" />
                     </div>
                 </Tile>
-                <!-- <Tile containerClass="py-2 col-span-2" bgToken={800}> -->
-                <!--     <Chart title="Localisation"/> -->
-                <!-- </Tile> -->
                 <!--     TEMPERATURE TABLE      -->
                 <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
                     <Table titles={tableBatteryTitles} tableArr={tableBatteryVitals}/>
                 </Tile>
-                <Tile containerClass="pt-2 pb-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Table {tableArr}/>
+                <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
+                    <Table tableArr={tableTempsArr} titles={["Module", "Temp °C", "Module", "Temp °C"]}/>
                 </Tile>
-                <Tile containerClass="pt-2 pb-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}>
-                    <Table titles={["Variable", "Status"]} tableArr={tableArr2}/>
+                <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
+                    <Table titles={["Variable", "Status", "Variable", "Status"]} tableArr={tableArr2}/>
                 </Tile>
-                <!--     OFFSET GRAPHS       -->
-                <!-- <Tile containerClass="py-1 col-span-{width < 550 ? 2 : 1}" bgToken={800}> -->
-                <!--     <Chart title="Offset Horizontal" -->
-                <!--            refreshRate={100}/> -->
-                <!-- </Tile> -->
-                <!-- <Tile containerClass="py-1 h-full w-full col-span-{width < 550 ? 2 : 1}" bgToken={800}> -->
-                <!--     <Chart title="Offset Vertical"/> -->
-                <!-- </Tile> -->
-                <!-- <Tile containerClass="py-2 col-span-2" bgToken={800}> -->
-                <!--     <Chart title="Velocity" /> -->
-                <!-- </Tile> -->
-            <Tile containerClass="col-span-2">
-            <Chart title="HEMS Temperatures" background="bg-surface-900" />
-        </Tile>
-        <Tile containerClass="col-span-2">
-            <Chart title="EMS Temperatures" background="bg-surface-900" />
-        </Tile>
+                <Tile bgToken={800} containerClass="col-span-2 px-16">
+                    {#if width > 550}
+                        <FSM size="sm"/>
+                    {:else}
+                        <FSM size="lg"/>
+                    {/if}
+                </Tile>
+
             </TileGrid>
         </div>
     {/if}

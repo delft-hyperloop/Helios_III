@@ -4,6 +4,7 @@ use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_net::Stack;
 use embassy_net::StackResources;
+use embassy_net::StaticConfigV4;
 use embassy_stm32::eth::generic_smi::GenericSMI;
 use embassy_stm32::eth::Ethernet;
 use embassy_stm32::eth::PacketQueue;
@@ -15,12 +16,15 @@ use rand_core::RngCore;
 use static_cell::StaticCell;
 
 use crate::core::communication::tcp::tcp_connection_handler;
+use crate::pconfig::ip_cidr_from_config;
 use crate::try_spawn;
 use crate::DataReceiver;
 use crate::DataSender;
 use crate::EventSender;
 use crate::Irqs;
+use crate::POD_IP_ADDRESS;
 use crate::POD_MAC_ADDRESS;
+use crate::USE_DHCP;
 
 type Device = Ethernet<'static, ETH, GenericSMI>;
 
@@ -78,14 +82,15 @@ impl EthernetController {
         );
         trace!("MAC Address: {:?}", mac_addr);
 
-        let eth_config: embassy_net::Config = embassy_net::Config::dhcpv4(Default::default());
-        //        let eth_config: embassy_net::Config = embassy_net::Config::ipv4_static(
-        //            StaticConfigV4 {
-        //                address: ip_cidr_from_config(POD_IP_ADDRESS),
-        //                gateway: None,
-        //                dns_servers: Default::default(),
-        //            }
-        //        );
+        let eth_config: embassy_net::Config = if USE_DHCP {
+            embassy_net::Config::dhcpv4(Default::default())
+        } else {
+            embassy_net::Config::ipv4_static(StaticConfigV4 {
+                address: ip_cidr_from_config(POD_IP_ADDRESS),
+                gateway: None,
+                dns_servers: Default::default(),
+            })
+        };
         trace!("MAC Address: {:?}", mac_addr);
 
         static STACK: StaticCell<Stack<Device>> = StaticCell::new();

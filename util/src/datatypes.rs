@@ -1,12 +1,13 @@
 #![allow(non_snake_case, non_camel_case_types)]
 use std::fmt::Display;
+use std::fmt::Formatter;
 use std::fs;
 use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
-use serde::Deserialize;
-use std::fmt::Formatter;
+
 use anyhow::Result;
+use serde::Deserialize;
 
 const NONE: fn() -> Limit = || Limit::No;
 
@@ -23,13 +24,14 @@ pub struct Datatype {
     pub lower: Limit,
     #[serde(default = "NONE")]
     pub upper: Limit,
+    pub display_units: Option<String>,
 }
 
 #[derive(Hash, Clone, Copy)]
 pub enum Limit {
     No,
     Single(u64),
-    Multiple(Severities)
+    Multiple(Severities),
 }
 
 impl Display for Limit {
@@ -38,17 +40,17 @@ impl Display for Limit {
             Limit::No => write!(f, "Limit::No"),
             Limit::Single(x) => write!(f, "Limit::Single({x})"),
             Limit::Multiple(y) => {
-                write!(f, 
+                write!(
+                    f,
                     "Limit::Multiple(Severities {{ warn: {}, err: {}, brake: {} }})",
                     y.warn.map(|x| format!("Some({x})")).unwrap_or("None".into()),
                     y.err.map(|x| format!("Some({x})")).unwrap_or("None".into()),
                     y.brake.map(|x| format!("Some({x})")).unwrap_or("None".into()),
                 )
-            }
+            },
         }
     }
 }
-
 
 #[derive(Deserialize, Hash, Clone, Copy)]
 pub struct Severities {
@@ -79,6 +81,7 @@ pub fn generate_datatypes(path: &str, drv: bool) -> Result<String> {
     let mut data_ids = vec![];
     let mut from_str = String::new();
     let mut bounds = String::new();
+    let mut units = String::from("    pub fn unit(&self) -> String {\n        match *self {\n");
 
     for dtype in config.Datatype {
         data_ids.push(dtype.id);
@@ -88,41 +91,17 @@ pub fn generate_datatypes(path: &str, drv: bool) -> Result<String> {
         from_str.push_str(&format!("            {:?} => Datatype::{},\n", dtype.name, dtype.name));
         bounds.push_str(&format!(
             "            Datatype::{} => ({}, {}),\n",
-            dtype.name,
-            dtype.upper,
-            dtype.lower,
+            dtype.name, dtype.upper, dtype.lower,
         ));
-//         bounds.push_str(&format!(
-//             "            Datatype::{} => {} {} {},\n",
-//             dtype.name,
-//             dtype.lower.map(|x| format!("other >= {}u64", x)).unwrap_or("".to_string()),
-//             if dtype.lower.is_some() && dtype.upper.is_some() {
-//                 "&&".to_string()
-//             } else {
-//                 "".to_string()
-//             },
-//             dtype.upper.map(|x| format!("other <= {}u64", x)).unwrap_or_else(|| {
-//                 if dtype.lower.is_none() && dtype.upper.is_none() {
-//                     "true".to_string()
-//                 } else {
-//                     "".to_string()
-//                 }
-//             }),
-//         ));
-//         if let Some(l) = dtype.lower {
-//             if l == 0 {
-//                 panic!(
-//                     "
-// You set a lower bound of 0 for {}. \
-// Since all values are treated as u64, \
-// values less than 0 are impossible. 
-// Please ommit specifying this to keep the config clean :)
-// ",
-//                     dtype.name
-//                 );
-//             }
-//         }
+        if let Some(u) = dtype.display_units {
+            units.push_str(&format!(
+                "            Datatype::{} => String::from({:?}),\n",
+                dtype.name, u
+            ));
+        }
     }
+
+    units.push_str("            _ => String::new(),\n        }\n    }");
 
     Ok(format!(
         "\n
@@ -224,18 +203,20 @@ impl Datatype {{
             _ => ValueCheckResult::BrakeNow,
         }}
     }}
+{}
 }}
 ",
         if drv {
             "#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize, PartialOrd, Ord)]"
         } else {
-            "#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]"
+            "#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, defmt::Format)]"
         },
         enum_definitions,
         match_to_id,
         match_from_id,
         from_str,
         bounds,
+        if drv { units } else { "".into() }
     ) + &format!(
         "pub static DATA_IDS : [u16;{}] = [{}];\n",
         data_ids.len(),

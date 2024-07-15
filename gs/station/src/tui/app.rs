@@ -1,18 +1,23 @@
 use std::collections::BTreeMap;
+use std::time::Duration;
+use std::time::Instant;
 
 use ratatui::Frame;
 
-use crate::api::{LocationSequence, state_to_string};
+use crate::api::state_to_string;
 use crate::api::Datapoint;
+use crate::api::LocationSequence;
 use crate::api::Message;
 use crate::backend::Backend;
 use crate::tui::render::CmdRow;
 use crate::tui::timestamp;
 use crate::tui::Tui;
+use crate::Command;
 use crate::Datatype;
 use crate::Event;
 use crate::Info;
 use crate::COMMANDS_LIST;
+use crate::HEARTBEAT;
 
 #[allow(dead_code)]
 pub struct App {
@@ -26,9 +31,12 @@ pub struct App {
     pub cmds: Vec<CmdRow>,
     pub cur_state: String,
     pub last_heartbeat: String,
-    pub special_data: BTreeMap<Datatype, u64>,
+    pub special_data: BTreeMap<Datatype, f64>,
     pub backend: Backend,
     pub safe: bool,
+    pub last_sent_heartbeat: Instant,
+    pub received_bytes: u64,
+    pub throughput: f64,
 }
 
 impl App {
@@ -45,39 +53,43 @@ impl App {
             cur_state: "None Yet".to_string(),
             last_heartbeat: "None Yet".to_string(),
             special_data: BTreeMap::from([
-                (Datatype::InsulationNegative, 0),
-                (Datatype::InsulationPositive, 0),
-                (Datatype::InsulationOriginal, 0),
-                (Datatype::IMDVoltageDetails, 0),
-                (Datatype::IMDIsolationDetails, 0),
-                (Datatype::IMDGeneralInfo, 0),
-                (Datatype::Average_Temp_VB_top, 0),
-                (Datatype::GyroscopeX, 0),
-                (Datatype::GyroscopeY, 0),
-                (Datatype::GyroscopeZ, 0),
-                (Datatype::LowPressureSensor, 0),
-                (Datatype::BatteryCurrentHigh, 0),
-                (Datatype::BatteryTemperatureHigh, 0),
-                (Datatype::TotalBatteryVoltageLow, 0),
-                (Datatype::TotalBatteryVoltageHigh, 0),
-                (Datatype::SingleCellVoltageLow, 0),
-                (Datatype::BatteryMaxBalancingLow, 0),
-                (Datatype::Localisation, 0),
-                (Datatype::Velocity, 0),
-                (Datatype::LowPressureSensor, 0),
-                (Datatype::HighPressureSensor, 0),
-                (Datatype::PropulsionCurrent, 0),
-                (Datatype::PropulsionVoltage, 0),
-                (Datatype::PropulsionSpeed, 0),
-                (Datatype::PropulsionVRefInt, 0),
-                (Datatype::BrakingCommDebug, 0),
-                (Datatype::BrakingSignalDebug, 42),
-                (Datatype::BrakingBoolDebug, 42),
-                (Datatype::BrakingRearmDebug, 42),
-                (Datatype::PropGPIODebug, 42),
+                (Datatype::FrontendHeartbeating, 0.0),
+                (Datatype::InsulationNegative, 0.0),
+                (Datatype::InsulationPositive, 0.0),
+                (Datatype::InsulationOriginal, 0.0),
+                (Datatype::IMDVoltageDetails, 0.0),
+                (Datatype::IMDIsolationDetails, 0.0),
+                (Datatype::IMDGeneralInfo, 0.0),
+                (Datatype::Average_Temp_VB_top, 0.0),
+                (Datatype::GyroscopeX, 0.0),
+                (Datatype::GyroscopeY, 0.0),
+                (Datatype::GyroscopeZ, 0.0),
+                (Datatype::LowPressureSensor, 0.0),
+                (Datatype::BatteryCurrentHigh, 0.0),
+                (Datatype::BatteryTemperatureHigh, 0.0),
+                (Datatype::TotalBatteryVoltageLow, 0.0),
+                (Datatype::TotalBatteryVoltageHigh, 0.0),
+                (Datatype::SingleCellVoltageLow, 0.0),
+                (Datatype::BatteryMaxBalancingLow, 0.0),
+                (Datatype::Localisation, 0.0),
+                (Datatype::Velocity, 0.0),
+                (Datatype::LowPressureSensor, 0.0),
+                (Datatype::HighPressureSensor, 0.0),
+                (Datatype::PropulsionCurrent, 0.0),
+                (Datatype::PropulsionVoltage, 0.0),
+                (Datatype::PropulsionSpeed, 0.0),
+                (Datatype::PropulsionVRefInt, 0.0),
+                (Datatype::BrakingCommDebug, 0.0),
+                (Datatype::BrakingSignalDebug, 42.0),
+                (Datatype::BrakingBoolDebug, 42.0),
+                (Datatype::BrakingRearmDebug, 42.0),
+                (Datatype::PropGPIODebug, 42.0),
             ]),
             backend,
             safe: true,
+            last_sent_heartbeat: Instant::now(),
+            received_bytes: 0,
+            throughput: 0.0,
         }
     }
 
@@ -95,6 +107,7 @@ impl App {
 
     fn receive_data(&mut self) {
         while let Ok(msg) = self.backend.message_receiver.try_recv() {
+            self.received_bytes = self.received_bytes.wrapping_add(20);
             self.backend.log_msg(&msg);
             match msg {
                 Message::Data(datapoint) => match datapoint.datatype {
@@ -106,21 +119,25 @@ impl App {
                             self.safe = false;
                         },
                         x => {
-                            self.logs.push((Message::Status(x), format!("[info: {} at {}]", datapoint.value, datapoint.timestamp)));
+                            self.logs.push((
+                                Message::Status(x),
+                                format!("[info: {} at {}]", datapoint.value, datapoint.timestamp),
+                            ));
                         },
                     },
                     Datatype::RoutePlan => {
                         self.logs.push((
                             Message::Info(format!(
                                 "Route: \n{}\ncurrently at {}",
-                                LocationSequence::from(datapoint.value),
+                                LocationSequence::from(datapoint.value.round() as u64),
                                 datapoint.timestamp,
                             )),
                             timestamp(),
                         ));
                     },
                     Datatype::FSMState => {
-                        self.cur_state = state_to_string(datapoint.value).to_string();
+                        self.cur_state =
+                            state_to_string(datapoint.value.round() as u64).to_string();
                         self.logs.push((
                             Message::Warning(format!(
                                 "State is now: {:?}",
@@ -131,7 +148,9 @@ impl App {
                         self.logs.push((Message::Data(datapoint), timestamp()))
                     },
                     Datatype::FSMEvent => {
-                        if datapoint.value == Event::Heartbeating.to_id() as u64 {
+                        if (datapoint.value - Event::Heartbeating.to_id() as f64).abs()
+                            <= f64::EPSILON * 2.0
+                        {
                             self.last_heartbeat = timestamp();
                         } else if self
                             .special_data
@@ -145,8 +164,9 @@ impl App {
                         }
                     },
                     Datatype::ResponseHeartbeat => {
-                        self.special_data.insert(Datatype::ResponseHeartbeat, datapoint.timestamp);
-                    }
+                        self.special_data
+                            .insert(Datatype::ResponseHeartbeat, datapoint.timestamp as f64);
+                    },
                     x if self.special_data.keys().collect::<Vec<&Datatype>>().contains(&&x) => {
                         self.special_data.insert(x, datapoint.value);
                     },
@@ -158,6 +178,14 @@ impl App {
                     self.logs.push((msg, timestamp()));
                 },
             }
+        }
+        if self.last_sent_heartbeat.elapsed() > Duration::from_millis(HEARTBEAT) {
+            self.backend
+                .command_transmitter
+                .send(Command::FrontendHeartbeat(10))
+                .expect("backend failed");
+            self.last_sent_heartbeat = Instant::now();
+            self.received_bytes = 0;
         }
     }
 

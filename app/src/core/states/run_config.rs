@@ -9,6 +9,8 @@ use crate::Info;
 
 impl Fsm {
     pub fn entry_run_config(&mut self) {
+        self.status.speeds_set = false;
+        self.status.route_set = false;
         self.peripherals.braking_controller.start_run_brake_precondition();
     }
 
@@ -16,24 +18,27 @@ impl Fsm {
         match event {
             Event::SettingRoute(x) => {
                 #[cfg(debug_assertions)]
-                debug!("Setting run config: {:?}", x);
+                debug!("Setting run config: 0x{:x}", x);
                 self.route.positions_from(x);
                 self.route.current_position = 0;
                 self.status.route_set = true;
+                self.log(Info::RouteSet).await;
             },
             Event::SettingSpeeds(x) => {
-                debug!("Setting run config speed: {:?}", x);
+                debug!("Setting run config speed: 0x{:x}", x);
                 self.route.speeds_from(x);
                 self.status.speeds_set = true;
+                self.log(Info::SpeedsSet).await;
             },
             Event::ArmBrakesCommand => {
                 self.peripherals.braking_controller.arm_breaks().await; // without this you cant turn on hv
-                self.status.brakes_armed = true;
-                #[cfg(debug_assertions)]
-                info!("[fsm] Rearmed brakes!");
+                self.status.brakes_armed = true; // todo: message ground station
+                debug!("[fsm] Rearmed brakes!");
+                self.log(Info::BrakesArmed).await;
             },
             Event::RunConfigCompleteEvent => {
                 if self.status.route_set && self.status.speeds_set {
+                    self.log(Info::ConfigurationCompleted).await;
                     transit!(self, State::Idle);
                 } else {
                     #[cfg(debug_assertions)]

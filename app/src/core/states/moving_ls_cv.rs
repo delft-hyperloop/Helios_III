@@ -4,8 +4,10 @@ use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::core::fsm_status::Location;
 use crate::core::fsm_status::RouteUse;
-use crate::{Command, Info, transit};
+use crate::transit;
+use crate::Command;
 use crate::Event;
+use crate::Info;
 
 impl Fsm {
     pub fn entry_ls_cv(&mut self) {
@@ -17,19 +19,16 @@ impl Fsm {
             Event::LaneSwitchEnded => match self.route.next_position() {
                 Location::ForwardC => {
                     info!("Entering straight track after curved lane-switch!");
-                    self.send_levi_cmd(Command::ls0(0)).await;
                     transit!(self, State::EndST);
                 },
 
                 Location::BackwardsA => {
                     info!("Entering straight track after curved lane-switch!");
-                    self.send_levi_cmd(Command::ls0(0)).await;
                     transit!(self, State::MovingST);
                 },
 
                 Location::StopAndWait => {
                     self.peripherals.propulsion_controller.stop();
-                    self.send_levi_cmd(Command::ls0(0)).await;
                     self.send_levi_cmd(Command::LeviPropulsionStop(0)).await;
                     transit!(self, State::Levitating);
                 },

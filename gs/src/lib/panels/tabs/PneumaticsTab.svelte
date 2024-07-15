@@ -1,13 +1,17 @@
 <script lang="ts">
     import {GrandDataDistributor, Pneumatics, Table, Tile, TileGrid} from "$lib";
+    import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const lowPressure = storeManager.getStore("LowPressureSensor");
-    const highPressure = storeManager.getStore("HighPressureSensor");
+    const lowPressure = storeManager.getWritable("LowPressureSensor");
+    const highPressure = storeManager.getWritable("HighPressureSensor");
 
     $: pressureTable = [
-        ["Low Pressure", $lowPressure],
-        ["High Pressure", $highPressure]
+        ["Low Pressure", DE.LOWPRESSURESENSOR],
+        ["High Pressure", DE.HIGHPRESSURESENSOR],
+        ["Braking Comm", DE.BRAKINGCOMMDEBUG],
+        ["Braking Signal", DE.BRAKINGSIGNALDEBUG],
+        ["Braking Rearm", DE.BRAKINGREARMDEBUG],
     ]
 </script>
 

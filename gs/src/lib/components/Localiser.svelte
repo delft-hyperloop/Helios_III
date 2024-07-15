@@ -2,13 +2,11 @@
     import {onMount} from "svelte";
     import util from "$lib/util/util";
     import {inputEmerg} from "$lib/stores/state";
-    import {GrandDataDistributor} from "$lib";
 
-    export let max:number = 60000;
+    export let max:number = 13000;
     export let loc:number = 1000; /* should be < 16000 */
     export let turning:boolean;
-
-    // todo let current_segment:Segment = 'L1';
+    export let showLabels:boolean = true;
 
     // SVG elements
     let progress_container:SVGGElement;
@@ -92,9 +90,6 @@
             emergYPosition = progress_straight.getPointAtLength(emergPosition).y;
         }
     }
-
-    const storeManager = GrandDataDistributor.getInstance().stores;
-    const velocity = storeManager.getStore("Velocity");
 </script>
 
 <div class="w-full">
@@ -122,20 +117,22 @@
                 </g>
             </g>
             <g id="labels">
-                <text x="165" y="10" fill="#EFF0F0" font-size="12">Forward A</text>
-                <text x="162" y="50" fill="#EFF0F0" font-size="12">Backward A</text>
-                <text x="405" y="10" fill="#EFF0F0" font-size="12">Lane-switch Straight</text>
-                <text x="731" y="10" fill="#EFF0F0" font-size="12">Forward B</text>
-                <text x="728" y="50" fill="#EFF0F0" font-size="12">Backward B</text>
-                <text x="453" y="55" fill="#EFF0F0" transform="rotate(12,450,70)"
-                      font-size="12">Lane-switch curve
-                </text>
-                <text x="705" y="116" fill="#EFF0F0" transform="rotate(15,680,125)"
-                      font-size="12">Backward C
-                </text>
-                <text x="708" y="75" fill="#EFF0F0" transform="rotate(15,680,125)"
-                      font-size="12">Forward C
-                </text>
+                {#if showLabels}
+                    <text x="165" y="10" fill="#EFF0F0" font-size="12">Forward A</text>
+                    <text x="162" y="50" fill="#EFF0F0" font-size="12">Backward A</text>
+                    <text x="405" y="10" fill="#EFF0F0" font-size="12">Lane-switch Straight</text>
+                    <text x="731" y="10" fill="#EFF0F0" font-size="12">Forward B</text>
+                    <text x="728" y="50" fill="#EFF0F0" font-size="12">Backward B</text>
+                    <text x="453" y="55" fill="#EFF0F0" transform="rotate(12,450,70)"
+                          font-size="12">Lane-switch curve
+                    </text>
+                    <text x="705" y="116" fill="#EFF0F0" transform="rotate(15,680,125)"
+                          font-size="12">Backward C
+                    </text>
+                    <text x="708" y="75" fill="#EFF0F0" transform="rotate(15,680,125)"
+                          font-size="12">Forward C
+                    </text>
+                {/if}
             </g>
         </g>
         <g filter="url(#filter0_d_64_411)">

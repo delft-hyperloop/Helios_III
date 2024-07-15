@@ -5,6 +5,7 @@ using Pmp;
 using System.Threading;
 using System.IO;
 using System.Threading.Tasks;
+using static Pmp.Unmanaged.Abi;
 
 namespace PmpGettingStartedCs
 {
@@ -78,7 +79,12 @@ namespace PmpGettingStartedCs
         public ISignal VerticalZeroResetSignal { set; get; }
         public ISignal LateralZeroResetSignal { set; get; }
 
+        public ISignal SenseconLocation { set; get; }
+        public ISignal LS_signal { set; get; }
+        public ISignal PropulsionCurrent { set; get; }
 
+        public ISignal LeviLocation { set; get; }
+        public ISignal LeviSpeed { set; get; }
 
 
         public void SetNameAdress()
@@ -90,15 +96,18 @@ namespace PmpGettingStartedCs
         public void ExecuteCommand(string command)
         {
             switch (command)
-                {
+            {
                 case "enable_axis":
                     try
                     {
+                        Console.WriteLine("INFO:disabling_control_loop\n");
+                        SetVerticalMode(0);
+                        SetLateralMode(0);
                         Console.WriteLine("INFO:enabling_levi_HV\n");
                         EnableAndMove.EnableAxis(this);
 
                     }
-                    catch (Exception) 
+                    catch (Exception)
                     {
                         Console.WriteLine("ERROR:axis_error\n");
                     }
@@ -109,6 +118,9 @@ namespace PmpGettingStartedCs
                     {
                         Console.WriteLine("INFO:disabling_levi_HV\n");
                         EnableAndMove.DisableAxis(this);
+                        Console.WriteLine("INFO:disabling_control_loop\n");
+                        SetVerticalMode(2);
+                        SetLateralMode(2);
                     }
                     catch (Exception)
                     {
@@ -229,6 +241,30 @@ namespace PmpGettingStartedCs
                     }
                     break;
 
+                case "LeviStartLS":
+                    try
+                    {
+                        this.SetLS_Signal(1);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
+                case "LeviStopLS":
+                    try
+                    {
+                        this.SetLS_Signal(0);
+                        Console.Write("INFO:mode_set\n");
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("CRITICAL:mode_error\n");
+                    }
+                    break;
+
                 case "vert0_reset":
                     try
                     {
@@ -295,7 +331,7 @@ namespace PmpGettingStartedCs
                         Console.WriteLine("CRITICAL:ls_error\n");
                     }
                     break;
-                    
+
                 case "ls1":
                     try
                     {
@@ -344,6 +380,63 @@ namespace PmpGettingStartedCs
                     }
                     break;
 
+                case "EmergencyBrake":
+                    try
+                    {
+                        Console.WriteLine("INFO:disabling_control_loop\n");
+                        SetVerticalMode(0);
+                        SetLateralMode(0);
+                        Console.WriteLine("INFO:discharging_HV\n");
+                        EnableAndMove.EnableAxis(this);
+
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("ERROR:not_discharging_HV\n");
+                    }
+                    break;
+
+                case "StopHV":
+                    try
+                    {
+                        Console.WriteLine("INFO:disabling_control_loop\n");
+                        SetVerticalMode(0);
+                        SetLateralMode(0);
+                        Console.WriteLine("INFO:discharging_HV\n");
+                        EnableAndMove.EnableAxis(this);
+
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("ERROR:not_discharging_HV\n");
+                    }
+                    break;
+
+
+                case string data_str when data_str.Contains("data:"):
+                    try
+                    {
+                        data_str = data_str.Trim();
+                        char[] seperator = { ':' };
+                        string[] data_list = data_str.Split(seperator,
+                                                            StringSplitOptions.RemoveEmptyEntries);
+                        string data_id = data_list[1];
+                        double data_value = Convert.ToDouble(data_list[2]);
+                        if (data_id.ToLower().Contains("propulsioncurrent"))
+                        {
+                            this.SetPropulsionCurrent(data_value);
+                        }
+                        else if (data_id.ToLower().Contains("localisation"))
+                        {
+                            this.SetSenseconLocation(data_value/1000);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("WARNING:receive_data_error\n");
+                    }
+                    break;
+
                 default:
                     Console.WriteLine("WARNING:invalid\n");
                     break;
@@ -352,8 +445,8 @@ namespace PmpGettingStartedCs
         }
         public void SetPaths()
         {
-            this.FilePath   = Directory.GetCurrentDirectory();
-/*            this.FilePath = Directory.GetParent(FilePath).FullName;*/
+            this.FilePath = Directory.GetCurrentDirectory();
+            /*            this.FilePath = Directory.GetParent(FilePath).FullName;*/
             this.FilePath = this.FilePath + "\\Levi";
             this.ConfigPath = this.FilePath + "\\levitation_config_file.xml";
             this.CouplerPath = this.FilePath + "\\00000002_044c2c52_0012.xml";
@@ -411,14 +504,20 @@ namespace PmpGettingStartedCs
             this.Offset_AB = LateralController.Signals["OffsetFront"];
             this.Offset_CD = LateralController.Signals["OffsetBack"];
 
+            this.SenseconLocation = LateralController.Signals["x_location_raw"];
+            this.LeviLocation = LateralController.Signals["x_location"];
+            this.LeviSpeed = LateralController.Signals["x_speed"];
+            this.LS_signal = LateralController.Signals["LS_signal"];
+            this.PropulsionCurrent = VerticalController.Signals["PropulsionCurrent"];
+
             this.Airgap = VerticalController.Signals["Airgap"];
             this.Pitch = VerticalController.Signals["Pitch"];
             this.Roll = VerticalController.Signals["Roll"];
             this.Power_Vert = VerticalController.Signals["Power_avg"];
             this.Power_Lat = LateralController.Signals["Power_Lat_avg"];
 
-            this.VerticalZeroResetSignal = VerticalController.Signals["Undo_0current"];
-            this.LateralZeroResetSignal = LateralController.Signals["lat_zero_reset"];
+            /*            this.VerticalZeroResetSignal = VerticalController.Signals["Undo_0current"];
+                        this.LateralZeroResetSignal = LateralController.Signals["lat_zero_reset"];*/
 
 
             this.Volt_A = CygnusA.Sensors["VBus"].Signals["Voltage"];
@@ -439,10 +538,10 @@ namespace PmpGettingStartedCs
             this.I_Back = MotE2_Back.Signals["I_E2_Back"];
         }
         public bool SetLaneSwitch(double value)
-    {
-        Acquisition.ChangeSignalFromSignal(this.LaneSwitchSignal, value);
-        return true;
-    }
+        {
+            Acquisition.ChangeSignalFromSignal(this.LaneSwitchSignal, value);
+            return true;
+        }
 
         public bool SetVerticalZeroReset(double value)
         {
@@ -462,13 +561,31 @@ namespace PmpGettingStartedCs
             return true;
         }
 
-        public static void sendData (string dataType, string value)
+        public bool SetPropulsionCurrent(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.PropulsionCurrent, value);
+            return true;
+        }
+
+        public bool SetSenseconLocation(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.SenseconLocation, value);
+            return true;
+        }
+
+        public bool SetLS_Signal(double value)
+        {
+            Acquisition.ChangeSignalFromSignal(this.LS_signal, value);
+            return true;
+        }
+
+        public static void sendData(string dataType, string value)
         {
             Console.WriteLine("DATA:{0}:{1}", dataType, value);
         }
-        public void getVerticalAirgaps ()
+        public void getVerticalAirgaps()
         {
-            double[] airgapsList = { this.G_A.ValueDouble*1000, this.G_B.ValueDouble*1000, this.G_C.ValueDouble * 1000, this.G_D.ValueDouble * 1000 };
+            double[] airgapsList = { this.G_A.ValueDouble * 1000, this.G_B.ValueDouble * 1000, this.G_C.ValueDouble * 1000, this.G_D.ValueDouble * 1000 };
             string[] gapStrings = { "levi_hems_gap_a", "levi_hems_gap_b", "levi_hems_gap_c", "levi_hems_gap_d" };
             int i = 0;
             foreach (string gapString in gapStrings)
@@ -496,7 +613,7 @@ namespace PmpGettingStartedCs
 
         public void getDegreesOfFreedom()
         {
-            double[] airgapsList = { this.Airgap.ValueDouble, this.Pitch.ValueDouble, this.Roll.ValueDouble, this.Offset_AB.ValueDouble, this.Offset_CD.ValueDouble};
+            double[] airgapsList = { this.Airgap.ValueDouble, this.Pitch.ValueDouble, this.Roll.ValueDouble, this.Offset_AB.ValueDouble, this.Offset_CD.ValueDouble };
             string[] gapStrings = { "levi_hems_airgap", "levi_hems_pitch", "levi_hems_roll", "levi_ems_offset_ab", "levi_ems_offset_cd" };
             int i = 0;
             foreach (string gapString in gapStrings)
@@ -510,8 +627,8 @@ namespace PmpGettingStartedCs
 
         public void getCurrents()
         {
-            double[] currentList = { this.I_A1.ValueDouble, this.I_A2.ValueDouble, this.I_B1.ValueDouble, this.I_B2.ValueDouble, this.I_C1.ValueDouble, this.I_C2.ValueDouble, this.I_D1.ValueDouble, this.I_D2.ValueDouble, this.I_Front.ValueDouble, this.I_Back.ValueDouble, this.Power_Vert.ValueDouble, this.Power_Lat.ValueDouble};
-            string[] currentStrings = { "levi_hems_current_a1", "levi_hems_current_a2", "levi_hems_current_b1", "levi_hems_current_b2", "levi_hems_current_c1", "levi_hems_current_c2", "levi_hems_current_d1", "levi_hems_current_d2", "levi_ems_current_ab", "levi_ems_current_cd", "levi_hems_power", "levi_ems_power"};
+            double[] currentList = { this.I_A1.ValueDouble, this.I_A2.ValueDouble, this.I_B1.ValueDouble, this.I_B2.ValueDouble, this.I_C1.ValueDouble, this.I_C2.ValueDouble, this.I_D1.ValueDouble, this.I_D2.ValueDouble, this.I_Front.ValueDouble, this.I_Back.ValueDouble, this.Power_Vert.ValueDouble, this.Power_Lat.ValueDouble };
+            string[] currentStrings = { "levi_hems_current_a1", "levi_hems_current_a2", "levi_hems_current_b1", "levi_hems_current_b2", "levi_hems_current_c1", "levi_hems_current_c2", "levi_hems_current_d1", "levi_hems_current_d2", "levi_ems_current_ab", "levi_ems_current_cd", "levi_hems_power", "levi_ems_power" };
             int i = 0;
             foreach (string currentString in currentStrings)
             {
@@ -527,16 +644,40 @@ namespace PmpGettingStartedCs
         {
             double[] voltageList = { this.Volt_A.ValueDouble, this.Volt_B.ValueDouble, this.Volt_C.ValueDouble, this.Volt_D.ValueDouble, this.Volt_E.ValueDouble, };
             double[] editedVoltageList = { voltageList.Average(), voltageList.Min(), voltageList.Max() };
-            string[] voltageStrings = { "levi_volt_avg", "levi_volt_min", "levi_volt_max" };
+            string[] editedVoltageStrings = { "levi_volt_avg", "levi_volt_min", "levi_volt_max" };
+            string[] voltageStrings = { "levi_volt_A", "levi_volt_B", "levi_volt_C", "levi_volt_D", "levi_volt_E" };
             int i = 0;
-            foreach (string voltageString in voltageStrings)
+            foreach (string voltageString in editedVoltageStrings)
             {
                 string datatype = voltageString.ToLower();
                 string value = editedVoltageList[i].ToString();
                 sendData(datatype, value);
                 i++;
             }
+            i = 0;
+            foreach (string voltageString in voltageStrings)
+            {
+                string datatype = voltageString.ToLower();
+                string value = voltageList[i].ToString();
+                sendData(datatype, value);
+                i++;
+            }
         }
+
+        public void getLocalization()
+        {
+            double[] localizationList = { this.LeviLocation.ValueDouble*1000, this.LeviSpeed.ValueDouble };
+            string[] localizationStrings = { "levi_location", "levi_speed" };
+            int i = 0;
+            foreach (string localizationString in localizationStrings)
+            {
+                string datatype = localizationString.ToLower();
+                string value = localizationList[i].ToString();
+                sendData(datatype, value);
+                i++;
+            }
+        }
+
 
         public bool SetVerticalMode(double value)
         {
@@ -552,18 +693,32 @@ namespace PmpGettingStartedCs
 
         public void Initialize()
         {
-            this.SetNameAdress();
-            this.SetPaths();
-            this.TopController = ControllerDiscoveryAndInit.DiscoveryAndInit(this);
-            this.SetSignals();
+            try
+            {
+                this.SetNameAdress();
+                this.SetPaths();
+                this.TopController = ControllerDiscoveryAndInit.DiscoveryAndInit(this);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("WARNING:init_error");
+            }
+            try
+            {
+                this.SetSignals();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("WARNING:init_signal_error");
+            }
         }
-public static void Main()
+        public static void Main()
         {
             Levitation arcas = new Levitation();
-           
 
-  try
-  {
+
+            try
+            {
                 arcas.Initialize();
 
                 /* Console.WriteLine("SampleCount: {0}", arcas.TopController.Signals["SampleCount"].ValueUint32);
@@ -592,14 +747,13 @@ public static void Main()
 
                     try
                     {
-                        /*                        string command = (InputsOutputs.ReadConsole());
-                                                arcas.ExecuteCommand(command);*/
-                        Thread.Sleep(20);
+                        Thread.Sleep(2000);
                         arcas.getVerticalAirgaps();
                         arcas.getLateralAirgaps();
                         arcas.getCurrents();
                         arcas.getDegreesOfFreedom();
-                       arcas.getVoltages();
+                        arcas.getVoltages();
+                        arcas.getLocalization();
 
                     }
                     catch (Exception)
@@ -609,18 +763,18 @@ public static void Main()
                     }
                 }
             }
-  catch (PmpException ex)
-  {
-    Console.WriteLine("CRITICAL:broke_loop");
+            catch (PmpException ex)
+            {
+                Console.WriteLine("CRITICAL:broke_loop");
                 Thread.Sleep(10000);
 
-  }
+            }
 
-  if (arcas.TopController != null)
-  {
-    arcas.TopController.Dispose(); 
-  }
+            if (arcas.TopController != null)
+            {
+                arcas.TopController.Dispose();
+            }
 
-}
-}
+        }
+    }
 }

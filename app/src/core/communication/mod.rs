@@ -1,3 +1,5 @@
+use defmt::Formatter;
+
 use crate::Datatype;
 
 pub mod can;
@@ -31,5 +33,17 @@ impl Datapoint {
         bytes[11..19].copy_from_slice(&self.timestamp.to_le_bytes());
         bytes[19] = 0xFF;
         bytes
+    }
+}
+
+impl defmt::Format for Datapoint {
+    fn format(&self, fmt: Formatter) {
+        defmt::write!(
+            fmt,
+            "Datapoint {{ datatype: {:?}, value: {:?}, timestamp: {:?} }}",
+            self.datatype,
+            self.value,
+            self.timestamp
+        )
     }
 }

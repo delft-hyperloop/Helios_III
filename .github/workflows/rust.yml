@@ -16,10 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build
-      run: rustup target add thumbv7em-none-eabihf && cd app && cargo build
-    # - name: Run tests
-      # run: cargo test --verbose
+    - name: Build & Lint
+      run: rustup target add thumbv7em-none-eabihf && cd app && cargo clippy -- -D warnings
 
   station:
 
@@ -34,17 +32,9 @@ jobs:
         sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libgtk-3-dev
         export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
-      # webkitgtk 4.0 is for Tauri v1 - webkitgtk 4.1 is for Tauri v2.
-
-    - name: setup node
-      uses: actions/setup-node@v4
-      with:
-          node-version: lts/*
-          cache-dependency-path: ./gs/
-          cache: 'npm'
-
-    - name: Build
-      run: cd gs/station && cargo build --features full
-    - name: Run tests
+    - name: Build & Lint
+      run: cd gs/station && cargo clippy --features full -- -D warnings 
+    
+    - name: Test
       run: cd gs/station && cargo test --features full
 

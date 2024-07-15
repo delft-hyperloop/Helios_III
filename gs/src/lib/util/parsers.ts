@@ -4,18 +4,17 @@ import {detailTabSet} from "$lib";
 import {invoke} from "@tauri-apps/api/tauri";
 const MAX_VALUE = 4_294_967_295;
 
-const tempParse: dataConvFun<number> = (data: bigint) => {
+const tempParse: dataConvFun<number> = (data: number) => {
     return Number(data) - 100;
 }
 
-const voltParse: dataConvFun<string> = (data: bigint) => {
+const voltParse: dataConvFun<string> = (data: number) => {
     return Number(data) === 200 ? "INVALID" : (Number(data) / 100).toString();
 }
 
-const addEntryToChart = (chart: PlotBuffer, data: bigint, index: number) => {
-    const curr = u64ToDouble(data);
-    chart.addEntry(index, curr);
-    return curr;
+const addEntryToChart = (chart: PlotBuffer, data: number, index: number) => {
+    chart.addEntry(index, data);
+    return data;
 }
 
 const u64ToDouble = (u64: bigint): number => {
@@ -44,7 +43,7 @@ const metersPerMinuteToByte = (mpm: number): number => {
 
     const speed_min = -500;
     const speed_max = 500;
-    const byte_min = 0;
+    const byte_min = 50;
     const byte_max = 255;
 
     let mappedValue = ((mpm - speed_min) / (speed_max - speed_min)) * (byte_max - byte_min) + byte_min;
@@ -75,6 +74,8 @@ const parseShortCut = async (shortcut:string):Promise<void> => {
     } else if (shortcut === "emergency_brake") {
         console.log("Emergency brake");
         await invoke('send_command', {cmdName: "EmergencyBrake", val: 0});
+    } else if (shortcut === "heartbeat") {
+        await invoke('send_command', {cmdName: "FrontendHeartbeat", val: 0});
     }
 
 }
