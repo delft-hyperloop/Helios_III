@@ -41,10 +41,10 @@
             });
 
             switch (message[0]) {
-                case "UNSAFE":
+                case "Unsafe":
                     bigErrorStatus.set(ErrorStatus.UNSAFE)
                     break;
-                case "SAFE":
+                case "Safe":
                     bigErrorStatus.set(ErrorStatus.SAFE)
                     break;
             }
