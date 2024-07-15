@@ -55,11 +55,9 @@ impl FSMPeripherals {
 
         debug!("creating hv controller");
         // the battery controllers contain functions related to interpreting the `BMS CAN` messages
-        let hv_controller =
-            BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, true);
+        let hv_controller = BatteryController::new(i.event_sender, i.data_sender, true);
         debug!("creating lv controller");
-        let lv_controller =
-            BatteryController::new(i.event_sender, 0, 0, 0, 0, 0, i.data_sender, false);
+        let lv_controller = BatteryController::new(i.event_sender, i.data_sender, false);
 
         debug!("creating ethernet controller");
         // The ethernet controller configures IP and then spawns the ethernet task

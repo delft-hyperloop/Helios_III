@@ -9,19 +9,19 @@ use crate::Datatype;
 use crate::EventSender;
 use crate::Info;
 
-#[allow(dead_code)]
+// #[allow(dead_code)]
 pub struct BatteryController {
-    sender: EventSender,
+    // sender: EventSender,
     data_sender: DataSender,
-    id: u16,
-    temperature_threshold: u8,
-    voltage_threshold: u16,
-    current_threshold: u16,
-    number_of_groups: u8,
+    // id: u16,
+    // temperature_threshold: u8,
+    // voltage_threshold: u16,
+    // current_threshold: u16,
+    // number_of_groups: u8,
     high_voltage: bool,
     single_cell_id: u16,
-    receive_single_cell_id: bool,
-    current_number_of_cells: usize,
+    // receive_single_cell_id: bool,
+    // current_number_of_cells: usize,
     module_buffer: [u64; 14],
     temp_buffer: [u64; 112],
     voltage_buffer: [u64; 112],
@@ -35,28 +35,28 @@ impl BatteryController {
     /// - sender: EventSender, to send events to the FSM
     /// - ?
     pub fn new(
-        sender: EventSender,
-        temperature: u8,
-        voltage: u16,
-        current: u16,
-        id: u16,
-        number_of_groups: u8,
+        _sender: EventSender,
+        // temperature: u8,
+        // voltage: u16,
+        // current: u16,
+        // id: u16,
+        // number_of_groups: u8,
         data_sender: DataSender,
         high_voltage: bool,
     ) -> Self {
         // Initialise anything needed by the battery controller here
         Self {
-            sender,
-            id,
-            temperature_threshold: temperature,
-            voltage_threshold: voltage,
-            current_threshold: current,
-            number_of_groups,
+            // sender,
+            // id,
+            // temperature_threshold: temperature,
+            // voltage_threshold: voltage,
+            // current_threshold: current,
+            // number_of_groups,
             data_sender,
             high_voltage,
             single_cell_id: 0,
-            receive_single_cell_id: true,
-            current_number_of_cells: 0,
+            // receive_single_cell_id: true,
+            // current_number_of_cells: 0,
             module_buffer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             temp_buffer: [0; 112],
             voltage_buffer: [0; 112],
@@ -476,26 +476,6 @@ impl BatteryController {
             min = 0;
         }
         (min, max, avg)
-    }
-
-    pub async fn individual_voltages_bms(&mut self, data: &[u8], timestamp: u64) {
-        for &x in data.iter() {
-            if self.single_cell_id < 8 {
-                self.module_buffer[self.current_number_of_cells] = x as u64;
-                if self.current_number_of_cells == 13 {
-                    self.current_number_of_cells = 0;
-                    self.send_module_voltage(timestamp).await;
-                    self.single_cell_id += 1;
-                } else {
-                    self.current_number_of_cells += 1;
-                }
-            } else {
-                self.single_cell_id = 0;
-                self.receive_single_cell_id = true;
-                self.module_buffer = [0; 14];
-                break;
-            }
-        }
     }
 
     pub async fn overall_balancing_status_bms(&mut self, data: &[u8], timestamp: u64) {
