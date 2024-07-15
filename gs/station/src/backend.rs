@@ -73,7 +73,8 @@ impl Backend {
             let c = self.command_receiver.resubscribe();
             let t = self.command_transmitter.clone();
             self.server_handle = Some(
-                tokio::spawn(async move { crate::connect::connect_main(m, c, t).await })
+                tokio::spawn(async move { crate::connect::connect_main(m, c, t).await.unwrap() }) // todo:
+                    // is unwrap necessary?
                     .abort_handle(),
             );
             // self.status(crate::api::Status::ServerStarted);
