@@ -902,22 +902,22 @@ display_units = "V"
 
 [[Datatype]]
 name = "levi_volt_B"
-id = 0x118
+id = 0x119
 display_units = "V"
 
 [[Datatype]]
 name = "levi_volt_C"
-id = 0x118
+id = 0x120
 display_units = "V"
 
 [[Datatype]]
 name = "levi_volt_D"
-id = 0x118
+id = 0x123
 display_units = "V"
 
 [[Datatype]]
 name = "levi_volt_E"
-id = 0x118
+id = 0x122
 display_units = "V"
 
 [[Datatype]]
