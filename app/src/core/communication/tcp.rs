@@ -84,20 +84,10 @@ pub async fn tcp_connection_handler(
                 continue 'netstack;
             },
         }
-        send_event(event_sender, Event::ConnectionEstablishedEvent);
 
-        // Handshake
-        // Exchange hashes of the configuration files
-        // in order to confirm that the exchanged ids are correct
-        queue_data(data_sender, Datatype::CommandHash, COMMAND_HASH).await;
-        queue_data(data_sender, Datatype::EventsHash, EVENTS_HASH).await;
-        queue_data(data_sender, Datatype::DataHash, DATA_HASH).await;
-        queue_data(data_sender, Datatype::ConfigHash, CONFIG_HASH).await;
 
         // Begin relying on the frontend
-        queue_data(data_sender, Datatype::FrontendHeartbeating, 0).await;
 
-        let mut parsing_buffer = Deque::<u8, { NETWORK_BUFFER_SIZE }>::new();
 
         // loop to receive data from the TCP connection
         'connection: loop {
@@ -129,19 +119,7 @@ pub async fn tcp_connection_handler(
             match socket.write_ready() {
                 Ok(x) => {
                     if x {
-                        if let Ok(data) = data_receiver.try_receive() {
-                            let data = data.as_bytes();
-                            trace!("[tcp:mpmc] Sending data: {:?}", data);
-                            match socket.write_all(&data).await {
-                                Ok(_) => {
-                                    trace!("[tcp:socket] Data written successfully");
-                                },
-                                Err(e) => {
-                                    error!("[tcp:socket] Failed to write data: {:?}", e);
-                                },
-                            }
-                        } // the else case is of empty MPMC channel queue,
-                          // which triggers very often, so we ignore it.
+                        
                     } else {
                         error!("[tcp] socket not writeable");
                         Timer::after_millis(500).await;
