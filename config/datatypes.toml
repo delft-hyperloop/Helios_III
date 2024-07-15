@@ -92,30 +92,42 @@ display_units = "V"
 [[Datatype]]
 name = "LevitationTemperature"
 id = 0x0b
+display_units = "ºC"
+upper = { warn = 6000, err = 8000 }
+
 
 [[Datatype]]
 name = "AccelerationX"
 id = 0x115
+display_units = "m/s²"
+
+
 
 [[Datatype]]
 name = "AccelerationY"
 id = 0x114
+display_units = "m/s²"
 
 [[Datatype]]
 name = "AccelerationZ"
 id = 0x113
+display_units = "m/s²"
 
 [[Datatype]]
 name = "GyroscopeX"
 id = 0x112
+display_units = "rad/s²"
 
 [[Datatype]]
 name = "GyroscopeY"
 id = 0x111
+display_units = "rad/s²"
 
 [[Datatype]]
 name = "GyroscopeZ"
 id = 0x110
+display_units = "rad/s²"
+
 
 [[Datatype]]
 name = "IMDGeneralInfo"
@@ -124,28 +136,38 @@ id = 0x37
 [[Datatype]]
 name = "IMDIsolationDetails"
 id = 0x38
+display_units = "Ω"
+
 
 [[Datatype]]
 name = "IMDVoltageDetails"
 id = 0x39
+display_units = "V"
+upper = { warn = 420, err = 450 }
 
 
 [[Datatype]]
 name = "InsulationNegative"
 id = 0x50A
+display_units = "Ω"
+
 
 [[Datatype]]
 name = "InsulationPositive"
 id = 0x50B
+display_units = "Ω"
+
 
 [[Datatype]]
 name = "InsulationOriginal"
 id = 0x50C
+display_units = "Ω"
 
 [[Datatype]]
 name = "DefaultBMSLow"
 id = 0x19C
 [[Datatype]]
+
 name = "DiagnosticBMSLow"
 id = 0x1A3
 [[Datatype]]
@@ -158,122 +180,158 @@ id = 0x3A7
 [[Datatype]]
 name = "BatteryVoltageLow"
 id = 0x19D
+display_units = "V"
+upper = { warn = 6000, err = 8000 }
+
+
 [[Datatype]]
 name = "BatteryVoltageHigh"
 id = 0x3A1
+display_units = "V"
 
 [[Datatype]]
 name = "TotalBatteryVoltageLow"
 id = 0x1A5
+display_units = "V"
 
 [[Datatype]]
 name = "TotalBatteryVoltageHigh"
 id = 0x3A9
+display_units = "V"
 
 
 [[Datatype]]
 name = "BatteryTemperatureLow"
 id = 0x1A4
+display_units = "ºC"
+
 [[Datatype]]
 name = "BatteryTemperatureHigh"
 id = 0x3A8
+display_units = "ºC"
 
 [[Datatype]]
 name = "BatteryBalanceLow"
 id = 0x19F
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryBalanceHigh"
 id = 0x3A3
+display_units = "%"
 
 [[Datatype]]
 name = "SingleCellVoltageLow"
 id = 0x1BC
+display_units = "ºC"
 
 [[Datatype]]
 name = "SingleCellTemperatureLow"
 id = 0x1DC
+display_units = "ºC"
 
 [[Datatype]]
 name = "ChargeStateLow"
 id = 0x1A1
+display_units = "A"
 
 [[Datatype]]
 name = "ChargeStateHigh"
 id = 0x3A5
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryCurrentLow"
 id = 0x1A6
+display_units = "A"
 
 [[Datatype]]
 name = "BatteryCurrentHigh"
 id = 0x3AA
+display_units = "A"
 
 [[Datatype]]
 name = "BatteryEnergyParamsLow"
 id = 0x1A2
+display_units = "A"
 
 [[Datatype]]
 name = "BatteryEnergyParamsHigh"
 id = 0x3A6
+display_units = "A"
 
 [[Datatype]]
 name = "BatteryMaxVoltageLow"
 id = 0x1A8
+display_units = "V"
 
 [[Datatype]]
 name = "BatteryEstimatedChargeLow"
 id = 0x1A9
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryMinTemperatureLow"
 id = 0x1AA
+display_units = "ºC"
+
+
 
 [[Datatype]]
 name = "BatteryMaxTemperatureLow"
 id = 0x1AB
+display_units = "ºC"
+
 
 [[Datatype]]
 name = "BatteryMinBalancingLow"
 id = 0x1AC
+display_units = "V"
 
 [[Datatype]]
 name = "BatteryMaxBalancingLow"
 id = 0x1AD
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryMinVoltageLow"
 id = 0x1A7
+display_units = "V"
 
 [[Datatype]]
 name = "BatteryMinVoltageHigh"
 id = 0x3AB
+display_units = "V"
 
 [[Datatype]]
 name = "BatteryMaxVoltageHigh"
 id = 0x3AC
+display_units = "V"
 
 [[Datatype]]
 name = "BatteryEstimatedChargeHigh"
 id = 0x3AD
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryMinTemperatureHigh"
 id = 0x3AE
+display_units = "ºC"
 
 [[Datatype]]
 name = "BatteryMaxTemperatureHigh"
 id = 0x3AF
+display_units = "ºC"
 
 [[Datatype]]
 name = "BatteryMinBalancingHigh"
 id = 0x3B0
-
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryMaxBalancingHigh"
 id = 0x3B1
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryEventLow"
@@ -286,10 +344,12 @@ id = 0x425
 [[Datatype]]
 name = "BrakeTemperature"
 id = 0x13
+display_units = "ºC"
 
 [[Datatype]]
 name = "PropulsionSpeed"
 id = 0x14
+display_units = "m/s"
 
 
 [[Datatype]]
@@ -309,14 +369,18 @@ name = "Localisation"
 id = 0x500
 lower = 500
 upper = 12000
+display_units = "mm"
+
 
 [[Datatype]]
 name = "Velocity"
 id = 0x501
+display_units = "m/s"
 
 [[Datatype]]
 name = "Acceleration"
 id = 0x506
+display_units = "m/s²"
 
 [[Datatype]]
 name = "Direction"
@@ -327,6 +391,7 @@ name = "BrakePressure"
 id = 0x15
 upper = 250
 lower = 1
+display_units = "bar"
 
 [[Datatype]]
 name = "UnknownCanId"
@@ -340,17 +405,20 @@ id = 0x7FA
 [[Datatype]]
 name = "Presure_VB"
 id = 0x210
+display_units = "bar"
 # no limit necessary
 
 [[Datatype]]
 name = "Average_Temp_VB_Bottom"
 id = 0x211
 upper = 80000 # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Average_Temp_VB_top"
 id = 0x200
 upper = 80000 # (e-2) degrees
+display_units = "ºC"
 
 
 [[Datatype]]
@@ -358,36 +426,45 @@ name = "Temp_HEMS_1"
 id = 0x20a
 lower = {err = 0 }# (e-2) degrees # the idea here is that we blink red if we read below 0 (sensor disconnect)
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_HEMS_2"
 id = 0x20b
 lower = {err = 0 }# (e-2) degrees
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
+display_units = "ºC"
+
 
 [[Datatype]]
 name = "Temp_HEMS_3"
 id = 0x20c
 lower = {err = 0 }# (e-2) degrees
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
+display_units = "ºC"
+
 
 [[Datatype]]
 name = "Temp_HEMS_4"
 id = 0x20d
 lower = {err = 0 }# (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
+
 
 [[Datatype]]
 name = "Temp_Motor_1"
 id = 0x20e
 lower = {err = 0 }
 upper = { warn = 6000, err = 8000 }
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_Motor_2"
 id = 0x20f
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Ambient_presure"
@@ -395,340 +472,576 @@ id = 0x220
 # no limit necessary
 lower = {warn = 90, err =  50} #(e-2) bar
 upper = { warn = 120, err = 200 } #(e-2) bar
+display_units = "bar"
 
 [[Datatype]]
 name = "Ambient_temp"
 id = 0x224
 lower = {err =  0} # (e-2) degrees
 upper = {err = 5000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_1"
 id = 0x222
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_2"
 id = 0x223
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_3"
 id = 0x225
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_4"
 id = 0x226
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_1"
 id = 0x3C0
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
+
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_1"
 id = 0x4A0
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_2"
 id = 0x3C1
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_2"
 id = 0x4A1
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_3"
 id = 0x3C2
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_3"
 id = 0x4A2
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_4"
 id = 0x3C3
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_4"
 id = 0x4A3
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_5"
 id = 0x3C4
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_5"
 id = 0x4A4
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_6"
 id = 0x3C5
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_6"
 id = 0x4A5
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_7"
 id = 0x3C6
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_7"
 id = 0x4A6
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_8"
 id = 0x3C7
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_8"
 id = 0x4A7
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_9"
 id = 0x3C8
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_9"
 id = 0x4A8
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_10"
 id = 0x3C9
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_10"
 id = 0x4A9
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_11"
 id = 0x3CA
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_11"
 id = 0x4AA
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_12"
 id = 0x3CB
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_12"
 id = 0x4AB
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_13"
 id = 0x3CC
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_13"
 id = 0x4AC
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_14"
 id = 0x3CD
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_14"
 id = 0x4AD
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module1MaxVoltage"
 id = 0x4B0
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module2MaxVoltage"
 id = 0x4B1
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module3MaxVoltage"
 id = 0x4B2
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module4MaxVoltage"
 id = 0x4B3
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module5MaxVoltage"
 id = 0x4B4
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module6MaxVoltage"
 id = 0x4B5
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module7MaxVoltage"
 id = 0x4B6
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module8MaxVoltage"
 id = 0x4B7
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module1MinVoltage"
 id = 0x4B8
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module2MinVoltage"
 id = 0x4B9
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module3MinVoltage"
 id = 0x4BA
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module4MinVoltage"
 id = 0x4BB
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module5MinVoltage"
 id = 0x4BC
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module6MinVoltage"
 id = 0x4BD
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module7MinVoltage"
 id = 0x4BE
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module8MinVoltage"
 id = 0x4BF
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module1MaxTemperature"
 id = 0x4C0
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module2MaxTemperature"
 id = 0x4C1
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module3MaxTemperature"
 id = 0x4C2
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module4MaxTemperature"
 id = 0x4C3
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module5MaxTemperature"
 id = 0x4C4
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module6MaxTemperature"
 id = 0x4C5
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module7MaxTemperature"
 id = 0x4C6
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module8MaxTemperature"
 id = 0x4C7
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module1MinTemperature"
 id = 0x4C8
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module2MinTemperature"
 id = 0x4C9
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module3MinTemperature"
 id = 0x4CA
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module4MinTemperature"
 id = 0x4CB
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module5MinTemperature"
 id = 0x4CC
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module6MinTemperature"
 id = 0x4CD
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module7MinTemperature"
 id = 0x4CE
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module8MinTemperature"
 id = 0x4CF
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module1AvgVoltage"
 id = 0x4D0
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module2AvgVoltage"
 id = 0x4D1
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module3AvgVoltage"
 id = 0x4D2
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module4AvgVoltage"
 id = 0x4D3
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module5AvgVoltage"
 id = 0x4D4
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module6AvgVoltage"
 id = 0x4D5
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module7AvgVoltage"
 id = 0x4D6
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module8AvgVoltage"
 id = 0x4D7
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module1AvgTemperature"
 id = 0x4D8
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module2AvgTemperature"
 id = 0x4D9
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module3AvgTemperature"
 id = 0x4DA
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module4AvgTemperature"
 id = 0x4DB
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module5AvgTemperature"
 id = 0x4DC
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module6AvgTemperature"
 id = 0x4DD
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module7AvgTemperature"
 id = 0x4DE
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module8AvgTemperature"
 id = 0x4DF
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
+
 
 [[Datatype]]
 name = "ResponseHeartbeat"
@@ -743,6 +1056,7 @@ name = "LowPressureSensor"
 id = 0x127
 lower = {warn = 40, err = 35 } #(e-2) bar
 upper = { warn = 52, err = 56} #(e-2) bar
+display_units = "bat"
 
 [[Datatype]]
 name = "HighPressureSensor"
@@ -751,6 +1065,7 @@ id = 0x128
 # upper = 180 #bar
 lower = {warn = 90, err = 70 } #(e-2) bar
 upper = { warn = 170, err = 180} #(e-2) bar
+display_units = "bar"
 
 # SJOERD LEVITATION DATATYPES
 #Sjoerd needs to add or tell us limits here
