@@ -154,6 +154,7 @@ macro_rules! try_spawn {
 }
 
 pub fn ticks() -> u64 { Instant::now().as_ticks() }
+pub fn millis() -> u64 { Instant::now().as_millis() }
 
 /// Instantly sends an event through the MPMC queue.
 /// * If the queue is full, the event will be discarded.

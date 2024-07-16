@@ -52,7 +52,11 @@ impl App {
             KeyCode::Char('s') => {
                 self.backend.start_server();
             },
+            KeyCode::Char('a') => {
+                self.backend.quit_server();
+            },
             KeyCode::Char('o') => self.backend.start_levi(),
+            KeyCode::Char('i') => self.backend.quit_levi(),
             // KeyCode::Char('t') => self.logs.push((LogType::Warning, format!("{}:  this is a testing goose",Util::Now()).parse()?)),
             KeyCode::Tab => {
                 self.selected_row = (self.selected_row + 1) % self.cmds.len();
@@ -62,7 +66,7 @@ impl App {
             },
             KeyCode::Enter => {
                 self.backend.send_command(self.cmds[self.selected_row].as_cmd());
-                // self.backend.warn(format!("interpreting {:?}", self.cmds[self.selected_row]));
+                self.backend.warn(format!("interpreting {:?}", self.cmds[self.selected_row]));
             },
             KeyCode::Char('1') => {
                 self.cmds[self.selected_row].value = self.cmds[self.selected_row].value * 10 + 1;

@@ -67,7 +67,7 @@ pub async fn can_receiving_handler(
                 //     id as u64,
                 //     bytes_to_u64(frame.data())
                 // );
-                trace!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
+                debug!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
                 if DATA_IDS.contains(&id) {
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
                         let ut = utils.as_mut().unwrap();

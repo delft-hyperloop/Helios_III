@@ -8,7 +8,8 @@ use crate::core::communication::data::Datapoint;
 use crate::core::communication::CommunicationError;
 use crate::core::communication::CommunicationLayer;
 use crate::core::communication::HardwareLayer;
-use crate::pconfig::{queue_data, queue_event};
+use crate::pconfig::queue_data;
+use crate::pconfig::queue_event;
 use crate::pconfig::send_event;
 use crate::pconfig::ticks;
 use crate::send_data;
@@ -36,6 +37,64 @@ pub struct ExternalCommunicationHandler<I: HardwareLayer> {
 impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
     async fn init(&mut self) { self.inner.init().await; }
 
+    async fn handshake(&mut self) {
+        // Exchange hashes of the configuration files
+        // in order to confirm that the exchanged ids are correct
+        queue_data(self.ds, Datatype::CommandHash, COMMAND_HASH).await;
+        queue_data(self.ds, Datatype::EventsHash, EVENTS_HASH).await;
+        queue_data(self.ds, Datatype::DataHash, DATA_HASH).await;
+        queue_data(self.ds, Datatype::ConfigHash, CONFIG_HASH).await;
+
+        queue_data(self.ds, Datatype::FrontendHeartbeating, 0).await;
+    }
+
+    async fn connect(&mut self) -> Result<(), CommunicationError> {
+        match self.inner.connect().await {
+            Ok(_) => {
+                send_event(self.es, Event::ConnectionEstablishedEvent);
+                Ok(())
+            },
+            Err(e) => {
+                error!("[connecting] error: {:?}", e);
+                Err(e)
+            },
+        }
+    }
+
+    async fn disconnect(&mut self) { self.inner.close_connection().await; }
+
+    async fn try_send_data(&mut self) -> bool {
+        if self.inner.writeable() {
+            if let Ok(data) = self.dr.try_receive() {
+                let data = data.as_bytes();
+                trace!("[tcp:mpmc] Sending data: {:?}", data);
+                return self.inner.try_write_bytes(&data).await.is_ok();
+            } // the else case is of empty MPMC channel queue,
+              // which triggers very often, so we ignore it.
+            true
+        } else {
+            false
+        }
+    }
+
+    async fn try_receive_data(&mut self) -> bool {
+        if self.inner.can_read_now() {
+            let mut buf = [0u8; { NETWORK_BUFFER_SIZE }];
+            match self.inner.read_bytes(&mut buf).await {
+                Ok(n) => {
+                    self.receive_bytes(&mut buf, n).await;
+                    true
+                },
+                Err(e) => {
+                    error!("[comm] try_receive_data error: {:?}", e);
+                    false
+                },
+            }
+        } else {
+            self.inner.readable()
+        }
+    }
+
     async fn receive_bytes(&mut self, buf: &mut [u8], n: usize) {
         buf[0..n].iter().for_each(|x| {
             self.parsing_buffer.push_back(*x).unwrap();
@@ -56,14 +115,18 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
                     match cmd {
                         Command::EmergencyBrake(_) => {
                             send_event(self.es, Event::EmergencyBraking);
-                            match self.inner.try_write_bytes(
-                                &Datapoint::new(
-                                    Datatype::Info,
-                                    Info::EmergencyBrakeReceived.to_idx(),
-                                    ticks(),
+                            match self
+                                .inner
+                                .try_write_bytes(
+                                    &Datapoint::new(
+                                        Datatype::Info,
+                                        Info::EmergencyBrakeReceived.to_idx(),
+                                        ticks(),
+                                    )
+                                    .as_bytes(),
                                 )
-                                .as_bytes(),
-                            ).await {
+                                .await
+                            {
                                 Ok(_) => {},
                                 Err(e) => error!("[receive bytes] communication error: {:?}", e),
                             }
@@ -136,9 +199,14 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
                         },
                         Command::Heartbeat(x) => {
                             trace!("[tcp] Heartbeat command received {} :)", x);
-                            match self.inner.try_write_bytes(
-                                &Datapoint::new(Datatype::ResponseHeartbeat, x, ticks()).as_bytes(),
-                            ).await {
+                            match self
+                                .inner
+                                .try_write_bytes(
+                                    &Datapoint::new(Datatype::ResponseHeartbeat, x, ticks())
+                                        .as_bytes(),
+                                )
+                                .await
+                            {
                                 Ok(_) => {},
                                 Err(e) => error!("[receive bytes] communication error: {:?}", e),
                             }
@@ -156,59 +224,6 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
             } else {
                 self.parsing_buffer.pop_front();
             }
-        }
-    }
-
-    async fn connect(&mut self) -> Result<(), CommunicationError> {
-        match self.inner.connect().await {
-            Ok(_) => {
-                send_event(self.es, Event::ConnectionEstablishedEvent);
-                Ok(())
-            },
-            Err(e) => {
-                error!("[connecting] error: {:?}", e);
-                Err(e)
-            },
-        }
-    }
-
-    async fn handshake(&mut self) {
-        // Exchange hashes of the configuration files
-        // in order to confirm that the exchanged ids are correct
-        queue_data(self.ds, Datatype::CommandHash, COMMAND_HASH).await;
-        queue_data(self.ds, Datatype::EventsHash, EVENTS_HASH).await;
-        queue_data(self.ds, Datatype::DataHash, DATA_HASH).await;
-        queue_data(self.ds, Datatype::ConfigHash, CONFIG_HASH).await;
-
-        queue_data(self.ds, Datatype::FrontendHeartbeating, 0).await;
-    }
-
-    async fn try_send_data(&mut self) -> bool {
-        if self.inner.can_write() {
-            if let Ok(data) = self.dr.try_receive() {
-                let data = data.as_bytes();
-                trace!("[tcp:mpmc] Sending data: {:?}", data);
-                return self.inner.try_write_bytes(&data).await.is_ok();
-            } // the else case is of empty MPMC channel queue,
-              // which triggers very often, so we ignore it.
-            true
-        } else {
-            false
-        }
-    }
-
-    async fn try_receive_data(&mut self) -> bool {
-        if self.inner.can_read() {
-            let mut buf = [0u8; { NETWORK_BUFFER_SIZE }];
-            match self.inner.read_bytes(&mut buf).await {
-                Ok(n) => {
-                    self.receive_bytes(&mut buf, n).await;
-                    true
-                },
-                Err(_) => false,
-            }
-        } else {
-            false
         }
     }
 }

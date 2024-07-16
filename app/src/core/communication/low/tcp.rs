@@ -5,6 +5,7 @@ use defmt::trace;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_net::tcp::TcpSocket;
+use embassy_net::IpEndpoint;
 use embassy_net::Stack;
 use embassy_net::StackResources;
 use embassy_net::StaticConfigV4;
@@ -16,6 +17,7 @@ use embassy_stm32::peripherals::ETH;
 use embassy_stm32::rng::Rng;
 use embassy_time::Instant;
 use embassy_time::Timer;
+use embedded_io_async::ReadReady;
 use embedded_io_async::Write;
 use embedded_io_async::WriteReady;
 use panic_probe as _;
@@ -23,12 +25,15 @@ use rand_core::RngCore;
 use static_cell::StaticCell;
 
 use crate::core::communication::CommunicationError;
-use crate::core::communication::CommunicationError::{CannotConnect, CannotWrite};
+use crate::core::communication::CommunicationError::CannotConnect;
 use crate::core::communication::CommunicationError::CannotRead;
+use crate::core::communication::CommunicationError::CannotWrite;
+use crate::core::communication::CommunicationError::ConnectionTimedOut;
 use crate::core::communication::CommunicationError::NoActiveConnection;
 use crate::core::communication::HardwareLayer;
 use crate::pconfig::embassy_socket_from_config;
 use crate::pconfig::ip_cidr_from_config;
+use crate::pconfig::millis;
 use crate::pconfig::send_event;
 use crate::try_spawn;
 use crate::Event;
@@ -41,13 +46,15 @@ use crate::POD_IP_ADDRESS;
 use crate::POD_MAC_ADDRESS;
 use crate::USE_DHCP;
 
+static mut TCP_RX_BUFFER: [u8; NETWORK_BUFFER_SIZE] = [0u8; NETWORK_BUFFER_SIZE];
+static mut TCP_TX_BUFFER: [u8; NETWORK_BUFFER_SIZE] = [0u8; NETWORK_BUFFER_SIZE];
+
 pub struct TcpCommunication<'a> {
     stack: &'static Stack<Ethernet<'static, ETH, GenericSMI>>,
-    // ds: DataSender,
-    // dr: DataReceiver,
     es: EventSender,
     last_valid_timestamp: u64, // in milliseconds
-    socket: Option<TcpSocket<'a>>,
+    pub socket: Option<TcpSocket<'a>>,
+    gs_addr: IpEndpoint,
 }
 
 pub struct EthernetInit {
@@ -75,23 +82,20 @@ type Device = Ethernet<'static, ETH, GenericSMI>;
 #[embassy_executor::task]
 async fn net_task(stack: &'static Stack<Device>) -> ! { stack.run().await }
 
-impl HardwareLayer for TcpCommunication<'_> {
+impl HardwareLayer for TcpCommunication<'static> {
     async fn init(&mut self) {
         self.stack.wait_config_up().await;
         self.last_valid_timestamp = Instant::now().as_millis();
     }
 
     async fn connect(&mut self) -> Result<(), CommunicationError> {
-        let gs_addr = unsafe { embassy_socket_from_config(GS_IP_ADDRESS) };
+        let mut socket: TcpSocket =
+            unsafe { TcpSocket::new(self.stack, TCP_RX_BUFFER.as_mut(), TCP_TX_BUFFER.as_mut()) };
 
-        let mut rx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
-        let mut tx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
-
-        let mut socket: TcpSocket = TcpSocket::new(self.stack, &mut rx_buffer, &mut tx_buffer);
-
-        match socket.connect(gs_addr).await {
+        match socket.connect(self.gs_addr).await {
             Ok(_) => {
                 self.last_valid_timestamp = Instant::now().as_millis();
+                self.socket = Some(socket);
                 Ok(())
             },
             Err(e) => {
@@ -108,15 +112,17 @@ impl HardwareLayer for TcpCommunication<'_> {
     }
 
     async fn read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError> {
+        // debug!("reading bytes");
         if let Some(s) = &mut self.socket {
-            if !s.may_recv()
-                || !s.may_send()
-                || Instant::now().as_millis() - self.last_valid_timestamp > IP_TIMEOUT
-            {
+            let d = millis() - self.last_valid_timestamp;
+            if !s.may_recv() || !s.may_send() {
                 error!("[tcp] may_recv: connection closed");
                 Err(NoActiveConnection)
+            } else if d > IP_TIMEOUT {
+                error!("[tcp] may_recv: connection timed out (d={:?})", d);
+                Err(ConnectionTimedOut)
             } else if s.can_recv() {
-                self.last_valid_timestamp = Instant::now().as_millis();
+                self.last_valid_timestamp = millis();
                 match s.read(buffer).await.unwrap_or(420000) {
                     0 => {
                         info!("[tcp] Connection closed by ground station..");
@@ -131,6 +137,7 @@ impl HardwareLayer for TcpCommunication<'_> {
                 }
             } else {
                 // buffer empty
+                // warn!("[tcp read_bytes] buffer empty");
                 Ok(0)
             }
         } else {
@@ -139,18 +146,10 @@ impl HardwareLayer for TcpCommunication<'_> {
     }
 
     async fn try_read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError> {
-        if self.can_read() {
+        if self.can_read_now() {
             self.read_bytes(buffer).await
         } else {
             Err(CannotRead)
-        }
-    }
-
-    fn can_read(&mut self) -> bool {
-        if let Some(s) = &self.socket {
-            s.may_recv() && s.can_recv()
-        } else {
-            false
         }
     }
 
@@ -169,14 +168,33 @@ impl HardwareLayer for TcpCommunication<'_> {
     }
 
     async fn try_write_bytes(&mut self, bytes: &[u8]) -> Result<usize, CommunicationError> {
-        if self.can_write() {
+        if self.writeable() {
             self.write_bytes(bytes).await
         } else {
             Err(CannotWrite)
         }
     }
 
-    fn can_write(&mut self) -> bool {
+    fn readable(&mut self) -> bool {
+        if let Some(s) = &self.socket {
+            s.may_recv()
+        } else {
+            false
+        }
+    }
+
+    fn can_read_now(&mut self) -> bool {
+        if let Some(s) = &mut self.socket {
+            s.read_ready().unwrap_or_else(|e| {
+                error!("[tcp] error getting socket read status: {:?}", e);
+                false
+            })
+        } else {
+            false
+        }
+    }
+
+    fn writeable(&mut self) -> bool {
         if let Some(s) = &mut self.socket {
             s.write_ready().unwrap_or_else(|y| {
                 error!("[tcp] error getting socket write status: {:?}", y);
@@ -184,6 +202,13 @@ impl HardwareLayer for TcpCommunication<'_> {
             })
         } else {
             false
+        }
+    }
+
+    async fn close_connection(&mut self) {
+        if let Some(s) = &mut self.socket {
+            s.abort();
+            self.socket = None;
         }
     }
 }
@@ -240,6 +265,12 @@ impl TcpCommunication<'_> {
 
         try_spawn!(init.sender, init.x.spawn(net_task(stack)));
 
-        Self { stack, es: init.sender, socket: None, last_valid_timestamp: 0 }
+        Self {
+            stack,
+            es: init.sender,
+            socket: None,
+            last_valid_timestamp: 0,
+            gs_addr: unsafe { embassy_socket_from_config(GS_IP_ADDRESS) },
+        }
     }
 }

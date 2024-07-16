@@ -4,10 +4,10 @@ use heapless::Deque;
 use panic_probe as _;
 
 use crate::core::communication::comm::ExternalCommunicationHandler;
-use crate::core::communication::task::external_communication_task;
 use crate::core::communication::low::tcp::EthernetInit;
 use crate::core::communication::low::tcp::EthernetPins;
 use crate::core::communication::low::tcp::TcpCommunication;
+use crate::core::communication::task::external_communication_task;
 use crate::try_spawn;
 use crate::DataReceiver;
 use crate::DataSender;

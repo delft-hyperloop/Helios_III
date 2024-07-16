@@ -1,3 +1,4 @@
+#![feature(let_chains)]
 #![no_std]
 #![no_main]
 #![allow(clippy::too_many_arguments)]
