@@ -13,7 +13,7 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
     };
     let x = datapoint.value as f64;
     let value = match datapoint.datatype {
-        Datatype::BatteryEstimatedChargeHigh | Datatype::BatteryEstimatedChargeLow => x / 100.0,
+        Datatype::ChargeStateLow | Datatype::ChargeStateHigh => x * 0.01,
         Datatype::TotalBatteryVoltageHigh | Datatype::TotalBatteryVoltageLow => x / 100.0 - 2.0,
         Datatype::BatteryCurrentLow => x / 10.0 + 150.0,
         Datatype::BatteryCurrentHigh => x / 10.0 + 10.0,
@@ -87,7 +87,13 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
         | Datatype::Module5MaxVoltage
         | Datatype::Module6MaxVoltage
         | Datatype::Module7MaxVoltage
-        | Datatype::Module8MaxVoltage => {
+        | Datatype::Module8MaxVoltage
+        | Datatype::BatteryMinVoltageLow
+        | Datatype:: BatteryMaxVoltageHigh
+        | Datatype::BatteryMinVoltageHigh
+        | Datatype::BatteryMaxVoltageLow
+        | Datatype::BatteryVoltageHigh
+        | Datatype::BatteryVoltageLow=> {
             if x == 200.0 {
                 0.0
             } else {

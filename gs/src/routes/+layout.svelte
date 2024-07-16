@@ -86,8 +86,8 @@
     ///////////////////////////////////////////////////////
 
     let gdd = GrandDataDistributor.getInstance();
-    gdd.stores.registerStore<number>("BatteryEstimatedChargeHigh", 0.0);
-    gdd.stores.registerStore<number>("BatteryEstimatedChargeLow", 0.0);
+    gdd.stores.registerStore<number>("ChargeStateHigh", 0.0);
+    gdd.stores.registerStore<number>("ChargeStateLow", 0.0);
 
     gdd.stores.registerStore<number>("Module1AvgTemperature", 0.0);
     gdd.stores.registerStore<number>("Module1MaxTemperature", 0.0);

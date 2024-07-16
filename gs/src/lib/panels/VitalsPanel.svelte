@@ -8,8 +8,8 @@
     let width: number;
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const lvBattery = storeManager.getWritable("BatteryEstimatedChargeLow");
-    const hvBattery = storeManager.getWritable("BatteryEstimatedChargeHigh");
+    const lvBattery = storeManager.getWritable("ChargeStateLow");
+    const hvBattery = storeManager.getWritable("ChargeStateHigh");
 
     let tableTempsArr: any[][];
     let tableArr2: any[][];
