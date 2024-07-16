@@ -15,8 +15,7 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
     let value = match datapoint.datatype {
         Datatype::ChargeStateLow | Datatype::ChargeStateHigh => x * 0.01,
         Datatype::TotalBatteryVoltageHigh | Datatype::TotalBatteryVoltageLow => x / 100.0 - 2.0,
-        Datatype::BatteryCurrentLow => x / 10.0 + 150.0,
-        Datatype::BatteryCurrentHigh => x / 10.0 + 10.0,
+        Datatype::BatteryCurrentLow | Datatype::BatteryCurrentHigh=> (x-2000.0)*0.1,
         Datatype::BrakingCommDebug => x * 3.3 / 65535.0,
         Datatype::IMDVoltageDetails => {
             if datapoint.value == 65535 {
@@ -137,9 +136,11 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
         _ => x,
     };
 
+    let significant = (value * 1000.0).round() / 1000.0;
+
     ProcessedData {
         datatype: datapoint.datatype,
-        value,
+        value: significant,
         timestamp: datapoint.timestamp,
         style,
         units: datapoint.datatype.unit(),
