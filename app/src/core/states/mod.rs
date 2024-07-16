@@ -11,6 +11,7 @@ mod moving_ls_cv;
 mod moving_ls_st;
 mod moving_st;
 mod run_config;
+mod precharging;
 
 /// Helper functions to the route planning moving states.
 mod moving {

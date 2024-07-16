@@ -4,6 +4,7 @@ use tokio::io::AsyncReadExt;
 use tokio::net::tcp::OwnedReadHalf;
 
 use crate::api::Message;
+use crate::battery::DataSender;
 use crate::CommandSender;
 use crate::MessageSender;
 use crate::NETWORK_BUFFER_SIZE;
@@ -12,6 +13,7 @@ pub async fn get_messages_from_tcp(
     mut reader: OwnedReadHalf,
     message_transmitter: MessageSender,
     command_transmitter: CommandSender,
+    data_sender: DataSender,
 ) -> anyhow::Result<()> {
     let mut buffer = [0; { NETWORK_BUFFER_SIZE }];
     let mut byte_queue: VecDeque<u8> = VecDeque::new();
@@ -35,6 +37,7 @@ pub async fn get_messages_from_tcp(
                     &mut byte_queue,
                     message_transmitter.clone(),
                     command_transmitter.clone(),
+                    data_sender.clone(),
                 )
                 .await?;
             },

@@ -25,7 +25,7 @@ impl Fsm {
                 self.peripherals.hv_peripherals.power_on_hv_procedure().await;
 
                 self.peripherals.led_controller.hv_relay_led(true).await;
-                transit!(self, State::HVOn);
+                transit!(self, State::Precharging);
             },
 
             Event::ArmBrakesCommand => {

@@ -36,6 +36,7 @@ pub enum State {
     EstablishConnection,
     RunConfig,
     Idle,
+    Precharging,
     HVOn,
     Levitating,
     MovingST,
@@ -113,8 +114,9 @@ impl Fsm {
         match self.state {
             State::Boot => self.boot_entry(),
             State::EstablishConnection => self.entry_establish_connection(),
-            State::Idle => self.entry_idle(),
             State::RunConfig => self.entry_run_config(),
+            State::Idle => self.entry_idle(),
+            State::Precharging => self.entry_pre_charge(),
             State::HVOn => self.entry_hv_on(),
             State::Levitating => {
                 self.data_queue
@@ -295,8 +297,9 @@ impl Fsm {
         match self.state {
             State::Boot => self.react_boot(event).await,
             State::EstablishConnection => self.react_establish_connection(event).await,
-            State::Idle => self.react_idle(event).await,
             State::RunConfig => self.react_run_config(event).await,
+            State::Idle => self.react_idle(event).await,
+            State::Precharging => self.react_pre_charge(event).await,
             State::HVOn => self.react_hv_on(event).await,
             State::Levitating => self.react_levitating(event).await,
             State::MovingST => self.react_mv_st(event).await,

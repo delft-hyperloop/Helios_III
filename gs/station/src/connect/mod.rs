@@ -10,6 +10,9 @@ use tokio::task::JoinHandle;
 
 use crate::api::gs_socket;
 use crate::api::Message;
+use crate::battery::aggregate_voltage_readings;
+use crate::battery::DataReceiver;
+use crate::battery::DataSender;
 use crate::connect::tcp_reader::get_messages_from_tcp;
 use crate::connect::tcp_writer::transmit_commands_to_tcp;
 use crate::CommandReceiver;
@@ -21,6 +24,8 @@ pub async fn connect_main(
     message_transmitter: MessageSender,
     command_receiver: CommandReceiver,
     command_transmitter: CommandSender,
+    data_receiver: DataReceiver,
+    data_sender: DataSender,
 ) -> Result<()> {
     // Bind the listener to the address
     message_transmitter
@@ -31,16 +36,19 @@ pub async fn connect_main(
     // The second item contains the IP and port of the new connection.
     let (socket, client_addr) = listener.accept().await?;
     message_transmitter.send(Message::Info(format!("New connection from: {}", client_addr)))?;
-    let (x, y) = process_stream(
+    let (x, y, z) = process_stream(
         socket,
         message_transmitter.clone(),
         command_receiver.resubscribe(),
         command_transmitter.clone(),
+        data_receiver.resubscribe(),
+        data_sender.clone(),
     )
     .await?;
 
     x.await?;
     y.await?;
+    z.await?;
 
     Ok(())
 }
@@ -50,11 +58,14 @@ async fn process_stream(
     message_transmitter: MessageSender,
     command_receiver: CommandReceiver,
     command_transmitter: CommandSender,
-) -> Result<(JoinHandle<()>, JoinHandle<()>)> {
+    data_receiver: DataReceiver,
+    data_sender: DataSender,
+) -> Result<(JoinHandle<()>, JoinHandle<()>, JoinHandle<()>)> {
     let (reader, writer) = socket.into_split();
     let transmit = message_transmitter.clone();
+    let t = command_transmitter.clone();
     let a = tokio::spawn(async move {
-        match get_messages_from_tcp(reader, transmit.clone(), command_transmitter.clone()).await {
+        match get_messages_from_tcp(reader, transmit.clone(), t.clone(), data_sender).await {
             Ok(_) => {
                 transmit
                     .send(Message::Warning(
@@ -92,6 +103,10 @@ async fn process_stream(
             },
         }
     });
+    let t = command_transmitter.clone();
+    let c = tokio::spawn(async move {
+        aggregate_voltage_readings(data_receiver, t.clone(), message_transmitter.clone()).await
+    });
 
-    Ok((a, b))
+    Ok((a, b, c))
 }

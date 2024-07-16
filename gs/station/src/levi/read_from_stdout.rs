@@ -1,6 +1,7 @@
 use tokio::io::AsyncBufReadExt;
 
 use crate::api::Message;
+use crate::battery::DataSender;
 use crate::levi::parse_input::handle_line_from_levi;
 use crate::CommandSender;
 use crate::MessageSender;
@@ -11,6 +12,7 @@ pub async fn read_from_levi_child_stdout(
     stdout: tokio::process::ChildStdout,
     message_transmitter: MessageSender,
     command_transmitter: CommandSender,
+    data_sender: DataSender,
 ) -> anyhow::Result<()> {
     let mut reader = tokio::io::BufReader::new(stdout);
     let mut line = String::new();
@@ -29,6 +31,7 @@ pub async fn read_from_levi_child_stdout(
                     &line,
                     message_transmitter.clone(),
                     command_transmitter.clone(),
+                    data_sender.clone(),
                 )?;
             },
             Err(e) => {

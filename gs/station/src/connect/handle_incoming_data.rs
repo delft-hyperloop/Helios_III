@@ -2,6 +2,8 @@
 
 use crate::api::Datapoint;
 use crate::api::Message;
+use crate::battery::DataSender;
+use crate::battery::HV_DATATYPES;
 use crate::data::process::process;
 use crate::Command;
 use crate::CommandSender;
@@ -17,6 +19,7 @@ pub async fn handle_incoming_data(
     data: Datapoint,
     msg_sender: MessageSender,
     cmd_sender: CommandSender,
+    data_sender: DataSender,
 ) -> anyhow::Result<()> {
     msg_sender.send(Message::Data(process(&data)))?;
 
@@ -51,6 +54,9 @@ pub async fn handle_incoming_data(
             } else {
                 msg_sender.send(Message::Status(Info::ConfigHashPassed))?;
             }
+        },
+        x if HV_DATATYPES.contains(&x) => {
+            data_sender.send(process(&data))?;
         },
         _ => {},
     }

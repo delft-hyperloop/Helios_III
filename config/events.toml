@@ -286,10 +286,31 @@ priority = 0
 [[Event]]
 name = "DisablePropulsionCommand"
 id = 0x3e3
-priority = 0
+priority = 1
 
 # [[Event]]
 # name = "Crying"
 # id = 1281
 # priority = 8 
 #
+
+[[Event]]
+name = "FinishPrecharge"
+id = 1000
+priority = 2
+
+[[Event]]
+name = "HvLevitationBelowBms"
+id = 1001
+priority = 1 
+
+[[Event]]
+name = "HvLevitationAboveBms"
+id = 1002
+priority = 1 
+
+[[Event]]
+name = "CygnusesVaryingVoltages"
+id = 1003
+priority = 1 
+

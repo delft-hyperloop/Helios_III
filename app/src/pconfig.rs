@@ -24,18 +24,13 @@ use crate::EventSender;
 pub fn default_configuration() -> Config {
     let mut config = Config::default();
 
-    // config.rcc.hse = Some(rcc::Hse { // THESE ARE THE CONFIGURATIONS FOR TIRTH's MAIN PCB
-    //     freq: embassy_stm32::time::Hertz(24_000_000),
-    //     mode: rcc::HseMode::Oscillator
-    // });
     config.rcc.hse = Some(rcc::Hse {
-        // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
-        freq: embassy_stm32::time::Hertz(25_000_000),
-        mode: rcc::HseMode::Oscillator,
+        freq: embassy_stm32::time::Hertz(8_000_000),
+        mode: HseMode::Oscillator,
     });
     config.rcc.pll1 = Some(Pll {
         source: PllSource::HSE,
-        prediv: PllPreDiv::DIV6,
+        prediv: PllPreDiv::DIV2,
         mul: PllMul::MUL50,
         divp: Some(PllDiv::DIV8),
         divq: Some(PllDiv::DIV8),
@@ -61,7 +56,7 @@ pub fn default_configuration() -> Config {
     config.rcc.apb3_pre = APBPrescaler::DIV2; // 100 Mhz
     config.rcc.apb4_pre = APBPrescaler::DIV2; // 100 Mhz
     config.rcc.voltage_scale = VoltageScale::Scale1;
-    config.rcc.mux.fdcansel = rcc::mux::Fdcansel::HSE;
+    config.rcc.mux.fdcansel = rcc::mux::Fdcansel::PLL1_Q;
     config
 }
 
