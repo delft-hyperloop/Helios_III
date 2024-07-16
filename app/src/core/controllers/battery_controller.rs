@@ -291,7 +291,7 @@ impl BatteryController {
     }
 
     pub async fn state_of_charge_bms(&mut self, data: &[u8], timestamp: u64) {
-        let current = (data[0] as i16) << 8 | data[1] as i16; //AMPERES scaled by 0.1
+        let current = ((data[0] as u64) << 8 | data[1] as u64) as i16; //AMPERES scaled by 0.1
         let estimated_charge = (data[2] as u64) << 8 | data[3] as u64; //AMPERES
         let state_of_charge = (data[5] as u64) << 8 | data[6] as u64; //PERCENTAGE
         let battery_current_dt = if self.high_voltage {
