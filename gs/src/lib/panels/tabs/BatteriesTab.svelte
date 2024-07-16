@@ -9,8 +9,8 @@
     TileGrid, ToggleCommand
   } from "$lib";
   const storeManager = GrandDataDistributor.getInstance().stores;
-  const lvBattery = storeManager.getWritable("BatteryEstimatedChargeLow");
-  const hvBattery = storeManager.getWritable("BatteryEstimatedChargeHigh");
+  const lvBattery = storeManager.getWritable("ChargeStateLow");
+  const hvBattery = storeManager.getWritable("ChargeStateHigh");
 
   const avg1Temp = "Module1AvgTemperature", max1Temp = "Module1MaxTemperature", min1Temp = "Module1MinTemperature",
     avg1Vol = "Module1AvgVoltage", max1Vol = "Module1MaxVoltage", min1Vol = "Module1MinVoltage",
