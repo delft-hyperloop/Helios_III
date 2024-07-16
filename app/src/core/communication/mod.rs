@@ -19,7 +19,7 @@ pub trait HardwareLayer {
     async fn init(&mut self);
     async fn connect(&mut self) -> Result<(), CommunicationError>;
     async fn read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError>;
-    fn try_read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError>;
+    async fn try_read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError>;
     fn can_read(&mut self) -> bool;
     async fn write_bytes(&mut self, bytes: &[u8]) -> Result<usize, CommunicationError>;
     async fn try_write_bytes(&mut self, bytes: &[u8]) -> Result<usize, CommunicationError>;

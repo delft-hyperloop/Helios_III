@@ -15,7 +15,7 @@ pub fn configure_gs_ip(ip: [u8; 4], port: u16, force: bool) -> Result<String> {
     }
 
     Ok(format!(
-        "\npub const GS_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+        "\npub static mut GS_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
         ip.0, ip.1, ip.2, ip.3, ip.4
     ))
 }

@@ -82,7 +82,7 @@ impl HardwareLayer for TcpCommunication<'_> {
     }
 
     async fn connect(&mut self) -> Result<(), CommunicationError> {
-        let gs_addr = embassy_socket_from_config(GS_IP_ADDRESS);
+        let gs_addr = unsafe { embassy_socket_from_config(GS_IP_ADDRESS) };
 
         let mut rx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
         let mut tx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
@@ -138,9 +138,12 @@ impl HardwareLayer for TcpCommunication<'_> {
         }
     }
 
-    #[allow(dead_code, unused_variables)]
-    fn try_read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError> {
-        unimplemented!("TCP cannot read synchronously");
+    async fn try_read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError> {
+        if self.can_read() {
+            self.read_bytes(buffer).await
+        } else {
+            Err(CannotRead)
+        }
     }
 
     fn can_read(&mut self) -> bool {
