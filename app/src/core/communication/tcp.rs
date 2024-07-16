@@ -1,25 +1,29 @@
-use defmt::*;
+use defmt::{error, info, trace};
+use defmt::debug;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
-use embassy_net::tcp::TcpSocket;
-use embassy_net::Stack;
+use embassy_net::tcp::{ConnectError, Error, TcpSocket};
+use embassy_net::{Stack, StackResources, StaticConfigV4};
 use embassy_stm32::eth::generic_smi::GenericSMI;
-use embassy_stm32::eth::Ethernet;
+use embassy_stm32::eth::{Ethernet, PacketQueue};
+use embassy_stm32::peripherals;
 use embassy_stm32::peripherals::ETH;
+use embassy_stm32::rng::Rng;
 use embassy_time::Instant;
 use embassy_time::Timer;
-use embedded_io_async::Write;
-use embedded_io_async::WriteReady;
+use embedded_io_async::{Write, WriteReady};
 use heapless::Deque;
 use panic_probe as _;
+use rand_core::RngCore;
+use static_cell::StaticCell;
 
-use crate::core::communication::Datapoint;
-use crate::pconfig::embassy_socket_from_config;
+use crate::core::communication::{CommunicationError, Datapoint, HardwareLayer};
+use crate::pconfig::{embassy_socket_from_config, ip_cidr_from_config};
 use crate::pconfig::queue_data;
 use crate::pconfig::queue_event;
 use crate::pconfig::send_event;
 use crate::pconfig::ticks;
-use crate::send_data;
+use crate::{Irqs, POD_IP_ADDRESS, POD_MAC_ADDRESS, send_data, try_spawn, USE_DHCP};
 use crate::Command;
 use crate::DataReceiver;
 use crate::DataSender;
@@ -29,109 +33,214 @@ use crate::EventSender;
 use crate::Info;
 use crate::COMMAND_HASH;
 use crate::CONFIG_HASH;
+use crate::core::communication::CommunicationError::{CannotConnect, CannotRead, CannotWrite, NoActiveConnection};
 use crate::DATA_HASH;
 use crate::EVENTS_HASH;
 use crate::GS_IP_ADDRESS;
 use crate::IP_TIMEOUT;
 use crate::NETWORK_BUFFER_SIZE;
 
-/// This is the task that:
-/// 1. bugs the ground station to connect until it does
-/// 2. assigns receiving messages over MPSC channel and sending them over eth to another task
-/// 3. has the receiving from TCP internal loop, where it creates Events on the EventQueue
-#[embassy_executor::task]
-pub async fn tcp_connection_handler(
-    _x: Spawner,
+
+pub struct TcpCommunication<'a> {
     stack: &'static Stack<Ethernet<'static, ETH, GenericSMI>>,
-    event_sender: EventSender,
-    data_receiver: DataReceiver,
-    data_sender: DataSender,
-) -> ! {
-    let mut last_valid_timestamp = Instant::now().as_millis();
-    // info!("------------------------------------------------ TCP Connection Handler Started! ------------------------------------------");
-    stack.wait_config_up().await;
+    // ds: DataSender,
+    // dr: DataReceiver,
+    es: EventSender,
+    last_valid_timestamp: u64, // in milliseconds
+    socket: Option<TcpSocket<'a>>,
+}
 
-    // let state: TcpClientState<1, { NETWORK_BUFFER_SIZE }, { NETWORK_BUFFER_SIZE }> = TcpClientState::new();
-    //
-    // let client = TcpClient::new(&stack, &state);
+pub struct EthernetInit {
+    pub(crate) x: Spawner,
+    pub(crate) sender: EventSender,
+    pub(crate) pins: EthernetPins,
+}
 
-    let gs_addr = unsafe { embassy_socket_from_config(GS_IP_ADDRESS) };
+pub struct EthernetPins {
+    pub p_rng: peripherals::RNG,
+    pub eth_pin: peripherals::ETH,
+    pub pa1_pin: peripherals::PA1,
+    pub pa2_pin: peripherals::PA2,
+    pub pc1_pin: peripherals::PC1,
+    pub pa7_pin: peripherals::PA7,
+    pub pc4_pin: peripherals::PC4,
+    pub pc5_pin: peripherals::PC5,
+    pub pg13_pin: peripherals::PG13,
+    pub pb13_pin: peripherals::PB13,
+    pub pg11_pin: peripherals::PG11,
+}
 
-    // let mut socket: TcpSocket =
-    //     TcpSocket::new(stack, unsafe { &mut rx_buffer }, unsafe { &mut tx_buffer });
+type Device = Ethernet<'static, ETH, GenericSMI>;
 
-    let mut buf = [0; { NETWORK_BUFFER_SIZE }];
-    'netstack: loop {
-        debug!("[netstack] loop starting");
+#[embassy_executor::task]
+async fn net_task(stack: &'static Stack<Device>) -> ! { stack.run().await }
+
+impl HardwareLayer for TcpCommunication<'_> {
+    async fn init(&mut self) {
+        self.stack.wait_config_up().await;
+        self.last_valid_timestamp = Instant::now().as_millis();
+    }
+
+    async fn connect(&mut self) -> Result<(), CommunicationError> {
+        let gs_addr = embassy_socket_from_config(GS_IP_ADDRESS);
 
         let mut rx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
         let mut tx_buffer: [u8; NETWORK_BUFFER_SIZE] = [0u8; { NETWORK_BUFFER_SIZE }];
 
-        let mut socket: TcpSocket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+        let mut socket: TcpSocket = TcpSocket::new(self.stack, &mut rx_buffer, &mut tx_buffer);
 
         match socket.connect(gs_addr).await {
             Ok(_) => {
-                last_valid_timestamp = Instant::now().as_millis();
+                self.last_valid_timestamp = Instant::now().as_millis();
+                Ok(())
             },
             Err(e) => {
-                let d = Instant::now().as_millis() - last_valid_timestamp;
+                let d = Instant::now().as_millis() - self.last_valid_timestamp;
                 error!("[tcp:stack] error connecting to gs: {:?} (diff={})", e, d);
                 if d > IP_TIMEOUT {
-                    send_event(event_sender, Event::ConnectionLossEvent);
+                    send_event(self.es, Event::ConnectionLossEvent);
                     Timer::after_millis(900).await;
                 }
                 Timer::after_millis(100).await;
-                continue 'netstack;
+                Err(CannotConnect)
             },
         }
+    }
 
-
-        // Begin relying on the frontend
-
-
-        // loop to receive data from the TCP connection
-        'connection: loop {
-            Timer::after_millis(1).await;
-            if !socket.may_recv()
-                || !socket.may_send()
-                || Instant::now().as_millis() - last_valid_timestamp > IP_TIMEOUT
+    async fn read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError> {
+        if let Some(s) = &mut self.socket {
+            if !s.may_recv()
+                || !s.may_send()
+                || Instant::now().as_millis() - self.last_valid_timestamp > IP_TIMEOUT
             {
                 error!("[tcp] may_recv: connection closed");
-                break 'connection;
-            }
-            if socket.can_recv() {
-                last_valid_timestamp = Instant::now().as_millis();
-                let n = socket.read(&mut buf).await.unwrap_or(420000);
-                if n == 42000 {
-                    error!("[tcp] Failed to read from socket");
-                    break 'connection;
-                }
-                if n == 0 {
-                    info!("[tcp] Connection closed by ground station..");
-                    send_event(event_sender, Event::ConnectionLossEvent);
-                    break 'connection;
-                }
-                trace!("[tcp] !!!!!!!!!!!!!!! Received::  {:?}", &buf[..n]);
-
-
-            }
-
-            match socket.write_ready() {
-                Ok(x) => {
-                    if x {
-                        
-                    } else {
-                        error!("[tcp] socket not writeable");
-                        Timer::after_millis(500).await;
+                return Err(NoActiveConnection)
+            } else if s.can_recv() {
+                self.last_valid_timestamp = Instant::now().as_millis();
+                match s.read(buffer).await.unwrap_or(420000) {
+                    0 => {
+                        info!("[tcp] Connection closed by ground station..");
+                        send_event(self.es, Event::ConnectionLossEvent);
+                        return Err(NoActiveConnection)
                     }
-                },
-                Err(y) => {
-                    error!("[tcp] error getting socket write status: {:?}", y);
-                    Timer::after_millis(500).await;
-                },
+                    420000 => {
+                        error!("[tcp] Failed to read from socket");
+                        return Err(CannotRead)
+                    }
+                    n => Ok(n)
+                }
+            } else {
+                // buffer empty
+                Ok(0)
             }
+        } else {
+            Err(NoActiveConnection)
         }
-        // if this is reached, it means that the connection was dropped
-        error!("D:");
     }
+
+    #[allow(dead_code, unused_variables)]
+    fn try_read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError> {
+        unimplemented!("TCP cannot read synchronously");
+    }
+
+    fn can_read(&mut self) -> bool {
+        if let Some(s) = &self.socket {
+           s.may_recv() && s.can_recv()
+        } else {
+            false
+        }
+    }
+
+    async fn write_bytes(&mut self, bytes: &[u8]) -> Result<usize, CommunicationError> {
+        if let Some(s) = &mut self.socket {
+            match s.write_all(bytes).await {
+                Ok(_) => Ok(bytes.len()),
+                Err(e) => {
+                    error!("[tcp] Error writing to tcp socket: {:?}", e);
+                    Err(CannotWrite)
+                }
+            }
+        } else {
+            Err(NoActiveConnection)
+        }
+    }
+
+    #[allow(dead_code, unused_variables)]
+    fn try_write_bytes(&mut self, bytes: &[u8]) -> Result<usize, CommunicationError> {
+        unimplemented!("TCP cannot write synchronously");
+    }
+
+
+    fn can_write(&mut self) -> bool {
+        if let Some(s) = &mut self.socket {
+            s.write_ready().unwrap_or_else(|y| {
+                error!("[tcp] error getting socket write status: {:?}", y);
+                false
+            })
+        } else {
+            false
+        }
+    }
+}
+
+impl TcpCommunication<'_> {
+    pub(crate) async fn new(init: EthernetInit) -> Self {
+        let mut rng = Rng::new(init.pins.p_rng, Irqs);
+        let mut seed = [0; 8];
+        rng.fill_bytes(&mut seed);
+        let seed = u64::from_le_bytes(seed);
+        debug!("Seed: {:?}", seed);
+        let mac_addr = POD_MAC_ADDRESS;
+        debug!("MAC Address: {:?}", mac_addr);
+        static PACKETS: StaticCell<PacketQueue<16, 16>> = StaticCell::new();
+
+        let device: Device = Ethernet::new(
+            PACKETS.init(PacketQueue::<16, 16>::new()),
+            init.pins.eth_pin,
+            Irqs,
+            init.pins.pa1_pin,
+            init.pins.pa2_pin,
+            init.pins.pc1_pin,
+            init.pins.pa7_pin,
+            init.pins.pc4_pin,
+            init.pins.pc5_pin,
+            init.pins.pg13_pin,
+            init.pins.pb13_pin,
+            init.pins.pg11_pin,
+            GenericSMI::new(0),
+            mac_addr,
+        );
+        trace!("MAC Address: {:?}", mac_addr);
+
+        let eth_config: embassy_net::Config = if USE_DHCP {
+            embassy_net::Config::dhcpv4(Default::default())
+        } else {
+            embassy_net::Config::ipv4_static(StaticConfigV4 {
+                address: ip_cidr_from_config(POD_IP_ADDRESS),
+                gateway: None,
+                dns_servers: Default::default(),
+            })
+        };
+        trace!("MAC Address: {:?}", mac_addr);
+
+        static STACK: StaticCell<Stack<Device>> = StaticCell::new();
+
+        static RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
+        let stack: &Stack<Device> = &*STACK.init(Stack::new(
+            device,
+            eth_config,
+            RESOURCES.init(StackResources::<3>::new()),
+            seed,
+        ));
+
+        try_spawn!(init.sender, init.x.spawn(net_task(stack)));
+
+        Self {
+            stack,
+            es: init.sender,
+            socket: None,
+            last_valid_timestamp: 0,
+        }
+    }
+
 }

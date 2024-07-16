@@ -3,7 +3,7 @@ use core::cmp::Ordering;
 use defmt::*;
 use embassy_time::Instant;
 
-use crate::core::communication::Datapoint;
+use crate::core::communication::data::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::core::fsm_status::Location;
 use crate::core::fsm_status::Route;

@@ -14,7 +14,7 @@ use embedded_nal_async::Ipv4Addr;
 use embedded_nal_async::SocketAddr;
 use embedded_nal_async::SocketAddrV4;
 
-use crate::core::communication::Datapoint;
+use crate::core::communication::data::Datapoint;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
@@ -66,6 +66,7 @@ pub fn default_configuration() -> Config {
 }
 
 #[inline]
+#[allow(dead_code)]
 pub fn embassy_socket_from_config(t: ([u8; 4], u16)) -> IpEndpoint {
     IpEndpoint::new(Ipv4(Ipv4Address::new(t.0[0], t.0[1], t.0[2], t.0[3])), t.1)
 }

@@ -1,6 +1,6 @@
 [gs]
 ip = [192,168,1,4]
-force = false
+force = true 
 port = 6942
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
 timeout = 1500 # this is the timeout for the socket, in milliseconds.

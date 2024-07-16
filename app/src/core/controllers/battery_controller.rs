@@ -1,7 +1,7 @@
 use defmt::debug;
 use defmt::trace;
 
-use crate::core::communication::Datapoint;
+use crate::core::communication::data::Datapoint;
 use crate::pconfig::bytes_to_u64;
 use crate::pconfig::queue_dp;
 use crate::DataSender;
