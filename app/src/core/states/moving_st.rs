@@ -19,6 +19,10 @@ impl Fsm {
 
     pub async fn react_mv_st(&mut self, event: Event) {
         match event {
+            Event::HvLevitationBelowBms => {
+                transit!(self, State::EmergencyBraking);
+            }
+
             Event::LaneSwitchForward => {
                 match self.route.next_position() {
                     Location::LaneSwitchStraight => {

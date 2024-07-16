@@ -8,12 +8,12 @@ use embassy_stm32::gpio::Pull;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::Peripherals;
 
+use crate::core::communication::low::tcp::EthernetPins;
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::breaking_controller::BrakingController;
 use crate::core::controllers::can_controller::CanController;
 use crate::core::controllers::can_controller::CanPins;
-use crate::core::controllers::ethernet_controller::EthernetController;
-use crate::core::controllers::ethernet_controller::EthernetPins;
+use crate::core::controllers::external_communication::ExternalController;
 use crate::core::controllers::hv_controller::HVPeripherals;
 use crate::core::controllers::led_controller::LedController;
 use crate::core::controllers::propulsion_controller::PropulsionController;
@@ -23,7 +23,7 @@ use crate::InternalMessaging;
 #[allow(dead_code)]
 pub struct FSMPeripherals {
     pub braking_controller: BrakingController,
-    pub eth_controller: EthernetController,
+    pub eth_controller: ExternalController,
     pub can_controller: CanController,
     pub hv_peripherals: HVPeripherals,
     pub propulsion_controller: PropulsionController,
@@ -61,7 +61,7 @@ impl FSMPeripherals {
 
         debug!("creating ethernet controller");
         // The ethernet controller configures IP and then spawns the ethernet task
-        let eth_controller = EthernetController::new(
+        let eth_controller = ExternalController::new(
             *x,
             i.event_sender,
             i.data_receiver,

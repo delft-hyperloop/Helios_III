@@ -13,6 +13,9 @@ impl Fsm {
 
     pub async fn react_end_ls(&mut self, event: Event) {
         match event {
+            Event::HvLevitationBelowBms => {
+                transit!(self, State::EmergencyBraking);
+            }
             Event::BrakingPointReachedC => match self.route.next_position() {
                 Location::BackwardsC => {
                     transit!(self, State::EndLS);

@@ -14,7 +14,7 @@ use embedded_nal_async::Ipv4Addr;
 use embedded_nal_async::SocketAddr;
 use embedded_nal_async::SocketAddrV4;
 
-use crate::core::communication::Datapoint;
+use crate::core::communication::data::Datapoint;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
@@ -24,18 +24,13 @@ use crate::EventSender;
 pub fn default_configuration() -> Config {
     let mut config = Config::default();
 
-    // config.rcc.hse = Some(rcc::Hse { // THESE ARE THE CONFIGURATIONS FOR TIRTH's MAIN PCB
-    //     freq: embassy_stm32::time::Hertz(24_000_000),
-    //     mode: rcc::HseMode::Oscillator
-    // });
     config.rcc.hse = Some(rcc::Hse {
-        // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
-        freq: embassy_stm32::time::Hertz(25_000_000),
-        mode: rcc::HseMode::Oscillator,
+        freq: embassy_stm32::time::Hertz(8_000_000),
+        mode: HseMode::Oscillator,
     });
     config.rcc.pll1 = Some(Pll {
         source: PllSource::HSE,
-        prediv: PllPreDiv::DIV6,
+        prediv: PllPreDiv::DIV2,
         mul: PllMul::MUL50,
         divp: Some(PllDiv::DIV8),
         divq: Some(PllDiv::DIV8),
@@ -61,11 +56,12 @@ pub fn default_configuration() -> Config {
     config.rcc.apb3_pre = APBPrescaler::DIV2; // 100 Mhz
     config.rcc.apb4_pre = APBPrescaler::DIV2; // 100 Mhz
     config.rcc.voltage_scale = VoltageScale::Scale1;
-    config.rcc.mux.fdcansel = rcc::mux::Fdcansel::HSE;
+    config.rcc.mux.fdcansel = rcc::mux::Fdcansel::PLL1_Q;
     config
 }
 
 #[inline]
+#[allow(dead_code)]
 pub fn embassy_socket_from_config(t: ([u8; 4], u16)) -> IpEndpoint {
     IpEndpoint::new(Ipv4(Ipv4Address::new(t.0[0], t.0[1], t.0[2], t.0[3])), t.1)
 }
@@ -153,6 +149,7 @@ macro_rules! try_spawn {
 }
 
 pub fn ticks() -> u64 { Instant::now().as_ticks() }
+pub fn millis() -> u64 { Instant::now().as_millis() }
 
 /// Instantly sends an event through the MPMC queue.
 /// * If the queue is full, the event will be discarded.

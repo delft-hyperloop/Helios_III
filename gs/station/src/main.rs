@@ -11,6 +11,7 @@ use crate::tui::tui_main;
 
 pub mod api;
 mod backend;
+pub mod battery;
 pub mod connect;
 mod data;
 #[cfg(feature = "backend")]

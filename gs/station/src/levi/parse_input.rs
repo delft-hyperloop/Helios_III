@@ -1,5 +1,7 @@
 use crate::api::Message;
 use crate::api::ProcessedData;
+use crate::battery::DataSender;
+use crate::battery::HV_DATATYPES;
 use crate::Command;
 use crate::CommandSender;
 use crate::Datatype;
@@ -9,6 +11,7 @@ pub fn handle_line_from_levi(
     line: &String,
     msg_send: MessageSender,
     cmd_send: CommandSender,
+    data_sender: DataSender,
 ) -> anyhow::Result<()> {
     let params = line.split(':').collect::<Vec<&str>>();
 
@@ -29,8 +32,11 @@ pub fn handle_line_from_levi(
         },
         "DATA" if params.len() > 2 => {
             if let Ok(x) = params[2].trim().replace(',', ".").parse::<f64>() {
-                msg_send
-                    .send(Message::Data(process_levi_data(x, Datatype::from_str(params[1]))))?;
+                let dt = Datatype::from_str(params[1]);
+                msg_send.send(Message::Data(process_levi_data(x, dt)))?;
+                if HV_DATATYPES.contains(&dt) {
+                    data_sender.send(process_levi_data(x, dt))?;
+                }
             } else {
                 msg_send.send(Message::Warning(format!(
                     "Levi data not a number: {:?}",

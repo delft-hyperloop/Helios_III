@@ -147,7 +147,7 @@ fn configure_pod(config: &Config) -> String {
     //     config.pod.net.udp_port
     // ) +
     + &format!(
-        "pub static POD_MAC_ADDRESS: [u8;6] = [{},{},{},{},{},{}];\n",
+        "pub const POD_MAC_ADDRESS: [u8;6] = [{},{},{},{},{},{}];\n",
         config.pod.net.mac_addr[0],
         config.pod.net.mac_addr[1],
         config.pod.net.mac_addr[2],

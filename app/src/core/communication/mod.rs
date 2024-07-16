@@ -1,49 +1,40 @@
-use defmt::Formatter;
+use crate::core::communication::data::Datapoint;
 
-use crate::Datatype;
+pub mod comm;
+pub mod data;
+pub mod low;
+pub mod task;
 
-pub mod can;
-pub mod tcp;
-
-#[derive(Debug, PartialEq, Eq)]
-pub struct Datapoint {
-    pub datatype: Datatype,
-    pub value: u64,
-    pub timestamp: u64,
+pub trait CommunicationLayer {
+    async fn init(&mut self);
+    async fn handshake(&mut self);
+    async fn connect(&mut self) -> Result<(), CommunicationError>;
+    async fn disconnect(&mut self);
+    async fn try_send_data(&mut self) -> bool;
+    async fn try_receive_data(&mut self) -> bool;
+    async fn receive_bytes(&mut self, buf: &mut [u8], n: usize);
 }
 
-impl Datapoint {
-    pub fn new(datatype: Datatype, value: u64, timestamp: u64) -> Self {
-        Self { datatype, value, timestamp }
-    }
-
-    /// ### Encode a datapoint as bytes
-    /// | index | meaning |
-    /// | --- | --- |
-    /// | 0 | 0xFF : flag byte |
-    /// | 1, 2 | 11 bit datatype id |
-    /// | 3..=10 | 8 byte value |
-    /// | 11..=18 | 8 byte timestamp |
-    /// | 19 | 0xFF : flag byte |
-    pub fn as_bytes(&self) -> [u8; 20] {
-        let mut bytes = [0; 20];
-        bytes[0] = 0xFF;
-        bytes[1..3].copy_from_slice(&self.datatype.to_id().to_be_bytes());
-        bytes[3..11].copy_from_slice(&self.value.to_le_bytes());
-        bytes[11..19].copy_from_slice(&self.timestamp.to_le_bytes());
-        bytes[19] = 0xFF;
-        bytes
-    }
+#[allow(dead_code)]
+pub trait HardwareLayer {
+    async fn init(&mut self);
+    async fn connect(&mut self) -> Result<(), CommunicationError>;
+    async fn read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError>;
+    async fn try_read_bytes(&mut self, buffer: &mut [u8]) -> Result<usize, CommunicationError>;
+    async fn write_bytes(&mut self, bytes: &[u8]) -> Result<usize, CommunicationError>;
+    async fn try_write_bytes(&mut self, bytes: &[u8]) -> Result<usize, CommunicationError>;
+    fn readable(&mut self) -> bool;
+    fn can_read_now(&mut self) -> bool;
+    fn writeable(&mut self) -> bool;
+    async fn close_connection(&mut self);
 }
 
-impl defmt::Format for Datapoint {
-    fn format(&self, fmt: Formatter) {
-        defmt::write!(
-            fmt,
-            "Datapoint {{ datatype: {:?}, value: {:?}, timestamp: {:?} }}",
-            self.datatype,
-            self.value,
-            self.timestamp
-        )
-    }
+#[derive(Debug, defmt::Format)]
+pub enum CommunicationError {
+    // CannotReachTarget,
+    CannotConnect,
+    NoActiveConnection,
+    ConnectionTimedOut,
+    CannotRead,
+    CannotWrite,
 }

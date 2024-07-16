@@ -1,8 +1,10 @@
+#![feature(let_chains)]
 #![no_std]
 #![no_main]
 #![allow(clippy::too_many_arguments)]
 #![deny(clippy::async_yields_async)]
 #![deny(rustdoc::broken_intra_doc_links)]
+
 use ::core::borrow::Borrow;
 use defmt::*;
 use defmt_rtt as _;
@@ -26,7 +28,7 @@ mod pconfig;
 use core::controllers::finite_state_machine_peripherals::*;
 use core::finite_state_machine::*;
 
-use crate::core::communication::Datapoint;
+use crate::core::communication::data::Datapoint;
 use crate::core::data::data_middle_step;
 use crate::pconfig::default_configuration;
 
@@ -112,6 +114,8 @@ async fn main(spawner: Spawner) -> ! {
     // `p` is the most important object in our code; treat it with respect and caution
     let config = default_configuration();
     let p = embassy_stm32::init(config);
+
+    // let mut usart = Uart::new(p.UART7, p.PF6, p.PF7, Irqs, p.DMA1_CH0, p.DMA1_CH1, config).unwrap();
 
     // -- Static allocations
     // The communication channels get initialized and their endpoints are passed
