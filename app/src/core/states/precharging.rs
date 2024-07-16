@@ -20,7 +20,7 @@ impl Fsm {
                 self.pod_safe().await;
                 transit!(self, State::Idle);
             },
-            Event::FinishPrecharge => {
+            Event::HvLevitationAboveBms | Event::FinishPrecharge => {
                 // 3. make sure pre-charge relay is off
                 self.peripherals.hv_peripherals.pin_7.set_low();
                 // 4. turn on positive relay

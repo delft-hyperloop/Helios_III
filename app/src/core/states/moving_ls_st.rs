@@ -17,6 +17,9 @@ impl Fsm {
         self.send_levi_cmd(crate::Command::ls0(0)).await;
 
         match event {
+            Event::HvLevitationBelowBms => {
+                transit!(self, State::EmergencyBraking);
+            }
             Event::LaneSwitchEnded => match self.route.next_position() {
                 Location::BackwardsA => {
                     info!("Exiting a straight run LS!");

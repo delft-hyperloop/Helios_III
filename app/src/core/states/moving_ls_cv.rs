@@ -16,6 +16,9 @@ impl Fsm {
 
     pub async fn react_mv_ls_cv(&mut self, event: Event) {
         match event {
+            Event::HvLevitationBelowBms => {
+                transit!(self, State::EmergencyBraking);
+            }
             Event::LaneSwitchEnded => match self.route.next_position() {
                 Location::ForwardC => {
                     info!("Entering straight track after curved lane-switch!");

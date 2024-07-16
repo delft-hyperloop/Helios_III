@@ -39,6 +39,14 @@ impl Backlog {
     fn cygnus_varying(&self) -> bool {
         (self.levi_max - self.levi_min).abs() > CYGNUS_MAX_DIFFERENCE
     }
+
+    fn compare_voltages(&self) -> Event {
+        if self.levi_avg <= 0.9 * self.bms_avg {
+            Event::HvLevitationBelowBms
+        } else {
+            Event::HvLevitationAboveBms
+        }
+    }
 }
 
 pub async fn aggregate_voltage_readings(
@@ -77,5 +85,7 @@ pub async fn aggregate_voltage_readings(
         if backlog.cygnus_varying() {
             send(Event::CygnusesVaryingVoltages);
         }
+
+        send(backlog.compare_voltages());
     }
 }

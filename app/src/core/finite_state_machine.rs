@@ -206,6 +206,7 @@ impl Fsm {
             | Event::PropulsionErrorEvent
             | Event::PowertrainErrorEvent
             | Event::ConnectionLossEvent
+            | Event::CygnusesVaryingVoltages
             | Event::ValueOutOfBounds => {
                 transit!(self, State::EmergencyBraking);
                 return;
