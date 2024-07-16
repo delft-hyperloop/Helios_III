@@ -1,4 +1,5 @@
 use defmt::Formatter;
+
 use crate::Datatype;
 
 #[derive(Debug, PartialEq, Eq)]

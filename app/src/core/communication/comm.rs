@@ -1,27 +1,44 @@
-use defmt::{debug, error, info, trace, warn};
-use embassy_time::{Instant, Timer};
+use defmt::debug;
+use defmt::error;
+use defmt::info;
+use defmt::trace;
 use heapless::Deque;
-use crate::core::communication::{CommunicationError, CommunicationLayer, HardwareLayer};
-use crate::{Command, COMMAND_HASH, CONFIG_HASH, DATA_HASH, DataReceiver, DataSender, Datatype, Event, EVENTS_HASH, EventSender, Info, NETWORK_BUFFER_SIZE, send_data};
+
 use crate::core::communication::data::Datapoint;
-use crate::pconfig::{queue_data, queue_event, send_event, ticks};
+use crate::core::communication::CommunicationError;
+use crate::core::communication::CommunicationLayer;
+use crate::core::communication::HardwareLayer;
+use crate::pconfig::{queue_data, queue_event};
+use crate::pconfig::send_event;
+use crate::pconfig::ticks;
+use crate::send_data;
+use crate::Command;
+use crate::DataReceiver;
+use crate::DataSender;
+use crate::Datatype;
+use crate::Event;
+use crate::EventSender;
+use crate::Info;
+use crate::COMMAND_HASH;
+use crate::CONFIG_HASH;
+use crate::DATA_HASH;
+use crate::EVENTS_HASH;
+use crate::NETWORK_BUFFER_SIZE;
 
 pub struct ExternalCommunicationHandler<I: HardwareLayer> {
     pub inner: I,
     pub ds: DataSender,
     pub dr: DataReceiver,
     pub es: EventSender,
-    pub parsing_buffer: Deque::<u8, { NETWORK_BUFFER_SIZE }>,
+    pub parsing_buffer: Deque<u8, { NETWORK_BUFFER_SIZE }>,
 }
 
 impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
-    async fn init(&mut self) {
-        self.inner.init().await;
-    }
+    async fn init(&mut self) { self.inner.init().await; }
 
-    fn receive_bytes(&mut self, buf: &mut [u8], n: usize) {
+    async fn receive_bytes(&mut self, buf: &mut [u8], n: usize) {
         buf[0..n].iter().for_each(|x| {
-           self.parsing_buffer.push_back(*x).unwrap();
+            self.parsing_buffer.push_back(*x).unwrap();
         });
         while let Some(p) = self.parsing_buffer.front() {
             if *p == 0xFF {
@@ -39,14 +56,16 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
                     match cmd {
                         Command::EmergencyBrake(_) => {
                             send_event(self.es, Event::EmergencyBraking);
-                            match self.inner.try_write_bytes(&Datapoint::new(
-                                Datatype::Info,
-                                Info::EmergencyBrakeReceived.to_idx(),
-                                ticks(),
-                            )
-                                .as_bytes()) {
-                                Ok(_) => {}
-                                Err(e) => error!("[receive bytes] communication error: {:?}", e)
+                            match self.inner.try_write_bytes(
+                                &Datapoint::new(
+                                    Datatype::Info,
+                                    Info::EmergencyBrakeReceived.to_idx(),
+                                    ticks(),
+                                )
+                                .as_bytes(),
+                            ).await {
+                                Ok(_) => {},
+                                Err(e) => error!("[receive bytes] communication error: {:?}", e),
                             }
                         },
                         Command::launch(_) => {
@@ -102,10 +121,7 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
                         },
                         Command::EmitEvent(e) => {
                             info!("[tcp] EmitEvent command received");
-                            send_event(
-                                self.es,
-                                Event::from_id((e & 0xFFFF) as u16, Some(69420)),
-                            );
+                            send_event(self.es, Event::from_id((e & 0xFFFF) as u16, Some(69420)));
                         },
                         Command::CreateDatapoint(x) => {
                             send_data!(self.ds, Datatype::from_id(x as u16), x);
@@ -120,14 +136,11 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
                         },
                         Command::Heartbeat(x) => {
                             trace!("[tcp] Heartbeat command received {} :)", x);
-                            match self.inner.try_write_bytes(&Datapoint::new(
-                                Datatype::ResponseHeartbeat,
-                                x,
-                                ticks(),
-                            )
-                                .as_bytes()) {
+                            match self.inner.try_write_bytes(
+                                &Datapoint::new(Datatype::ResponseHeartbeat, x, ticks()).as_bytes(),
+                            ).await {
                                 Ok(_) => {},
-                                Err(e) => error!("[receive bytes] communication error: {:?}", e)
+                                Err(e) => error!("[receive bytes] communication error: {:?}", e),
                             }
                         },
                         Command::FrontendHeartbeat(x) => {
@@ -135,7 +148,7 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
                         },
                         Command::ArmBrakes(_) => {
                             debug!("[tcp] ArmBrakesCommand command received");
-                            send_event(self.es, Event::ArmBrakesCommand);
+                            queue_event(self.es, Event::ArmBrakesCommand).await;
                         },
                         _ => {},
                     }
@@ -151,11 +164,11 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
             Ok(_) => {
                 send_event(self.es, Event::ConnectionEstablishedEvent);
                 Ok(())
-            }
+            },
             Err(e) => {
                 error!("[connecting] error: {:?}", e);
                 Err(e)
-            }
+            },
         }
     }
 
@@ -170,15 +183,12 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
         queue_data(self.ds, Datatype::FrontendHeartbeating, 0).await;
     }
 
-    fn try_send_data(&mut self) -> bool {
+    async fn try_send_data(&mut self) -> bool {
         if self.inner.can_write() {
             if let Ok(data) = self.dr.try_receive() {
                 let data = data.as_bytes();
                 trace!("[tcp:mpmc] Sending data: {:?}", data);
-                return match self.inner.try_write_bytes(&data) {
-                    Ok(_) => true,
-                    Err(_) => false,
-                }
+                return self.inner.try_write_bytes(&data).await.is_ok();
             } // the else case is of empty MPMC channel queue,
               // which triggers very often, so we ignore it.
             true
@@ -192,9 +202,9 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
             let mut buf = [0u8; { NETWORK_BUFFER_SIZE }];
             match self.inner.read_bytes(&mut buf).await {
                 Ok(n) => {
-                    self.receive_bytes(&mut buf, n);
+                    self.receive_bytes(&mut buf, n).await;
                     true
-                }
+                },
                 Err(_) => false,
             }
         } else {

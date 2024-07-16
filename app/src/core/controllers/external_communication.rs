@@ -1,36 +1,18 @@
-use defmt::debug;
-use defmt::trace;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
-use embassy_net::Stack;
-use embassy_net::StackResources;
-use embassy_net::StaticConfigV4;
-use embassy_stm32::eth::generic_smi::GenericSMI;
-use embassy_stm32::eth::Ethernet;
-use embassy_stm32::eth::PacketQueue;
-use embassy_stm32::peripherals;
-use embassy_stm32::peripherals::ETH;
-use embassy_stm32::rng::Rng;
 use heapless::Deque;
 use panic_probe as _;
-use rand_core::RngCore;
-use static_cell::StaticCell;
-use crate::core::communication::comm::ExternalCommunicationHandler;
-use crate::core::communication::tcp::{EthernetInit, EthernetPins, TcpCommunication};
 
-use crate::pconfig::ip_cidr_from_config;
-use crate::{NETWORK_BUFFER_SIZE, try_spawn};
+use crate::core::communication::comm::ExternalCommunicationHandler;
 use crate::core::communication::task::external_communication_task;
+use crate::core::communication::low::tcp::EthernetInit;
+use crate::core::communication::low::tcp::EthernetPins;
+use crate::core::communication::low::tcp::TcpCommunication;
+use crate::try_spawn;
 use crate::DataReceiver;
 use crate::DataSender;
 use crate::EventSender;
-use crate::Irqs;
-use crate::POD_IP_ADDRESS;
-use crate::POD_MAC_ADDRESS;
-use crate::USE_DHCP;
-
-
-
+use crate::NETWORK_BUFFER_SIZE;
 
 pub struct ExternalController {}
 
@@ -42,11 +24,7 @@ impl ExternalController {
         data_sender: DataSender,
         pins: EthernetPins,
     ) -> Self {
-        let tcp = TcpCommunication::new(EthernetInit {
-            x,
-            sender: event_sender,
-            pins
-        }).await;
+        let tcp = TcpCommunication::new(EthernetInit { x, sender: event_sender, pins }).await;
 
         let comm = ExternalCommunicationHandler::<TcpCommunication> {
             inner: tcp,

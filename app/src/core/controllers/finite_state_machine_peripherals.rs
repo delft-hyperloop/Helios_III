@@ -7,8 +7,8 @@ use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Pull;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::Peripherals;
-use crate::core::communication::tcp::EthernetPins;
 
+use crate::core::communication::low::tcp::EthernetPins;
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::breaking_controller::BrakingController;
 use crate::core::controllers::can_controller::CanController;

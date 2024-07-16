@@ -1,4 +1,3 @@
-use crate::core::communication::comm::ExternalCommunicationHandler;
 use crate::core::communication::CommunicationLayer;
 
 #[embassy_executor::task]
@@ -7,13 +6,13 @@ pub async fn external_communication_task(mut comm: impl CommunicationLayer + 'st
 
     'netstack: loop {
         match comm.connect().await {
-            Ok(_) => {}
-            Err(_) => continue 'netstack
+            Ok(_) => {},
+            Err(_) => continue 'netstack,
         };
         comm.handshake().await;
 
         'connection: loop {
-            if !comm.try_send_data() || !comm.try_receive_data().await {
+            if !comm.try_send_data().await || !comm.try_receive_data().await {
                 break 'connection;
             }
         }
