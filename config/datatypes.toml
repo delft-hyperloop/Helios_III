@@ -227,7 +227,7 @@ display_units = "%"
 [[Datatype]]
 name = "SingleCellVoltageLow"
 id = 0x1BC
-display_units = "ºC"
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureLow"
@@ -512,6 +512,13 @@ id = 0x226
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
+
+[[Datatype]]
+name = "SingleCellVoltageHigh"
+id = 0x3BF
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_1"
@@ -1347,4 +1354,486 @@ priority = 1
 name = "OverflowUnit"
 id = 0x7fc
 priority = 7 
+
+
+[[Datatype]]
+name = "SingleCellVoltageLV1"
+id = 0x600
+
+[[Datatype]]
+name = "SingleCellVoltageLV2"
+id = 0x601
+
+[[Datatype]]
+name = "SingleCellVoltageLV3"
+id = 0x602
+
+[[Datatype]]
+name = "SingleCellVoltageLV4"
+id = 0x603
+
+[[Datatype]]
+name = "SingleCellVoltageLV5"
+id = 0x604
+
+[[Datatype]]
+name = "SingleCellVoltageLV6"
+id = 0x605
+
+[[Datatype]]
+name = "SingleCellVoltageLV7"
+id = 0x606
+
+[[Datatype]]
+name = "SingleCellVoltageLV8"
+id = 0x607
+
+[[Datatype]]
+name = "SingleCellVoltageHV1"
+id = 0x608
+
+[[Datatype]]
+name = "SingleCellVoltageHV2"
+id = 0x609
+
+[[Datatype]]
+name = "SingleCellVoltageHV3"
+id = 0x60A
+
+[[Datatype]]
+name = "SingleCellVoltageHV4"
+id = 0x60B
+
+[[Datatype]]
+name = "SingleCellVoltageHV5"
+id = 0x60C
+
+[[Datatype]]
+name = "SingleCellVoltageHV6"
+id = 0x60D
+
+[[Datatype]]
+name = "SingleCellVoltageHV7"
+id = 0x60E
+
+[[Datatype]]
+name = "SingleCellVoltageHV8"
+id = 0x60F
+
+[[Datatype]]
+name = "SingleCellVoltageHV9"
+id = 0x610
+
+[[Datatype]]
+name = "SingleCellVoltageHV10"
+id = 0x611
+
+[[Datatype]]
+name = "SingleCellVoltageHV11"
+id = 0x612
+
+[[Datatype]]
+name = "SingleCellVoltageHV12"
+id = 0x613
+
+[[Datatype]]
+name = "SingleCellVoltageHV13"
+id = 0x614
+
+[[Datatype]]
+name = "SingleCellVoltageHV14"
+id = 0x615
+
+[[Datatype]]
+name = "SingleCellVoltageHV15"
+id = 0x616
+
+[[Datatype]]
+name = "SingleCellVoltageHV16"
+id = 0x617
+
+[[Datatype]]
+name = "SingleCellVoltageHV17"
+id = 0x618
+
+[[Datatype]]
+name = "SingleCellVoltageHV18"
+id = 0x619
+
+[[Datatype]]
+name = "SingleCellVoltageHV19"
+id = 0x61A
+
+[[Datatype]]
+name = "SingleCellVoltageHV20"
+id = 0x61B
+
+[[Datatype]]
+name = "SingleCellVoltageHV21"
+id = 0x61C
+
+[[Datatype]]
+name = "SingleCellVoltageHV22"
+id = 0x61D
+
+[[Datatype]]
+name = "SingleCellVoltageHV23"
+id = 0x61E
+
+[[Datatype]]
+name = "SingleCellVoltageHV24"
+id = 0x61F
+
+[[Datatype]]
+name = "SingleCellVoltageHV25"
+id = 0x620
+
+[[Datatype]]
+name = "SingleCellVoltageHV26"
+id = 0x621
+
+[[Datatype]]
+name = "SingleCellVoltageHV27"
+id = 0x622
+
+[[Datatype]]
+name = "SingleCellVoltageHV28"
+id = 0x623
+
+[[Datatype]]
+name = "SingleCellVoltageHV29"
+id = 0x624
+
+[[Datatype]]
+name = "SingleCellVoltageHV30"
+id = 0x625
+
+[[Datatype]]
+name = "SingleCellVoltageHV31"
+id = 0x626
+
+[[Datatype]]
+name = "SingleCellVoltageHV32"
+id = 0x627
+
+[[Datatype]]
+name = "SingleCellVoltageHV33"
+id = 0x628
+
+[[Datatype]]
+name = "SingleCellVoltageHV34"
+id = 0x629
+
+[[Datatype]]
+name = "SingleCellVoltageHV35"
+id = 0x62A
+
+[[Datatype]]
+name = "SingleCellVoltageHV36"
+id = 0x62B
+
+[[Datatype]]
+name = "SingleCellVoltageHV37"
+id = 0x62C
+
+[[Datatype]]
+name = "SingleCellVoltageHV38"
+id = 0x62D
+
+[[Datatype]]
+name = "SingleCellVoltageHV39"
+id = 0x62E
+
+[[Datatype]]
+name = "SingleCellVoltageHV40"
+id = 0x62F
+
+[[Datatype]]
+name = "SingleCellVoltageHV41"
+id = 0x630
+
+[[Datatype]]
+name = "SingleCellVoltageHV42"
+id = 0x631
+
+[[Datatype]]
+name = "SingleCellVoltageHV43"
+id = 0x632
+
+[[Datatype]]
+name = "SingleCellVoltageHV44"
+id = 0x633
+
+[[Datatype]]
+name = "SingleCellVoltageHV45"
+id = 0x634
+
+[[Datatype]]
+name = "SingleCellVoltageHV46"
+id = 0x635
+
+[[Datatype]]
+name = "SingleCellVoltageHV47"
+id = 0x636
+
+[[Datatype]]
+name = "SingleCellVoltageHV48"
+id = 0x637
+
+[[Datatype]]
+name = "SingleCellVoltageHV49"
+id = 0x638
+
+[[Datatype]]
+name = "SingleCellVoltageHV50"
+id = 0x639
+
+[[Datatype]]
+name = "SingleCellVoltageHV51"
+id = 0x63A
+
+[[Datatype]]
+name = "SingleCellVoltageHV52"
+id = 0x63B
+
+[[Datatype]]
+name = "SingleCellVoltageHV53"
+id = 0x63C
+
+[[Datatype]]
+name = "SingleCellVoltageHV54"
+id = 0x63D
+
+[[Datatype]]
+name = "SingleCellVoltageHV55"
+id = 0x63E
+
+[[Datatype]]
+name = "SingleCellVoltageHV56"
+id = 0x63F
+
+[[Datatype]]
+name = "SingleCellVoltageHV57"
+id = 0x640
+
+[[Datatype]]
+name = "SingleCellVoltageHV58"
+id = 0x641
+
+[[Datatype]]
+name = "SingleCellVoltageHV59"
+id = 0x642
+
+[[Datatype]]
+name = "SingleCellVoltageHV60"
+id = 0x643
+
+[[Datatype]]
+name = "SingleCellVoltageHV61"
+id = 0x644
+
+[[Datatype]]
+name = "SingleCellVoltageHV62"
+id = 0x645
+
+[[Datatype]]
+name = "SingleCellVoltageHV63"
+id = 0x646
+
+[[Datatype]]
+name = "SingleCellVoltageHV64"
+id = 0x647
+
+[[Datatype]]
+name = "SingleCellVoltageHV65"
+id = 0x648
+
+[[Datatype]]
+name = "SingleCellVoltageHV66"
+id = 0x649
+
+[[Datatype]]
+name = "SingleCellVoltageHV67"
+id = 0x64A
+
+[[Datatype]]
+name = "SingleCellVoltageHV68"
+id = 0x64B
+
+[[Datatype]]
+name = "SingleCellVoltageHV69"
+id = 0x64C
+
+[[Datatype]]
+name = "SingleCellVoltageHV70"
+id = 0x64D
+
+[[Datatype]]
+name = "SingleCellVoltageHV71"
+id = 0x64E
+
+[[Datatype]]
+name = "SingleCellVoltageHV72"
+id = 0x64F
+
+[[Datatype]]
+name = "SingleCellVoltageHV73"
+id = 0x650
+
+[[Datatype]]
+name = "SingleCellVoltageHV74"
+id = 0x651
+
+[[Datatype]]
+name = "SingleCellVoltageHV75"
+id = 0x652
+
+[[Datatype]]
+name = "SingleCellVoltageHV76"
+id = 0x653
+
+[[Datatype]]
+name = "SingleCellVoltageHV77"
+id = 0x654
+
+[[Datatype]]
+name = "SingleCellVoltageHV78"
+id = 0x655
+
+[[Datatype]]
+name = "SingleCellVoltageHV79"
+id = 0x656
+
+[[Datatype]]
+name = "SingleCellVoltageHV80"
+id = 0x657
+
+[[Datatype]]
+name = "SingleCellVoltageHV81"
+id = 0x658
+
+[[Datatype]]
+name = "SingleCellVoltageHV82"
+id = 0x659
+
+[[Datatype]]
+name = "SingleCellVoltageHV83"
+id = 0x65A
+
+[[Datatype]]
+name = "SingleCellVoltageHV84"
+id = 0x65B
+
+[[Datatype]]
+name = "SingleCellVoltageHV85"
+id = 0x65C
+
+[[Datatype]]
+name = "SingleCellVoltageHV86"
+id = 0x65D
+
+[[Datatype]]
+name = "SingleCellVoltageHV87"
+id = 0x65E
+
+[[Datatype]]
+name = "SingleCellVoltageHV88"
+id = 0x65F
+
+[[Datatype]]
+name = "SingleCellVoltageHV89"
+id = 0x660
+
+[[Datatype]]
+name = "SingleCellVoltageHV90"
+id = 0x661
+
+[[Datatype]]
+name = "SingleCellVoltageHV91"
+id = 0x662
+
+[[Datatype]]
+name = "SingleCellVoltageHV92"
+id = 0x663
+
+[[Datatype]]
+name = "SingleCellVoltageHV93"
+id = 0x664
+
+[[Datatype]]
+name = "SingleCellVoltageHV94"
+id = 0x665
+
+[[Datatype]]
+name = "SingleCellVoltageHV95"
+id = 0x666
+
+[[Datatype]]
+name = "SingleCellVoltageHV96"
+id = 0x667
+
+[[Datatype]]
+name = "SingleCellVoltageHV97"
+id = 0x668
+
+[[Datatype]]
+name = "SingleCellVoltageHV98"
+id = 0x669
+
+[[Datatype]]
+name = "SingleCellVoltageHV99"
+id = 0x66A
+
+[[Datatype]]
+name = "SingleCellVoltageHV100"
+id = 0x66B
+
+[[Datatype]]
+name = "SingleCellVoltageHV101"
+id = 0x66C
+
+[[Datatype]]
+name = "SingleCellVoltageHV102"
+id = 0x66D
+
+[[Datatype]]
+name = "SingleCellVoltageHV103"
+id = 0x66E
+
+[[Datatype]]
+name = "SingleCellVoltageHV104"
+id = 0x66F
+
+[[Datatype]]
+name = "SingleCellVoltageHV105"
+id = 0x670
+
+[[Datatype]]
+name = "SingleCellVoltageHV106"
+id = 0x671
+
+[[Datatype]]
+name = "SingleCellVoltageHV107"
+id = 0x672
+
+[[Datatype]]
+name = "SingleCellVoltageHV108"
+id = 0x673
+
+[[Datatype]]
+name = "SingleCellVoltageHV109"
+id = 0x674
+
+[[Datatype]]
+name = "SingleCellVoltageHV110"
+id = 0x675
+
+[[Datatype]]
+name = "SingleCellVoltageHV111"
+id = 0x676
+
+[[Datatype]]
+name = "SingleCellVoltageHV112"
+id = 0x677
+
 

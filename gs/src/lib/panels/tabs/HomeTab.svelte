@@ -48,5 +48,5 @@
                       successCallback={() => serverStatus.set(false)} />
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
-    <p><kbd class="kbd">0</kbd> - <kbd class="kbd">7</kbd> to browse between the tabs of this panel</p>
+
 </div>
