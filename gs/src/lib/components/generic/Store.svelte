@@ -7,4 +7,4 @@
     const writable = store.writable;
 </script>
 
-<span class={store.style}>{$writable}</span>
+<span class={store.style}>{typeof $writable === "number" ? $writable.toFixed(2) : $writable}</span>
