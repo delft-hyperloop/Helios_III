@@ -328,3 +328,9 @@ priority = 0
 name = "LeviLedOff"
 id = 1006
 priority = 0
+
+[[Event]]
+name = "LeviConnected"
+id = 1007
+priority = 1 
+

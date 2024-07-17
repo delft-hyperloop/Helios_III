@@ -70,6 +70,8 @@ pub async fn aggregate_voltage_readings(
             .expect("Batteries couldn't send command");
     };
 
+    let mut edge = false;
+
     let mut backlog = Backlog::default();
 
     loop {
@@ -92,6 +94,10 @@ pub async fn aggregate_voltage_readings(
 
         if !backlog.is_ready() {
             continue;
+        }
+        if !edge {
+            edge = true;
+            send(Event::LeviConnected);
         }
 
         // Run checks:

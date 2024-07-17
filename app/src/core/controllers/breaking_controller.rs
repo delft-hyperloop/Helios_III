@@ -1,3 +1,4 @@
+use core::sync::atomic::{AtomicBool, Ordering};
 use defmt::info;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Adc;
@@ -64,6 +65,8 @@ pub async fn control_braking_heartbeat(
     }
 }
 
+pub static BRAKES_EXTENDED: AtomicBool = AtomicBool::new(true);
+
 #[embassy_executor::task]
 async fn read_braking_communication(
     event_sender: EventSender,
@@ -78,14 +81,21 @@ async fn read_braking_communication(
         let is_activated = v < 25000; // when braking comm goes low, someone else triggered brakes (eg big red button)
         if edge && is_activated {
             edge = false; // braking comm value is low, so we don't brake until it goes high again
-            if unsafe { !DISABLE_BRAKING_COMMUNICATION } {
-                queue_event(event_sender, Event::EmergencyBraking).await;
+            unsafe {
+                if !DISABLE_BRAKING_COMMUNICATION {
+                    queue_event(event_sender, Event::EmergencyBraking).await;
+                }
+
+                BRAKES_EXTENDED.store(true, Ordering::Release);
             }
             Timer::after_millis(1000).await;
         }
         if !edge && !is_activated {
             // braking comm went high again
             edge = true;
+            unsafe {
+                BRAKES_EXTENDED.store(false, Ordering::Release);
+            }
         }
         Timer::after_micros(10).await;
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(500) {

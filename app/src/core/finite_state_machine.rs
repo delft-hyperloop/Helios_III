@@ -233,6 +233,8 @@ impl Fsm {
             Event::LeviLedOn => self.peripherals.led_controller.levi_led.set_high(),
             Event::LeviLedOff => self.peripherals.led_controller.levi_led.set_low(),
 
+            Event::LeviConnected => self.status.levi_connected = true,
+
             ///////////////////
             // Debugging events
             Event::SettingOverrides(overrides) => self.status.overrides.set(overrides),

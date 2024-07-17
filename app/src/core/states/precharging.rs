@@ -26,7 +26,7 @@ impl Fsm {
                 info!("HV Relays turned off");
                 self.peripherals.led_controller.hv_relay_led(false).await;
                 self.pod_safe().await;
-                transit!(self, State::Idle);
+                transit!(self, State::EmergencyBraking);
             },
             Event::HvLevitationAboveBms | Event::FinishPrecharge => {
                 // 3. make sure pre-charge relay is off
