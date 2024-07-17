@@ -118,6 +118,7 @@ async fn main(spawner: Spawner) -> ! {
     let config = default_configuration();
     let p = embassy_stm32::init(config);
 
+    Timer::after_secs(100).await;
     // let mut usart = Uart::new(p.UART7, p.PF6, p.PF7, Irqs, p.DMA1_CH0, p.DMA1_CH1, config).unwrap();
 
     // -- Static allocations

@@ -41,6 +41,6 @@ impl Fsm {
 }
 
 pub async fn timeout_abort_pre_charge(es: EventSender) {
-    Timer::after_millis(10000).await;
+    Timer::after_millis(4700).await;
     es.send(Event::PrechargeAbort).await;
 }
