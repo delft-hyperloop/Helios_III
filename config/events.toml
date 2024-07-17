@@ -314,3 +314,23 @@ name = "CygnusesVaryingVoltages"
 id = 1003
 priority = 1 
 
+[[Event]]
+name = "PrechargeAbort"
+id = 1004
+priority = 1 
+
+[[Event]]
+name = "LeviLedOn"
+id = 1005
+priority = 0
+
+[[Event]]
+name = "LeviLedOff"
+id = 1006
+priority = 0
+
+[[Event]]
+name = "LeviConnected"
+id = 1007
+priority = 1 
+

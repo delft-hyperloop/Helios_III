@@ -9,6 +9,7 @@ pub struct Status {
     // pub hub_connected: bool, // todo: set this on from hub data + check before leaving idle
     pub brakes_armed: bool,
     pub levitating: bool,
+    pub levi_connected: bool,
 }
 
 /// Some overrides that can be set to change the behavior of the fsm
@@ -38,6 +39,8 @@ impl Overrides {
 
     /// Allow HV ON without brakes armed
     pub fn hv_without_brakes_armed(&self) -> bool { self.values & 0b100 != 0 }
+
+    pub fn run_without_configure(&self) -> bool { self.values & 0b1000 != 0 }
 }
 
 include!("../../../util/src/shared/routes.rs");

@@ -6,6 +6,7 @@
 #![deny(rustdoc::broken_intra_doc_links)]
 
 use ::core::borrow::Borrow;
+use ::core::sync::atomic::AtomicBool;
 use defmt::*;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
@@ -30,6 +31,7 @@ use core::finite_state_machine::*;
 
 use crate::core::communication::data::Datapoint;
 use crate::core::data::data_middle_step;
+use crate::core::data::trash;
 use crate::pconfig::default_configuration;
 
 // We need to include the external variables imported from build.rs
@@ -52,11 +54,21 @@ bind_interrupts!(struct CanTwoInterrupts {
 // Custom Data types-----------------------
 
 /// A transmitter for the [`Datapoint`] MPMC [`DATA_QUEUE`]
-type DataSender =
-    embassy_sync::channel::Sender<'static, NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>;
+type DataSender = embassy_sync::priority_channel::Sender<
+    'static,
+    NoopRawMutex,
+    Datapoint,
+    Max,
+    { DATA_QUEUE_SIZE },
+>;
 /// A receiver for the [`Datapoint`] MPMC [`DATA_QUEUE`]
-type DataReceiver =
-    embassy_sync::channel::Receiver<'static, NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>;
+type DataReceiver = embassy_sync::priority_channel::Receiver<
+    'static,
+    NoopRawMutex,
+    Datapoint,
+    Max,
+    { DATA_QUEUE_SIZE },
+>;
 /// A transmitter for the [`Event`] MPMC [`EVENT_QUEUE`]
 type EventSender =
     embassy_sync::priority_channel::Sender<'static, NoopRawMutex, Event, Max, { EVENT_QUEUE_SIZE }>;
@@ -81,11 +93,12 @@ static EVENT_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Event, Max, { EVENT
     StaticCell::new();
 
 /// The allocation for [`Datapoint`]-[`embassy_sync::channel`]
-static DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
+static DATA_QUEUE: StaticCell<PriorityChannel<NoopRawMutex, Datapoint, Max, { DATA_QUEUE_SIZE }>> =
     StaticCell::new();
 /// The allocation for a [`Datapoint`]-[`embassy_sync::channel`]
-static PARSED_DATA_QUEUE: StaticCell<Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }>> =
-    StaticCell::new();
+static PARSED_DATA_QUEUE: StaticCell<
+    PriorityChannel<NoopRawMutex, Datapoint, Max, { DATA_QUEUE_SIZE }>,
+> = StaticCell::new();
 
 /// The allocation for [`can::frame::Frame`]-[`embassy_sync::channel`]
 static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
@@ -93,6 +106,8 @@ static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_
 /// The allocation for [`can::frame::Frame`]-[`embassy_sync::channel`]
 static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
     StaticCell::new();
+
+pub static mut CONNECTED: AtomicBool = AtomicBool::new(false);
 
 /// Util struct for initialising [`FSMPeripherals`]
 pub struct InternalMessaging {
@@ -115,8 +130,6 @@ async fn main(spawner: Spawner) -> ! {
     let config = default_configuration();
     let p = embassy_stm32::init(config);
 
-    // let mut usart = Uart::new(p.UART7, p.PF6, p.PF7, Irqs, p.DMA1_CH0, p.DMA1_CH1, config).unwrap();
-
     // -- Static allocations
     // The communication channels get initialized and their endpoints are passed
     // on to the FSM and other tasks
@@ -127,12 +140,20 @@ async fn main(spawner: Spawner) -> ! {
     let event_sender: EventSender = event_queue.sender();
 
     // The data queue carries data points from all tasks to the data middle step
-    let data_queue: &'static mut Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }> =
-        DATA_QUEUE.init(Channel::new());
+    let data_queue: &'static mut PriorityChannel<
+        NoopRawMutex,
+        Datapoint,
+        Max,
+        { DATA_QUEUE_SIZE },
+    > = DATA_QUEUE.init(PriorityChannel::new());
 
     // The parsed data queue carries data points from the data middle step to the ground station
-    let parsed_data_queue: &'static mut Channel<NoopRawMutex, Datapoint, { DATA_QUEUE_SIZE }> =
-        PARSED_DATA_QUEUE.init(Channel::new());
+    let parsed_data_queue: &'static mut PriorityChannel<
+        NoopRawMutex,
+        Datapoint,
+        Max,
+        { DATA_QUEUE_SIZE },
+    > = PARSED_DATA_QUEUE.init(PriorityChannel::new());
 
     // Send data to the middle step
     let data_sender: DataSender = data_queue.sender();
@@ -161,7 +182,7 @@ async fn main(spawner: Spawner) -> ! {
     // -- End peripheral configuration
 
     // Create FSM
-    let mut fsm = Fsm::new(per, event_queue.receiver(), data_sender);
+    let mut fsm = Fsm::new(per, event_queue.receiver(), event_sender, data_sender, spawner);
     fsm.entry().await;
     // --
 
@@ -176,6 +197,14 @@ async fn main(spawner: Spawner) -> ! {
             event_sender
         ))
     );
+
+    try_spawn!(event_sender, spawner.spawn(trash::overflow(data_sender, data_queue.receiver())));
+    try_spawn!(
+        event_sender,
+        spawner.spawn(trash::overflow(parsed_data_queue.sender(), parsed_data_queue.receiver()))
+    );
+
+    // try_spawn!(event_sender, spawner.spawn(trash::overflow(data_queue, parsed_data_queue)));
     // End Spawn Tasks
 
     // # Main Loop

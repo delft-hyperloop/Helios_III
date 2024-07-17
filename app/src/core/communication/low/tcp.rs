@@ -54,7 +54,7 @@ pub struct TcpCommunication<'a> {
     es: EventSender,
     last_valid_timestamp: u64, // in milliseconds
     pub socket: Option<TcpSocket<'a>>,
-    gs_addr: IpEndpoint,
+    addr: IpEndpoint,
 }
 
 pub struct EthernetInit {
@@ -89,10 +89,15 @@ impl HardwareLayer for TcpCommunication<'static> {
     }
 
     async fn connect(&mut self) -> Result<(), CommunicationError> {
-        let mut socket: TcpSocket =
-            unsafe { TcpSocket::new(self.stack, TCP_RX_BUFFER.as_mut(), TCP_TX_BUFFER.as_mut()) };
+        let mut socket: TcpSocket = unsafe {
+            let a = TCP_RX_BUFFER.as_mut();
+            a.iter_mut().for_each(|x| *x = 0);
+            let b = TCP_TX_BUFFER.as_mut();
+            b.iter_mut().for_each(|x| *x = 0);
+            TcpSocket::new(self.stack, a, b)
+        };
 
-        match socket.connect(self.gs_addr).await {
+        match socket.connect(self.addr).await {
             Ok(_) => {
                 self.last_valid_timestamp = Instant::now().as_millis();
                 self.socket = Some(socket);
@@ -270,7 +275,7 @@ impl TcpCommunication<'_> {
             es: init.sender,
             socket: None,
             last_valid_timestamp: 0,
-            gs_addr: unsafe { embassy_socket_from_config(GS_IP_ADDRESS) },
+            addr: unsafe { embassy_socket_from_config(GS_IP_ADDRESS) },
         }
     }
 }

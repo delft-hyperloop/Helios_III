@@ -5,6 +5,8 @@
 
 mod batteries;
 mod sources;
+pub mod trash;
+// mod trash;
 
 use embassy_time::Duration;
 use embassy_time::Instant;

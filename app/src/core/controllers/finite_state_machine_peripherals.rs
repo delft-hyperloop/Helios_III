@@ -104,15 +104,8 @@ impl FSMPeripherals {
             lv_controller,
         )
         .await;
-        let led_controller = LedController::new(
-            Output::new(p.PE7, Level::Low, Speed::Low),
-            Output::new(p.PE8, Level::Low, Speed::Low),
-            Output::new(p.PE9, Level::Low, Speed::Low),
-            Output::new(p.PE10, Level::Low, Speed::Low),
-            Output::new(p.PE13, Level::Low, Speed::Low),
-            Output::new(p.PE14, Level::Low, Speed::Low),
-        )
-        .await;
+        let led_controller =
+            LedController::new(p.PE7, p.PE8, p.PE9, p.PE10, p.PE11, p.PE13, p.PE14).await;
 
         // the propulsion controller spawns tasks for reading current and voltage, and holds functions for setting the speed through the DAC
         let propulsion_controller = PropulsionController::new(

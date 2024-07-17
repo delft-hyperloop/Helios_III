@@ -125,8 +125,8 @@ pub fn tauri_main(backend: Backend) {
                                 },
                                 Message::Status(s) => app_handle
                                     .emit_all(
-                                        STATUS_CHANNEL,
-                                        &*format!("{:?};{}", s, s.to_colour_str()),
+                                        INFO_CHANNEL,
+                                        &*format!("Status: {:?}", s),
                                     )
                                     .unwrap(),
                                 Message::Info(i) => {

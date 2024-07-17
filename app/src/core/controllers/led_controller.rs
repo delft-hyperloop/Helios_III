@@ -1,32 +1,44 @@
 use defmt::info;
+use embassy_stm32::gpio::Level;
 use embassy_stm32::gpio::Output;
+use embassy_stm32::gpio::Speed;
+use embassy_stm32::peripherals::PE10;
+use embassy_stm32::peripherals::PE11;
+use embassy_stm32::peripherals::PE13;
+use embassy_stm32::peripherals::PE14;
+use embassy_stm32::peripherals::PE7;
+use embassy_stm32::peripherals::PE8;
+use embassy_stm32::peripherals::PE9;
 
 pub struct LedController {
     pub led_1: Output<'static>,
     pub led_2: Output<'static>,
     pub led_3: Output<'static>,
     pub led_4: Output<'static>,
+    pub levi_led: Output<'static>,
     pub hv_relay_1: Output<'static>,
     pub hv_relay_2: Output<'static>,
 }
 
 impl LedController {
     pub async fn new(
-        pe7: Output<'static>,
-        pe8: Output<'static>,
-        pe9: Output<'static>,
-        pe10: Output<'static>,
-        pe13: Output<'static>,
-        pe14: Output<'static>,
+        pe7: PE7,
+        pe8: PE8,
+        pe9: PE9,
+        pe10: PE10,
+        pe11: PE11,
+        pe13: PE13,
+        pe14: PE14,
     ) -> Self {
         info!("Led PCB ON");
         LedController {
-            led_1: pe7,
-            led_2: pe8,
-            led_3: pe9,
-            led_4: pe10,
-            hv_relay_1: pe13,
-            hv_relay_2: pe14,
+            led_1: Output::new(pe7, Level::Low, Speed::Low),
+            led_2: Output::new(pe8, Level::Low, Speed::Low),
+            led_3: Output::new(pe9, Level::Low, Speed::Low),
+            led_4: Output::new(pe10, Level::Low, Speed::Low),
+            levi_led: Output::new(pe11, Level::Low, Speed::Low),
+            hv_relay_1: Output::new(pe13, Level::Low, Speed::Low),
+            hv_relay_2: Output::new(pe14, Level::Low, Speed::Low),
         }
     }
 

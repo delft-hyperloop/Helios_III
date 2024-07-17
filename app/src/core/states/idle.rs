@@ -1,4 +1,6 @@
+use core::sync::atomic::Ordering;
 use defmt::info;
+use crate::core::controllers::breaking_controller::BRAKES_EXTENDED;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
@@ -13,8 +15,13 @@ impl Fsm {
         match event {
             Event::TurnOnHVCommand => {
                 // check for preconditions
-                if !self.status.brakes_armed && !self.status.overrides.hv_without_brakes_armed() {
+                if (unsafe { BRAKES_EXTENDED.load(Ordering::Acquire) } || !self.status.brakes_armed) && !self.status.overrides.hv_without_brakes_armed() {
                     self.log(Info::BrakesNotArmed).await;
+                    return;
+                }
+
+                if !self.status.levi_connected {
+                    self.log(Info::LevitationNotStarted).await;
                     return;
                 }
 
@@ -22,7 +29,7 @@ impl Fsm {
 
                 #[cfg(debug_assertions)]
                 info!("Starting HV System");
-                self.peripherals.hv_peripherals.power_on_hv_procedure().await;
+                // self.peripherals.hv_peripherals.power_on_hv_procedure().await;
 
                 self.peripherals.led_controller.hv_relay_led(true).await;
                 transit!(self, State::Precharging);

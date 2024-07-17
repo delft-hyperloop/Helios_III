@@ -1,5 +1,4 @@
 use defmt::error;
-use defmt::info;
 use embassy_net::IpAddress::Ipv4;
 use embassy_net::IpEndpoint;
 use embassy_net::Ipv4Address;
@@ -24,10 +23,8 @@ use crate::EventSender;
 pub fn default_configuration() -> Config {
     let mut config = Config::default();
 
-    config.rcc.hse = Some(rcc::Hse {
-        freq: embassy_stm32::time::Hertz(8_000_000),
-        mode: HseMode::Oscillator,
-    });
+    config.rcc.hse =
+        Some(rcc::Hse { freq: embassy_stm32::time::Hertz(8_000_000), mode: HseMode::Oscillator });
     config.rcc.pll1 = Some(Pll {
         source: PllSource::HSE,
         prediv: PllPreDiv::DIV2,
@@ -116,9 +113,7 @@ pub fn extended_as_value(id: &ExtendedId) -> u16 {
     }
     let temp = id.as_raw();
     let big_id = (temp & (0xFFFF000)) >> 16;
-    // info!("big_id {:?}", big_id);
     let mut small_id = temp & 0xFF;
-    // info!("small_id {:?}", small_id);
     let dt = temp & 0x0000F00;
     #[allow(clippy::self_assignment)]
     match dt {
@@ -130,7 +125,6 @@ pub fn extended_as_value(id: &ExtendedId) -> u16 {
         0x800 => small_id += 96,   // Balance messages
         _ => {},                   // small_id = small_id | 0x000,
     }
-    info!("small_id {:?}", small_id);
     (big_id + small_id) as u16
 }
 
@@ -181,39 +175,55 @@ pub fn send_event(event_sender: EventSender, event: Event) {
 macro_rules! send_data {
     ($data_sender:expr, $dtype:expr, $data:expr) => {
         {
-            if let Err(e) = $data_sender.try_send(
-                $crate::Datapoint::new($dtype, $data, $crate::pconfig::ticks())
-            ) {
-                defmt::error!("[send] data channel full: {:?}", e);
+            if ! unsafe { $crate::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) } {
+                defmt::warn!("[send] Not connected, dropping {:?} {:?}", $dtype, $data);
+            } else {
+                if let Err(e) = $data_sender.try_send(
+                    $crate::Datapoint::new($dtype, $data, $crate::pconfig::ticks())
+                ) {
+                    defmt::error!("[send] data channel full: {:?}", e);
+                }
             }
         }
     };
     ($data_sender:expr, $dtype:expr, $data:expr, $timestamp:expr) => {
         {
-            if let Err(e) = $data_sender.try_send(
-                $crate::Datapoint::new($dtype, $data, $timestamp)
-            ) {
-                defmt::error!("[send] data channel full: {:?}", e);
+            if ! unsafe { $crate::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) } {
+                defmt::warn!("[send] Not connected, dropping {:?} {:?} {:?}", $dtype, $data, $timestamp);
+            } else {
+                if let Err(e) = $data_sender.try_send(
+                    $crate::Datapoint::new($dtype, $data, $timestamp)
+                ) {
+                    defmt::error!("[send] data channel full: {:?}", e);
+                }
             }
         }
     };
     ($data_sender:expr, $dtype:expr, $data:expr; $timeout:expr) => {
         {
-            if let Err(e) = $data_sender.try_send(
-                $crate::Datapoint::new($dtype, $data, $crate::pconfig::ticks())
-            ) {
-                defmt::error!("[send] data channel full: {:?}", e);
-                embassy_time::Timer::after_millis($timeout).await;
+            if ! unsafe { $crate::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) } {
+                defmt::warn!("[send] Not connected, dropping {:?} {:?}", $dtype, $data);
+            } else {
+                if let Err(e) = $data_sender.try_send(
+                    $crate::Datapoint::new($dtype, $data, $crate::pconfig::ticks())
+                ) {
+                    defmt::error!("[send] data channel full: {:?}", e);
+                    embassy_time::Timer::after_millis($timeout).await;
+                }
             }
         }
     };
     ($data_sender:expr, $dtype:expr, $data:expr, $timestamp:expr; $timeout:expr) => {
         {
-            if let Err(e) = $data_sender.try_send(
-                $crate::core::communication::Datapoint::new($dtype, $data, $timestamp)
-            ) {
-                defmt::error!("[send] data channel full: {:?}", e);
-                embassy_time::Timer::after_millis($timeout).await;
+            if ! unsafe { $crate::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) } {
+                defmt::warn!("[send] Not connected, dropping {:?} {:?} {:?}", $dtype, $data, $timestamp);
+            } else {
+                if let Err(e) = $data_sender.try_send(
+                    $crate::core::communication::Datapoint::new($dtype, $data, $timestamp)
+                ) {
+                    defmt::error!("[send] data channel full: {:?}", e);
+                    embassy_time::Timer::after_millis($timeout).await;
+                }
             }
         }
     };

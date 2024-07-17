@@ -26,7 +26,7 @@
         ["Upper drawer VB", DE.AVERAGE_TEMP_VB_BOTTOM, "HEMS 1", DE.TEMP_HEMS_1],
         ["Bottom drawer VB", DE.AVERAGE_TEMP_VB_BOTTOM, "HEMS 2", DE.TEMP_HEMS_2],
         ["Outside of VB", DE.AMBIENT_TEMP, "HEMS 3", DE.TEMP_HEMS_3],
-        ["Propulsion", DE.PROPULSIONCURRENT, "HEMS 4", DE.TEMP_HEMS_4],
+        ["Propulsion", DE.PROPULSIONTEMPERATURE, "HEMS 4", DE.TEMP_HEMS_4],
         ["Levitation", DE.LEVITATIONTEMPERATURE, "EMS 1", DE.TEMP_EMS_1],
         ["Brake", DE.BRAKETEMPERATURE, "EMS 2", DE.TEMP_EMS_2],
     ]

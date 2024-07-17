@@ -17,7 +17,7 @@ pub fn handle_line_from_levi(
 
     match params[0] {
         "INFO" => {
-            msg_send.send(Message::Info(format!("Levi: {}", params[1..].join(","))))?;
+            // msg_send.send(Message::Info(format!("Levi: {}", params[1..].join(","))))?;
         },
         "WARNING" => {
             msg_send.send(Message::Warning(format!("Levi Warning: {}", params[1..].join(","))))?;
@@ -27,7 +27,7 @@ pub fn handle_line_from_levi(
             msg_send.send(Message::Error(format!("Levi Error: {}", params[1..].join(","))))?;
         },
         "CRITICAL" => {
-            cmd_send.send(Command::EmergencyBrake(3))?;
+            // cmd_send.send(Command::EmergencyBrake(3))?;
             msg_send.send(Message::Error(format!("LEVI CRITICAL: {}", params[1..].join(","))))?;
         },
         "DATA" if params.len() > 2 => {
@@ -45,7 +45,7 @@ pub fn handle_line_from_levi(
             }
         },
         _ => {
-            msg_send.send(Message::Warning(format!("Unknown levi msg: {:?}", line)))?;
+            // msg_send.send(Message::Warning(format!("Unknown levi msg: {:?}", line)))?;
             return Ok(());
         },
     }

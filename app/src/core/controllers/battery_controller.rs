@@ -1,4 +1,3 @@
-use defmt::debug;
 use defmt::trace;
 
 use crate::core::communication::data::Datapoint;
@@ -104,33 +103,33 @@ impl BatteryController {
         match Datatype::from_id(id) {
             Datatype::DefaultBMSLow | Datatype::DefaultBMSHigh => {
                 self.default_bms_startup_info(data, timestamp).await;
-                debug!("Default BMS");
+                trace!("Default BMS");
             },
             Datatype::BatteryVoltageLow | Datatype::BatteryVoltageHigh => {
                 self.battery_voltage_overall_bms(data, timestamp).await;
-                debug!("Battery Voltage")
+                trace!("Battery Voltage")
             },
             Datatype::DiagnosticBMSLow | Datatype::DiagnosticBMSHigh => {
                 self.diagnostic_bms(data, timestamp).await;
-                debug!("Diagnostic BMS")
+                trace!("Diagnostic BMS")
             },
             Datatype::BatteryTemperatureLow | Datatype::BatteryTemperatureHigh => {
                 self.overall_temperature_bms(data, timestamp).await;
-                debug!("Battery Temperature")
+                trace!("Battery Temperature")
             },
             Datatype::BatteryBalanceLow | Datatype::BatteryBalanceHigh => {
                 self.overall_balancing_status_bms(data, timestamp).await;
-                debug!("Battery Balancing")
+                trace!("Battery Balancing")
             },
             Datatype::ChargeStateLow | Datatype::ChargeStateHigh => {
                 self.state_of_charge_bms(data, timestamp).await;
-                debug!("Charge State")
+                trace!("Charge State")
             },
             _x if Datatype::SingleCellTemperatureLow.to_id() == id
                 || (Datatype::SingleCellTemperatureHigh_1.to_id() <= id
                     && Datatype::SingleCellTemperatureHigh_14.to_id() >= id) =>
             {
-                debug!("Individual Temperature");
+                trace!("Individual Temperature");
                 if self.number_of_temp >= 13 {
                     self.number_of_temp = 0;
                     let mut i = 0;
@@ -158,7 +157,7 @@ impl BatteryController {
                     self.number_of_temp += 1;
                 }
 
-                debug!("Individual Temperature")
+                trace!("Individual Temperature")
             },
             _x if Datatype::SingleCellVoltageLow.to_id() == id
                 || (Datatype::SingleCellVoltageHigh_1.to_id() <= id
@@ -203,14 +202,14 @@ impl BatteryController {
                     self.number_of_volt += 1;
                 }
 
-                debug!("Individual Voltage")
+                trace!("Individual Voltage")
             },
             Datatype::BatteryEventLow | Datatype::BatteryEventHigh => {
                 self.event_bms(data, timestamp).await;
-                debug!("Battery Event")
+                trace!("Battery Event")
             },
             x => {
-                debug!("Ignored BMS: {:?} (id={:?})", x, x.to_id());
+                trace!("Ignored BMS: {:?} (id={:?})", x, x.to_id());
             },
         }
     }
@@ -316,7 +315,7 @@ impl BatteryController {
             Datatype::BatteryEstimatedChargeLow
         };
 
-        queue_dp(self.data_sender, battery_current_dt, (current+2000) as u64, timestamp).await;
+        queue_dp(self.data_sender, battery_current_dt, (current + 2000) as u64, timestamp).await;
         queue_dp(self.data_sender, charge_state_dt, state_of_charge, timestamp).await;
         queue_dp(self.data_sender, estimated_charge_dt, estimated_charge, timestamp).await;
     }

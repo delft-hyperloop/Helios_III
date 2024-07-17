@@ -75,6 +75,10 @@ name = "ConnectionStatus"
 id = 0x7fe
 
 [[Datatype]]
+name = "PropulsionTemperature"
+id = 0x212
+
+[[Datatype]]
 name = "PropulsionVoltage"
 id = 0x1b2
 display_units = "V"
@@ -1292,30 +1296,37 @@ id = 0x166
 [[Datatype]]
 name = "CommandHash"
 id = 0x167
+priority = 1
 
 [[Datatype]]
 name = "EventsHash"
 id = 0x168
+priority = 1
 
 [[Datatype]]
 name = "DataHash"
 id = 0x169
+priority = 1
 
 [[Datatype]]
 name = "ConfigHash"
 id = 0x171
+priority = 1
 
 [[Datatype]]
 name = "ValueError"
 id = 0x16a
+priority = 1
 
 [[Datatype]]
 name = "ValueWarning"
 id = 0x16b
+priority = 1
 
 [[Datatype]]
 name = "ValueCausedBraking"
 id = 0x16c
+priority = 1
 
 [[Datatype]]
 name = "NextPositionDebug"
@@ -1332,10 +1343,17 @@ id = 0x16f
 [[Datatype]]
 name = "FrontendHeartbeating"
 id = 0x170
+priority = 1
 
 [[Datatype]]
 name = "HeartbeatExpired"
 id = 0x7fd
+priority = 1
+
+[[Datatype]]
+name = "OverflowUnit"
+id = 0x7fc
+priority = 7 
 
 
 [[Datatype]]
