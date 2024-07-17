@@ -109,10 +109,11 @@ class StoreManager {
      * Register a store
      * @param name - the name of the store
      * @param initial
+     * @param initialUnits
      * @param processFunction - the function to process the data
      */
-    public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>) {
-        this.stores.set(name, new Store(initial, '', '', processFunction));
+    public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>, initialUnits?:string) {
+        this.stores.set(name, new Store(initial, '', initialUnits || '', processFunction));
     }
 
     /**
