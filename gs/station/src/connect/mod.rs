@@ -8,7 +8,7 @@ use tokio::net::TcpListener;
 use tokio::net::TcpStream;
 use tokio::task::JoinHandle;
 
-use crate::api::gs_socket;
+use crate::api::socket;
 use crate::api::Message;
 use crate::battery::aggregate_voltage_readings;
 use crate::battery::DataReceiver;
@@ -27,17 +27,14 @@ pub async fn connect_main(
     data_receiver: DataReceiver,
     data_sender: DataSender,
 ) -> Result<()> {
-    // Bind the listener to the address
+    // connect the stream to the address
+    let pod = socket();
     message_transmitter
-        .send(Message::Warning(format!("trying to connect... {:?}", gs_socket())))?;
-    let listener = TcpListener::bind(gs_socket()).await?;
-    message_transmitter.send(Message::Status(Info::ServerStarted))?;
-    message_transmitter.send(Message::Info(format!("Server Listening on: {}", gs_socket())))?;
-    // The second item contains the IP and port of the new connection.
-    let (socket, client_addr) = listener.accept().await?;
-    message_transmitter.send(Message::Info(format!("New connection from: {}", client_addr)))?;
+        .send(Message::Warning(format!("trying to connect... {:?}", socket())))?;
+    let connection = TcpStream::connect(socket()).await?;
+    message_transmitter.send(Message::Status(Info::ConnectionEstablished))?;
     let (x, y, z) = process_stream(
-        socket,
+        connection,
         message_transmitter.clone(),
         command_receiver.resubscribe(),
         command_transmitter.clone(),

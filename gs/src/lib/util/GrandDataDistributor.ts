@@ -83,8 +83,7 @@ export class GrandDataDistributor {
      */
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
-            // emit(EventChannel.INFO, `Datapoint received: ${datapoint.datatype} - ${datapoint.value}`);
-            this.StoreManager.updateStore(datapoint.datatype, datapoint.style, datapoint.value);
+            this.StoreManager.updateStore(datapoint.datatype, datapoint.style, datapoint.units, datapoint.value);
         });
     }
 
@@ -110,21 +109,23 @@ class StoreManager {
      * Register a store
      * @param name - the name of the store
      * @param initial
+     * @param initialUnits
      * @param processFunction - the function to process the data
      */
-    public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>) {
-        this.stores.set(name, new Store(initial, '', processFunction));
+    public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>, initialUnits?:string) {
+        this.stores.set(name, new Store(initial, '', initialUnits || '', processFunction));
     }
 
     /**
      * Update a store
      * @param name - the name of the store
      * @param style
+     * @param units
      * @param data - the data to update the store with
      */
-    public updateStore(name: NamedDatatype, style:string, data: number) {
+    public updateStore(name: NamedDatatype, style:string, units:string, data: number) {
         const store = this.stores.get(name);
-        if (store) store.set(data, style);
+        if (store) store.set(data, style, units);
     }
 
     public getWritable(name: NamedDatatype):Writable<any> {
@@ -147,16 +148,19 @@ class Store<T> {
     private readonly processFunction: dataConvFun<T>;
     private readonly _writable: Writable<T>;
     private _style: string;
+    private _units: string;
 
-    constructor(initial:T, style:string, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
+    constructor(initial:T, style:string, units:string, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
         this._writable = writable<T>(initial);
         this.processFunction = processFunction;
         this._style = style;
+        this._units = units;
     }
 
-    public set(data: number, style: string) {
+    public set(data: number, style: string, units:string) {
         this.writable.set(this.processFunction(data, get(this.writable)));
         this._style = style;
+        this._units = units;
     }
 
     public get writable():Writable<T> {
@@ -165,5 +169,9 @@ class Store<T> {
 
     public get style():string {
         return this._style;
+    }
+
+    get units(): string {
+        return this._units;
     }
 }

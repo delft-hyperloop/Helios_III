@@ -56,9 +56,3 @@
         </div>
     </svelte:fragment>
 </TabGroup>
-
-<style lang="scss">
-    .unMargin {
-      margin-top: -16px;
-    }
-</style>

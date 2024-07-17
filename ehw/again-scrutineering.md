@@ -1,6 +1,6 @@
 # Sense and control scrutineering
 
-- [ ] display all individual cell voltages
+- [ ] display all individual cell voltages -> fix table render
 - [X] cut off floating points
 - [ ] remove insulation from vitals if it is not measured
 - [X] remove 1-7 shortcuts
@@ -12,6 +12,8 @@
 - [ ] button for saving
 
 - [ ] LOGS SENDING NOTIFICATIONS DOES NOT WORK
+- [ ] not everything is printed to the logs 
+->> for these two, please leave all the functionality to the backend
 
 - [ ] update svg for fsm and state mappings
 

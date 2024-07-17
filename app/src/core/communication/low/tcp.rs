@@ -97,7 +97,7 @@ impl HardwareLayer for TcpCommunication<'static> {
             TcpSocket::new(self.stack, a, b)
         };
 
-        match socket.connect(self.addr).await {
+        match socket.accept(self.addr).await {
             Ok(_) => {
                 self.last_valid_timestamp = Instant::now().as_millis();
                 self.socket = Some(socket);
@@ -275,7 +275,7 @@ impl TcpCommunication<'_> {
             es: init.sender,
             socket: None,
             last_valid_timestamp: 0,
-            addr: unsafe { embassy_socket_from_config(GS_IP_ADDRESS) },
+            addr: unsafe { embassy_socket_from_config(POD_IP_ADDRESS) },
         }
     }
 }
