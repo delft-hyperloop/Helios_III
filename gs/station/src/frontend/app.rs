@@ -80,13 +80,13 @@ pub fn tauri_main(backend: Backend) {
                         })
                         .expect("Could not register shortcut");
 
-                        (0..10).for_each(|i| {
-                            let sss = s.clone();
-                            sh.register(&format!("{i}"), move || {
-                                sss.emit_all(SHORTCUT_CHANNEL, &format!("tab_{i}")).unwrap();
-                            })
-                            .unwrap_or_else(|_| panic!("Could not register shortcut tab_{i}"));
-                        });
+                        // (0..10).for_each(|i| {
+                        //     let sss = s.clone();
+                        //     sh.register(&format!("{i}"), move || {
+                        //         sss.emit_all(SHORTCUT_CHANNEL, &format!("tab_{i}")).unwrap();
+                        //     })
+                        //     .unwrap_or_else(|_| panic!("Could not register shortcut tab_{i}"));
+                        // });
                     },
                     WindowEvent::Focused(false) => {
                         // Unregister shortcuts when window loses focus
