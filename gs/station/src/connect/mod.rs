@@ -28,10 +28,11 @@ pub async fn connect_main(
     data_sender: DataSender,
 ) -> Result<()> {
     // connect the stream to the address
-    let pod = socket();
     message_transmitter
         .send(Message::Warning(format!("trying to connect... {:?}", socket())))?;
-    let connection = TcpStream::connect(socket()).await?;
+    // let connection = TcpStream::connect(socket()).await?;
+    let connection = TcpListener::bind(socket()).await?;
+    let (connection, _) = connection.accept().await?;
     message_transmitter.send(Message::Status(Info::ConnectionEstablished))?;
     let (x, y, z) = process_stream(
         connection,
