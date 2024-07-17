@@ -240,7 +240,7 @@ namespace PmpGettingStartedCs
                         Console.WriteLine("CRITICAL:mode_error\n");
                     }
                     break;
-
+/*
                 case "LeviStartLS":
                     try
                     {
@@ -251,7 +251,7 @@ namespace PmpGettingStartedCs
                     {
                         Console.WriteLine("CRITICAL:mode_error\n");
                     }
-                    break;
+                    break;*/
 
                 case "LeviStopLS":
                     try
@@ -413,7 +413,7 @@ namespace PmpGettingStartedCs
                     break;
 
 
-                case string data_str when data_str.Contains("data:"):
+               /* case string data_str when data_str.Contains("data:"):
                     try
                     {
                         data_str = data_str.Trim();
@@ -435,7 +435,7 @@ namespace PmpGettingStartedCs
                     {
                         Console.WriteLine("WARNING:receive_data_error\n");
                     }
-                    break;
+                    break;*/
 
                 default:
                     Console.WriteLine("WARNING:invalid\n");
@@ -504,10 +504,10 @@ namespace PmpGettingStartedCs
             this.Offset_AB = LateralController.Signals["OffsetFront"];
             this.Offset_CD = LateralController.Signals["OffsetBack"];
 
-            this.SenseconLocation = LateralController.Signals["x_location_raw"];
+/*            this.SenseconLocation = LateralController.Signals["x_location_raw"];
             this.LeviLocation = LateralController.Signals["x_location"];
             this.LeviSpeed = LateralController.Signals["x_speed"];
-            this.LS_signal = LateralController.Signals["LS_signal"];
+            this.LS_signal = LateralController.Signals["LS_signal"];*/
             this.PropulsionCurrent = VerticalController.Signals["PropulsionCurrent"];
 
             this.Airgap = VerticalController.Signals["Airgap"];
@@ -747,13 +747,14 @@ namespace PmpGettingStartedCs
 
                     try
                     {
-                        Thread.Sleep(2000);
-                        arcas.getVerticalAirgaps();
+                        Thread.Sleep(50);
+                        arcas.getVoltages();
+/*                        arcas.getVerticalAirgaps();
                         arcas.getLateralAirgaps();
                         arcas.getCurrents();
-                        arcas.getDegreesOfFreedom();
-                        arcas.getVoltages();
-                        arcas.getLocalization();
+                        arcas.getDegreesOfFreedom();*/
+
+/*                        arcas.getLocalization();*/
 
                     }
                     catch (Exception)
