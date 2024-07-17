@@ -32,8 +32,8 @@
     ]
 
     $: tableArr2 = [
-        ["Insulation", DE.INSULATIONORIGINAL, "Insulation-", DE.INSULATIONNEGATIVE],
-        ["IMD Voltage", DE.IMDVOLTAGEDETAILS, "Insulation+", DE.INSULATIONPOSITIVE],
+        ["Voltage", DE.PROPULSIONVOLTAGE, "VRefInt", DE.PROPULSIONVREFINT],
+        ["Current", DE.PROPULSIONCURRENT, "",DE.INSULATIONPOSITIVE],
     ]
 
     const location = storeManager.getWritable("Localisation");
@@ -119,14 +119,10 @@
                     <Table tableArr={tableTempsArr} titles={["Module", "Temp °C", "Module", "Temp °C"]}/>
                 </Tile>
                 <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
-                    <Table titles={["Variable", "Status", "Variable", "Status"]} tableArr={tableArr2}/>
+                    <Table titles={["Propulsion", "Status", "Propulsion", "Status"]} tableArr={tableArr2}/>
                 </Tile>
                 <Tile bgToken={800} containerClass="col-span-2 px-16">
-                    {#if width > 550}
                         <FSM size="sm"/>
-                    {:else}
-                        <FSM size="lg"/>
-                    {/if}
                 </Tile>
 
             </TileGrid>

@@ -321,6 +321,7 @@
     gdd.stores.registerStore<number>("Acceleration", 0);
     gdd.stores.registerStore<number>("Direction", 0);
 
+    gdd.stores.registerStore<number>("PropulsionTemperature", 0);
     gdd.stores.registerStore<number>("PropulsionCurrent", 0);
     gdd.stores.registerStore<number>("PropulsionSpeed", 0);
     gdd.stores.registerStore<number>("PropulsionVoltage", 0);
