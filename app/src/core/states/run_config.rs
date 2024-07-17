@@ -32,12 +32,15 @@ impl Fsm {
             },
             Event::ArmBrakesCommand => {
                 self.peripherals.braking_controller.arm_breaks().await; // without this you cant turn on hv
-                self.status.brakes_armed = true; // todo: message ground station
+                self.status.brakes_armed = true;
                 debug!("[fsm] Rearmed brakes!");
                 self.log(Info::BrakesArmed).await;
             },
             Event::RunConfigCompleteEvent => {
-                if self.status.route_set && self.status.speeds_set {
+                if self.status.overrides.run_without_configure() {
+                    self.log(Info::ConfigurationCompleted).await;
+                    transit!(self, State::Idle);
+                } else if self.status.route_set && self.status.speeds_set {
                     self.log(Info::ConfigurationCompleted).await;
                     transit!(self, State::Idle);
                 } else {

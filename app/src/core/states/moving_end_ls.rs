@@ -15,7 +15,7 @@ impl Fsm {
         match event {
             Event::HvLevitationBelowBms => {
                 transit!(self, State::EmergencyBraking);
-            }
+            },
             Event::BrakingPointReachedC => match self.route.next_position() {
                 Location::BackwardsC => {
                     transit!(self, State::EndLS);

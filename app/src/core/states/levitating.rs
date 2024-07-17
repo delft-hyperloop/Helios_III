@@ -13,7 +13,7 @@ impl Fsm {
         match event {
             Event::HvLevitationBelowBms => {
                 transit!(self, State::EmergencyBraking);
-            }
+            },
             Event::RunStarting => {
                 self.send_levi_cmd(Command::LeviPropulsionStart(0)).await;
                 self.enter_moving().await;

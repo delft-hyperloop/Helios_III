@@ -21,7 +21,7 @@ impl Fsm {
         match event {
             Event::HvLevitationBelowBms => {
                 transit!(self, State::EmergencyBraking);
-            }
+            },
 
             Event::LaneSwitchForward => {
                 match self.route.next_position() {

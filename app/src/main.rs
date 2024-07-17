@@ -29,7 +29,7 @@ use core::controllers::finite_state_machine_peripherals::*;
 use core::finite_state_machine::*;
 
 use crate::core::communication::data::Datapoint;
-use crate::core::data::data_middle_step;
+use crate::core::data::{data_middle_step, trash};
 use crate::pconfig::default_configuration;
 
 // We need to include the external variables imported from build.rs
@@ -161,7 +161,7 @@ async fn main(spawner: Spawner) -> ! {
     // -- End peripheral configuration
 
     // Create FSM
-    let mut fsm = Fsm::new(per, event_queue.receiver(), data_sender);
+    let mut fsm = Fsm::new(per, event_queue.receiver(), event_sender, data_sender, spawner);
     fsm.entry().await;
     // --
 
@@ -176,6 +176,8 @@ async fn main(spawner: Spawner) -> ! {
             event_sender
         ))
     );
+
+    // try_spawn!(event_sender, spawner.spawn(trash::overflow(data_queue, parsed_data_queue)));
     // End Spawn Tasks
 
     // # Main Loop

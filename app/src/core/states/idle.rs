@@ -22,7 +22,7 @@ impl Fsm {
 
                 #[cfg(debug_assertions)]
                 info!("Starting HV System");
-                self.peripherals.hv_peripherals.power_on_hv_procedure().await;
+                // self.peripherals.hv_peripherals.power_on_hv_procedure().await;
 
                 self.peripherals.led_controller.hv_relay_led(true).await;
                 transit!(self, State::Precharging);

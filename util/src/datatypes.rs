@@ -25,6 +25,7 @@ pub struct Datatype {
     #[serde(default = "NONE")]
     pub upper: Limit,
     pub display_units: Option<String>,
+    pub priority: Option<usize>,
 }
 
 #[derive(Hash, Clone, Copy)]
@@ -83,6 +84,8 @@ pub fn generate_datatypes(path: &str, drv: bool) -> Result<String> {
     let mut bounds = String::new();
     let mut units = String::from("    pub fn unit(&self) -> String {\n        match *self {\n");
 
+    let mut priorities = String::new();
+
     for dtype in config.Datatype {
         data_ids.push(dtype.id);
         enum_definitions.push_str(&format!("    {},\n", dtype.name));
@@ -98,6 +101,9 @@ pub fn generate_datatypes(path: &str, drv: bool) -> Result<String> {
                 "            Datatype::{} => String::from({:?}),\n",
                 dtype.name, u
             ));
+        }
+        if let Some(p) = dtype.priority {
+            priorities.push_str(&format!("            Datatype::{} => {},\n", dtype.name, p));
         }
     }
 
@@ -204,6 +210,13 @@ impl Datatype {{
         }}
     }}
 {}
+
+    pub fn priority(&self) -> usize {{
+        match *self {{
+{}
+            _ => 0,
+        }}
+    }}
 }}
 ",
         if drv {
@@ -216,7 +229,8 @@ impl Datatype {{
         match_from_id,
         from_str,
         bounds,
-        if drv { units } else { "".into() }
+        if drv { units } else { "".into() },
+        priorities,
     ) + &format!(
         "pub static DATA_IDS : [u16;{}] = [{}];\n",
         data_ids.len(),

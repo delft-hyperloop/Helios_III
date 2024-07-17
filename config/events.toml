@@ -314,3 +314,8 @@ name = "CygnusesVaryingVoltages"
 id = 1003
 priority = 1 
 
+[[Event]]
+name = "PrechargeAbort"
+id = 1004
+priority = 1 
+

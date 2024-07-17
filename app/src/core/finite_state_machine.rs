@@ -1,6 +1,7 @@
 use core::cmp::Ordering;
 
 use defmt::*;
+use embassy_executor::Spawner;
 use embassy_time::Instant;
 
 use crate::core::communication::data::Datapoint;
@@ -9,7 +10,9 @@ use crate::core::fsm_status::Location;
 use crate::core::fsm_status::Route;
 use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
-use crate::DataSender;
+use crate::pconfig::ticks;
+use crate::{DataSender, EventSender, try_spawn};
+use crate::core::states::precharging::timeout_abort_pre_charge;
 use crate::Datatype;
 use crate::Event;
 use crate::EventReceiver;
@@ -63,9 +66,11 @@ pub struct Fsm {
     pub state: State,
     pub peripherals: FSMPeripherals,
     pub event_queue: EventReceiver,
+    pub event_sender: EventSender,
     pub data_queue: DataSender,
     pub status: Status,
     pub route: Route,
+    pub fsm_spawner: Spawner,
 }
 
 /// # Finite State Machine (FSM)
@@ -90,14 +95,16 @@ pub struct Fsm {
 /// * the entry() method must not be async to prevent recursive `Future`s
 ///
 impl Fsm {
-    pub fn new(p: FSMPeripherals, pq: EventReceiver, dq: DataSender) -> Self {
+    pub fn new(p: FSMPeripherals, er: EventReceiver, es: EventSender, dq: DataSender, spawner: Spawner) -> Self {
         Self {
             state: State::Boot,
             peripherals: p,
-            event_queue: pq,
+            event_queue: er,
             data_queue: dq,
             status: Status::default(),
             route: Route::default(),
+            event_sender: es,
+            fsm_spawner: spawner,
         }
     }
 
@@ -116,67 +123,64 @@ impl Fsm {
             State::EstablishConnection => self.entry_establish_connection(),
             State::RunConfig => self.entry_run_config(),
             State::Idle => self.entry_idle(),
-            State::Precharging => self.entry_pre_charge(),
+            State::Precharging => {
+                self.entry_pre_charge();
+                timeout_abort_pre_charge(self.event_sender).await;
+            },
             State::HVOn => self.entry_hv_on(),
             State::Levitating => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
 
                 self.entry_levitating();
             },
             State::MovingST => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 self.entry_mv_st()
             },
             State::MovingLSST => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 self.entry_ls_st()
             },
             State::MovingLSCV => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 self.entry_ls_cv()
             },
             State::EndST => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 self.entry_end_st()
             },
             State::EndLS => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 self.entry_end_ls()
             },
             State::EmergencyBraking => {
@@ -191,13 +195,7 @@ impl Fsm {
     pub(crate) async fn react(&mut self, event: Event) {
         info!("[fsm] reacting to {}", event.to_str());
 
-        self.data_queue
-            .send(Datapoint::new(
-                Datatype::FSMEvent,
-                event.to_id() as u64,
-                Instant::now().as_ticks(),
-            ))
-            .await;
+        self.send_dp(Datatype::FSMEvent, event.to_id() as u64, Instant::now().as_ticks()).await;
 
         match event {
             Event::EmergencyBraking
@@ -213,13 +211,7 @@ impl Fsm {
             },
 
             Event::Heartbeating => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::FSMState,
-                        self.state as u64,
-                        Instant::now().as_ticks(),
-                    ))
-                    .await;
+                self.send_dp(Datatype::FSMState, self.state as u64, ticks()).await;
             },
 
             Event::ExitEvent => {
@@ -263,13 +255,12 @@ impl Fsm {
                         transit!(self, State::Exit);
                     },
                 }
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 return;
             },
 
