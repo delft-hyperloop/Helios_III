@@ -159,7 +159,7 @@ impl BatteryController {
 
                 trace!("Individual Temperature")
             },
-            _x if Datatype::SingleCellVoltageLow.to_id() <= id || Datatype::SingleCellVoltageLow.to_id() + 3 >= id
+            _x if Datatype::SingleCellVoltageLow.to_id() == id
                 || (Datatype::SingleCellVoltageHigh_1.to_id() <= id
                     && Datatype::SingleCellVoltageHigh_14.to_id() >= id) =>
             {
@@ -180,17 +180,17 @@ impl BatteryController {
 
                     }
                 }
-                if Datatype::SingleCellVoltageLow.to_id() <= id ||  Datatype::SingleCellVoltageLow.to_id() + 3 >= id   {
+                if Datatype::SingleCellVoltageLow.to_id() == id   {
+
+                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV1, data[0] as u64 + 200, 0 ).await;
+                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV2, data[1] as u64 + 200, 0 ).await;
+                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV3, data[2] as u64 + 200, 0 ).await;
+                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV4, data[3] as u64 + 200, 0 ).await;
+                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV5, data[4] as u64 + 200, 0 ).await;
+                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV6, data[5] as u64 + 200, 0 ).await;
+                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV7, data[6] as u64 + 200, 0 ).await;
+                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV8, data[7] as u64 + 200, 0 ).await;
                     // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
-                    let mut i = 0;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV1, data[0] as u64, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV2, data[1] as u64, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV3, data[2] as u64, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV4, data[3] as u64, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV5, data[4] as u64, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV6, data[5] as u64, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV7, data[6] as u64, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV8, data[7] as u64, 0 ).await;
                 }
                 else {
                     let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id()) * 8) as usize;
@@ -255,6 +255,8 @@ impl BatteryController {
         queue_dp(self.data_sender, battery_voltage_min, min_cell_voltage, timestamp).await;
         queue_dp(self.data_sender, battery_voltage_max, max_cell_voltage, timestamp).await;
         queue_dp(self.data_sender, total_battery_voltage_dt, total_pack_voltage, timestamp).await;
+
+
     }
 
     pub async fn default_bms_startup_info(&mut self, data: &[u8], timestamp: u64) {
@@ -360,13 +362,13 @@ impl BatteryController {
             Self::module_data_calculation(self.module_buffer).await;
         let (avg_voltage_dt, min_voltage_dt, max_voltage_dt) = Self::match_voltage(module_id).await;
         let mut i = 0;
-        while i < 14 {
-            queue_dp(self.data_sender, Self::match_volt(i as u16 + module_id as u16 * 14).await, self.module_buffer[i], i as u64 + module_id as u64 * 14 ).await;
-            i += 1;
-        }
         queue_dp(self.data_sender, avg_voltage_dt, avg_voltage + 200, timestamp).await;
         queue_dp(self.data_sender, min_voltage_dt, min_voltage + 200, timestamp).await;
         queue_dp(self.data_sender, max_voltage_dt, max_voltage + 200, timestamp).await;
+        while i < 14 {
+            queue_dp(self.data_sender, Self::match_volt(i as u16 + module_id as u16 * 14).await, self.module_buffer[i] + 200, i as u64 + module_id as u64 * 14 ).await;
+            i += 1;
+        }
     }
 
 
