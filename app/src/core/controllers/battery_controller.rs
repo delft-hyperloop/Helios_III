@@ -362,7 +362,7 @@ impl BatteryController {
         let (avg_voltage_dt, min_voltage_dt, max_voltage_dt) = Self::match_voltage(module_id).await;
         let mut i = 0;
         while i < 14 {
-            queue_dp(self.data_sender, Self::match_volt(i as u16 + module_id as u16 * 14), self.module_buffer[i], i as u64 + module_id as u64 * 14 ).await;
+            queue_dp(self.data_sender, Self::match_volt(i as u16 + module_id as u16 * 14).await, self.module_buffer[i], i as u64 + module_id as u64 * 14 ).await;
             i += 1;
         }
         queue_dp(self.data_sender, avg_voltage_dt, avg_voltage + 200, timestamp).await;
