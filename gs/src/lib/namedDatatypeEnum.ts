@@ -55,6 +55,7 @@ export enum DatatypeEnum {
   BATTERYEVENTHIGH="BatteryEventHigh",
   BRAKETEMPERATURE="BrakeTemperature",
   PROPULSIONSPEED="PropulsionSpeed",
+  PROPULSIONTEMPERATURE="PropulsionTemperature",
   FSMSTATE="FSMState",
   FSMEVENT="FSMEvent",
   ENDOFTRACKTRIGGERED="EndOfTrackTriggered",

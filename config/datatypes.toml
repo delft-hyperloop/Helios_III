@@ -75,6 +75,10 @@ name = "ConnectionStatus"
 id = 0x7fe
 
 [[Datatype]]
+name = "PropulsionTemperature"
+id = 0x212
+
+[[Datatype]]
 name = "PropulsionVoltage"
 id = 0x1b2
 display_units = "V"
