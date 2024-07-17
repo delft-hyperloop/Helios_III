@@ -1,9 +1,10 @@
 use core::sync::atomic::Ordering;
+
 use defmt::error;
 use embassy_time::Timer;
-use crate::CONNECTED;
 
 use crate::core::communication::CommunicationLayer;
+use crate::CONNECTED;
 
 #[embassy_executor::task]
 pub async fn external_communication_task(mut comm: impl CommunicationLayer + 'static) -> ! {

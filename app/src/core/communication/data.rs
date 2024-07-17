@@ -1,3 +1,5 @@
+use core::cmp::Ordering;
+
 use defmt::Formatter;
 
 use crate::Datatype;
@@ -42,5 +44,37 @@ impl defmt::Format for Datapoint {
             self.value,
             self.timestamp
         )
+    }
+}
+
+impl PartialOrd for Datapoint {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> { Some(self.cmp(other)) }
+}
+
+impl Ord for Datapoint {
+    fn cmp(&self, other: &Self) -> Ordering {
+        // First compare by priority
+        let priority_cmp = self.datatype.priority().cmp(&other.datatype.priority());
+        if priority_cmp != Ordering::Equal {
+            return priority_cmp;
+        }
+
+        // Because we can't have Eq if not all fields are the same,
+
+        // if priorities are equal, compare by timestamp
+        let timestamp_cmp = self.timestamp.cmp(&other.timestamp);
+        if timestamp_cmp != Ordering::Equal {
+            return timestamp_cmp;
+        }
+
+        // if timestamps are equal, compare by id
+        let type_cmp = self.datatype.to_id().cmp(&other.datatype.to_id());
+        if type_cmp != Ordering::Equal {
+            return type_cmp;
+        }
+
+        // if the datatype is the same,
+        // then getting an equality on value means total equality
+        self.value.cmp(&other.value)
     }
 }

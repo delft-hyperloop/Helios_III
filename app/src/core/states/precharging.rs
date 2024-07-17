@@ -1,10 +1,12 @@
-use defmt::{info, warn};
+use defmt::info;
+use defmt::warn;
 use embassy_time::Timer;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::{EventSender, transit};
+use crate::transit;
 use crate::Event;
+use crate::EventSender;
 
 impl Fsm {
     pub fn entry_pre_charge(&mut self) {

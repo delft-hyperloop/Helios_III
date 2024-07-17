@@ -10,12 +10,14 @@ use crate::core::fsm_status::Location;
 use crate::core::fsm_status::Route;
 use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
-use crate::pconfig::ticks;
-use crate::{DataSender, EventSender, try_spawn};
 use crate::core::states::precharging::timeout_abort_pre_charge;
+use crate::pconfig::ticks;
+use crate::try_spawn;
+use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventReceiver;
+use crate::EventSender;
 use crate::Info;
 
 #[macro_export]
@@ -95,7 +97,13 @@ pub struct Fsm {
 /// * the entry() method must not be async to prevent recursive `Future`s
 ///
 impl Fsm {
-    pub fn new(p: FSMPeripherals, er: EventReceiver, es: EventSender, dq: DataSender, spawner: Spawner) -> Self {
+    pub fn new(
+        p: FSMPeripherals,
+        er: EventReceiver,
+        es: EventSender,
+        dq: DataSender,
+        spawner: Spawner,
+    ) -> Self {
         Self {
             state: State::Boot,
             peripherals: p,

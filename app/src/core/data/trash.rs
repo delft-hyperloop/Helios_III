@@ -1,18 +1,33 @@
-// use embassy_sync::blocking_mutex::raw::NoopRawMutex;
-// use embassy_sync::channel::Channel;
-// use crate::{DATA_QUEUE_SIZE, DataReceiver, DataSender};
-// use crate::core::communication::data::Datapoint;
-//
-//
-// #[embassy_executor::task]
-// pub async fn overflow(dq: &'static mut Channel<NoopRawMutex, Datapoint, DATA_QUEUE_SIZE>, pdq: &'static mut Channel<NoopRawMutex, Datapoint, DATA_QUEUE_SIZE>) {
-//     loop {
-//         if dq.is_full() {
-//
-//         }
-//     }
-// }
-//
-// trait EmptyAble {
-//     fn remove_last(&mut self);
-// }
+use defmt::warn;
+use embassy_sync::channel::TrySendError;
+use embassy_time::Timer;
+
+use crate::core::communication::data::Datapoint;
+use crate::DataReceiver;
+use crate::DataSender;
+use crate::Datatype;
+
+const DISCARD_NUMBER: usize = 10;
+
+#[embassy_executor::task(pool_size = 2)]
+pub async fn overflow(data_sender: DataSender, data_receiver: DataReceiver) {
+    loop {
+        match data_sender.try_send(Datapoint::new(Datatype::OverflowUnit, 0, 0)) {
+            Ok(_) => {
+                Timer::after_secs(3).await;
+            },
+            Err(TrySendError::Full(_)) => {
+                for _ in 0..DISCARD_NUMBER {
+                    match data_receiver.try_receive() {
+                        Ok(x) => {
+                            warn!("data channel full, discarding {:?}", x);
+                        },
+                        Err(_) => {
+                            Timer::after_secs(5).await;
+                        },
+                    }
+                }
+            },
+        }
+    }
+}
