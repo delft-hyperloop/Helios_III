@@ -29,9 +29,9 @@ pub fn tauri_main(backend: Backend) {
             unload_buffer,
             send_command,
             generate_test_data,
-            start_server,
+            connect_to_pod,
             start_levi,
-            quit_server,
+            disconnect,
             quit_levi,
             procedures,
             test_panic

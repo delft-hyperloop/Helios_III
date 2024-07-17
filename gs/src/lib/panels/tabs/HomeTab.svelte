@@ -39,12 +39,11 @@
         </div>
     </div>
     <div>
-        <TauriCommand cmd="start_server" successCallback={handleSuccess} errorCallback={handleFailure} />
+        <TauriCommand cmd="connect_to_pod" successCallback={handleSuccess} errorCallback={handleFailure} />
         <TauriCommand cmd="start_levi" />
         <TauriCommand cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />
         <TauriCommand cmd="quit_levi" />
-        <TauriCommand cmd="quit_server"
-                      hoverContent="This will kill any active connection!"
+        <TauriCommand cmd="disconnect"
                       successCallback={() => serverStatus.set(false)} />
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>

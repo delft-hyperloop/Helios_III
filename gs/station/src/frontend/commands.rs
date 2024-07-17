@@ -77,7 +77,7 @@ pub fn send_command(cmd_name: String, val: u64) {
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn start_server() -> bool {
+pub fn connect_to_pod() -> bool {
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
         backend_mutex.get_mut().unwrap().start_server()
     } else {
@@ -106,7 +106,7 @@ pub fn quit_levi() {
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn quit_server() {
+pub fn disconnect() {
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
         backend_mutex.get_mut().unwrap().quit_server();
     }
