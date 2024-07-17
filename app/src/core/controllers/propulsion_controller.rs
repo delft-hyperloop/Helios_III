@@ -17,7 +17,6 @@ use embassy_stm32::peripherals::PA6;
 use embassy_stm32::peripherals::PB1;
 use embassy_time::Timer;
 
-use crate::pconfig::queue_data;
 use crate::send_data;
 use crate::try_spawn;
 use crate::DataSender;

@@ -8,7 +8,8 @@ use crate::Datatype;
 use crate::Event;
 use crate::MessageSender;
 
-const CYGNUS_MAX_DIFFERENCE: f64 = 8.0; // Volts
+const CYGNUS_MAX_DIFFERENCE: f64 = 9.0; // Volts
+const LEVI_LED_THRESHOLD: f64 = 50.0;
 
 pub const HV_DATATYPES: [Datatype; 4] = [
     Datatype::levi_volt_avg,
@@ -23,6 +24,7 @@ pub type DataSender = tokio::sync::broadcast::Sender<ProcessedData>;
 #[derive(Default)]
 struct Backlog {
     levi_avg: f64,
+    prev_levi_avg: f64,
     levi_min: f64,
     levi_max: f64,
     bms_avg: f64,
@@ -47,6 +49,14 @@ impl Backlog {
             Event::HvLevitationAboveBms
         }
     }
+
+    fn levi_rising_edge(&self) -> bool {
+        self.levi_avg > LEVI_LED_THRESHOLD && self.prev_levi_avg <= LEVI_LED_THRESHOLD
+    }
+
+    fn levi_falling_edge(&self) -> bool {
+        self.levi_avg < LEVI_LED_THRESHOLD && self.prev_levi_avg >= LEVI_LED_THRESHOLD
+    }
 }
 
 pub async fn aggregate_voltage_readings(
@@ -65,9 +75,12 @@ pub async fn aggregate_voltage_readings(
     loop {
         match data_in.recv().await {
             Ok(data) => match data.datatype {
-                Datatype::levi_volt_avg => backlog.levi_avg = data.value,
-                Datatype::levi_volt_min => backlog.levi_avg = data.value,
-                Datatype::levi_volt_max => backlog.levi_avg = data.value,
+                Datatype::levi_volt_avg => {
+                    backlog.prev_levi_avg = backlog.levi_avg;
+                    backlog.levi_avg = data.value;
+                },
+                Datatype::levi_volt_min => backlog.levi_min = data.value,
+                Datatype::levi_volt_max => backlog.levi_max = data.value,
                 Datatype::TotalBatteryVoltageHigh => backlog.bms_avg = data.value,
                 _ => {},
             },
@@ -84,6 +97,14 @@ pub async fn aggregate_voltage_readings(
         // Run checks:
         if backlog.cygnus_varying() {
             send(Event::CygnusesVaryingVoltages);
+        }
+
+        if backlog.levi_rising_edge() {
+            send(Event::LeviLedOn);
+        }
+
+        if backlog.levi_falling_edge() {
+            send(Event::LeviLedOff);
         }
 
         send(backlog.compare_voltages());

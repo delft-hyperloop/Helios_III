@@ -12,7 +12,6 @@ use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
 use crate::core::states::precharging::timeout_abort_pre_charge;
 use crate::pconfig::ticks;
-use crate::try_spawn;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
@@ -219,7 +218,7 @@ impl Fsm {
             },
 
             Event::Heartbeating => {
-                self.send_dp(Datatype::FSMState, self.state as u64, ticks()).await;
+                self.send_dp(Datatype::FSMState, self.state as u64, ticks()).await
             },
 
             Event::ExitEvent => {
@@ -227,13 +226,12 @@ impl Fsm {
                 return;
             },
 
-            Event::DcTurnedOn => {
-                self.peripherals.hv_peripherals.dc_dc.set_high();
-            },
+            Event::DcTurnedOn => self.peripherals.hv_peripherals.dc_dc.set_high(),
 
-            Event::DcTurnedOff => {
-                self.peripherals.hv_peripherals.dc_dc.set_low();
-            },
+            Event::DcTurnedOff => self.peripherals.hv_peripherals.dc_dc.set_low(),
+
+            Event::LeviLedOn => self.peripherals.led_controller.levi_led.set_high(),
+            Event::LeviLedOff => self.peripherals.led_controller.levi_led.set_low(),
 
             ///////////////////
             // Debugging events

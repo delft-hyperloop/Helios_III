@@ -15,7 +15,7 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
     let value = match datapoint.datatype {
         Datatype::ChargeStateLow | Datatype::ChargeStateHigh => x * 0.01,
         Datatype::TotalBatteryVoltageHigh | Datatype::TotalBatteryVoltageLow => x / 100.0 - 2.0,
-        Datatype::BatteryCurrentLow | Datatype::BatteryCurrentHigh=> (x-2000.0)*0.1,
+        Datatype::BatteryCurrentLow | Datatype::BatteryCurrentHigh => (x - 2000.0) * 0.1,
         Datatype::BrakingCommDebug => x * 3.3 / 65535.0,
         Datatype::IMDVoltageDetails => {
             if datapoint.value == 65535 {
@@ -88,11 +88,11 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
         | Datatype::Module7MaxVoltage
         | Datatype::Module8MaxVoltage
         | Datatype::BatteryMinVoltageLow
-        | Datatype:: BatteryMaxVoltageHigh
+        | Datatype::BatteryMaxVoltageHigh
         | Datatype::BatteryMinVoltageHigh
         | Datatype::BatteryMaxVoltageLow
         | Datatype::BatteryVoltageHigh
-        | Datatype::BatteryVoltageLow=> {
+        | Datatype::BatteryVoltageLow => {
             if x == 200.0 {
                 0.0
             } else {

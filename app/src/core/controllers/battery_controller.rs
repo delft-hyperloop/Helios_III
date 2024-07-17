@@ -1,4 +1,3 @@
-use defmt::debug;
 use defmt::trace;
 
 use crate::core::communication::data::Datapoint;
