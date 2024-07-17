@@ -6,6 +6,7 @@
 #![deny(rustdoc::broken_intra_doc_links)]
 
 use ::core::borrow::Borrow;
+use ::core::sync::atomic::AtomicBool;
 use defmt::*;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
@@ -93,6 +94,8 @@ static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_
 /// The allocation for [`can::frame::Frame`]-[`embassy_sync::channel`]
 static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
     StaticCell::new();
+
+pub static mut CONNECTED: AtomicBool = AtomicBool::new(false);
 
 /// Util struct for initialising [`FSMPeripherals`]
 pub struct InternalMessaging {
