@@ -29,7 +29,8 @@ export type Datapoint = {
     datatype: NamedDatatype,
     value: number,
     timestamp: number,
-    style: string
+    style: string,
+    units: string
 }
 
 /**
