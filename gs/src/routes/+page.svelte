@@ -9,21 +9,32 @@
     import {onDestroy, onMount} from "svelte";
     import {details_pane, vitals_pane} from "$lib";
     import {EventChannel} from "$lib/types";
+    import {bigErrorStatus, ErrorStatus} from "$lib/stores/state";
 
-    let unlisten_error: UnlistenFn;
+    let unlisten_status: UnlistenFn;
     const toastStore = getToastStore();
 
     onMount(async () => {
-        unlisten_error = await listen(EventChannel.ERROR, (event) => {
-            toastStore.trigger({
-                message: event.payload as string || "An error occurred",
-                background: 'variant-filled-error',
-            });
+        unlisten_status = await listen(EventChannel.INFO, (event: {payload: string}) => {
+        const message:string[] = event.payload.split(";");
+        toastStore.trigger({
+          message: message[0],
+          background: message[1] || "bg-surface-600",
         });
+
+        switch (message[0]) {
+          case "Unsafe":
+            bigErrorStatus.set(ErrorStatus.UNSAFE)
+            break;
+          case "Safe":
+            bigErrorStatus.set(ErrorStatus.SAFE)
+            break;
+        }
+      });
     });
 
     onDestroy(() => {
-        unlisten_error();
+        unlisten_status();
     });
 </script>
 

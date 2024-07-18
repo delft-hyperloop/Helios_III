@@ -2,14 +2,11 @@
 <!-- TODO 2: SOME KIND OF LOG FLUSHING? AT ONE POINT IT WILL RUN OUT OF SPACE!  -->
 
 <script lang="ts">
-    import {AppBar, getToastStore} from "@skeletonlabs/skeleton";
+    import {AppBar} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {afterUpdate, onDestroy, onMount} from "svelte";
     import {EventChannel, type LogType} from "$lib/types";
-    import {bigErrorStatus, ErrorStatus} from "$lib/stores/state";
-
-    const toastStore = getToastStore();
 
     let unlistens: UnlistenFn[] = [];
     let logContainer: HTMLElement;
@@ -24,32 +21,14 @@
 
     function registerChannel(channel: string, log_type: LogType) {
         return listen(channel, (event: {payload: string}) => {
-            logString += `[${Date.now().valueOf()}] ${log_type}: ${event.payload}` + "\r\n"
+            logString += `[${Date.now().valueOf()}] ${log_type}: ${event.payload}` + "\n"
         });
     }
 
     onMount(async () => {
         unlistens[0] = await registerChannel(EventChannel.STATUS, 'STATUS');
-        unlistens[1] = await listen(EventChannel.INFO, (event: {payload: string}) => {
-            logString += `[${Date.now().valueOf()}] INFO: ${event.payload}` + "\r\n"
-
-            const message:string[] = event.payload.split(";");
-            toastStore.trigger({
-                message: message[0],
-                background: message[1] || "bg-surface-600",
-                timeout: 3000
-            });
-
-            switch (message[0]) {
-                case "Unsafe":
-                    bigErrorStatus.set(ErrorStatus.UNSAFE)
-                    break;
-                case "Safe":
-                    bigErrorStatus.set(ErrorStatus.SAFE)
-                    break;
-            }
-        });
-        unlistens[2] = await registerChannel(EventChannel.WARNING, 'WARNING')
+        unlistens[1] = await registerChannel(EventChannel.INFO, 'INFO');
+        unlistens[2] = await registerChannel(EventChannel.WARNING, 'WARNING');
         unlistens[3] = await registerChannel(EventChannel.ERROR, 'ERROR');
 
         logContainer.addEventListener('scroll', () => {
