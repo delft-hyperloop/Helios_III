@@ -126,6 +126,10 @@ name = "EmergencyBrake"
 id = 0xff
 
 [[Command]]
+name = "LeviEmergencyBrake"
+id = 0xfe
+
+[[Command]]
 name = "StartRun"
 id = 0x5d
 

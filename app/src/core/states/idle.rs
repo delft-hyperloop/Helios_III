@@ -12,7 +12,7 @@ use crate::Info;
 impl Fsm {
     pub fn entry_idle(&mut self) {
         info!("Entering Idle State");
-        self.peripherals.led_controller.hv_led.set_high();
+        // self.peripherals.led_controller.hv_led.set_high();
 
     }
 

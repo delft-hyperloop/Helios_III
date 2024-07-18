@@ -127,7 +127,7 @@ pub async fn can_receiving_handler(
                     send_event(event_sender, Event::from_id(id, Some(69420)));
                 } else {
                     #[cfg(debug_assertions)]
-                    info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
+                    // info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
                     send_data!(
                         data_sender,
                         Datatype::UnknownCanId,
@@ -150,6 +150,6 @@ pub async fn can_receiving_handler(
         // # VERY IMPORTANT
         // without this, our main pcb is magically converted to an adhd CAN
         // pcb with no mind for anything else. Tread carefully around it
-        Timer::after_micros(500).await;
+        Timer::after_micros(100).await;
     }
 }

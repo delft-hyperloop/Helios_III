@@ -213,7 +213,7 @@ impl Fsm {
             | Event::CygnusesVaryingVoltages
             | Event::ValueOutOfBounds => {
                 transit!(self, State::EmergencyBraking);
-                self.send_levi_cmd(Command::EmergencyBrake(4)).await;
+                self.send_levi_cmd(Command::LeviEmergencyBrake(4)).await;
                 return;
             },
 
