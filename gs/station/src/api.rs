@@ -6,10 +6,10 @@ use std::sync::mpsc::Sender;
 #[cfg(feature = "tui")]
 use ratatui::prelude::Color;
 
-use crate::Command;
+use crate::{Command, GS_IP_ADDRESS};
 use crate::Datatype;
 use crate::Info;
-use crate::GS_IP_ADDRESS;
+// use crate::POD_IP_ADDRESS;
 
 include!("../../../util/src/shared/routes.rs");
 
@@ -103,6 +103,6 @@ pub fn state_to_string(state: u64) -> String {
     }
 }
 
-pub fn gs_socket() -> std::net::SocketAddr {
+pub fn socket() -> std::net::SocketAddr {
     unsafe { std::net::SocketAddr::new(std::net::IpAddr::from(GS_IP_ADDRESS.0), GS_IP_ADDRESS.1) }
 }

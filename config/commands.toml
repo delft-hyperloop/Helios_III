@@ -92,6 +92,10 @@ id = 0x68
 name = "LeviPropulsionStop"
 id = 0x70 
 
+# [[Command]]
+# name = "Discharge"
+# id = 0x71
+#
 # END LEVI COMMANDS 
 
 

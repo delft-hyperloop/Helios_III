@@ -15,7 +15,7 @@ use crate::ERROR_CHANNEL;
 use crate::HEARTBEAT;
 use crate::INFO_CHANNEL;
 use crate::SHORTCUT_CHANNEL;
-use crate::STATUS_CHANNEL;
+// use crate::STATUS_CHANNEL;
 use crate::WARNING_CHANNEL;
 
 pub fn tauri_main(backend: Backend) {
@@ -29,9 +29,9 @@ pub fn tauri_main(backend: Backend) {
             unload_buffer,
             send_command,
             generate_test_data,
-            start_server,
+            connect_to_pod,
             start_levi,
-            quit_server,
+            disconnect,
             quit_levi,
             procedures,
             test_panic
@@ -80,24 +80,11 @@ pub fn tauri_main(backend: Backend) {
                         })
                         .expect("Could not register shortcut");
 
-                        // (0..10).for_each(|i| {
-                        //     let sss = s.clone();
-                        //     sh.register(&format!("{i}"), move || {
-                        //         sss.emit_all(SHORTCUT_CHANNEL, &format!("tab_{i}")).unwrap();
-                        //     })
-                        //     .unwrap_or_else(|_| panic!("Could not register shortcut tab_{i}"));
-                        // });
                     },
                     WindowEvent::Focused(false) => {
                         // Unregister shortcuts when window loses focus
                         sh.unregister("Esc").expect("Could not unregister shortcut");
                         sh.unregister("Space").expect("Could not unregister shortcut");
-                        let mut shh = sh.clone();
-                        (0..10).for_each(|i| {
-                            shh.unregister(&format!("{i}")).unwrap_or_else(|_| {
-                                panic!("Could not unregister shortcut tab_{i}")
-                            });
-                        });
                     },
                     _ => {},
                 }

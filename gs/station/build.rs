@@ -23,14 +23,14 @@ struct Config {
 
 #[derive(Debug, Deserialize)]
 struct Pod {
-    // net: NetConfig,
+    net: NetConfig,
     comm: CommConfig,
 }
-// #[derive(Debug, Deserialize)]
-// struct NetConfig {
-//     // ip: [u8; 4],
-//     // port: u16,
-// }
+#[derive(Debug, Deserialize)]
+struct NetConfig {
+    ip: [u8; 4],
+    port: u16,
+}
 
 #[derive(Debug, Deserialize)]
 struct CommConfig {
@@ -114,14 +114,14 @@ fn levi_req_data(config: &Config, dt: String) -> Result<String> {
 
 fn configure_gs(config: &Config) -> String {
     // format!("pub fn gs_socket() -> std::net::SocketAddr {{ std::net::SocketAddr::new(std::net::IpAddr::from([{},{},{},{}]),{}) }}\n", config.gs.ip[0], config.gs.ip[1], config.gs.ip[2], config.gs.ip[3], config.gs.port)
-    // format!(
-    //     "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
-    //     config.pod.net.ip[0],
-    //     config.pod.net.ip[1],
-    //     config.pod.net.ip[2],
-    //     config.pod.net.ip[3],
-    //     config.pod.net.port
-    // ) + &*
+    format!(
+        "pub static POD_IP_ADDRESS: ([u8;4],u16) = ([{},{},{},{}],{});\n",
+        config.pod.net.ip[0],
+        config.pod.net.ip[1],
+        config.pod.net.ip[2],
+        config.pod.net.ip[3],
+        config.pod.net.port
+    ) + &*
     format!("pub const NETWORK_BUFFER_SIZE: usize = {};\n", config.gs.buffer_size)
         + &format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
         + &format!("pub const HEARTBEAT: u64 = {};\n", config.gs.heartbeat)

@@ -30,7 +30,9 @@
         ForwardC: number,
         LaneSwitchStraight: number,
         BackwardA: number,
-        BackwardB: number
+        BackwardB: number,
+        StopAndWait: number,
+        BrakeHere: number
     }
 
     const speedForm:SpeedFormType = {
@@ -42,6 +44,8 @@
         BackwardC: 0,
         LaneSwitchStraight: 0,
         LaneSwitchCurved: 0,
+        StopAndWait: 0,
+        BrakeHere: 0 
     };
 
     type SpeedFormKey = keyof typeof speedForm;
@@ -252,7 +256,7 @@
                         <button type="button"
                                 class="btn rounded-none"
                                 on:click={() => onRouteStepClick(step)}>
-                            <Icon icon="mdi:plus" class={routeSteps.length < 21 ? "text-surface-400" : "text-error-400"}/>
+                            <Icon icon="mdi:plus" class={routeSteps.length < 16 ? "text-surface-400" : "text-error-400"}/>
                         </button>
                     </div>
                 {/each}

@@ -11,6 +11,8 @@ const speedForm = {
   BackwardC: 0,
   LaneSwitchStraight: 0,
   LaneSwitchCurved: 0,
+  StopAndWait: 0,
+  BrakeHere: 0,
 };
 
 type SpeedFormKey = keyof typeof speedForm;

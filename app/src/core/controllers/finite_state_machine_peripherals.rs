@@ -7,6 +7,8 @@ use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Pull;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::Peripherals;
+use embassy_time::Duration;
+use embassy_time::Instant;
 
 use crate::core::communication::low::tcp::EthernetPins;
 use crate::core::controllers::battery_controller::BatteryController;
@@ -133,6 +135,11 @@ impl FSMPeripherals {
                 pin_6: Output::new(p.PG9, Level::Low, Speed::Low),
                 pin_7: Output::new(p.PG10, Level::Low, Speed::Low),
                 dc_dc: Output::new(p.PD2, Level::Low, Speed::Low),
+                pre_charge_start: Instant::now(),
+                pre_charge_min: Duration::from_millis(3500),
+                // pre_charge_timeout: Duration::from_millis(5000),
+                // event_sender: i.event_sender,
+                pre_charge_successful: false,
             },
             red_led: Output::new(p.PB14, Level::Low, Speed::High),
             propulsion_controller,

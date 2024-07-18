@@ -21,6 +21,7 @@ pub async fn write_to_levi_child_stdin(
                 stdin.write_all(format!("{}\n", cmd.to_str()).as_bytes()).await?;
                 stdin.flush().await?;
                            },
+
             Err(TryRecvError::Closed) => {
                 status_sender.send(Message::Error("command_receiver channel closed".into()))?;
                 break;

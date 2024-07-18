@@ -10,9 +10,8 @@ use crate::core::fsm_status::Location;
 use crate::core::fsm_status::Route;
 use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
-use crate::core::states::precharging::timeout_abort_pre_charge;
 use crate::pconfig::ticks;
-use crate::DataSender;
+use crate::{Command, DataSender};
 use crate::Datatype;
 use crate::Event;
 use crate::EventReceiver;
@@ -132,7 +131,7 @@ impl Fsm {
             State::Idle => self.entry_idle(),
             State::Precharging => {
                 self.entry_pre_charge();
-                timeout_abort_pre_charge(self.event_sender).await;
+                // timeout_abort_pre_charge(self.event_sender).await;
             },
             State::HVOn => self.entry_hv_on(),
             State::Levitating => {
@@ -214,6 +213,7 @@ impl Fsm {
             | Event::CygnusesVaryingVoltages
             | Event::ValueOutOfBounds => {
                 transit!(self, State::EmergencyBraking);
+                self.send_levi_cmd(Command::EmergencyBrake(4)).await;
                 return;
             },
 
@@ -230,8 +230,8 @@ impl Fsm {
 
             Event::DcTurnedOff => self.peripherals.hv_peripherals.dc_dc.set_low(),
 
-            Event::LeviLedOn => self.peripherals.led_controller.levi_led.set_high(),
-            Event::LeviLedOff => self.peripherals.led_controller.levi_led.set_low(),
+            Event::LeviLedOn => self.peripherals.led_controller.hv_led.set_high(),
+            Event::LeviLedOff => self.peripherals.led_controller.hv_led.set_low(),
 
             Event::LeviConnected => self.status.levi_connected = true,
 
