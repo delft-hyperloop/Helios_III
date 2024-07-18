@@ -116,6 +116,15 @@ export type Procedure = {
     content: string
 }
 
+export enum STATUS {
+    MAIN_PCB,
+    PROPULSION,
+    LEVITATION,
+    SENSOR_HUB,
+    BATTERIES,
+    BRAKING_PCB
+}
+
 export type LogType = 'INFO' | 'WARNING' | 'ERROR' | 'STATUS';
 
 // OLD TYPES

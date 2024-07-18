@@ -10,9 +10,11 @@
     import {getModalStore, type ModalComponent} from "@skeletonlabs/skeleton";
   import {DatatypeEnum} from "$lib/namedDatatypeEnum";
     import {invoke} from "@tauri-apps/api/tauri";
+  import {STATUS} from "$lib/types";
     const storeManager = GrandDataDistributor.getInstance().stores;
 
     const state = storeManager.getWritable("FSMState");
+    const statuses = storeManager.getWritable("ConnectionStatus")
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -62,17 +64,17 @@
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
             <p>Main PCB</p>
-            <Status status={0 % 2 === 1} />
+            <Status status={$statuses[STATUS.MAIN_PCB]} />
             <p>Propulsion</p>
-            <Status on="Active" off="Off" status={0 % 2 === 1} />
+            <Status on="Active" off="Off" status={$statuses[STATUS.PROPULSION]} />
             <p>Levitation</p>
-            <Status status={0 % 2 === 1} />
+            <Status status={$statuses[STATUS.LEVITATION]} />
             <p>Sensor Hub</p>
-            <Status status={0 % 2 === 1} />
+            <Status status={$statuses[STATUS.SENSOR_HUB]} />
             <p>Batteries</p>
-            <Status status={0 % 2 === 1} />
+            <Status status={$statuses[STATUS.BATTERIES]} />
             <p>Braking PCB</p>
-            <Status on="Armed" off="Extended" status={0 % 2 === 1} />
+            <Status on="Armed" off="Extended" status={$statuses[STATUS.BRAKING_PCB]} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>

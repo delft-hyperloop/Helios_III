@@ -194,7 +194,7 @@
             <div class="w-full flex justify-between items-center">
                 <Status label="HV Battery relay status" onColor="text-error-400" offColor="text-surface-50"
                         on="HV Relays ON" off="HV Relays Off" bind:status={connectorStatus} />
-                <ToggleCommand onCmd="OpenContactor" offCmd="CloseContactor" bind:status={connectorStatus} />
+                <ToggleCommand onCmd="StartHV" offCmd="StopHV" bind:status={connectorStatus} />
             </div>
             <div class="w-full flex justify-between items-center">
                 <Status label="DC Converter status" on="charging" off="off" offColor="text-surface-50" bind:status={dcStatus} />
@@ -221,7 +221,7 @@
             <Table background="bg-surface-900" tableArr={lvCellVoltArr} titles =  {lvTitles} />
         </Tile>
         <Tile containerClass="col-span-4" heading="HV Cell Voltages">
-            <Table background="bg-surface-900" tableArr={hvCellVoltArr} titles ={hvTitles} />
+            <Table background="bg-surface-900 text-xs" tableArr={hvCellVoltArr} titles ={hvTitles} />
         </Tile>
     </TileGrid>
 </div>

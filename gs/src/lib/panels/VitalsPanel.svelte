@@ -106,7 +106,7 @@
                         </div>
                     </div>
                     <div class="flex gap-4 mt-4">
-                        <Command cmd="StopHV" />
+                        <Command cmd="StopHV" className="py-2 text-error-400 border-error-400 border-2" />
                         <Command cmd="ArmBrakes" />
                         <Command cmd="StartRun" />
                     </div>
@@ -122,7 +122,7 @@
                     <Table titles={["Propulsion", "Status", "Propulsion", "Status"]} tableArr={tableArr2}/>
                 </Tile>
                 <Tile bgToken={800} containerClass="col-span-2 px-16">
-                        <FSM size="sm"/>
+                        <FSM />
                 </Tile>
 
             </TileGrid>

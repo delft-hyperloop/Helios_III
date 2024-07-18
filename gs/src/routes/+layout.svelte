@@ -13,7 +13,7 @@
     import {initProcedures} from "$lib/stores/data";
     import {onDestroy} from "svelte";
     import {listen} from "@tauri-apps/api/event";
-    import {parseShortCut} from "$lib/util/parsers";
+    import {parseShortCut, setBitsToBooleans} from "$lib/util/parsers";
     import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
     import { storePopup } from '@skeletonlabs/skeleton';
 
@@ -458,6 +458,7 @@
     ///////////////////////////////////////////////////////////////
 
     gdd.stores.registerStore<number>("FSMState", 0);
+    gdd.stores.registerStore<boolean[]>("ConnectionStatus", [false, false, false, false, false, false], setBitsToBooleans)
 
     gdd.start(50);
 
