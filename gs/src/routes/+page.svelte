@@ -15,7 +15,7 @@
     const toastStore = getToastStore();
 
     onMount(async () => {
-        unlisten_status = await listen(EventChannel.INFO, (event: {payload: string}) => {
+        unlisten_status = await listen(EventChannel.STATUS, (event: {payload: string}) => {
         const message:string[] = event.payload.split(";");
         toastStore.trigger({
           message: message[0],
