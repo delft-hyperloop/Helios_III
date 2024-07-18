@@ -58,29 +58,31 @@ pub async fn data_middle_step(
         // 1. check thresholds
         match data.datatype.check_bounds(data.value) {
             ValueCheckResult::Fine => {},
-            ValueCheckResult::Warn => send_data!(
-                outgoing,
-                Datatype::ValueWarning,
-                data.datatype.to_id() as u64,
-                data.value
-            ),
+            ValueCheckResult::Warn => {
+            //     send_data!(
+            //     outgoing,
+            //     Datatype::ValueWarning,
+            //     data.datatype.to_id() as u64,
+            //     data.value
+            // ),
+            }
             ValueCheckResult::Error => {
-                send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
+                // send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
             },
             ValueCheckResult::BrakeNow => {
-                queue_event(event_sender, Event::ValueOutOfBounds).await;
-                send_data!(
-                    outgoing,
-                    Datatype::ValueCausedBraking,
-                    data.datatype.to_id() as u64,
-                    data.value
-                );
-                send_data!(
-                    outgoing,
-                    Datatype::Info,
-                    Info::ValueCausedBraking as u64,
-                    data.value
-                );
+                // queue_event(event_sender, Event::ValueOutOfBounds).await;
+                // send_data!(
+                //     outgoing,
+                //     Datatype::ValueCausedBraking,
+                //     data.datatype.to_id() as u64,
+                //     data.value
+                // );
+                // send_data!(
+                //     outgoing,
+                //     Datatype::Info,
+                //     Info::ValueCausedBraking as u64,
+                //     data.value
+                // );
             },
         }
         // 2. check heartbeats
@@ -92,7 +94,7 @@ pub async fn data_middle_step(
                 *last = Some(Instant::now());
             } else if last.is_some_and(|l| l.elapsed() > *out) {
                 warn!("[heartbeat] timeout triggered for {:?}", dt);
-                event_sender.send(Event::EmergencyBraking).await;
+                // event_sender.send(Event::EmergencyBraking).await;
                 outgoing
                     .send(Datapoint::new(Datatype::HeartbeatExpired, dt.to_id() as u64, ticks()))
                     .await;
