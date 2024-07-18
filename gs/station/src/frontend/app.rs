@@ -17,7 +17,7 @@ use gslib::ERROR_CHANNEL;
 use gslib::HEARTBEAT;
 use gslib::INFO_CHANNEL;
 use gslib::SHORTCUT_CHANNEL;
-// use gslib::STATUS_CHANNEL;
+use gslib::STATUS_CHANNEL;
 use gslib::WARNING_CHANNEL;
 
 pub static APP_HANDLE: Mutex<Option<AppHandle>> = Mutex::new(None);
@@ -127,7 +127,7 @@ pub fn tauri_main(backend: Backend) {
                                         .push(Message::Data(dp));
                                 },
                                 Message::Status(s) => app_handle
-                                    .emit_all(INFO_CHANNEL, &*format!("Status: {:?}", s))
+                                    .emit_all(STATUS_CHANNEL, &*format!("Status: {:?};{}", s, s.to_colour_str()))
                                     .unwrap(),
                                 Message::Info(i) => {
                                     app_handle.emit_all(INFO_CHANNEL, i.to_string()).unwrap()

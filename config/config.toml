@@ -1,7 +1,7 @@
 [gs]
 ip = [192,168,1,15]
 force = true 
-port = 6956
+port = 6957
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
 timeout = 1500 # this is the timeout for the socket, in milliseconds.
 heartbeat = 500 # how often to send a keep_alive heartbeat, in milliseconds.
@@ -268,4 +268,8 @@ colour = "yellow"
 [[Info]]
 label = "PrechargeFinished"
 colour = "green"
+
+[[Info]]
+label = "EntryEmergencyBrakeState"
+colour = "magenta"
 
