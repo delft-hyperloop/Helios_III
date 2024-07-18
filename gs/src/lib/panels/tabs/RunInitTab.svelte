@@ -71,10 +71,14 @@
             <Status status={$statuses[STATUS.LEVITATION]} />
             <p>Sensor Hub</p>
             <Status status={$statuses[STATUS.SENSOR_HUB]} />
-            <p>Batteries</p>
-            <Status status={$statuses[STATUS.BATTERIES]} />
+            <p>LV Batteries</p>
+            <Status status={$statuses[STATUS.LV_BATTERIES]} />
+            <p>HV Batteries</p>
+            <Status status={$statuses[STATUS.HV_BATTERIES]} />
             <p>Braking PCB</p>
             <Status on="Armed" off="Extended" status={$statuses[STATUS.BRAKING_PCB]} />
+            <p>Voltage Over 50</p>
+            <Status status={$statuses[STATUS.VOLTAGE_OVER]} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>

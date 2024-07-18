@@ -105,6 +105,8 @@ export enum RouteStep {
     BACKWARD_C = 'BackwardsC',
     LANE_SWITCH_STRAIGHT = 'LaneSwitchStraight',
     LANE_SWITCH_CURVED = 'LaneSwitchCurved',
+    STOP_AND_WAIT = 'StopAndWait',
+    BRAKE_HERE = 'BrakeHere'
 }
 
 export type Procedure = {
@@ -121,11 +123,17 @@ export enum STATUS {
     PROPULSION,
     LEVITATION,
     SENSOR_HUB,
-    BATTERIES,
-    BRAKING_PCB
+    LV_BATTERIES,
+    HV_BATTERIES,
+    BRAKING_PCB,
+    VOLTAGE_OVER
 }
 
 export type LogType = 'INFO' | 'WARNING' | 'ERROR' | 'STATUS';
+
+export type RouteConfig = {
+    speeds: number[],
+}
 
 // OLD TYPES
 export type IntervalFunction = () => void;
