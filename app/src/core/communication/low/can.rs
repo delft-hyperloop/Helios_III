@@ -13,7 +13,7 @@ use crate::core::communication::Datapoint;
 use crate::core::controllers::battery_controller::ground_fault_detection_isolation_details;
 use crate::core::controllers::battery_controller::ground_fault_detection_voltage_details;
 use crate::core::controllers::can_controller::CanTwoUtils;
-use crate::pconfig::bytes_to_u64;
+use crate::pconfig::{bytes_to_u64, thread_delay};
 use crate::pconfig::id_as_value;
 use crate::pconfig::send_event;
 use crate::send_data;
@@ -127,7 +127,7 @@ pub async fn can_receiving_handler(
                     send_event(event_sender, Event::from_id(id, Some(69420)));
                 } else {
                     #[cfg(debug_assertions)]
-                    info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
+                    // info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
                     send_data!(
                         data_sender,
                         Datatype::UnknownCanId,
@@ -150,6 +150,6 @@ pub async fn can_receiving_handler(
         // # VERY IMPORTANT
         // without this, our main pcb is magically converted to an adhd CAN
         // pcb with no mind for anything else. Tread carefully around it
-        Timer::after_micros(500).await;
+        thread_delay(100).await;
     }
 }

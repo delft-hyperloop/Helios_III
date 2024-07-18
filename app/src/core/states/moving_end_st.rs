@@ -5,6 +5,7 @@ use crate::core::finite_state_machine::State;
 use crate::core::fsm_status::Location;
 use crate::core::fsm_status::RouteUse;
 use crate::transit;
+use crate::Command;
 use crate::Event;
 use crate::Info;
 
@@ -17,6 +18,7 @@ impl Fsm {
         match event {
             Event::HvLevitationBelowBms => {
                 transit!(self, State::EmergencyBraking);
+                self.send_levi_cmd(Command::EmergencyBrake(4)).await;
             },
             Event::BrakingPointReachedB => match self.route.next_position() {
                 Location::BackwardsB => {

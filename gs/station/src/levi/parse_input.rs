@@ -1,14 +1,13 @@
-use crate::api::Message;
-use crate::api::ProcessedData;
+use gslib::{Datatype, Message};
+use gslib::ProcessedData;
 use crate::battery::DataSender;
 use crate::battery::HV_DATATYPES;
 use crate::Command;
 use crate::CommandSender;
-use crate::Datatype;
 use crate::MessageSender;
 
 pub fn handle_line_from_levi(
-    line: &String,
+    line: &str,
     msg_send: MessageSender,
     cmd_send: CommandSender,
     data_sender: DataSender,
@@ -17,7 +16,7 @@ pub fn handle_line_from_levi(
 
     match params[0] {
         "INFO" => {
-            msg_send.send(Message::Info(format!("Levi: {}", params[1..].join(","))))?;
+            // msg_send.send(Message::Info(format!("Levi: {}", params[1..].join(","))))?;
         },
         "WARNING" => {
             msg_send.send(Message::Warning(format!("Levi Warning: {}", params[1..].join(","))))?;
@@ -45,7 +44,7 @@ pub fn handle_line_from_levi(
             }
         },
         _ => {
-            msg_send.send(Message::Warning(format!("Unknown levi msg: {:?}", line)))?;
+            // msg_send.send(Message::Warning(format!("Unknown levi msg: {:?}", line)))?;
             return Ok(());
         },
     }

@@ -2,14 +2,13 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![warn(clippy::absolute_paths)]
 
-use crate::api::Message;
+use gslib::{Command, GS_IP_ADDRESS, Message};
 use crate::backend::Backend;
 #[cfg(feature = "backend")]
 use crate::frontend::app::tauri_main;
 #[cfg(feature = "tui")]
 use crate::tui::tui_main;
 
-pub mod api;
 mod backend;
 pub mod battery;
 pub mod connect;
@@ -20,7 +19,6 @@ mod levi;
 #[cfg(feature = "tui")]
 pub mod tui;
 
-include!(concat!(env!("OUT_DIR"), "/config.rs"));
 
 pub type CommandSender = tokio::sync::broadcast::Sender<Command>;
 pub type CommandReceiver = tokio::sync::broadcast::Receiver<Command>;

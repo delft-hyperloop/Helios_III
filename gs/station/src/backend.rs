@@ -5,11 +5,11 @@ use anyhow::anyhow;
 use regex::Regex;
 use tokio::task::AbortHandle;
 
-use crate::api::Message;
-use crate::api::ProcessedData;
+use gslib::{Info, Log, Message};
+use gslib::ProcessedData;
 use crate::battery::DataReceiver;
 use crate::battery::DataSender;
-use crate::Command;
+use gslib::Command;
 use crate::CommandReceiver;
 use crate::CommandSender;
 use crate::MessageReceiver;
@@ -38,11 +38,7 @@ pub struct Backend {
     pub save_path: PathBuf,
 }
 
-#[derive(serde::Serialize)]
-pub struct Log {
-    messages: Vec<Message>,
-    commands: Vec<Command>,
-}
+
 
 impl Default for Backend {
     fn default() -> Self { Self::new() }
@@ -111,7 +107,7 @@ impl Backend {
             ) {
                 Ok(lh) => {
                     self.levi_handle = Some(lh);
-                    self.status(crate::Info::LeviProgramStarted);
+                    self.status(Info::LeviProgramStarted);
                     self.info("Levi process started".to_string());
                 },
                 Err(e) => {
@@ -143,7 +139,7 @@ impl Backend {
         self.message_transmitter.send(Message::Error(msg)).unwrap();
     }
 
-    pub fn status(&mut self, status: crate::Info) {
+    pub fn status(&mut self, status: Info) {
         self.message_transmitter.send(Message::Status(status)).unwrap();
     }
 

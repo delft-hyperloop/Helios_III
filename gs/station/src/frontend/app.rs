@@ -1,22 +1,26 @@
+use std::ops::DerefMut;
 use std::sync::Mutex;
 use std::time::Duration;
 
+use tauri::AppHandle;
 use tauri::GlobalShortcutManager;
 use tauri::Manager;
 use tauri::WindowEvent;
 use tokio::time::sleep;
 
-use crate::api::Message;
+use gslib::Message;
 use crate::backend::Backend;
 use crate::frontend::commands::*;
 use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
-use crate::ERROR_CHANNEL;
-use crate::HEARTBEAT;
-use crate::INFO_CHANNEL;
-use crate::SHORTCUT_CHANNEL;
-use crate::STATUS_CHANNEL;
-use crate::WARNING_CHANNEL;
+use gslib::ERROR_CHANNEL;
+use gslib::HEARTBEAT;
+use gslib::INFO_CHANNEL;
+use gslib::SHORTCUT_CHANNEL;
+// use gslib::STATUS_CHANNEL;
+use gslib::WARNING_CHANNEL;
+
+pub static APP_HANDLE: Mutex<Option<AppHandle>> = Mutex::new(None);
 
 pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
@@ -29,12 +33,20 @@ pub fn tauri_main(backend: Backend) {
             unload_buffer,
             send_command,
             generate_test_data,
-            start_server,
+            connect_to_pod,
             start_levi,
-            quit_server,
+            disconnect,
             quit_levi,
             procedures,
-            test_panic
+            test_panic,
+            save_logs,
+            test_route,
+            validate_route,
+
+            speeds_to_u64,
+            speeds_from_u64,
+            positions_to_u64,
+            positions_from_u64,
         ])
         .setup(move |app| {
             let app_handle = app.handle();
@@ -46,6 +58,11 @@ pub fn tauri_main(backend: Backend) {
             }
 
             let s = app_handle.clone();
+            // this is unsafe, don't do it anywhere else
+            APP_HANDLE
+                .lock()
+                .map(|mut x| x.deref_mut().replace(s.clone()))
+                .expect("Error replacing app handle mutex");
 
             // set up heartbeat
             tokio::spawn(async move {
@@ -79,25 +96,11 @@ pub fn tauri_main(backend: Backend) {
                             ss.emit_all(ERROR_CHANNEL, "Emergency Brake triggered!").unwrap()
                         })
                         .expect("Could not register shortcut");
-
-                        // (0..10).for_each(|i| {
-                        //     let sss = s.clone();
-                        //     sh.register(&format!("{i}"), move || {
-                        //         sss.emit_all(SHORTCUT_CHANNEL, &format!("tab_{i}")).unwrap();
-                        //     })
-                        //     .unwrap_or_else(|_| panic!("Could not register shortcut tab_{i}"));
-                        // });
                     },
                     WindowEvent::Focused(false) => {
                         // Unregister shortcuts when window loses focus
                         sh.unregister("Esc").expect("Could not unregister shortcut");
                         sh.unregister("Space").expect("Could not unregister shortcut");
-                        let mut shh = sh.clone();
-                        (0..10).for_each(|i| {
-                            shh.unregister(&format!("{i}")).unwrap_or_else(|_| {
-                                panic!("Could not unregister shortcut tab_{i}")
-                            });
-                        });
                     },
                     _ => {},
                 }
@@ -124,10 +127,7 @@ pub fn tauri_main(backend: Backend) {
                                         .push(Message::Data(dp));
                                 },
                                 Message::Status(s) => app_handle
-                                    .emit_all(
-                                        STATUS_CHANNEL,
-                                        &*format!("{:?};{}", s, s.to_colour_str()),
-                                    )
+                                    .emit_all(INFO_CHANNEL, &*format!("Status: {:?}", s))
                                     .unwrap(),
                                 Message::Info(i) => {
                                     app_handle.emit_all(INFO_CHANNEL, i.to_string()).unwrap()

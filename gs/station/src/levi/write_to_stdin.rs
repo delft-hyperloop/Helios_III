@@ -1,11 +1,10 @@
 use tokio::io::AsyncWriteExt;
 use tokio::sync::broadcast::error::TryRecvError;
 
-use crate::api::Message;
+use gslib::{LEVI_REQUESTED_DATA, Message};
 use crate::CommandReceiver;
 use crate::MessageReceiver;
 use crate::MessageSender;
-use crate::LEVI_REQUESTED_DATA;
 
 /// # Writing to levi's stdin
 /// when a command is sent to the broadcast channel, it is sent to levi's stdin.
@@ -20,12 +19,8 @@ pub async fn write_to_levi_child_stdin(
             Ok(cmd) => {
                 stdin.write_all(format!("{}\n", cmd.to_str()).as_bytes()).await?;
                 stdin.flush().await?;
-                status_sender.send(Message::Info(format!(
-                    "wrote command {:?} to levi stdin: <{:?}>",
-                    cmd,
-                    cmd.to_str().as_bytes()
-                )))?;
             },
+
             Err(TryRecvError::Closed) => {
                 status_sender.send(Message::Error("command_receiver channel closed".into()))?;
                 break;

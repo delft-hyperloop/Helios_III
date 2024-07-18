@@ -5,17 +5,16 @@
     import { getModalStore } from '@skeletonlabs/skeleton';
     import {invoke} from "@tauri-apps/api/tauri";
     import util from '$lib/util/util';
-    import {metersPerMinuteToByte} from "$lib/util/parsers";
-    import {RouteStep} from "$lib";
+    import {EventChannel, type RouteStep} from "$lib";
     import Icon from "@iconify/svelte";
+    import type {RouteConfig} from "$lib/types";
+    import {routeConfig} from "$lib/stores/data";
+    import {get} from "svelte/store";
 
-    const RouteStepNames: RouteStep[] = Object.values(RouteStep);
-    let routeSteps: RouteStep[] = [];
+    const CurrentRouteConfig:RouteConfig = get(routeConfig);
 
-    function onDrop({ detail: { from, to } }: CustomEvent<DropEvent>) {
-      if (!to || from === to) return;
-      routeSteps = reorder(routeSteps, from.index, to.index);
-    }
+    const RouteStepNames: RouteStep[] = ["ForwardA", "ForwardB", "ForwardC", "BackwardsA", "BackwardsB", "BackwardsC",
+      "LaneSwitchStraight", "LaneSwitchCurved", "StopAndWait", "BrakeHere"];
 
     $: focusedInput = '';
     let invalidInputs: SpeedFormKey[] = [];
@@ -23,103 +22,81 @@
     const modalStore = getModalStore();
 
     type SpeedFormType = {
-        BackwardC: number,
-        ForwardB: number,
-        ForwardA: number,
-        LaneSwitchCurved: number,
-        ForwardC: number,
-        LaneSwitchStraight: number,
-        BackwardA: number,
-        BackwardB: number
+      ForwardA: number,
+      ForwardB: number,
+      ForwardC: number,
+      BackwardsA: number,
+      BackwardsB: number,
+      BackwardsC: number,
+      LaneSwitchCurved: number,
+      LaneSwitchStraight: number,
     }
 
-    const speedForm:SpeedFormType = {
-        ForwardA: 0,
-        BackwardA: 0,
-        ForwardB: 0,
-        BackwardB: 0,
-        ForwardC: 0,
-        BackwardC: 0,
-        LaneSwitchStraight: 0,
-        LaneSwitchCurved: 0,
-    };
-
+    const speedForm:SpeedFormType = CurrentRouteConfig.speeds;
     type SpeedFormKey = keyof typeof speedForm;
     const inputs: SpeedFormKey[] = Object.keys(speedForm) as SpeedFormKey[];
 
     function onRouteStepClick(step: RouteStep): void {
-      if (routeSteps.length < 16) {
-        routeSteps = [...routeSteps, step];
+      if (CurrentRouteConfig.positions.length < 16) {
+        CurrentRouteConfig.positions = [...CurrentRouteConfig.positions, step];
       }
     }
 
     function removeRouteStep(index: number): void {
-      routeSteps = routeSteps.filter((_, i) => i !== index);
+      CurrentRouteConfig.positions = CurrentRouteConfig.positions.filter((_, i) => i !== index);
+    }
+
+    function onDrop({ detail: { from, to } }: CustomEvent<DropEvent>) {
+      if (!to || from === to) return;
+      CurrentRouteConfig.positions = reorder(CurrentRouteConfig.positions, from.index, to.index);
     }
 
     function onFormSubmit(): void {
-        //invoke('test_panic');
         if (Object.values(speedForm).some(v => v < -500 || v > 500)) {
             console.log(`Invalid values in form`);
             invoke('test_panic');
-
             return;
         } else {
-            let speeds_u64 = BigInt(0);
-
-            for (let i = 0; i < inputs.length; i++) {
-                const input = metersPerMinuteToByte(speedForm[inputs[i]]);
-                speeds_u64 |= BigInt(input) << BigInt((7 - i) * 8);
-            }
-
-            invoke('send_command', {cmdName: "SetSpeeds", val: Number(speeds_u64)}).then(() => {
-                console.log(`Command SetSpeeds sent`);
-                modalStore.close();
-            })
-
-            let route_u64 = BigInt(0);
-
-            routeSteps.forEach(step => {
-                const stepBits = BigInt(util.stepTo4Bit(step));
-                route_u64 = (route_u64 << BigInt(4)) | stepBits;
-            });
-
-            invoke('send_command', {cmdName: "SetRoute", val: Number(route_u64)}).then(() => {
-                console.log(`Command SetRoute sent`);
-                modalStore.close();
-            })
 
         }
     }
 
-    /**
-     * Import the configuration from the backend
-     * @param speeds this should be a struct with the same keys as SpeedFormType.
-     * The values for these keys will be set on the keys of the component one
-     * @param steps the route steps. These will be displayed in the list.
-     */
-    function import_config(speeds:SpeedFormType, steps:RouteStep[]):void {
-        const inputs: SpeedFormKey[] = Object.keys(speeds) as SpeedFormKey[];
-
-        for (const input of inputs) {
-            speedForm[input] = speeds[input];
-        }
-
-        routeSteps = steps;
+    async function importSpeeds() {
+        console.log(`Sending command: speeds_from_u64`);
+        await invoke('speeds_from_u64', {val: speedInputValue}).then(r => {
+            console.log(`Command speeds_from_u64 sent with response: ` + r);
+            util.log(`Command speeds_from_u64 sent`, EventChannel.INFO);
+        }).catch((e) => {
+            console.error(`Error sending command speeds_from_u64: ${e}`);
+            util.log(`Command speeds_from_u64 ERROR sending`, EventChannel.WARNING);
+        });
     }
 
-    function export_config() {
-        const return_value = {speeds: speedForm, steps: routeSteps};
-        // todo: @Andreas please figure it out
+    async function importRoutes() {
+        console.log(`Sending command: positions_from_u64`);
+        await invoke('positions_from_u64', {val: speedInputValue}).then(r => {
+            console.log(`Command positions_from_u64 sent with response: ` + r);
+            util.log(`Command positions_from_u64 sent`, EventChannel.INFO);
+        }).catch((e) => {
+            console.error(`Error sending command positions_from_u64: ${e}`);
+            util.log(`Command positions_from_u64 ERROR sending`, EventChannel.WARNING);
+        });
     }
 
-    const cBase = 'card p-4 w-modal shadow-xl space-y-4';
-    const cHeader = 'text-2xl font-bold';
+    async function clickToCopy(elem:HTMLInputElement) {
+        await navigator.clipboard.writeText(elem.value);
+    }
+
+    let speedInputValue: number = 0;
+    let routesInputValue: number = 0;
+
+    let exportedRoutes: HTMLInputElement;
+    let exportedSpeeds: HTMLInputElement;
 </script>
 
 {#if $modalStore[0]}
-    <div class="modal-example-form w-modal-wide {cBase}">
-        <header class={cHeader}>{$modalStore[0].title}</header>
+    <div class="modal-example-form w-modal-wide card p-4 shadow-xl space-y-4">
+        <header class="text-2xl font-bold">{$modalStore[0].title}</header>
 
         <div class="grid modal-grid grid-rows-[1fr 2fr] h-full gap-4 col-span-1">
             <div class="w-full p-4 col-span-3">
@@ -199,12 +176,12 @@
                     </defs>
                 </svg>
             </div>
-            <div class="col-span-1 row-span-2 h-[600px] overflow-auto">
+            <div class="col-span-1 row-span-2 h-[500px] overflow-auto">
                 <DragDropList
                         id="aaa"
                         type={VerticalDropZone}
                         itemSize={55}
-                        itemCount={routeSteps.length}
+                        itemCount={CurrentRouteConfig.positions.length}
                         on:drop={onDrop}
                         let:index
                         zoneClass="bg-surface-900 scrollable"
@@ -212,7 +189,7 @@
                     <div class="flex items-center justify-between p-2 bg-surface-800 rounded-lg cursor-move m-2">
                         <div class="flex items-center">
                             <Icon icon="mdi:drag"/>
-                            <span>{index + 1}. {routeSteps[index]}</span>
+                            <span>{index + 1}. {CurrentRouteConfig.positions[index]}</span>
                         </div>
                         <button type="button"
                                 class="btn rounded-lg"
@@ -222,10 +199,10 @@
                     </div>
                 </DragDropList>
             </div>
-            <div class="col-span-2 gap-4">
+            <div class="col-span-2 w-full">
                 {#each inputs as input}
-                    <label>
-                        <span>{util.snakeToCamel(input)}</span>
+                    <label class="text-lg grid labels-grid gap-2 mb-2">
+                        <span class="text-lg">{util.snakeToCamel(input)}</span>
                         <input class={`input rounded-lg px-1 ${invalidInputs.includes(input) ? 'text-error-400' : ''}`}
                                type="number"
                                max="500"
@@ -242,6 +219,7 @@
                                invalidInputs = invalidInputs.filter(i => i !== input);
                            }
                         }}/>
+                        <span class="text-lg">m/s</span>
                     </label>
                 {/each}
             </div>
@@ -252,16 +230,30 @@
                         <button type="button"
                                 class="btn rounded-none"
                                 on:click={() => onRouteStepClick(step)}>
-                            <Icon icon="mdi:plus" class={routeSteps.length < 21 ? "text-surface-400" : "text-error-400"}/>
+                            <Icon icon="mdi:plus" class={CurrentRouteConfig.positions.length < 16 ? "text-surface-400" : "text-error-400"}/>
                         </button>
                     </div>
                 {/each}
             </div>
+            <div class="col-span-4 flex gap-4">
+                <button class="btn bg-primary-500 rounded-lg">
+                    Import Speeds
+                </button>
+                <input bind:value={speedInputValue} type="text" class="input rounded-lg">
+                <button class="btn bg-primary-500 rounded-lg">
+                    Import Route Setup
+                </button>
+                <input bind:value={routesInputValue} type="text" class="input rounded-lg">
+                <button class="btn bg-primary-500 rounded-lg" on:click={() => clickToCopy(exportedSpeeds)}>
+                    Copy Speeds Setup
+                </button>
+                <input contenteditable="false" bind:this={exportedSpeeds} readonly type="text" class="input rounded-lg">
+                <button class="btn bg-primary-500 rounded-lg" on:click={() => clickToCopy(exportedRoutes)}>
+                    Copy Route Setup
+                </button>
+                <input contenteditable="false" bind:this={exportedRoutes} readonly type="text" class="input rounded-lg">
+            </div>
         </div>
-
-
-
-
         <footer class="modal-footer {parent.regionFooter}">
             <button class="btn {parent.buttonNeutral} rounded-lg" on:click={parent.onClose}>
                 Cancel
@@ -276,5 +268,9 @@
 <style lang="scss">
     .modal-grid {
         grid-template-columns: 1fr 1fr 1fr 1.3fr;
+    }
+
+    .labels-grid {
+      grid-template-columns: 2fr 3fr 1fr;
     }
 </style>

@@ -5,13 +5,12 @@ mod write_to_stdin;
 use anyhow::anyhow;
 use tokio::task::AbortHandle;
 
-use crate::api::Message;
+use gslib::{LEVI_EXEC_PATH, Message};
 use crate::battery::DataSender;
 use crate::CommandReceiver;
 use crate::CommandSender;
 use crate::MessageReceiver;
 use crate::MessageSender;
-use crate::LEVI_EXEC_PATH;
 
 pub fn levi_main(
     message_transmitter: MessageSender,

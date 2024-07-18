@@ -32,8 +32,8 @@
     ]
 
     $: tableArr2 = [
-        ["Insulation", DE.INSULATIONORIGINAL, "Insulation-", DE.INSULATIONNEGATIVE],
-        ["IMD Voltage", DE.IMDVOLTAGEDETAILS, "Insulation+", DE.INSULATIONPOSITIVE],
+        ["Voltage", DE.PROPULSIONVOLTAGE, "VRefInt", DE.PROPULSIONVREFINT],
+        ["Current", DE.PROPULSIONCURRENT, "",DE.INSULATIONPOSITIVE],
     ]
 
     const location = storeManager.getWritable("Localisation");
@@ -70,8 +70,8 @@
             </button>
             <span style="writing-mode: vertical-lr" class="font-medium">Vitals Panel</span>
             <div class="flex flex-col gap-4">
-                <Battery fill="#3b669c" orientation="vertical" height={55} perc={Number($lvBattery)}/>
-                <Battery fill="#723f9c" orientation="vertical" height={55} perc={Number($hvBattery)}/>
+                <Battery fill="#3b669c" orientation="vertical" height={55} perc={Number($lvBattery.value)}/>
+                <Battery fill="#723f9c" orientation="vertical" height={55} perc={Number($hvBattery.value)}/>
             </div>
         </div>
     {:else}
@@ -79,7 +79,7 @@
             <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="">
                 <!--     FSM       -->
                 <Tile bgToken={800} containerClass="col-span-2">
-                    <Localiser turning={true} loc={$location} showLabels={false} />
+                    <Localiser turning={true} loc={$location.value} showLabels={false} />
                 </Tile>
                 <!--      Under FSM      -->
                 <Tile bgToken={700} containerClass="col-span-2">
@@ -98,15 +98,15 @@
                         </div>
                         <div style="grid-template-columns: 1fr 2fr 2fr;" class="grid gap-y-2">
                             <span>LV: </span>
-                            <Battery fill="#3b669c" orientation="horizontal" perc={Number($lvBattery)}/>
+                            <Battery fill="#3b669c" orientation="horizontal" perc={Number($lvBattery.value)}/>
                             <span>Total: <Store datatype="TotalBatteryVoltageLow" /></span>
                             <span>HV: </span>
-                            <Battery fill="#723f9c" orientation="horizontal" perc={Number($hvBattery)}/>
+                            <Battery fill="#723f9c" orientation="horizontal" perc={Number($hvBattery.value)}/>
                             <span>Total: <Store datatype="TotalBatteryVoltageHigh" /></span>
                         </div>
                     </div>
-                    <div class="flex gap-4">
-                        <Command cmd="StopHV" />
+                    <div class="flex gap-4 mt-4">
+                        <Command cmd="StopHV" className="py-2 text-error-400 border-error-400 border-2" />
                         <Command cmd="ArmBrakes" />
                         <Command cmd="StartRun" />
                     </div>
@@ -119,14 +119,10 @@
                     <Table tableArr={tableTempsArr} titles={["Module", "Temp °C", "Module", "Temp °C"]}/>
                 </Tile>
                 <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
-                    <Table titles={["Variable", "Status", "Variable", "Status"]} tableArr={tableArr2}/>
+                    <Table titles={["Propulsion", "Status", "Propulsion", "Status"]} tableArr={tableArr2}/>
                 </Tile>
                 <Tile bgToken={800} containerClass="col-span-2 px-16">
-                    {#if width > 550}
-                        <FSM size="sm"/>
-                    {:else}
-                        <FSM size="lg"/>
-                    {/if}
+                        <FSM />
                 </Tile>
 
             </TileGrid>

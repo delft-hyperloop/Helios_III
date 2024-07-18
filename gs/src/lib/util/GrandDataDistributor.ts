@@ -83,8 +83,8 @@ export class GrandDataDistributor {
      */
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
-            // emit(EventChannel.INFO, `Datapoint received: ${datapoint.datatype} - ${datapoint.value}`);
-            this.StoreManager.updateStore(datapoint.datatype, datapoint.style, datapoint.value);
+            this.StoreManager.updateStore(datapoint.datatype, datapoint.style, datapoint.units, datapoint.value);
+            console.log(datapoint)
         });
     }
 
@@ -100,7 +100,7 @@ export class GrandDataDistributor {
  * The StoreManager class is responsible for managing the data stores
  */
 class StoreManager {
-    private stores: Map<string, Store<any>>;
+    private stores: Map<string, Writable<Store<any>>>;
 
     constructor() {
         this.stores = new Map();
@@ -110,29 +110,34 @@ class StoreManager {
      * Register a store
      * @param name - the name of the store
      * @param initial
+     * @param initialUnits
      * @param processFunction - the function to process the data
      */
-    public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>) {
-        this.stores.set(name, new Store(initial, '', processFunction));
+    public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>, initialUnits?:string) {
+        this.stores.set(name, writable<Store<T>>(new Store(initial, '', initialUnits || '', processFunction)));
     }
 
     /**
      * Update a store
      * @param name - the name of the store
      * @param style
+     * @param units
      * @param data - the data to update the store with
      */
-    public updateStore(name: NamedDatatype, style:string, data: number) {
+    public updateStore(name: NamedDatatype, style:string, units:string, data: number) {
         const store = this.stores.get(name);
-        if (store) store.set(data, style);
+        if (store) {
+            const storeVal = get(store);
+            store.set(new Store(storeVal.processFunction(data, storeVal.value), style, units, storeVal.processFunction))
+        }
     }
 
-    public getWritable(name: NamedDatatype):Writable<any> {
+    public getValue(name: NamedDatatype):any {
         if (!this.stores.has(name)) throw new Error(`Store with name ${name} does not exist`);
-        return this.stores.get(name)!.writable;
+        return get(this.stores.get(name)!).value;
     }
 
-    public getStore(name: NamedDatatype):Store<any> {
+    public getWritable(name: NamedDatatype):Writable<Store<any>> {
         if (!this.stores.has(name)) throw new Error(`Store with name ${name} does not exist`);
         return this.stores.get(name)!;
     }
@@ -144,26 +149,33 @@ class StoreManager {
  * This allows for processing the data before setting it to the store.
  */
 class Store<T> {
-    private readonly processFunction: dataConvFun<T>;
-    private readonly _writable: Writable<T>;
+    public readonly processFunction: dataConvFun<T>;
+    private _value: T;
     private _style: string;
+    private _units: string;
 
-    constructor(initial:T, style:string, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
-        this._writable = writable<T>(initial);
+    constructor(initial:T, style:string, units:string, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
+        this._value = initial;
         this.processFunction = processFunction;
         this._style = style;
+        this._units = units;
     }
 
-    public set(data: number, style: string) {
-        this.writable.set(this.processFunction(data, get(this.writable)));
+    public set(data: number, style: string, units:string) {
+        this._value = this.processFunction(data, this._value);
         this._style = style;
+        this._units = units;
     }
 
-    public get writable():Writable<T> {
-        return this._writable;
+    public get value():T {
+        return this._value;
     }
 
     public get style():string {
         return this._style;
+    }
+
+    get units(): string {
+        return this._units;
     }
 }

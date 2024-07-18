@@ -23,7 +23,7 @@
     <h2 class="text-xl font-semibold mb-4">Location & IMU</h2>
     <TileGrid columns="1fr 1fr" rows="">
         <Tile containerClass="col-span-2">
-            <Localiser loc={$location} max={13000} turning={$inputTurn !== RunMode.ShortRun}/>
+            <Localiser loc={$location.value} max={13000} turning={$inputTurn !== RunMode.ShortRun}/>
         </Tile>
         <Tile>
             <Chart title="Velocity" background="bg-surface-900" />

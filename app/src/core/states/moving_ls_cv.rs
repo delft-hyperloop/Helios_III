@@ -18,6 +18,7 @@ impl Fsm {
         match event {
             Event::HvLevitationBelowBms => {
                 transit!(self, State::EmergencyBraking);
+                self.send_levi_cmd(Command::EmergencyBrake(4)).await;
             },
             Event::LaneSwitchEnded => match self.route.next_position() {
                 Location::ForwardC => {

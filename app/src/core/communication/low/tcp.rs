@@ -98,6 +98,7 @@ impl HardwareLayer for TcpCommunication<'static> {
         };
 
         match socket.connect(self.addr).await {
+            // match socket.accept(self.addr).await {
             Ok(_) => {
                 self.last_valid_timestamp = Instant::now().as_millis();
                 self.socket = Some(socket);

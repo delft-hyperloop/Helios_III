@@ -10,8 +10,9 @@ use crate::core::fsm_status::Location;
 use crate::core::fsm_status::Route;
 use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
-use crate::core::states::precharging::timeout_abort_pre_charge;
+use crate::core::fsm_status::VOLTAGE_OVER_50;
 use crate::pconfig::ticks;
+use crate::Command;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
@@ -132,7 +133,7 @@ impl Fsm {
             State::Idle => self.entry_idle(),
             State::Precharging => {
                 self.entry_pre_charge();
-                timeout_abort_pre_charge(self.event_sender).await;
+                // timeout_abort_pre_charge(self.event_sender).await;
             },
             State::HVOn => self.entry_hv_on(),
             State::Levitating => {
@@ -214,6 +215,8 @@ impl Fsm {
             | Event::CygnusesVaryingVoltages
             | Event::ValueOutOfBounds => {
                 transit!(self, State::EmergencyBraking);
+                self.send_levi_cmd(Command::LeviEmergencyBrake(4)).await;
+                self.periodic_checks();
                 return;
             },
 
@@ -230,8 +233,16 @@ impl Fsm {
 
             Event::DcTurnedOff => self.peripherals.hv_peripherals.dc_dc.set_low(),
 
-            Event::LeviLedOn => self.peripherals.led_controller.levi_led.set_high(),
-            Event::LeviLedOff => self.peripherals.led_controller.levi_led.set_low(),
+            Event::LeviLedOn => {
+                self.peripherals.led_controller.hv_led.set_high();
+                VOLTAGE_OVER_50.store(true, core::sync::atomic::Ordering::Relaxed);
+            },
+            Event::LeviLedOff => {
+                self.peripherals.led_controller.hv_led.set_low();
+                VOLTAGE_OVER_50.store(false, core::sync::atomic::Ordering::Relaxed);
+            },
+
+            Event::LeviConnected => self.status.levi_connected = true,
 
             ///////////////////
             // Debugging events
@@ -309,6 +320,7 @@ impl Fsm {
             State::EmergencyBraking => self.react_emergency_braking(event).await,
             State::Crashing => self.log(Info::Crashed).await,
         }
+        self.periodic_checks();
     }
 
     /// # Send data to the ground station
@@ -365,5 +377,6 @@ impl Fsm {
                 Instant::now().as_ticks(),
             ))
             .await;
+        VOLTAGE_OVER_50.store(true, core::sync::atomic::Ordering::Relaxed);
     }
 }
