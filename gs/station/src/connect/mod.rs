@@ -8,8 +8,8 @@ use tokio::net::TcpListener;
 use tokio::net::TcpStream;
 use tokio::task::JoinHandle;
 
-use crate::api::socket;
-use crate::api::Message;
+use gslib::socket;
+use gslib::Message;
 use crate::battery::aggregate_voltage_readings;
 use crate::battery::DataReceiver;
 use crate::battery::DataSender;
@@ -17,7 +17,7 @@ use crate::connect::tcp_reader::get_messages_from_tcp;
 use crate::connect::tcp_writer::transmit_commands_to_tcp;
 use crate::CommandReceiver;
 use crate::CommandSender;
-use crate::Info;
+use gslib::Info;
 use crate::MessageSender;
 
 pub async fn connect_main(

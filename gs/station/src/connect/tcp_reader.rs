@@ -3,11 +3,11 @@ use std::collections::VecDeque;
 use tokio::io::AsyncReadExt;
 use tokio::net::tcp::OwnedReadHalf;
 
-use crate::api::Message;
+use gslib::{Info, Message};
 use crate::battery::DataSender;
 use crate::CommandSender;
 use crate::MessageSender;
-use crate::NETWORK_BUFFER_SIZE;
+use gslib::NETWORK_BUFFER_SIZE;
 
 pub async fn get_messages_from_tcp(
     mut reader: OwnedReadHalf,
@@ -20,7 +20,7 @@ pub async fn get_messages_from_tcp(
     loop {
         match reader.read(&mut buffer).await {
             Ok(0) => {
-                message_transmitter.send(Message::Status(crate::Info::ConnectionClosedByClient))?;
+                message_transmitter.send(Message::Status(Info::ConnectionClosedByClient))?;
                 message_transmitter
                     .send(Message::Warning("Connection closed by client".to_string()))?;
                 message_transmitter

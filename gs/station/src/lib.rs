@@ -6,11 +6,9 @@ use std::sync::mpsc::Sender;
 #[cfg(feature = "tui")]
 use ratatui::prelude::Color;
 
-use crate::Command;
-use crate::Datatype;
-use crate::Info;
-use crate::GS_IP_ADDRESS;
 // use crate::POD_IP_ADDRESS;
+
+include!(concat!(env!("OUT_DIR"), "/config.rs"));
 
 include!("../../../util/src/shared/routes.rs");
 
@@ -53,6 +51,12 @@ pub enum Message {
     Info(String),
     Warning(String),
     Error(String),
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct Log {
+    pub messages: Vec<Message>,
+    pub commands: Vec<Command>,
 }
 
 impl Info {

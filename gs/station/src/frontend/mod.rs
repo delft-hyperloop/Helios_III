@@ -3,7 +3,7 @@ pub mod commands;
 use std::fmt::Debug;
 use std::sync::Mutex;
 
-use crate::api::Message;
+use gslib::Message;
 use crate::backend::Backend;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]

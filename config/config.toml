@@ -1,7 +1,7 @@
 [gs]
 ip = [192,168,1,15]
 force = true 
-port = 6948
+port = 6951
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
 timeout = 2000 # this is the timeout for the socket, in milliseconds.
 heartbeat = 500 # how often to send a keep_alive heartbeat, in milliseconds.
@@ -103,7 +103,6 @@ colour = "yellow"
 label = "DisablePropulsionGpio"
 colour = "yellow"
 
-
 [[Info]]
 label = "SetPropulsionSpeed"
 colour = "yellow"
@@ -127,6 +126,23 @@ colour = "red"
 [[Info]]
 label = "EnterMoving"
 colour = "green"
+
+
+[[Info]]
+label = "DataHashFailed"
+colour = "red"
+
+[[Info]]
+label = "CommandHashFailed"
+colour = "red"
+
+[[Info]]
+label = "EventsHashFailed"
+colour = "red"
+
+[[Info]]
+label = "ConfigHashFailed"
+colour = "red"
 
 [[Info]]
 label = "DataHashPassed"
@@ -236,4 +252,24 @@ colour = "green"
 [[Info]]
 label = "PrechargeAborted"
 colour = "red"
+
+[[Info]]
+label = "ValueCausedBraking"
+colour = "red"
+
+[[Info]]
+label = "HeartbeatExpired"
+colour = "red"
+
+[[Info]]
+label = "BrakingCommunicationTriggered"
+colour = "yellow"
+
+[[Info]]
+label = "PrechargeTimerSpawnFailed"
+colour = "yellow"
+
+[[Info]]
+label = "PrechargeFinished"
+colour = "green"
 

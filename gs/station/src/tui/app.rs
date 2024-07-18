@@ -4,10 +4,10 @@ use std::time::Instant;
 
 use ratatui::Frame;
 
-use crate::api::state_to_string;
-use crate::api::Datapoint;
-use crate::api::LocationSequence;
-use crate::api::Message;
+use gslib::state_to_string;
+use gslib::Datapoint;
+use gslib::LocationSequence;
+use gslib::Message;
 use crate::backend::Backend;
 use crate::tui::render::CmdRow;
 use crate::tui::timestamp;

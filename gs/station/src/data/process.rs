@@ -1,7 +1,7 @@
-use crate::api::Datapoint;
-use crate::api::ProcessedData;
-use crate::Datatype;
-use crate::ValueCheckResult;
+use gslib::Datapoint;
+use gslib::ProcessedData;
+use gslib::Datatype;
+use gslib::ValueCheckResult;
 
 /// Preprocessing data from the pod before sending to the frontend
 pub fn process(datapoint: &Datapoint) -> ProcessedData {

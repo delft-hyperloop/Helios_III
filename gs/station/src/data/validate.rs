@@ -1,16 +1,16 @@
 use std::collections::BTreeMap;
 
-use crate::api::Location::BackwardsA;
-use crate::api::Location::BackwardsB;
-use crate::api::Location::BackwardsC;
-use crate::api::Location::BrakeHere;
-use crate::api::Location::ForwardA;
-use crate::api::Location::ForwardB;
-use crate::api::Location::ForwardC;
-use crate::api::Location::LaneSwitchCurved;
-use crate::api::Location::LaneSwitchStraight;
-use crate::api::Location::StopAndWait;
-use crate::api::Route;
+use gslib::Location::BackwardsA;
+use gslib::Location::BackwardsB;
+use gslib::Location::BackwardsC;
+use gslib::Location::BrakeHere;
+use gslib::Location::ForwardA;
+use gslib::Location::ForwardB;
+use gslib::Location::ForwardC;
+use gslib::Location::LaneSwitchCurved;
+use gslib::Location::LaneSwitchStraight;
+use gslib::Location::StopAndWait;
+use gslib::Route;
 
 pub fn validate_route_internal(r: Route) -> bool {
     let a = r.current_position != 0;

@@ -8,17 +8,17 @@ use tauri::Manager;
 use tauri::WindowEvent;
 use tokio::time::sleep;
 
-use crate::api::Message;
+use gslib::Message;
 use crate::backend::Backend;
 use crate::frontend::commands::*;
 use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
-use crate::ERROR_CHANNEL;
-use crate::HEARTBEAT;
-use crate::INFO_CHANNEL;
-use crate::SHORTCUT_CHANNEL;
-// use crate::STATUS_CHANNEL;
-use crate::WARNING_CHANNEL;
+use gslib::ERROR_CHANNEL;
+use gslib::HEARTBEAT;
+use gslib::INFO_CHANNEL;
+use gslib::SHORTCUT_CHANNEL;
+// use gslib::STATUS_CHANNEL;
+use gslib::WARNING_CHANNEL;
 
 pub static APP_HANDLE: Mutex<Option<AppHandle>> = Mutex::new(None);
 

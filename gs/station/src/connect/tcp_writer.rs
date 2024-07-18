@@ -1,8 +1,8 @@
 use tokio::io::AsyncWriteExt;
 use tokio::net::tcp::OwnedWriteHalf;
 
-use crate::api::Message;
-use crate::api::Message::Error;
+use gslib::{HEARTBEAT, Message};
+use gslib::Message::Error;
 use crate::Command;
 use crate::CommandReceiver;
 use crate::MessageSender;
@@ -14,7 +14,7 @@ pub async fn transmit_commands_to_tcp(
 ) -> anyhow::Result<()> {
     let mut last_send_timestamp = std::time::Instant::now();
     loop {
-        if last_send_timestamp.elapsed().as_millis() > (crate::HEARTBEAT as u128) {
+        if last_send_timestamp.elapsed().as_millis() > (HEARTBEAT as u128) {
             last_send_timestamp = std::time::Instant::now();
             match writer.write_all(&Command::as_bytes(&Command::Heartbeat(42))).await {
                 Ok(_) => {

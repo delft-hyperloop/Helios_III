@@ -1,11 +1,11 @@
 use tokio::sync::broadcast::error::RecvError;
 
-use crate::api::Message;
-use crate::api::ProcessedData;
+use gslib::Message;
+use gslib::ProcessedData;
 use crate::Command;
 use crate::CommandSender;
-use crate::Datatype;
-use crate::Event;
+use gslib::Datatype;
+use gslib::Event;
 use crate::MessageSender;
 
 // const CYGNUS_MAX_DIFFERENCE: f64 = 9.0; // Volts

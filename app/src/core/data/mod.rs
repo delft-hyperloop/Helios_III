@@ -75,6 +75,12 @@ pub async fn data_middle_step(
                     data.datatype.to_id() as u64,
                     data.value
                 );
+                send_data!(
+                    outgoing,
+                    Datatype::Info,
+                    Info::ValueCausedBraking as u64,
+                    data.value
+                );
             },
         }
         // 2. check heartbeats
@@ -89,6 +95,9 @@ pub async fn data_middle_step(
                 event_sender.send(Event::EmergencyBraking).await;
                 outgoing
                     .send(Datapoint::new(Datatype::HeartbeatExpired, dt.to_id() as u64, ticks()))
+                    .await;
+                outgoing
+                    .send(Datapoint::new(Datatype::Info, Info::HeartbeatExpired as u64, ticks()))
                     .await;
                 *last = None;
             }

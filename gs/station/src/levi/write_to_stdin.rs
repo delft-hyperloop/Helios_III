@@ -1,11 +1,10 @@
 use tokio::io::AsyncWriteExt;
 use tokio::sync::broadcast::error::TryRecvError;
 
-use crate::api::Message;
+use gslib::{LEVI_REQUESTED_DATA, Message};
 use crate::CommandReceiver;
 use crate::MessageReceiver;
 use crate::MessageSender;
-use crate::LEVI_REQUESTED_DATA;
 
 /// # Writing to levi's stdin
 /// when a command is sent to the broadcast channel, it is sent to levi's stdin.
