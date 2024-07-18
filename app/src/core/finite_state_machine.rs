@@ -1,12 +1,11 @@
-use core::cmp::Ordering;
-
+use core::sync::atomic::Ordering;
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_time::Instant;
 
 use crate::core::communication::data::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
-use crate::core::fsm_status::Location;
+use crate::core::fsm_status::{Location, VOLTAGE_OVER_50};
 use crate::core::fsm_status::Route;
 use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
@@ -232,8 +231,14 @@ impl Fsm {
 
             Event::DcTurnedOff => self.peripherals.hv_peripherals.dc_dc.set_low(),
 
-            Event::LeviLedOn => self.peripherals.led_controller.hv_led.set_high(),
-            Event::LeviLedOff => self.peripherals.led_controller.hv_led.set_low(),
+            Event::LeviLedOn => {
+                self.peripherals.led_controller.hv_led.set_high();
+                VOLTAGE_OVER_50.store(true, Ordering::Relaxed);
+            },
+            Event::LeviLedOff => {
+                self.peripherals.led_controller.hv_led.set_low();
+                VOLTAGE_OVER_50.store(false, Ordering::Relaxed);
+            }
 
             Event::LeviConnected => self.status.levi_connected = true,
 
@@ -370,5 +375,6 @@ impl Fsm {
                 Instant::now().as_ticks(),
             ))
             .await;
+        VOLTAGE_OVER_50.store(true, Ordering::Relaxed);
     }
 }
