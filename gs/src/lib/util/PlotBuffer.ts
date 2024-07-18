@@ -36,7 +36,9 @@ export class PlotBuffer {
             width: 500,
             height: 300,
             legend: {show: showLegend},
-            scales: { "%": { auto: false }, y: { range: yRange }, x: { time: true } },
+            // scales: { "%": { auto: false }, y: { range: yRange }, x: { time: true } },
+            scales: { "%": { auto: false }, y: { range: (self, dataMin, dataMax) =>
+                        uPlot.rangeNum(dataMin, dataMax, 0.1, true) }, x: { time: true } },
             axes: [
                 {
                     stroke: "#e4e6ee",
