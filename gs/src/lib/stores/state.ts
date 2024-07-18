@@ -20,3 +20,4 @@ export const chartStore = writable(new Map<string, PlotBuffer>());
 
 export const serverStatus: Writable<boolean> = writable(false);
 export const bigErrorStatus: Writable<ErrorStatus> = writable(ErrorStatus.SAFE);
+export const latestTimestamp: Writable<number> = writable(0);
