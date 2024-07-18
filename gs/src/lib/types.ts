@@ -96,18 +96,8 @@ export type Log = {
     log_type:LogType, message:string, timestamp:number
 }
 
-export enum RouteStep {
-    FORWARD_A = 'ForwardA',
-    FORWARD_B = 'ForwardB',
-    FORWARD_C = 'ForwardC',
-    BACKWARD_A = 'BackwardsA',
-    BACKWARD_B = 'BackwardsB',
-    BACKWARD_C = 'BackwardsC',
-    LANE_SWITCH_STRAIGHT = 'LaneSwitchStraight',
-    LANE_SWITCH_CURVED = 'LaneSwitchCurved',
-    STOP_AND_WAIT = 'StopAndWait',
-    BRAKE_HERE = 'BrakeHere'
-}
+export type RouteStep = "ForwardA"|"ForwardB"|"ForwardC"|"BackwardsA"|"BackwardsB"|"BackwardsC"|
+                        "LaneSwitchStraight"|"LaneSwitchCurved"|"StopAndWait"|"BrakeHere";
 
 export type Procedure = {
     name: string,
@@ -132,7 +122,20 @@ export enum STATUS {
 export type LogType = 'INFO' | 'WARNING' | 'ERROR' | 'STATUS';
 
 export type RouteConfig = {
-    speeds: number[],
+    speeds: {
+        BackwardsA: number
+        BackwardsB: number
+        BackwardsC: number
+        BrakeHere: number
+        ForwardA: number
+        ForwardB: number
+        ForwardC: number
+        LaneSwitchCurved: number
+        LaneSwitchStraight: number
+        StopAndWait: number
+    },
+    positions: RouteStep[],
+    current_position: number
 }
 
 // OLD TYPES

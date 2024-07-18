@@ -6,10 +6,12 @@
     import {invoke} from "@tauri-apps/api/tauri";
     import util from '$lib/util/util';
     import {metersPerMinuteToByte} from "$lib/util/parsers";
-    import {RouteStep} from "$lib";
+    import {type RouteStep} from "$lib";
     import Icon from "@iconify/svelte";
 
-    const RouteStepNames: RouteStep[] = Object.values(RouteStep);
+    const RouteStepNames: RouteStep[] = ["ForwardA", "ForwardB", "ForwardC", "BackwardsA", "BackwardsB", "BackwardsC",
+      "LaneSwitchStraight", "LaneSwitchCurved", "StopAndWait", "BrakeHere"];
+
     let routeSteps: RouteStep[] = [];
 
     function onDrop({ detail: { from, to } }: CustomEvent<DropEvent>) {
@@ -79,10 +81,10 @@
 
             let route_u64 = BigInt(0);
 
-            routeSteps.forEach(step => {
-                const stepBits = BigInt(util.stepTo4Bit(step));
-                route_u64 = (route_u64 << BigInt(4)) | stepBits;
-            });
+            // routeSteps.forEach(step => {
+            //     const stepBits = BigInt(util.stepTo4Bit(step));
+            //     route_u64 = (route_u64 << BigInt(4)) | stepBits;
+            // });
 
             invoke('send_command', {cmdName: "SetRoute", val: Number(route_u64)}).then(() => {
                 console.log(`Command SetRoute sent`);
