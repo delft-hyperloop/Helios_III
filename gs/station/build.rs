@@ -121,8 +121,7 @@ fn configure_gs(config: &Config) -> String {
         config.pod.net.ip[2],
         config.pod.net.ip[3],
         config.pod.net.port
-    ) + &*
-    format!("pub const NETWORK_BUFFER_SIZE: usize = {};\n", config.gs.buffer_size)
+    ) + &*format!("pub const NETWORK_BUFFER_SIZE: usize = {};\n", config.gs.buffer_size)
         + &format!("pub const IP_TIMEOUT: u64 = {};\n", config.gs.timeout)
         + &format!("pub const HEARTBEAT: u64 = {};\n", config.gs.heartbeat)
         + &format!(

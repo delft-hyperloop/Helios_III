@@ -1,8 +1,8 @@
 use defmt::info;
 
-use crate::core::controllers::breaking_controller::BRAKE;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
+use crate::core::fsm_status::BRAKE;
 use crate::transit;
 use crate::Datatype;
 use crate::Event;

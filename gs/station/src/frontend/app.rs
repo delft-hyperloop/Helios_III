@@ -1,8 +1,9 @@
 use std::ops::DerefMut;
-use std::sync::{Mutex};
+use std::sync::Mutex;
 use std::time::Duration;
 
-use tauri::{AppHandle, GlobalShortcutManager};
+use tauri::AppHandle;
+use tauri::GlobalShortcutManager;
 use tauri::Manager;
 use tauri::WindowEvent;
 use tokio::time::sleep;
@@ -51,7 +52,10 @@ pub fn tauri_main(backend: Backend) {
 
             let s = app_handle.clone();
             // this is unsafe, don't do it anywhere else
-            APP_HANDLE.lock().map(|mut x| x.deref_mut().replace(s.clone())).expect("Error replacing app handle mutex");
+            APP_HANDLE
+                .lock()
+                .map(|mut x| x.deref_mut().replace(s.clone()))
+                .expect("Error replacing app handle mutex");
 
             // set up heartbeat
             tokio::spawn(async move {
@@ -85,7 +89,6 @@ pub fn tauri_main(backend: Backend) {
                             ss.emit_all(ERROR_CHANNEL, "Emergency Brake triggered!").unwrap()
                         })
                         .expect("Could not register shortcut");
-
                     },
                     WindowEvent::Focused(false) => {
                         // Unregister shortcuts when window loses focus
@@ -117,10 +120,7 @@ pub fn tauri_main(backend: Backend) {
                                         .push(Message::Data(dp));
                                 },
                                 Message::Status(s) => app_handle
-                                    .emit_all(
-                                        INFO_CHANNEL,
-                                        &*format!("Status: {:?}", s),
-                                    )
+                                    .emit_all(INFO_CHANNEL, &*format!("Status: {:?}", s))
                                     .unwrap(),
                                 Message::Info(i) => {
                                     app_handle.emit_all(INFO_CHANNEL, i.to_string()).unwrap()

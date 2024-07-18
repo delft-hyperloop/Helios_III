@@ -1,4 +1,3 @@
-use core::sync::atomic::AtomicBool;
 use core::sync::atomic::Ordering;
 
 use defmt::info;
@@ -15,6 +14,9 @@ use embassy_time::Duration;
 use embassy_time::Instant;
 use embassy_time::Timer;
 
+use crate::core::fsm_status::BRAKE;
+use crate::core::fsm_status::BRAKES_EXTENDED;
+use crate::core::fsm_status::DISABLE_BRAKING_COMMUNICATION;
 use crate::pconfig::queue_event;
 use crate::send_data;
 use crate::try_spawn;
@@ -22,10 +24,6 @@ use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
-
-pub static mut BRAKE: bool = false;
-
-pub static mut DISABLE_BRAKING_COMMUNICATION: bool = false;
 
 pub struct BrakingController {
     pub braking_rearm: Output<'static>,
@@ -67,8 +65,6 @@ pub async fn control_braking_heartbeat(
     }
 }
 
-pub static BRAKES_EXTENDED: AtomicBool = AtomicBool::new(true);
-
 #[embassy_executor::task]
 async fn read_braking_communication(
     event_sender: EventSender,
@@ -83,19 +79,16 @@ async fn read_braking_communication(
         let is_activated = v < 25000; // when braking comm goes low, someone else triggered brakes (eg big red button)
         if edge && is_activated {
             edge = false; // braking comm value is low, so we don't brake until it goes high again
-            unsafe {
-                if !DISABLE_BRAKING_COMMUNICATION {
-                    queue_event(event_sender, Event::EmergencyBraking).await;
-                }
+            if !DISABLE_BRAKING_COMMUNICATION.load(Ordering::Relaxed) {
+                queue_event(event_sender, Event::EmergencyBraking).await;
             }
-            BRAKES_EXTENDED.store(true, Ordering::Release);
+            BRAKES_EXTENDED.store(true, Ordering::Relaxed);
             Timer::after_millis(1000).await;
         }
         if !edge && !is_activated {
             // braking comm went high again
             edge = true;
-                BRAKES_EXTENDED.store(false, Ordering::Release);
-
+            BRAKES_EXTENDED.store(false, Ordering::Relaxed);
         }
         Timer::after_micros(10).await;
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(500) {

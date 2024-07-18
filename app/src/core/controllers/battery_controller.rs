@@ -180,62 +180,6 @@ impl BatteryController {
                     }
                 }
                 if Datatype::SingleCellVoltageLow.to_id() == id {
-                    queue_dp(
-                        self.data_sender,
-                        Datatype::SingleCellVoltageLV1,
-                        data[0] as u64 + 200,
-                        0,
-                    )
-                    .await;
-                    queue_dp(
-                        self.data_sender,
-                        Datatype::SingleCellVoltageLV2,
-                        data[1] as u64 + 200,
-                        0,
-                    )
-                    .await;
-                    queue_dp(
-                        self.data_sender,
-                        Datatype::SingleCellVoltageLV3,
-                        data[2] as u64 + 200,
-                        0,
-                    )
-                    .await;
-                    queue_dp(
-                        self.data_sender,
-                        Datatype::SingleCellVoltageLV4,
-                        data[3] as u64 + 200,
-                        0,
-                    )
-                    .await;
-                    queue_dp(
-                        self.data_sender,
-                        Datatype::SingleCellVoltageLV5,
-                        data[4] as u64 + 200,
-                        0,
-                    )
-                    .await;
-                    queue_dp(
-                        self.data_sender,
-                        Datatype::SingleCellVoltageLV6,
-                        data[5] as u64 + 200,
-                        0,
-                    )
-                    .await;
-                    queue_dp(
-                        self.data_sender,
-                        Datatype::SingleCellVoltageLV7,
-                        data[6] as u64 + 200,
-                        0,
-                    )
-                    .await;
-                    queue_dp(
-                        self.data_sender,
-                        Datatype::SingleCellVoltageLV8,
-                        data[7] as u64 + 200,
-                        0,
-                    )
-                    .await;
                     // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
                 } else {
                     let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id()) * 8) as usize;
@@ -299,18 +243,27 @@ impl BatteryController {
         queue_dp(self.data_sender, battery_voltage_dt, avg_cell_voltage, timestamp).await;
         queue_dp(self.data_sender, battery_voltage_min, min_cell_voltage, timestamp).await;
         queue_dp(self.data_sender, battery_voltage_max, max_cell_voltage, timestamp).await;
-        if (total_pack_voltage != 0){
-        queue_dp(self.data_sender, total_battery_voltage_dt, total_pack_voltage, timestamp).await
+        if total_pack_voltage != 0 {
+            queue_dp(self.data_sender, total_battery_voltage_dt, total_pack_voltage, timestamp)
+                .await
         };
-        if (!self.high_voltage){
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV1, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV2, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV3, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV4, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV5, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV6, max_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV7, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV8, min_cell_voltage,timestamp).await;
+        if !self.high_voltage {
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV1, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV2, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV3, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV4, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV5, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV6, max_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV7, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV8, min_cell_voltage, timestamp)
+                .await;
         }
     }
 

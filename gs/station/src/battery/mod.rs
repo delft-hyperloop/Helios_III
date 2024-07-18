@@ -51,17 +51,11 @@ impl Backlog {
         }
     }
 
-    fn levi_rising_edge(&self) -> bool {
-        self.levi_max > LEVI_LED_THRESHOLD
-    }
+    fn levi_rising_edge(&self) -> bool { self.levi_max > LEVI_LED_THRESHOLD }
 
-    fn levi_falling_edge(&self) -> bool {
-        self.levi_max < LEVI_LED_THRESHOLD
-    }
+    fn levi_falling_edge(&self) -> bool { self.levi_max < LEVI_LED_THRESHOLD }
 
-    fn is_pre_charging(&self) -> bool {
-        (self.state - 4.0) < f64::EPSILON * 4.0
-    }
+    fn is_pre_charging(&self) -> bool { (self.state - 4.0) < f64::EPSILON * 4.0 }
 }
 
 pub async fn aggregate_voltage_readings(
@@ -114,6 +108,7 @@ pub async fn aggregate_voltage_readings(
         if !backlog.is_ready() {
             continue;
         }
+
         if !edge {
             edge = true;
             send(Event::LeviConnected);
@@ -125,6 +120,7 @@ pub async fn aggregate_voltage_readings(
         // }
 
         if backlog.levi_rising_edge() {
+            send(Event::EmergencyBraking);
             send(Event::LeviLedOn);
         }
 

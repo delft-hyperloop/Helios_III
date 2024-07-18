@@ -1,4 +1,31 @@
-use crate::core::controllers::breaking_controller::DISABLE_BRAKING_COMMUNICATION;
+use core::sync::atomic::AtomicBool;
+use core::sync::atomic::Ordering;
+
+use crate::core::finite_state_machine::Fsm;
+use crate::send_data;
+use crate::Datatype;
+
+// AtomicBool(s) for statuses
+/// Whether we should extend the brakes
+pub static mut BRAKE: bool = false;
+/// Is main pcb and ground station connected
+pub static CONNECTED: AtomicBool = AtomicBool::new(false);
+/// Override for disabling whether braking_comm triggers emergency brake
+pub static DISABLE_BRAKING_COMMUNICATION: AtomicBool = AtomicBool::new(false);
+/// Whether the brakes are extended
+pub static BRAKES_EXTENDED: AtomicBool = AtomicBool::new(true);
+/// Levitation-read DC bus voltage > 50V, pod is not safe to touch (HV LED on)
+pub static VOLTAGE_OVER_50: AtomicBool = AtomicBool::new(false);
+/// If the sensor hub is connected (we are receiving values)
+pub static HUB_CONNECTED: AtomicBool = AtomicBool::new(false);
+/// Is propulsion connected? basically are we reading values cuz we've no other way of knowing
+pub static PROPULSION_CONNECTED: AtomicBool = AtomicBool::new(false);
+/// Is levitation connected (received from ground station)
+pub static LEVITATION_CONNECTED: AtomicBool = AtomicBool::new(false);
+/// Is the LV BMS alive and well, are we receiving values.
+pub static LV_BATTERIES_CONNECTED: AtomicBool = AtomicBool::new(false);
+/// Is the HV BMS alive and well, are we receiving values.
+pub static HV_BATTERIES_CONNECTED: AtomicBool = AtomicBool::new(false);
 
 #[derive(Debug, Default)]
 pub struct Status {
@@ -10,6 +37,43 @@ pub struct Status {
     pub brakes_armed: bool,
     pub levitating: bool,
     pub levi_connected: bool,
+}
+
+fn n(b: bool, p: u64) -> u64 {
+    if b {
+        1 << p
+    } else {
+        0
+    }
+}
+
+impl Fsm {
+    pub fn periodic_checks(&mut self) {
+        if VOLTAGE_OVER_50.load(Ordering::Relaxed) {
+            self.peripherals.led_controller.hv_led.set_high()
+        } else {
+            self.peripherals.led_controller.hv_led.set_low()
+        }
+
+        let mut value = 0;
+        value |= n(CONNECTED.load(Ordering::Relaxed), 0);
+        value |= n(PROPULSION_CONNECTED.load(Ordering::Relaxed), 1);
+        value |= n(LEVITATION_CONNECTED.load(Ordering::Relaxed), 2);
+        value |= n(HUB_CONNECTED.load(Ordering::Relaxed), 3);
+        value |= n(LV_BATTERIES_CONNECTED.load(Ordering::Relaxed), 4);
+        value |= n(HV_BATTERIES_CONNECTED.load(Ordering::Relaxed), 5);
+        value |= n(BRAKES_EXTENDED.load(Ordering::Relaxed), 6);
+        value |= n(VOLTAGE_OVER_50.load(Ordering::Relaxed), 7);
+        send_data!(self.data_queue, Datatype::ConnectionStatus, value);
+        CONNECTED.store(false, Ordering::Relaxed);
+        PROPULSION_CONNECTED.store(false, Ordering::Relaxed);
+        LEVITATION_CONNECTED.store(false, Ordering::Relaxed);
+        HUB_CONNECTED.store(false, Ordering::Relaxed);
+        LV_BATTERIES_CONNECTED.store(false, Ordering::Relaxed);
+        HV_BATTERIES_CONNECTED.store(false, Ordering::Relaxed);
+        BRAKES_EXTENDED.store(false, Ordering::Relaxed);
+        VOLTAGE_OVER_50.store(false, Ordering::Relaxed);
+    }
 }
 
 /// Some overrides that can be set to change the behavior of the fsm
@@ -26,9 +90,8 @@ pub struct Overrides {
 impl Overrides {
     pub fn set(&mut self, value: u64) {
         self.values = value;
-        unsafe {
-            DISABLE_BRAKING_COMMUNICATION = self.prevent_braking_communication();
-        }
+        DISABLE_BRAKING_COMMUNICATION
+            .store(self.prevent_braking_communication(), Ordering::Relaxed);
     }
 
     /// Allow propulsion to start while not levitating
