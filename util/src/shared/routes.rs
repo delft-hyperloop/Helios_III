@@ -26,12 +26,14 @@ pub struct LocationSpeedMap(LinearMap<Location, u8, 10>);
 /// Currently in use is the *std* version, using a [`std::collections::BTreeMap`].
 #[cfg(not(target_os = "none"))]
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone)]
+#[cfg_attr(not(target_os = "none"), derive(serde::Serialize, serde::Deserialize))]
 pub struct LocationSpeedMap(std::collections::BTreeMap<Location, u8>);
 
 /// A sequence of locations that the pod will travel through
 ///
 /// Part of the route configuration (see [Route](struct.Route.html))
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, core::fmt::Debug)]
+#[cfg_attr(not(target_os = "none"), derive(serde::Serialize, serde::Deserialize))]
 pub struct LocationSequence([Location; 16]);
 
 #[allow(dead_code)]
@@ -78,6 +80,7 @@ pub trait RouteUse {
 /// The bits correspond to the encoding used for converting a LocationSequence to a u64 (see [LocationSequence](struct.LocationSequence.html))
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Copy, Ord)]
 #[cfg_attr(target_os = "none", derive(defmt::Format))]
+#[cfg_attr(not(target_os = "none"), derive(serde::Serialize, serde::Deserialize))]
 pub enum Location {
     ForwardA = 0b0001,           // 0x1
     BackwardsA = 0b0011,         // 0x2
@@ -102,6 +105,7 @@ pub enum Location {
 /// * See [Speeds](enum.LocationSpeedMap.html).
 /// * To get the speed for the current position, use [`route.current_speed()`](trait.RouteUse.html#tymethod.current_speed).
 #[derive(core::fmt::Debug, PartialEq, Eq, Default)]
+#[cfg_attr(not(target_os = "none"), derive(serde::Serialize, serde::Deserialize))]
 pub struct Route {
     pub positions: LocationSequence,
     pub current_position: usize,

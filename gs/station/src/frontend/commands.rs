@@ -6,7 +6,7 @@ use rand::Rng;
 use tauri::Manager;
 use tauri::State;
 
-use crate::api::Datapoint;
+use crate::api::{Datapoint, Route};
 use crate::api::Message;
 use crate::api::ProcessedData;
 use crate::backend::Backend;
@@ -190,4 +190,11 @@ pub fn procedures() -> Vec<[String; 6]> {
 #[tauri::command]
 pub fn test_panic() {
     panic!("kill yourself");
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn test_route() -> Route {
+    Route::default()
 }
