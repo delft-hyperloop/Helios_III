@@ -98,7 +98,7 @@ pub async fn read_prop_adc(
 ) {
     Timer::after_millis(1000).await;
     loop {
-        Timer::after_millis(10).await;
+        Timer::after_millis(250).await;
         if !CONNECTED.load(Ordering::Relaxed) {
             continue;
         }

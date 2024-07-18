@@ -1,6 +1,7 @@
 use core::sync::atomic::Ordering;
 
 use defmt::error;
+use embassy_time::Timer;
 
 use crate::core::communication::CommunicationLayer;
 use crate::core::fsm_status::CONNECTED;
@@ -26,7 +27,8 @@ pub async fn external_communication_task(mut comm: impl CommunicationLayer + 'st
                 error!("[connection] could not receive data");
                 break 'connection;
             }
-            thread_delay(50).await;
+            // thread_delay(50).await;
+            Timer::after_micros(1).await;
         }
         CONNECTED.store(false, Ordering::Relaxed);
         comm.disconnect().await;
