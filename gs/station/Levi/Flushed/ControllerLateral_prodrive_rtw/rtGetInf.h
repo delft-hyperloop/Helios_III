@@ -7,9 +7,9 @@
  *
  * Code generation for model "ControllerLateral".
  *
- * Model version              : 6.194
+ * Model version              : 6.259
  * Simulink Coder version : 9.5 (R2021a) 14-Nov-2020
- * C source code generated on : Mon May 20 14:18:02 2024
+ * C source code generated on : Fri Jun 28 18:33:21 2024
  *
  * Target selection: pmp.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping

@@ -69,12 +69,12 @@ public static void EnableAxis(Levitation arcas)
                 }
                 else
                 {
-                    Console.WriteLine("CRITICAL:vertical_error");
+                    Console.WriteLine("ERROR:vertical_error");
                 }
             }
             catch (Exception)
             {
-                Console.WriteLine("CRTICAL:vertical_error");
+                Console.WriteLine("ERROR:vertical_error");
             }
 
             try
@@ -86,13 +86,13 @@ public static void EnableAxis(Levitation arcas)
                 }
                 else
                 {
-                    Console.WriteLine("CRITICAL:lateral_error");
+                    Console.WriteLine("ERROR:lateral_error");
                 }
             }
             catch (Exception)
             {
 
-                Console.WriteLine("CRITICAL:lateral_error");
+                Console.WriteLine("ERROR:lateral_error");
             }
         }
     }

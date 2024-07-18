@@ -88,6 +88,70 @@
       </Signals>
     </Input>
 
+    <Input Mutable="ConfigOnly" Name="IMU1" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU1" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU2" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU2" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU3" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU3" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU4" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU4" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU5" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU5" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU6" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU6" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU7" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU7" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU8" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU8" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
   </Inputs>
   <Signals>
     <Signal Name="G_A" Access="R" DataType="Double" Description="Simulink outport: G_A" Unit="" LowerBound="Min" UpperBound="Max" />
@@ -110,37 +174,69 @@
 
     <Signal Name="LateralAxisControllerState_Out" Access="R" DataType="Double" Description="Simulink outport: LateralAxisControllerState_Out" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="a_A" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.71E-7"  InvalidValue="NaN"/>
+    <Signal Name="IMU_x" Access="R" DataType="Double" Description="Simulink outport: IMU_x" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="a_A2" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.71E-7"  InvalidValue="NaN"/>
+    <Signal Name="IMU_y" Access="R" DataType="Double" Description="Simulink outport: IMU_y" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="a_B" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.71E-7"  InvalidValue="NaN"/>
+    <Signal Name="IMU_pitch" Access="R" DataType="Double" Description="Simulink outport: IMU_pitch" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="a_B2" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.71E-7"  InvalidValue="NaN"/>
+    <Signal Name="IMU_z" Access="R" DataType="Double" Description="Simulink outport: IMU_z" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="a_C" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.71E-7"  InvalidValue="NaN"/>
+    <Signal Name="IMU_roll" Access="R" DataType="Double" Description="Simulink outport: IMU_roll" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="a_C2" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.71E-7"  InvalidValue="NaN"/>
+    <Signal Name="IMU_yaw" Access="R" DataType="Double" Description="Simulink outport: IMU_yaw" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="a_D" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.71E-7"  InvalidValue="NaN"/>
+    <Signal Name="IMU_temp" Access="R" DataType="Double" Description="Simulink outport: IMU_temp" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="a_D2" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.71E-7"  InvalidValue="NaN"/>
+    <Signal Name="IMU_out8" Access="R" DataType="Double" Description="Simulink outport: IMU_out8" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="b_A" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="-0.000300119"  InvalidValue="NaN"/>
+    <Signal Name="Vx" Access="R" DataType="Double" Description="Simulink outport: Vx" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="b_A2" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.002675"  InvalidValue="NaN"/>
+    <Signal Name="Vz" Access="R" DataType="Double" Description="Simulink outport: Vz" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="b_B" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="-2.89E-5"  InvalidValue="NaN"/>
+    <Signal Name="Vy" Access="R" DataType="Double" Description="Simulink outport: Vy" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="b_B2" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.00592"  InvalidValue="NaN"/>
+    <Signal Name="IOval_to_mV" Access="R" DataType="Double" Description="Simulink outport: IOval_to_mV" Unit="" LowerBound="Min" UpperBound="Max" />
 
-    <Signal Name="b_C" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.000519924"  InvalidValue="NaN"/>
+    <Signal Name="CalibrateIMU" Access="RW" DataType="Double" Description="Calibrate IMU based on gravity" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="b_C2" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.00443"  InvalidValue="NaN"/>
+    <Signal Name="IMU_Filter" Access="RW" DataType="Double" Description="First IMU EMA" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.97"  InvalidValue="NaN"/>
 
-    <Signal Name="b_D" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="-0.000239945"  InvalidValue="NaN"/>
+    <Signal Name="IMU_SecondFilter" Access="RW" DataType="Double" Description="Second IMU EMA" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.97"  InvalidValue="NaN"/>
 
-    <Signal Name="b_D2" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.00592"  InvalidValue="NaN"/>
+    <Signal Name="a_A" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.395E-7"  InvalidValue="NaN"/>
+
+    <Signal Name="a_A2" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.395E-7"  InvalidValue="NaN"/>
+
+    <Signal Name="a_B" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.395E-7"  InvalidValue="NaN"/>
+
+    <Signal Name="a_B2" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.395E-7"  InvalidValue="NaN"/>
+
+    <Signal Name="a_C" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.395E-7"  InvalidValue="NaN"/>
+
+    <Signal Name="a_C2" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.395E-7"  InvalidValue="NaN"/>
+
+    <Signal Name="a_D" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.395E-7"  InvalidValue="NaN"/>
+
+    <Signal Name="a_D2" Access="RW" DataType="Double" Description="slope of the voltage over the distance" Unit="mV/m" LowerBound="Min" UpperBound="Max" ResetValue="7.395E-7"  InvalidValue="NaN"/>
+
+    <Signal Name="b_A" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.00218"  InvalidValue="NaN"/>
+
+    <Signal Name="b_A2" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.00368"  InvalidValue="NaN"/>
+
+    <Signal Name="b_B" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.00361"  InvalidValue="NaN"/>
+
+    <Signal Name="b_B2" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.00503"  InvalidValue="NaN"/>
+
+    <Signal Name="b_C" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.00269"  InvalidValue="NaN"/>
+
+    <Signal Name="b_C2" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.00442"  InvalidValue="NaN"/>
+
+    <Signal Name="b_D" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.00347"  InvalidValue="NaN"/>
+
+    <Signal Name="b_D2" Access="RW" DataType="Double" Description="offset from zero" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.0055"  InvalidValue="NaN"/>
+
+    <Signal Name="remove_IMU_bias_g" Access="RW" DataType="Double" Description="remove g and bias" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
 
   </Signals>

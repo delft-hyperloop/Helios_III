@@ -1,0 +1,51 @@
+%implements s23_b0_f76ij_1_SystemInitialize "C"
+
+%function SystemInitialize(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+c_dsp_private_ExponentialMovingAverage_TemplateLaserSensorsFull_T *obj;
+%closefile localVarDecl
+/* {S!d2798}InitializeConditions for MATLABSystem: '<S17>/Moving Average6' */
+obj = localDW->obj.pStatistic;
+if (obj->isInitialized == 1) {
+    obj->pwN = 1.0;
+    obj->pmN = 0.0;
+}
+/* {E!d2798}End of InitializeConditions for MATLABSystem: '<S17>/Moving Average6' */
+%closefile cfgTxt
+%<cfgTxt>
+%assign rtmArgSys = ::CompiledModel.System[::CompiledModel.System[::CompiledModel.RTWCGModules.RTWCGModule[1].CGSystemIdx].NonInlinedParentSystemIdx]
+%if SysFcnArgNeeded("SystemInitialize", rtmArgSys.Interface.RTMArgDef, rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "SystemInitialize"))
+%<SLibCG_AccessArg(1, 1, 0)>
+%endif
+%if SLibCG_ArgAccessed(1, 1, 0)
+%<SLibAccessArg(rtmArgSys.Interface.RTMArgDef, "SystemInitialize", rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "SystemInitialize"))>
+%endif
+%if (IsModelReferenceBaseSys(rtmArgSys) && (IsModelRefScalableBuild() || GenerateClassInterface)) ||...
+(GenerateClassInterface && SLibIsMultiInstanceServer(rtmArgSys))
+%<SLibCG_UndoAccessArg(1, 1, 0)>
+%endif
+%<LibSetSystemField(system, "CachedSystemInitializeLocalVars", localVarDecl)>
+%endfunction
+%function SystemInitializeFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void TemplateLaserSensorsFull_MovingAverage6_Init(\
+%assign comma = ""
+%if SLibCG_ArgAccessed(1, 1, 0)
+%<comma>%<::tSimStructType> * const %<::tSimStruct>\
+%assign comma = ", "
+%<SLibUpdateSymbolForFunction("TemplateLaserSensorsFull_MovingAverage6_Init", SLibGetFcnDefinitionRTMSymbolName(), TLC_FALSE)>\
+%endif
+%if SLibCG_ArgAccessed(1, 1, 1)
+%<comma>real_T rtp_IMU_Filter\
+%assign comma = ", "
+%endif
+%<comma>DW_MovingAverage6_TemplateLaserSensorsFull_T *localDW\
+%assign comma = ", "
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(1, 1, fcnProtoType)>
+%endfunction

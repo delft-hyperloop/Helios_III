@@ -1,4 +1,4 @@
-<Controller Name="Arcas 5EG-0">
+	<Controller Name="Arcas 5EG-0">
 
   <Signal Name="SamplePeriod" Unit="s">2.5e-4</Signal>
 
@@ -7,10 +7,6 @@
   <NamedMutation FromDefault="Cygnus D3-400-4-48" To="Cygnus C"/>
   <NamedMutation FromDefault="Cygnus D3-400-4-64" To="Cygnus D"/>
   <NamedMutation FromDefault="Cygnus D3-400-4-0" To="Cygnus E"/>
-  <NamedMutation FromDefault="EK1100-10" To="ECATStartVer"/>
-  <NamedMutation FromDefault="EL3104-11" To="ECATSensorVer"/>
-  <NamedMutation FromDefault="EK1100-12" To="ECATStartLat"/>
-  <NamedMutation FromDefault="EL3104-13" To="ECATSensorLat"/>
 
 	<Controller Name="Cygnus A">
 	  <NamedMutation FromDefault="AxisControl1" To="AxisControl A1"/>
@@ -35,7 +31,7 @@
 	<AxisControlGroup Name="AxisControlGroup">
 		<AxisControl Name="Cygnus A/AxisControl A1" />
 	  <AxisControl Name="Cygnus A/AxisControl A2" />
-		<AxisControl Name="Cygnus B/AxisControl B1" />
+	  <AxisControl Name="Cygnus B/AxisControl B1" />
 	  <AxisControl Name="Cygnus B/AxisControl B2" />
     <AxisControl Name="Cygnus C/AxisControl C1" />
 	  <AxisControl Name="Cygnus C/AxisControl C2" />
@@ -86,18 +82,30 @@
 
  
 	<ProcessingBlock Name="LaserSensors" Template="TemplateLaserSensors" CalculationStart="True">
-    	  <Input Name="Voltage_A" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
-	  <Input Name="Voltage_B" Source="ECATSensorVer/Receive/AI Inputs2_Value"/>
-	  <Input Name="Voltage_C" Source="ECATSensorVer/Receive/AI Inputs3_Value"/>
-	  <Input Name="Voltage_D" Source="ECATSensorVer/Receive/AI Inputs4_Value"/>
+    	  <Input Name="Voltage_A" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="Voltage_B" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="Voltage_C" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="Voltage_D" Source="Cygnus A/Enc2Thermistor/Voltage"/>
 
-    	  <Input Name="Voltage_A2" Source="ECATSensorLat/Receive/AI Inputs1_Value"/>
-	  <Input Name="Voltage_B2" Source="ECATSensorLat/Receive/AI Inputs2_Value"/>
-	  <Input Name="Voltage_C2" Source="ECATSensorLat/Receive/AI Inputs3_Value"/>
-	  <Input Name="Voltage_D2" Source="ECATSensorLat/Receive/AI Inputs4_Value"/>
+    	  <Input Name="Voltage_A2" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="Voltage_B2" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="Voltage_C2" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="Voltage_D2" Source="Cygnus A/Enc2Thermistor/Voltage"/>
 
-          <Input Name="VerticalAxisControllerState_In" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
-	  <Input Name="LateralAxisControllerState_In" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
+    	  <Input Name="IMU1" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="IMU2" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="IMU3" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="IMU4" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+
+    	  <Input Name="IMU5" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="IMU6" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="IMU7" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+          <Input Name="IMU8" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+
+          <Input Name="VerticalAxisControllerState_In" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	  <Input Name="LateralAxisControllerState_In" Source="Cygnus A/Enc2Thermistor/Voltage"/>
+	
+
 	</ProcessingBlock>
   
 	<ProcessingBlock Name="Airgap_controllers" Template="TemplateAirgapControllers" CalculationStart="True">
@@ -107,7 +115,7 @@
     <Input Name="G_D" Source="LaserSensors/G_D"/>
 
     <Input Name="I_A_m" Source="Cygnus A/Mot1/Ir"/>
-    <Input Name="I_B_m" Source="Cygnus B/Mot1/Ir"/>
+    <Input Name="I_B_m" Source="Cygnus B/Mot2/Ir"/>
     <Input Name="I_C_m" Source="Cygnus C/Mot1/Ir"/>
     <Input Name="I_D_m" Source="Cygnus D/Mot1/Ir"/>
 
@@ -124,7 +132,13 @@
     <Input Name="EMS_F_Front" Source="LateralController/EMS_F_Front"/>
     <Input Name="EMS_F_Back" Source="LateralController/EMS_F_Back"/>
 
-    <Input Name="VerticalAxisState" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
+    <Input Name="LS_mode" Source="LateralController/LS_mode_vert"/>
+
+    <Input Name="IMU_z" Source="LaserSensors/IMU_z"/>
+    <Input Name="IMU_pitch" Source="LaserSensors/IMU_pitch"/>
+    <Input Name="IMU_roll" Source="LaserSensors/IMU_roll"/>
+
+    <Input Name="VerticalAxisState" Source="Cygnus A/Enc2Thermistor/Voltage"/>
 
 	</ProcessingBlock> 
 
@@ -150,7 +164,11 @@
      <Input Name="VtF" Source="Cygnus E/Mot_E1_Front/Vt"/>
      <Input Name="VtB" Source="Cygnus E/Mot_E2_Back/Vt"/>
 
-    <Input Name="LateralAxisState" Source="ECATSensorVer/Receive/AI Inputs1_Value"/>
+    <Input Name="IMU_y" Source="LaserSensors/IMU_y"/>
+    <Input Name="IMU_yaw" Source="LaserSensors/IMU_yaw"/>
+    <Input Name="IMU_x" Source="LaserSensors/IMU_x"/>
+
+    <Input Name="LateralAxisState" Source="Cygnus A/Enc2Thermistor/Voltage"/>
 	</ProcessingBlock> 
 
 
@@ -285,8 +303,8 @@
         <Actuator Name="Mot_E1_Front">
             <Input Name ="I_demand_Front" Source ="LateralController/I_Demand_Front"/>
             <Input Name ="I_demand_Front">
-                <Signal Name="LowerSaturation">-5.6</Signal>
-                <Signal Name="UpperSaturation">5.6</Signal>
+                <Signal Name="LowerSaturation">-8</Signal>
+                <Signal Name="UpperSaturation">8</Signal>
             </Input>
             <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>  
             <Signal Name="BiQuadParameter0">59.0619</Signal>
@@ -300,8 +318,8 @@
         <Actuator Name="Mot_E2_Back">
             <Input Name ="I_demand_Back" Source ="LateralController/I_Demand_Back"/>
             <Input Name ="I_demand_Back">
-                <Signal Name="LowerSaturation">-5.6</Signal>
-                <Signal Name="UpperSaturation">5.6</Signal>
+                <Signal Name="LowerSaturation">-8</Signal>
+                <Signal Name="UpperSaturation">8</Signal>
             </Input>
             <Signal Name="BiQuadType">SecondOrderGenericZ</Signal>  
             <Signal Name="BiQuadParameter0">59.0619</Signal>

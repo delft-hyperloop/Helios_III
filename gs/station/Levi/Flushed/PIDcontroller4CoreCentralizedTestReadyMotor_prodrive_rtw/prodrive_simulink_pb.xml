@@ -162,6 +162,38 @@
       </Signals>
     </Input>
 
+    <Input Mutable="ConfigOnly" Name="LS_mode" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: LS_mode" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU_z" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU_z" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU_pitch" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU_pitch" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU_roll" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU_roll" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
   </Inputs>
   <Signals>
     <Signal Name="I_A" Access="R" DataType="Double" Description="Simulink outport: I_A" Unit="" LowerBound="Min" UpperBound="Max" />
@@ -284,6 +316,14 @@
 
     <Signal Name="CalculatedMass" Access="R" DataType="Double" Description="Simulink outport: CalculatedMass" Unit="" LowerBound="Min" UpperBound="Max" />
 
+    <Signal Name="MotorAGAdjust" Access="R" DataType="Double" Description="Simulink outport: MotorAGAdjust" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="IMU_kalman_output_0" Access="R" DataType="Double" Description="Simulink outport: IMU_kalman_output" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="IMU_kalman_output_1" Access="R" DataType="Double" Description="Simulink outport: IMU_kalman_output" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="IMU_kalman_output_2" Access="R" DataType="Double" Description="Simulink outport: IMU_kalman_output" Unit="" LowerBound="Min" UpperBound="Max" />
+
     <Signal Name="AirgapFilter" Access="RW" DataType="Double" Description="Double Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
     <Signal Name="Airgap_GainSchedulingEnabled_0" Access="RW" DataType="Double" Description="Airgap Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
@@ -296,7 +336,7 @@
 
     <Signal Name="Airgap_GainSchedulingEnabled_4" Access="RW" DataType="Double" Description="Airgap Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="BaseRefAirgap" Access="RW" DataType="Double" Description="Reference airgap/wanted airgap" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="15.0"  InvalidValue="NaN"/>
+    <Signal Name="BaseRefAirgap" Access="RW" DataType="Double" Description="Reference airgap/wanted airgap" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="14.0"  InvalidValue="NaN"/>
 
     <Signal Name="BeamErrorTime" Access="RW" DataType="Double" Description="Time between beam offsets" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
@@ -328,45 +368,33 @@
 
     <Signal Name="F_array_1" Access="RW" DataType="Double" Description="Forgetting factor setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.7"  InvalidValue="NaN"/>
 
+    <Signal Name="ForgetFactor_Highpass_Lat" Access="RW" DataType="Double" Description="Alpha of highpass to remove steady state val" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.005"  InvalidValue="NaN"/>
+
     <Signal Name="ForgettingFactor" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.7"  InvalidValue="NaN"/>
 
     <Signal Name="ForgettingFactorAirgap" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.7"  InvalidValue="NaN"/>
 
     <Signal Name="ForgettingFactorLinpos" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.8"  InvalidValue="NaN"/>
 
-    <Signal Name="ForgettingFactorPitch" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.7"  InvalidValue="NaN"/>
+    <Signal Name="ForgettingFactorPitch" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.9"  InvalidValue="NaN"/>
 
-    <Signal Name="ForgettingFactorRoll" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.7"  InvalidValue="NaN"/>
+    <Signal Name="ForgettingFactorRoll" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.9"  InvalidValue="NaN"/>
 
-    <Signal Name="GS_breakpoints_0" Access="RW" DataType="Double" Description="Gain scheduling breakpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="GS_breakpoints_1" Access="RW" DataType="Double" Description="Gain scheduling breakpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.5"  InvalidValue="NaN"/>
-
-    <Signal Name="GS_breakpoints_2" Access="RW" DataType="Double" Description="Gain scheduling breakpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="5.0"  InvalidValue="NaN"/>
+    <Signal Name="G_K_a" Access="RW" DataType="Double" Description="Acceleration Feedforwarding of PIDD" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
     <Signal Name="G_K_d" Access="RW" DataType="Double" Description="Airgap KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="5.0"  InvalidValue="NaN"/>
 
-    <Signal Name="G_K_d_array_0" Access="RW" DataType="Double" Description="K_d setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="5.5"  InvalidValue="NaN"/>
+    <Signal Name="G_K_d_LS" Access="RW" DataType="Double" Description="Airgap KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="5.0"  InvalidValue="NaN"/>
 
-    <Signal Name="G_K_d_array_1" Access="RW" DataType="Double" Description="K_d setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="5.0"  InvalidValue="NaN"/>
+    <Signal Name="G_K_i" Access="RW" DataType="Double" Description="Airgap KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="80.0"  InvalidValue="NaN"/>
 
-    <Signal Name="G_K_d_array_2" Access="RW" DataType="Double" Description="K_d setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="3.0"  InvalidValue="NaN"/>
+    <Signal Name="G_K_i_LS" Access="RW" DataType="Double" Description="Airgap KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="80.0"  InvalidValue="NaN"/>
 
-    <Signal Name="G_K_i" Access="RW" DataType="Double" Description="Airgap KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="25.0"  InvalidValue="NaN"/>
+    <Signal Name="G_K_p" Access="RW" DataType="Double" Description="Airgap KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="180.0"  InvalidValue="NaN"/>
 
-    <Signal Name="G_K_p" Access="RW" DataType="Double" Description="Airgap KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="100.0"  InvalidValue="NaN"/>
+    <Signal Name="G_K_p_LS" Access="RW" DataType="Double" Description="Airgap KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="180.0"  InvalidValue="NaN"/>
 
-    <Signal Name="G_K_p_array_0" Access="RW" DataType="Double" Description="G_K_p setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="40.0"  InvalidValue="NaN"/>
-
-    <Signal Name="G_K_p_array_1" Access="RW" DataType="Double" Description="G_K_p setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="40.0"  InvalidValue="NaN"/>
-
-    <Signal Name="G_K_p_array_2" Access="RW" DataType="Double" Description="G_K_p setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="40.0"  InvalidValue="NaN"/>
-
-    <Signal Name="G_T_c" Access="RW" DataType="Double" Description="Airgap T_c Derivative filter time constant (expected delay)" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.001"  InvalidValue="NaN"/>
-
-    <Signal Name="G_Tc_array_0" Access="RW" DataType="Double" Description="T_c Derivative filter time constant (expected delay) setpoints (0-5)" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.05"  InvalidValue="NaN"/>
-
-    <Signal Name="G_Tc_array_1" Access="RW" DataType="Double" Description="T_c Derivative filter time constant (expected delay) setpoints (0-5)" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.002"  InvalidValue="NaN"/>
+    <Signal Name="G_T_c" Access="RW" DataType="Double" Description="Airgap T_c Derivative filter time constant (expected delay)" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.01"  InvalidValue="NaN"/>
 
     <Signal Name="HEMS_Plane_Offsets_0" Access="RW" DataType="Double" Description="Offset for each magnet compared to a plane" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
@@ -376,11 +404,7 @@
 
     <Signal Name="HEMS_Plane_Offsets_3" Access="RW" DataType="Double" Description="Offset for each magnet compared to a plane" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="I_K_d" Access="RW" DataType="Double" Description="Roll KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="I_K_i" Access="RW" DataType="Double" Description="Roll KI GainG" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="I_K_p" Access="RW" DataType="Double" Description="Roll KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+    <Signal Name="IMU_integration_gain" Access="RW" DataType="Double" Description="Integral for bias in IMU" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
     <Signal Name="Kalman_F" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
@@ -398,9 +422,11 @@
 
     <Signal Name="LinposOn" Access="RW" DataType="Double" Description="Using Linpos from LSQ" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
+    <Signal Name="LowAirgapPropellingSwitch" Access="RW" DataType="Double" Description="Allow smaller airgap when using propulsion" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
     <Signal Name="M_f" Access="RW" DataType="Double" Description="Magnet Multiplying Factor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
-    <Signal Name="Mass" Access="RW" DataType="Double" Description="M" Unit=" kg" LowerBound="Min" UpperBound="Max" ResetValue="360.0"  InvalidValue="NaN"/>
+    <Signal Name="Mass" Access="RW" DataType="Double" Description="M" Unit=" kg" LowerBound="Min" UpperBound="Max" ResetValue="395.5"  InvalidValue="NaN"/>
 
     <Signal Name="MeasureCurrent" Access="RW" DataType="Double" Description="Using current measurement from arcas" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
@@ -414,41 +440,25 @@
 
     <Signal Name="MismatchingKalmanAGPR_2" Access="RW" DataType="Double" Description="Turns On Mismatching INTERPOLATION Between Kalman And Non Kalman Data" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
-    <Signal Name="MotorAirgapOffset" Access="RW" DataType="Double" Description="Motor Airgap Offset" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="2.5"  InvalidValue="NaN"/>
+    <Signal Name="MotorAGIntegrals" Access="RW" DataType="Double" Description="Integral gains for finding the motor air gap based on actual force vs requested force" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="MotorAirgapOffset" Access="RW" DataType="Double" Description="Motor Airgap Offset" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="3.63"  InvalidValue="NaN"/>
 
     <Signal Name="OperatingMode" Access="RW" DataType="Double" Description="Operating Mode" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="2.0"  InvalidValue="NaN"/>
 
-    <Signal Name="P_K_d" Access="RW" DataType="Double" Description="Pitch KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.0"  InvalidValue="NaN"/>
+    <Signal Name="P_K_d" Access="RW" DataType="Double" Description="Pitch KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.5"  InvalidValue="NaN"/>
 
-    <Signal Name="P_K_d_array_0" Access="RW" DataType="Double" Description="P_K_d setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="5.0"  InvalidValue="NaN"/>
+    <Signal Name="P_K_d_LS" Access="RW" DataType="Double" Description="Pitch KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.5"  InvalidValue="NaN"/>
 
-    <Signal Name="P_K_d_array_1" Access="RW" DataType="Double" Description="P_K_d setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.0"  InvalidValue="NaN"/>
+    <Signal Name="P_K_i" Access="RW" DataType="Double" Description="Pitch KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="55.0"  InvalidValue="NaN"/>
 
-    <Signal Name="P_K_d_array_2" Access="RW" DataType="Double" Description="P_K_d setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="2.5"  InvalidValue="NaN"/>
+    <Signal Name="P_K_i_LS" Access="RW" DataType="Double" Description="Pitch KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="55.0"  InvalidValue="NaN"/>
 
-    <Signal Name="P_K_i" Access="RW" DataType="Double" Description="Pitch KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="25.0"  InvalidValue="NaN"/>
+    <Signal Name="P_K_p" Access="RW" DataType="Double" Description="Pitch KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="160.0"  InvalidValue="NaN"/>
 
-    <Signal Name="P_K_p" Access="RW" DataType="Double" Description="Pitch KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="100.0"  InvalidValue="NaN"/>
-
-    <Signal Name="P_K_p_array_0" Access="RW" DataType="Double" Description="P_K_p setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="60.0"  InvalidValue="NaN"/>
-
-    <Signal Name="P_K_p_array_1" Access="RW" DataType="Double" Description="P_K_p setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="60.0"  InvalidValue="NaN"/>
-
-    <Signal Name="P_K_p_array_2" Access="RW" DataType="Double" Description="P_K_p setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="80.0"  InvalidValue="NaN"/>
-
-    <Signal Name="P_T_c" Access="RW" DataType="Double" Description="Pitch T_c Derivative filter time constant (expected delay)" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.001"  InvalidValue="NaN"/>
+    <Signal Name="P_K_p_LS" Access="RW" DataType="Double" Description="Pitch KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="160.0"  InvalidValue="NaN"/>
 
     <Signal Name="PitchFilter" Access="RW" DataType="Double" Description="Double Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
-
-    <Signal Name="Pitch_GainSchedulingEnabled_0" Access="RW" DataType="Double" Description="Pcitch Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="Pitch_GainSchedulingEnabled_1" Access="RW" DataType="Double" Description="Pcitch Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="Pitch_GainSchedulingEnabled_2" Access="RW" DataType="Double" Description="Pcitch Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="Pitch_GainSchedulingEnabled_3" Access="RW" DataType="Double" Description="Pcitch Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="Pitch_GainSchedulingEnabled_4" Access="RW" DataType="Double" Description="Pcitch Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
     <Signal Name="PodHeight" Access="RW" DataType="Double" Description="PodHeight" Unit=" m" LowerBound="Min" UpperBound="Max" ResetValue="0.745"  InvalidValue="NaN"/>
 
@@ -464,33 +474,33 @@
 
     <Signal Name="Polarity" Access="RW" DataType="Double" Description="Polarity" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="-1.0"  InvalidValue="NaN"/>
 
+    <Signal Name="PropellingAirgap" Access="RW" DataType="Double" Description="Airgap for the lane switch" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="14.0"  InvalidValue="NaN"/>
+
+    <Signal Name="PropellingPitch" Access="RW" DataType="Double" Description="Pitch for the lane switch" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="PropellingRoll" Access="RW" DataType="Double" Description="Roll for the lane switch" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="-0.05"  InvalidValue="NaN"/>
+
+    <Signal Name="PropellingTime" Access="RW" DataType="Double" Description="Time in seconds to stay at a lower airgap for propulsion" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.0"  InvalidValue="NaN"/>
+
     <Signal Name="PropulsionCurrent" Access="RW" DataType="Double" Description="Propulsion Current usage" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="15.0"  InvalidValue="NaN"/>
 
     <Signal Name="PropulsionOn" Access="RW" DataType="Double" Description="Propulsion On switch" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="R_K_d" Access="RW" DataType="Double" Description="Roll KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.0"  InvalidValue="NaN"/>
+    <Signal Name="PropulsionRampTime" Access="RW" DataType="Double" Description="Time in seconds to ramp up propulsion current" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
-    <Signal Name="R_K_d_array_0" Access="RW" DataType="Double" Description="R_K_d setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="5.0"  InvalidValue="NaN"/>
+    <Signal Name="R_K_d" Access="RW" DataType="Double" Description="Roll KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.5"  InvalidValue="NaN"/>
 
-    <Signal Name="R_K_d_array_1" Access="RW" DataType="Double" Description="R_K_d setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.0"  InvalidValue="NaN"/>
+    <Signal Name="R_K_d_LS" Access="RW" DataType="Double" Description="Roll KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.5"  InvalidValue="NaN"/>
 
-    <Signal Name="R_K_d_array_2" Access="RW" DataType="Double" Description="R_K_d setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="2.5"  InvalidValue="NaN"/>
+    <Signal Name="R_K_i" Access="RW" DataType="Double" Description="Roll KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="50.0"  InvalidValue="NaN"/>
 
-    <Signal Name="R_K_i" Access="RW" DataType="Double" Description="Roll KI GainG" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="20.0"  InvalidValue="NaN"/>
+    <Signal Name="R_K_i_LS" Access="RW" DataType="Double" Description="Roll KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="50.0"  InvalidValue="NaN"/>
 
-    <Signal Name="R_K_p" Access="RW" DataType="Double" Description="Roll KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="100.0"  InvalidValue="NaN"/>
-
-    <Signal Name="R_K_p_array_0" Access="RW" DataType="Double" Description="R_K_p setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="90.0"  InvalidValue="NaN"/>
-
-    <Signal Name="R_K_p_array_1" Access="RW" DataType="Double" Description="R_K_p setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="90.0"  InvalidValue="NaN"/>
-
-    <Signal Name="R_K_p_array_2" Access="RW" DataType="Double" Description="R_K_p setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="120.0"  InvalidValue="NaN"/>
-
-    <Signal Name="R_T_c" Access="RW" DataType="Double" Description="Roll T_c Derivative filter time constant (expected delay)" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.001"  InvalidValue="NaN"/>
+    <Signal Name="R_K_p_LS" Access="RW" DataType="Double" Description="Roll KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="170.0"  InvalidValue="NaN"/>
 
     <Signal Name="RefPitch" Access="RW" DataType="Double" Description="Reference airgap/wanted pitch" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="RefRoll" Access="RW" DataType="Double" Description="Reference airgap/wanted roll" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+    <Signal Name="RefRoll" Access="RW" DataType="Double" Description="Reference airgap/wanted roll" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="-0.05"  InvalidValue="NaN"/>
 
     <Signal Name="ReferenceMass" Access="RW" DataType="Double" Description="R_M" Unit=" kg" LowerBound="Min" UpperBound="Max" ResetValue="110.0"  InvalidValue="NaN"/>
 
@@ -501,16 +511,6 @@
     <Signal Name="ResetArms" Access="RW" DataType="Double" Description="Reset Integrals of the moment arms" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
     <Signal Name="RollFilter" Access="RW" DataType="Double" Description="Double Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
-
-    <Signal Name="Roll_GainSchedulingEnabled_0" Access="RW" DataType="Double" Description="Roll Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="Roll_GainSchedulingEnabled_1" Access="RW" DataType="Double" Description="Roll Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="Roll_GainSchedulingEnabled_2" Access="RW" DataType="Double" Description="Roll Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="Roll_GainSchedulingEnabled_3" Access="RW" DataType="Double" Description="Roll Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
-
-    <Signal Name="Roll_GainSchedulingEnabled_4" Access="RW" DataType="Double" Description="Roll Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
     <Signal Name="RunTime" Access="RW" DataType="Double" Description="Runtime" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="3000.0"  InvalidValue="NaN"/>
 
@@ -524,35 +524,55 @@
 
     <Signal Name="SkipKalman" Access="RW" DataType="Double" Description="Skip the kalman filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="StartingAirgap" Access="RW" DataType="Double" Description="Starting airgap" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="10.0"  InvalidValue="NaN"/>
+    <Signal Name="StartingAirgap" Access="RW" DataType="Double" Description="Starting airgap" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="11.0"  InvalidValue="NaN"/>
 
-    <Signal Name="StartupTime" Access="RW" DataType="Double" Description="Start-up Ramp-up" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="6.0"  InvalidValue="NaN"/>
+    <Signal Name="StartupTime" Access="RW" DataType="Double" Description="Start-up Ramp-up" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="2.0"  InvalidValue="NaN"/>
 
     <Signal Name="Undo_0current" Access="RW" DataType="Double" Description="Undo Integral" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="X_Arm_Offset" Access="RW" DataType="Double" Description="Moment arm in meters for lateral direction (roll)" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="-0.007"  InvalidValue="NaN"/>
+    <Signal Name="UseIMU" Access="RW" DataType="Double" Description="Use IMU kalman" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="Y_Arm_Offset" Access="RW" DataType="Double" Description="Moment arm in meters for horizontal direction (pitch)" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="-0.023"  InvalidValue="NaN"/>
+    <Signal Name="X_Arm_Offset" Access="RW" DataType="Double" Description="Moment arm in meters for lateral direction (roll)" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.007"  InvalidValue="NaN"/>
+
+    <Signal Name="Y_Arm_Offset" Access="RW" DataType="Double" Description="Moment arm in meters for horizontal direction (pitch)" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="-0.0507"  InvalidValue="NaN"/>
+
+    <Signal Name="kalman_pitchdot_gain" Access="RW" DataType="Double" Description="IMU direction" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="-1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="kalman_rolldot_gain" Access="RW" DataType="Double" Description="IMU direction" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="kalman_zdotdot_gain" Access="RW" DataType="Double" Description="IMU direction" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
     <Signal Name="motorforce_on" Access="RW" DataType="Double" Description="Motor force/torque on switch" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
-    <Signal Name="var_ag_dot" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.01"  InvalidValue="NaN"/>
+    <Signal Name="var_ag_IMU" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.005"  InvalidValue="NaN"/>
+
+    <Signal Name="var_ag_dot" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.5"  InvalidValue="NaN"/>
 
     <Signal Name="var_ag_proc" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="var_ag_sens" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0087693"  InvalidValue="NaN"/>
+    <Signal Name="var_ag_sens" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.03"  InvalidValue="NaN"/>
 
-    <Signal Name="var_pitch_dot" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.2"  InvalidValue="NaN"/>
+    <Signal Name="var_ag_sens_LS" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.03"  InvalidValue="NaN"/>
+
+    <Signal Name="var_pitch_IMU" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.1"  InvalidValue="NaN"/>
+
+    <Signal Name="var_pitch_dot" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.1"  InvalidValue="NaN"/>
 
     <Signal Name="var_pitch_proc" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="var_pitch_sens" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.14896"  InvalidValue="NaN"/>
+    <Signal Name="var_pitch_sens" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.4"  InvalidValue="NaN"/>
 
-    <Signal Name="var_roll_dot" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.2"  InvalidValue="NaN"/>
+    <Signal Name="var_pitch_sens_LS" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.4"  InvalidValue="NaN"/>
+
+    <Signal Name="var_roll_IMU" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.1"  InvalidValue="NaN"/>
+
+    <Signal Name="var_roll_dot" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.1"  InvalidValue="NaN"/>
 
     <Signal Name="var_roll_proc" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="var_roll_sens" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.17096"  InvalidValue="NaN"/>
+    <Signal Name="var_roll_sens" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.5"  InvalidValue="NaN"/>
+
+    <Signal Name="var_roll_sens_LS" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.5"  InvalidValue="NaN"/>
 
     <Signal Name="MagnetFailure" Access="RW" DataType="Uint32" Description="TurnOffHEMS" Unit="" LowerBound="0" UpperBound="Max" ResetValue="0" />
 
