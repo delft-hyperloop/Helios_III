@@ -1,6 +1,3 @@
-
-<!-- TODO 2: SOME KIND OF LOG FLUSHING? AT ONE POINT IT WILL RUN OUT OF SPACE!  -->
-
 <script lang="ts">
     import {AppBar} from "@skeletonlabs/skeleton";
     import Icon from "@iconify/svelte";
