@@ -41,6 +41,8 @@ impl Overrides {
     pub fn hv_without_brakes_armed(&self) -> bool { self.values & 0b100 != 0 }
 
     pub fn run_without_configure(&self) -> bool { self.values & 0b1000 != 0 }
+
+    pub fn hv_without_levi(&self) -> bool { self.values & 0b10000 != 0 }
 }
 
 include!("../../../util/src/shared/routes.rs");

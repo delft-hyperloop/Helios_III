@@ -21,6 +21,7 @@ impl Fsm {
         match event {
             Event::HvLevitationBelowBms => {
                 transit!(self, State::EmergencyBraking);
+                self.send_levi_cmd(Command::EmergencyBrake(4)).await;
             },
 
             Event::LaneSwitchForward => {
@@ -52,6 +53,7 @@ impl Fsm {
                         error!("Invalid configuration!");
                         self.log(Info::InvalidRouteConfigurationAbortingRun).await;
                         transit!(self, State::EmergencyBraking);
+                        self.send_levi_cmd(Command::EmergencyBrake(4)).await;
                     },
                 }
             },

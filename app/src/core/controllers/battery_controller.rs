@@ -177,22 +177,67 @@ impl BatteryController {
                         self.module_buffer = temp;
                         self.send_module_voltage(timestamp).await;
                         i += 1;
-
                     }
                 }
-                if Datatype::SingleCellVoltageLow.to_id() == id   {
-
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV1, data[0] as u64 + 200, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV2, data[1] as u64 + 200, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV3, data[2] as u64 + 200, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV4, data[3] as u64 + 200, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV5, data[4] as u64 + 200, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV6, data[5] as u64 + 200, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV7, data[6] as u64 + 200, 0 ).await;
-                    queue_dp(self.data_sender, Datatype::SingleCellVoltageLV8, data[7] as u64 + 200, 0 ).await;
+                if Datatype::SingleCellVoltageLow.to_id() == id {
+                    queue_dp(
+                        self.data_sender,
+                        Datatype::SingleCellVoltageLV1,
+                        data[0] as u64 + 200,
+                        0,
+                    )
+                    .await;
+                    queue_dp(
+                        self.data_sender,
+                        Datatype::SingleCellVoltageLV2,
+                        data[1] as u64 + 200,
+                        0,
+                    )
+                    .await;
+                    queue_dp(
+                        self.data_sender,
+                        Datatype::SingleCellVoltageLV3,
+                        data[2] as u64 + 200,
+                        0,
+                    )
+                    .await;
+                    queue_dp(
+                        self.data_sender,
+                        Datatype::SingleCellVoltageLV4,
+                        data[3] as u64 + 200,
+                        0,
+                    )
+                    .await;
+                    queue_dp(
+                        self.data_sender,
+                        Datatype::SingleCellVoltageLV5,
+                        data[4] as u64 + 200,
+                        0,
+                    )
+                    .await;
+                    queue_dp(
+                        self.data_sender,
+                        Datatype::SingleCellVoltageLV6,
+                        data[5] as u64 + 200,
+                        0,
+                    )
+                    .await;
+                    queue_dp(
+                        self.data_sender,
+                        Datatype::SingleCellVoltageLV7,
+                        data[6] as u64 + 200,
+                        0,
+                    )
+                    .await;
+                    queue_dp(
+                        self.data_sender,
+                        Datatype::SingleCellVoltageLV8,
+                        data[7] as u64 + 200,
+                        0,
+                    )
+                    .await;
                     // self.overall_temperature_bms(&*Self::single_cell_low_process(data).await,timestamp);
-                }
-                else {
+                } else {
                     let module_id = ((id - Datatype::SingleCellVoltageHigh_1.to_id()) * 8) as usize;
                     for (i, &x) in data.iter().enumerate() {
                         if x != 0 {
@@ -255,8 +300,6 @@ impl BatteryController {
         queue_dp(self.data_sender, battery_voltage_min, min_cell_voltage, timestamp).await;
         queue_dp(self.data_sender, battery_voltage_max, max_cell_voltage, timestamp).await;
         queue_dp(self.data_sender, total_battery_voltage_dt, total_pack_voltage, timestamp).await;
-
-
     }
 
     pub async fn default_bms_startup_info(&mut self, data: &[u8], timestamp: u64) {
@@ -366,132 +409,136 @@ impl BatteryController {
         queue_dp(self.data_sender, min_voltage_dt, min_voltage + 200, timestamp).await;
         queue_dp(self.data_sender, max_voltage_dt, max_voltage + 200, timestamp).await;
         while i < 14 {
-            queue_dp(self.data_sender, Self::match_volt(i as u16 + module_id as u16 * 14).await, self.module_buffer[i] + 200, i as u64 + module_id as u64 * 14 ).await;
+            queue_dp(
+                self.data_sender,
+                Self::match_volt(i as u16 + module_id * 14).await,
+                self.module_buffer[i] + 200,
+                i as u64 + module_id as u64 * 14,
+            )
+            .await;
             i += 1;
         }
     }
 
-
-        pub async fn match_volt(id: u16) -> (Datatype) {
-            match id {
-                0 => Datatype::SingleCellVoltageHV1,
-                1 => Datatype::SingleCellVoltageHV2,
-                2 => Datatype::SingleCellVoltageHV3,
-                3 => Datatype::SingleCellVoltageHV4,
-                4 => Datatype::SingleCellVoltageHV5,
-                5 => Datatype::SingleCellVoltageHV6,
-                6 => Datatype::SingleCellVoltageHV7,
-                7 => Datatype::SingleCellVoltageHV8,
-                8 => Datatype::SingleCellVoltageHV9,
-                9 => Datatype::SingleCellVoltageHV10,
-                10 => Datatype::SingleCellVoltageHV11,
-                11 => Datatype::SingleCellVoltageHV12,
-                12 => Datatype::SingleCellVoltageHV13,
-                13 => Datatype::SingleCellVoltageHV14,
-                14 => Datatype::SingleCellVoltageHV15,
-                15 => Datatype::SingleCellVoltageHV16,
-                16 => Datatype::SingleCellVoltageHV17,
-                17 => Datatype::SingleCellVoltageHV18,
-                18 => Datatype::SingleCellVoltageHV19,
-                19 => Datatype::SingleCellVoltageHV20,
-                20 => Datatype::SingleCellVoltageHV21,
-                21 => Datatype::SingleCellVoltageHV22,
-                22 => Datatype::SingleCellVoltageHV23,
-                23 => Datatype::SingleCellVoltageHV24,
-                24 => Datatype::SingleCellVoltageHV25,
-                25 => Datatype::SingleCellVoltageHV26,
-                26 => Datatype::SingleCellVoltageHV27,
-                27 => Datatype::SingleCellVoltageHV28,
-                28 => Datatype::SingleCellVoltageHV29,
-                29 => Datatype::SingleCellVoltageHV30,
-                30 => Datatype::SingleCellVoltageHV31,
-                31 => Datatype::SingleCellVoltageHV32,
-                32 => Datatype::SingleCellVoltageHV33,
-                33 => Datatype::SingleCellVoltageHV34,
-                34 => Datatype::SingleCellVoltageHV35,
-                35 => Datatype::SingleCellVoltageHV36,
-                36 => Datatype::SingleCellVoltageHV37,
-                37 => Datatype::SingleCellVoltageHV38,
-                38 => Datatype::SingleCellVoltageHV39,
-                39 => Datatype::SingleCellVoltageHV40,
-                40 => Datatype::SingleCellVoltageHV41,
-                41 => Datatype::SingleCellVoltageHV42,
-                42 => Datatype::SingleCellVoltageHV43,
-                43 => Datatype::SingleCellVoltageHV44,
-                44 => Datatype::SingleCellVoltageHV45,
-                45 => Datatype::SingleCellVoltageHV46,
-                46 => Datatype::SingleCellVoltageHV47,
-                47 => Datatype::SingleCellVoltageHV48,
-                48 => Datatype::SingleCellVoltageHV49,
-                49 => Datatype::SingleCellVoltageHV50,
-                50 => Datatype::SingleCellVoltageHV51,
-                51 => Datatype::SingleCellVoltageHV52,
-                52 => Datatype::SingleCellVoltageHV53,
-                53 => Datatype::SingleCellVoltageHV54,
-                54 => Datatype::SingleCellVoltageHV55,
-                55 => Datatype::SingleCellVoltageHV56,
-                56 => Datatype::SingleCellVoltageHV57,
-                57 => Datatype::SingleCellVoltageHV58,
-                58 => Datatype::SingleCellVoltageHV59,
-                59 => Datatype::SingleCellVoltageHV60,
-                60 => Datatype::SingleCellVoltageHV61,
-                61 => Datatype::SingleCellVoltageHV62,
-                62 => Datatype::SingleCellVoltageHV63,
-                63 => Datatype::SingleCellVoltageHV64,
-                64 => Datatype::SingleCellVoltageHV65,
-                65 => Datatype::SingleCellVoltageHV66,
-                66 => Datatype::SingleCellVoltageHV67,
-                67 => Datatype::SingleCellVoltageHV68,
-                68 => Datatype::SingleCellVoltageHV69,
-                69 => Datatype::SingleCellVoltageHV70,
-                70 => Datatype::SingleCellVoltageHV71,
-                71 => Datatype::SingleCellVoltageHV72,
-                72 => Datatype::SingleCellVoltageHV73,
-                73 => Datatype::SingleCellVoltageHV74,
-                74 => Datatype::SingleCellVoltageHV75,
-                75 => Datatype::SingleCellVoltageHV76,
-                76 => Datatype::SingleCellVoltageHV77,
-                77 => Datatype::SingleCellVoltageHV78,
-                78 => Datatype::SingleCellVoltageHV79,
-                79 => Datatype::SingleCellVoltageHV80,
-                80 => Datatype::SingleCellVoltageHV81,
-                81 => Datatype::SingleCellVoltageHV82,
-                82 => Datatype::SingleCellVoltageHV83,
-                83 => Datatype::SingleCellVoltageHV84,
-                84 => Datatype::SingleCellVoltageHV85,
-                85 => Datatype::SingleCellVoltageHV86,
-                86 => Datatype::SingleCellVoltageHV87,
-                87 => Datatype::SingleCellVoltageHV88,
-                88 => Datatype::SingleCellVoltageHV89,
-                89 => Datatype::SingleCellVoltageHV90,
-                90 => Datatype::SingleCellVoltageHV91,
-                91 => Datatype::SingleCellVoltageHV92,
-                92 => Datatype::SingleCellVoltageHV93,
-                93 => Datatype::SingleCellVoltageHV94,
-                94 => Datatype::SingleCellVoltageHV95,
-                95 => Datatype::SingleCellVoltageHV96,
-                96 => Datatype::SingleCellVoltageHV97,
-                97 => Datatype::SingleCellVoltageHV98,
-                98 => Datatype::SingleCellVoltageHV99,
-                99 => Datatype::SingleCellVoltageHV100,
-                100 => Datatype::SingleCellVoltageHV101,
-                101 => Datatype::SingleCellVoltageHV102,
-                102 => Datatype::SingleCellVoltageHV103,
-                103 => Datatype::SingleCellVoltageHV104,
-                104 => Datatype::SingleCellVoltageHV105,
-                105 => Datatype::SingleCellVoltageHV106,
-                106 => Datatype::SingleCellVoltageHV107,
-                107 => Datatype::SingleCellVoltageHV108,
-                108 => Datatype::SingleCellVoltageHV109,
-                109 => Datatype::SingleCellVoltageHV110,
-                110 => Datatype::SingleCellVoltageHV111,
-                111 => Datatype::SingleCellVoltageHV112,
-                _ =>  Datatype::SingleCellVoltageHV112
-            }
-
+    pub async fn match_volt(id: u16) -> Datatype {
+        match id {
+            0 => Datatype::SingleCellVoltageHV1,
+            1 => Datatype::SingleCellVoltageHV2,
+            2 => Datatype::SingleCellVoltageHV3,
+            3 => Datatype::SingleCellVoltageHV4,
+            4 => Datatype::SingleCellVoltageHV5,
+            5 => Datatype::SingleCellVoltageHV6,
+            6 => Datatype::SingleCellVoltageHV7,
+            7 => Datatype::SingleCellVoltageHV8,
+            8 => Datatype::SingleCellVoltageHV9,
+            9 => Datatype::SingleCellVoltageHV10,
+            10 => Datatype::SingleCellVoltageHV11,
+            11 => Datatype::SingleCellVoltageHV12,
+            12 => Datatype::SingleCellVoltageHV13,
+            13 => Datatype::SingleCellVoltageHV14,
+            14 => Datatype::SingleCellVoltageHV15,
+            15 => Datatype::SingleCellVoltageHV16,
+            16 => Datatype::SingleCellVoltageHV17,
+            17 => Datatype::SingleCellVoltageHV18,
+            18 => Datatype::SingleCellVoltageHV19,
+            19 => Datatype::SingleCellVoltageHV20,
+            20 => Datatype::SingleCellVoltageHV21,
+            21 => Datatype::SingleCellVoltageHV22,
+            22 => Datatype::SingleCellVoltageHV23,
+            23 => Datatype::SingleCellVoltageHV24,
+            24 => Datatype::SingleCellVoltageHV25,
+            25 => Datatype::SingleCellVoltageHV26,
+            26 => Datatype::SingleCellVoltageHV27,
+            27 => Datatype::SingleCellVoltageHV28,
+            28 => Datatype::SingleCellVoltageHV29,
+            29 => Datatype::SingleCellVoltageHV30,
+            30 => Datatype::SingleCellVoltageHV31,
+            31 => Datatype::SingleCellVoltageHV32,
+            32 => Datatype::SingleCellVoltageHV33,
+            33 => Datatype::SingleCellVoltageHV34,
+            34 => Datatype::SingleCellVoltageHV35,
+            35 => Datatype::SingleCellVoltageHV36,
+            36 => Datatype::SingleCellVoltageHV37,
+            37 => Datatype::SingleCellVoltageHV38,
+            38 => Datatype::SingleCellVoltageHV39,
+            39 => Datatype::SingleCellVoltageHV40,
+            40 => Datatype::SingleCellVoltageHV41,
+            41 => Datatype::SingleCellVoltageHV42,
+            42 => Datatype::SingleCellVoltageHV43,
+            43 => Datatype::SingleCellVoltageHV44,
+            44 => Datatype::SingleCellVoltageHV45,
+            45 => Datatype::SingleCellVoltageHV46,
+            46 => Datatype::SingleCellVoltageHV47,
+            47 => Datatype::SingleCellVoltageHV48,
+            48 => Datatype::SingleCellVoltageHV49,
+            49 => Datatype::SingleCellVoltageHV50,
+            50 => Datatype::SingleCellVoltageHV51,
+            51 => Datatype::SingleCellVoltageHV52,
+            52 => Datatype::SingleCellVoltageHV53,
+            53 => Datatype::SingleCellVoltageHV54,
+            54 => Datatype::SingleCellVoltageHV55,
+            55 => Datatype::SingleCellVoltageHV56,
+            56 => Datatype::SingleCellVoltageHV57,
+            57 => Datatype::SingleCellVoltageHV58,
+            58 => Datatype::SingleCellVoltageHV59,
+            59 => Datatype::SingleCellVoltageHV60,
+            60 => Datatype::SingleCellVoltageHV61,
+            61 => Datatype::SingleCellVoltageHV62,
+            62 => Datatype::SingleCellVoltageHV63,
+            63 => Datatype::SingleCellVoltageHV64,
+            64 => Datatype::SingleCellVoltageHV65,
+            65 => Datatype::SingleCellVoltageHV66,
+            66 => Datatype::SingleCellVoltageHV67,
+            67 => Datatype::SingleCellVoltageHV68,
+            68 => Datatype::SingleCellVoltageHV69,
+            69 => Datatype::SingleCellVoltageHV70,
+            70 => Datatype::SingleCellVoltageHV71,
+            71 => Datatype::SingleCellVoltageHV72,
+            72 => Datatype::SingleCellVoltageHV73,
+            73 => Datatype::SingleCellVoltageHV74,
+            74 => Datatype::SingleCellVoltageHV75,
+            75 => Datatype::SingleCellVoltageHV76,
+            76 => Datatype::SingleCellVoltageHV77,
+            77 => Datatype::SingleCellVoltageHV78,
+            78 => Datatype::SingleCellVoltageHV79,
+            79 => Datatype::SingleCellVoltageHV80,
+            80 => Datatype::SingleCellVoltageHV81,
+            81 => Datatype::SingleCellVoltageHV82,
+            82 => Datatype::SingleCellVoltageHV83,
+            83 => Datatype::SingleCellVoltageHV84,
+            84 => Datatype::SingleCellVoltageHV85,
+            85 => Datatype::SingleCellVoltageHV86,
+            86 => Datatype::SingleCellVoltageHV87,
+            87 => Datatype::SingleCellVoltageHV88,
+            88 => Datatype::SingleCellVoltageHV89,
+            89 => Datatype::SingleCellVoltageHV90,
+            90 => Datatype::SingleCellVoltageHV91,
+            91 => Datatype::SingleCellVoltageHV92,
+            92 => Datatype::SingleCellVoltageHV93,
+            93 => Datatype::SingleCellVoltageHV94,
+            94 => Datatype::SingleCellVoltageHV95,
+            95 => Datatype::SingleCellVoltageHV96,
+            96 => Datatype::SingleCellVoltageHV97,
+            97 => Datatype::SingleCellVoltageHV98,
+            98 => Datatype::SingleCellVoltageHV99,
+            99 => Datatype::SingleCellVoltageHV100,
+            100 => Datatype::SingleCellVoltageHV101,
+            101 => Datatype::SingleCellVoltageHV102,
+            102 => Datatype::SingleCellVoltageHV103,
+            103 => Datatype::SingleCellVoltageHV104,
+            104 => Datatype::SingleCellVoltageHV105,
+            105 => Datatype::SingleCellVoltageHV106,
+            106 => Datatype::SingleCellVoltageHV107,
+            107 => Datatype::SingleCellVoltageHV108,
+            108 => Datatype::SingleCellVoltageHV109,
+            109 => Datatype::SingleCellVoltageHV110,
+            110 => Datatype::SingleCellVoltageHV111,
+            111 => Datatype::SingleCellVoltageHV112,
+            _ => Datatype::SingleCellVoltageHV112,
         }
+    }
 
-        pub async fn match_temp(id: u16) -> (Datatype, Datatype, Datatype) {
+    pub async fn match_temp(id: u16) -> (Datatype, Datatype, Datatype) {
         match id {
             0 => (
                 Datatype::Module1AvgTemperature,

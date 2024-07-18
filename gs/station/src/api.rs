@@ -9,7 +9,7 @@ use ratatui::prelude::Color;
 use crate::{Command, GS_IP_ADDRESS};
 use crate::Datatype;
 use crate::Info;
-use crate::POD_IP_ADDRESS;
+// use crate::POD_IP_ADDRESS;
 
 include!("../../../util/src/shared/routes.rs");
 

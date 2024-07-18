@@ -1,4 +1,6 @@
-use core::sync::atomic::{AtomicBool, Ordering};
+use core::sync::atomic::AtomicBool;
+use core::sync::atomic::Ordering;
+
 use defmt::info;
 use embassy_executor::Spawner;
 use embassy_stm32::adc::Adc;
@@ -85,17 +87,15 @@ async fn read_braking_communication(
                 if !DISABLE_BRAKING_COMMUNICATION {
                     queue_event(event_sender, Event::EmergencyBraking).await;
                 }
-
-                BRAKES_EXTENDED.store(true, Ordering::Release);
             }
+            BRAKES_EXTENDED.store(true, Ordering::Release);
             Timer::after_millis(1000).await;
         }
         if !edge && !is_activated {
             // braking comm went high again
             edge = true;
-            unsafe {
                 BRAKES_EXTENDED.store(false, Ordering::Release);
-            }
+
         }
         Timer::after_micros(10).await;
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(500) {

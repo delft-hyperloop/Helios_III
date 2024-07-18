@@ -8,7 +8,7 @@ use crate::Datatype;
 use crate::MessageSender;
 
 pub fn handle_line_from_levi(
-    line: &String,
+    line: &str,
     msg_send: MessageSender,
     cmd_send: CommandSender,
     data_sender: DataSender,
@@ -27,7 +27,7 @@ pub fn handle_line_from_levi(
             msg_send.send(Message::Error(format!("Levi Error: {}", params[1..].join(","))))?;
         },
         "CRITICAL" => {
-            // cmd_send.send(Command::EmergencyBrake(3))?;
+            cmd_send.send(Command::EmergencyBrake(3))?;
             msg_send.send(Message::Error(format!("LEVI CRITICAL: {}", params[1..].join(","))))?;
         },
         "DATA" if params.len() > 2 => {

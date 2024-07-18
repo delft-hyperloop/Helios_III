@@ -15,7 +15,7 @@ pub struct LedController {
     pub led_2: Output<'static>,
     pub led_3: Output<'static>,
     pub led_4: Output<'static>,
-    pub levi_led: Output<'static>,
+    pub hv_led: Output<'static>,
     pub hv_relay_1: Output<'static>,
     pub hv_relay_2: Output<'static>,
 }
@@ -36,7 +36,7 @@ impl LedController {
             led_2: Output::new(pe8, Level::Low, Speed::Low),
             led_3: Output::new(pe9, Level::Low, Speed::Low),
             led_4: Output::new(pe10, Level::Low, Speed::Low),
-            levi_led: Output::new(pe11, Level::Low, Speed::Low),
+            hv_led: Output::new(pe11, Level::Low, Speed::Low),
             hv_relay_1: Output::new(pe13, Level::Low, Speed::Low),
             hv_relay_2: Output::new(pe14, Level::Low, Speed::Low),
         }

@@ -15,7 +15,7 @@ use crate::ERROR_CHANNEL;
 use crate::HEARTBEAT;
 use crate::INFO_CHANNEL;
 use crate::SHORTCUT_CHANNEL;
-use crate::STATUS_CHANNEL;
+// use crate::STATUS_CHANNEL;
 use crate::WARNING_CHANNEL;
 
 pub fn tauri_main(backend: Backend) {

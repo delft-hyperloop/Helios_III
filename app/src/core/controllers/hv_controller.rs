@@ -1,12 +1,22 @@
 use defmt::info;
 use embassy_stm32::gpio::Output;
+use embassy_time::Duration;
+use embassy_time::Instant;
 use embassy_time::Timer;
+
+use crate::Event;
+use crate::EventSender;
 
 pub struct HVPeripherals {
     pub pin_4: Output<'static>,
     pub pin_6: Output<'static>,
     pub pin_7: Output<'static>,
     pub dc_dc: Output<'static>,
+    pub pre_charge_start: Instant,
+    pub pre_charge_min: Duration,
+    // pub pre_charge_timeout: Duration,
+    // pub event_sender: EventSender,
+    pub pre_charge_successful: bool,
 }
 
 impl HVPeripherals {
@@ -34,4 +44,16 @@ impl HVPeripherals {
         self.pin_6.set_low();
         self.pin_7.set_low();
     }
+}
+
+#[embassy_executor::task]
+pub async fn timeout_abort_pre_charge(event_sender: EventSender, timeout: Duration) {
+    Timer::after(timeout).await;
+    event_sender.send(Event::PrechargeAbort).await;
+}
+
+#[embassy_executor::task]
+pub async fn timeout_finish_pre_charge(event_sender: EventSender, timeout: Duration) {
+    Timer::after(timeout).await;
+    event_sender.send(Event::FinishPrecharge).await;
 }
