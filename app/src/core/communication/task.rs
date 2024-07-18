@@ -5,7 +5,6 @@ use embassy_time::Timer;
 
 use crate::core::communication::CommunicationLayer;
 use crate::core::fsm_status::CONNECTED;
-use crate::pconfig::thread_delay;
 
 #[embassy_executor::task]
 pub async fn external_communication_task(mut comm: impl CommunicationLayer + 'static) -> ! {

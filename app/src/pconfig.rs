@@ -269,7 +269,9 @@ pub async fn queue_dp(data_sender: DataSender, t: Datatype, d: u64, p: u64) {
     data_sender.send(Datapoint::new(t, d, p)).await
 }
 
+
 /// Wrapper function around timer::after to signify that this is a context-switch delay
+#[allow(dead_code)]
 pub async fn thread_delay(micros: u64) {
     Timer::after_micros(micros).await;
 }

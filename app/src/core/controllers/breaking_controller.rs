@@ -17,7 +17,7 @@ use embassy_time::Timer;
 use crate::core::fsm_status::BRAKE;
 use crate::core::fsm_status::BRAKES_EXTENDED;
 use crate::core::fsm_status::DISABLE_BRAKING_COMMUNICATION;
-use crate::pconfig::{queue_event, thread_delay};
+use crate::pconfig::queue_event;
 use crate::{Info, send_data};
 use crate::try_spawn;
 use crate::DataSender;
