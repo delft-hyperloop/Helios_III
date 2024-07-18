@@ -84,6 +84,7 @@ export class GrandDataDistributor {
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
             this.StoreManager.updateStore(datapoint.datatype, datapoint.style, datapoint.units, datapoint.value);
+            console.log(datapoint)
         });
     }
 
