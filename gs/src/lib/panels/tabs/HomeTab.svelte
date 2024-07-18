@@ -44,6 +44,7 @@
         <TauriCommand cmd="quit_levi" />
         <TauriCommand cmd="disconnect" successCallback={() => serverStatus.set(false)} />
         <TauriCommand cmd="save_logs"/>
+        <TauriCommand cmd="test_r"/>
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
 
