@@ -1,5 +1,5 @@
-use std::cell::RefCell;
-use std::sync::Mutex;
+use std::ops::DerefMut;
+use std::sync::{Mutex};
 use std::time::Duration;
 
 use tauri::{AppHandle, GlobalShortcutManager};
@@ -19,7 +19,7 @@ use crate::SHORTCUT_CHANNEL;
 // use crate::STATUS_CHANNEL;
 use crate::WARNING_CHANNEL;
 
-pub static APP_HANDLE: RefCell<AppHandle> = RefCell::default();
+pub static APP_HANDLE: Mutex<Option<AppHandle>> = Mutex::new(None);
 
 pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
@@ -38,7 +38,7 @@ pub fn tauri_main(backend: Backend) {
             quit_levi,
             procedures,
             test_panic,
-            save_to_default,
+            save_logs,
         ])
         .setup(move |app| {
             let app_handle = app.handle();
@@ -51,7 +51,7 @@ pub fn tauri_main(backend: Backend) {
 
             let s = app_handle.clone();
             // this is unsafe, don't do it anywhere else
-            APP_HANDLE.replace(s.clone());
+            APP_HANDLE.lock().map(|mut x| x.deref_mut().replace(s.clone())).expect("Error replacing app handle mutex");
 
             // set up heartbeat
             tokio::spawn(async move {
