@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 use std::str::FromStr;
+use chrono::Local;
 
 use rand::Rng;
 use tauri::State;
@@ -118,7 +119,9 @@ pub fn disconnect() {
 pub fn save_to_default() -> bool {
     if let Some(backend_mutex) = unsafe { BACKEND.as_ref() } {
         let log = &backend_mutex.lock().unwrap().log;
-        if let Ok(x) = PathBuf::from_str(&format!("../../../../ehw/logs/{}", chrono::Local::now())) {
+        let now = Local::now().naive_local();
+        let formatted_time = now.format("%d_%m_%Y at %H_%M").to_string();
+        if let Ok(x) = PathBuf::from_str(&format!("../../ehw/logs/log-{}.txt", formatted_time)) {
             Backend::save_to_path(log, x).is_ok()
         } else {
             false
