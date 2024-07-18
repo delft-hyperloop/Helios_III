@@ -1,7 +1,8 @@
+use std::cell::RefCell;
 use std::sync::Mutex;
 use std::time::Duration;
 
-use tauri::GlobalShortcutManager;
+use tauri::{AppHandle, GlobalShortcutManager};
 use tauri::Manager;
 use tauri::WindowEvent;
 use tokio::time::sleep;
@@ -17,6 +18,8 @@ use crate::INFO_CHANNEL;
 use crate::SHORTCUT_CHANNEL;
 // use crate::STATUS_CHANNEL;
 use crate::WARNING_CHANNEL;
+
+pub static APP_HANDLE: RefCell<AppHandle> = RefCell::default();
 
 pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
@@ -47,6 +50,8 @@ pub fn tauri_main(backend: Backend) {
             }
 
             let s = app_handle.clone();
+            // this is unsafe, don't do it anywhere else
+            APP_HANDLE.replace(s.clone());
 
             // set up heartbeat
             tokio::spawn(async move {

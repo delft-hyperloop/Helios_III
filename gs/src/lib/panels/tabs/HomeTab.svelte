@@ -43,7 +43,7 @@
         <TauriCommand cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />
         <TauriCommand cmd="quit_levi" />
         <TauriCommand cmd="disconnect" successCallback={() => serverStatus.set(false)} />
-        <TauriCommand cmd="save_to_default" />
+        <TauriCommand cmd="save_to_default" successCallback={() => }/>
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
 

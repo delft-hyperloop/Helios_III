@@ -3,7 +3,7 @@ use std::str::FromStr;
 use chrono::Local;
 
 use rand::Rng;
-use tauri::State;
+use tauri::{Manager, State};
 
 use crate::api::Datapoint;
 use crate::api::Message;
@@ -13,6 +13,7 @@ use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
 use crate::Command;
 use crate::Datatype;
+use crate::frontend::app::APP_HANDLE;
 
 #[macro_export]
 #[allow(unused)]
@@ -116,13 +117,17 @@ pub fn disconnect() {
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn save_to_default() -> bool {
+pub fn save_logs() -> bool {
     if let Some(backend_mutex) = unsafe { BACKEND.as_ref() } {
         let log = &backend_mutex.lock().unwrap().log;
         let now = Local::now().naive_local();
-        let formatted_time = now.format("%d_%m_%Y at %H_%M").to_string();
+        let formatted_time = now.format("%d_%m_%Y at %H_%M_%S").to_string();
         if let Ok(x) = PathBuf::from_str(&format!("../../ehw/logs/log-{}.txt", formatted_time)) {
-            Backend::save_to_path(log, x).is_ok()
+            if Backend::save_to_path(log, x).is_ok() {
+                APP_HANDLE.try_borrow().map(|x| x.emit_all("clear_logs", "kiko").is_ok()).is_ok()
+            } else {
+                false
+            }
         } else {
             false
         }
