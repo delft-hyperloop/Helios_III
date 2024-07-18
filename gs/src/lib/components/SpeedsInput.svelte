@@ -5,19 +5,16 @@
     import { getModalStore } from '@skeletonlabs/skeleton';
     import {invoke} from "@tauri-apps/api/tauri";
     import util from '$lib/util/util';
-    import {metersPerMinuteToByte} from "$lib/util/parsers";
     import {type RouteStep} from "$lib";
     import Icon from "@iconify/svelte";
+    import type {RouteConfig} from "$lib/types";
+    import {routeConfig} from "$lib/stores/data";
+    import {get} from "svelte/store";
+
+    const CurrentRouteConfig:RouteConfig = get(routeConfig);
 
     const RouteStepNames: RouteStep[] = ["ForwardA", "ForwardB", "ForwardC", "BackwardsA", "BackwardsB", "BackwardsC",
       "LaneSwitchStraight", "LaneSwitchCurved", "StopAndWait", "BrakeHere"];
-
-    let routeSteps: RouteStep[] = [];
-
-    function onDrop({ detail: { from, to } }: CustomEvent<DropEvent>) {
-      if (!to || from === to) return;
-      routeSteps = reorder(routeSteps, from.index, to.index);
-    }
 
     $: focusedInput = '';
     let invalidInputs: SpeedFormKey[] = [];
@@ -25,105 +22,71 @@
     const modalStore = getModalStore();
 
     type SpeedFormType = {
-        BackwardC: number,
-        ForwardB: number,
-        ForwardA: number,
-        LaneSwitchCurved: number,
-        ForwardC: number,
-        LaneSwitchStraight: number,
-        BackwardA: number,
-        BackwardB: number,
+      ForwardA: number,
+      ForwardB: number,
+      ForwardC: number,
+      BackwardsA: number,
+      BackwardsB: number,
+      BackwardsC: number,
+      LaneSwitchCurved: number,
+      LaneSwitchStraight: number,
     }
 
-    const speedForm:SpeedFormType = {
-        ForwardA: 0,
-        BackwardA: 0,
-        ForwardB: 0,
-        BackwardB: 0,
-        ForwardC: 0,
-        BackwardC: 0,
-        LaneSwitchStraight: 0,
-        LaneSwitchCurved: 0,
-    };
-
+    const speedForm:SpeedFormType = CurrentRouteConfig.speeds;
     type SpeedFormKey = keyof typeof speedForm;
     const inputs: SpeedFormKey[] = Object.keys(speedForm) as SpeedFormKey[];
 
     function onRouteStepClick(step: RouteStep): void {
-      if (routeSteps.length < 16) {
-        routeSteps = [...routeSteps, step];
+      if (CurrentRouteConfig.positions.length < 16) {
+        CurrentRouteConfig.positions = [...CurrentRouteConfig.positions, step];
       }
     }
 
     function removeRouteStep(index: number): void {
-      routeSteps = routeSteps.filter((_, i) => i !== index);
+      CurrentRouteConfig.positions = CurrentRouteConfig.positions.filter((_, i) => i !== index);
+    }
+
+    function onDrop({ detail: { from, to } }: CustomEvent<DropEvent>) {
+      if (!to || from === to) return;
+      CurrentRouteConfig.positions = reorder(CurrentRouteConfig.positions, from.index, to.index);
     }
 
     function onFormSubmit(): void {
-        //invoke('test_panic');
         if (Object.values(speedForm).some(v => v < -500 || v > 500)) {
             console.log(`Invalid values in form`);
             invoke('test_panic');
-
             return;
         } else {
-            let speeds_u64 = BigInt(0);
-
-            for (let i = 0; i < inputs.length; i++) {
-                const input = metersPerMinuteToByte(speedForm[inputs[i]]);
-                speeds_u64 |= BigInt(input) << BigInt((7 - i) * 8);
-            }
-
-            invoke('send_command', {cmdName: "SetSpeeds", val: Number(speeds_u64)}).then(() => {
-                console.log(`Command SetSpeeds sent`);
-                modalStore.close();
-            })
-
-            let route_u64 = BigInt(0);
-
-            // routeSteps.forEach(step => {
-            //     const stepBits = BigInt(util.stepTo4Bit(step));
-            //     route_u64 = (route_u64 << BigInt(4)) | stepBits;
-            // });
-
-            invoke('send_command', {cmdName: "SetRoute", val: Number(route_u64)}).then(() => {
-                console.log(`Command SetRoute sent`);
-                modalStore.close();
-            })
 
         }
     }
 
-    /**
-     * Import the configuration from the backend
-     * @param speeds this should be a struct with the same keys as SpeedFormType.
-     * The values for these keys will be set on the keys of the component one
-     * @param steps the route steps. These will be displayed in the list.
-     */
-    function import_config(speeds:SpeedFormType, steps:RouteStep[]):void {
-        const inputs: SpeedFormKey[] = Object.keys(speeds) as SpeedFormKey[];
-
-        for (const input of inputs) {
-            speedForm[input] = speeds[input];
-        }
-
-        routeSteps = steps;
-    }
-
-    const cBase = 'card p-4 w-modal shadow-xl space-y-4';
-    const cHeader = 'text-2xl font-bold';
+    // function importSpeeds() {
+    //     const speeds = speedInputValue.split(',');
+    //     if (speeds.length !== inputs.length) {
+    //         console.log(`Invalid speeds input`);
+    //         return;
+    //     }
+    //
+    //     for (let i = 0; i < inputs.length; i++) {
+    //         speedForm[inputs[i]] = parseFloat(speeds[i]);
+    //     }
+    // }
 
     async function clickToCopy(elem:HTMLInputElement) {
         await navigator.clipboard.writeText(elem.value);
     }
+
+    let speedInputValue: number = 0;
+    let routesInputValue: number = 0;
 
     let exportedRoutes: HTMLInputElement;
     let exportedSpeeds: HTMLInputElement;
 </script>
 
 {#if $modalStore[0]}
-    <div class="modal-example-form w-modal-wide {cBase}">
-        <header class={cHeader}>{$modalStore[0].title}</header>
+    <div class="modal-example-form w-modal-wide card p-4 shadow-xl space-y-4">
+        <header class="text-2xl font-bold">{$modalStore[0].title}</header>
 
         <div class="grid modal-grid grid-rows-[1fr 2fr] h-full gap-4 col-span-1">
             <div class="w-full p-4 col-span-3">
@@ -208,7 +171,7 @@
                         id="aaa"
                         type={VerticalDropZone}
                         itemSize={55}
-                        itemCount={routeSteps.length}
+                        itemCount={CurrentRouteConfig.positions.length}
                         on:drop={onDrop}
                         let:index
                         zoneClass="bg-surface-900 scrollable"
@@ -216,7 +179,7 @@
                     <div class="flex items-center justify-between p-2 bg-surface-800 rounded-lg cursor-move m-2">
                         <div class="flex items-center">
                             <Icon icon="mdi:drag"/>
-                            <span>{index + 1}. {routeSteps[index]}</span>
+                            <span>{index + 1}. {CurrentRouteConfig.positions[index]}</span>
                         </div>
                         <button type="button"
                                 class="btn rounded-lg"
@@ -257,7 +220,7 @@
                         <button type="button"
                                 class="btn rounded-none"
                                 on:click={() => onRouteStepClick(step)}>
-                            <Icon icon="mdi:plus" class={routeSteps.length < 16 ? "text-surface-400" : "text-error-400"}/>
+                            <Icon icon="mdi:plus" class={CurrentRouteConfig.positions.length < 16 ? "text-surface-400" : "text-error-400"}/>
                         </button>
                     </div>
                 {/each}
@@ -266,11 +229,11 @@
                 <button class="btn bg-primary-500 rounded-lg">
                     Import Speeds
                 </button>
-                <input type="text" class="input rounded-lg">
+                <input bind:value={speedInputValue} type="text" class="input rounded-lg">
                 <button class="btn bg-primary-500 rounded-lg">
                     Import Route Setup
                 </button>
-                <input type="text" class="input rounded-lg">
+                <input bind:value={routesInputValue} type="text" class="input rounded-lg">
                 <button class="btn bg-primary-500 rounded-lg" on:click={() => clickToCopy(exportedSpeeds)}>
                     Copy Speeds Setup
                 </button>

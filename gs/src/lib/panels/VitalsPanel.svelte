@@ -79,7 +79,7 @@
             <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="">
                 <!--     FSM       -->
                 <Tile bgToken={800} containerClass="col-span-2">
-                    <Localiser turning={true} loc={$location} showLabels={false} />
+                    <Localiser turning={true} loc={$location.value} showLabels={false} />
                 </Tile>
                 <!--      Under FSM      -->
                 <Tile bgToken={700} containerClass="col-span-2">

@@ -60,7 +60,7 @@
 
         interval = setInterval(() => {
             turn_off_all(all_states);
-            turn_on(all_states[$fsmState % all_states.length])
+            turn_on(all_states[$fsmState.value % all_states.length])
         }, 100)
     })
 

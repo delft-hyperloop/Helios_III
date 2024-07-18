@@ -3,14 +3,10 @@
     import {GrandDataDistributor} from "$lib";
 
     export let datatype: NamedDatatype;
-    $: store = GrandDataDistributor.getInstance().stores.getStore(datatype);
+    const store = GrandDataDistributor.getInstance().stores.getWritable(datatype);
 
-    $: style = store.style;
-    $: units = store.units;
-
-    $: writable = store.writable;
 </script>
 
-<span class={style}>{typeof $writable === "number" ? $writable.toFixed(2) : $writable} {units}</span>
+<span class={$store.style}>{typeof $store.value === "number" ? $store.value.toFixed(2) : $store.value} {$store.units}</span>
 
 

@@ -126,13 +126,11 @@ export type RouteConfig = {
         BackwardsA: number
         BackwardsB: number
         BackwardsC: number
-        BrakeHere: number
         ForwardA: number
         ForwardB: number
         ForwardC: number
         LaneSwitchCurved: number
         LaneSwitchStraight: number
-        StopAndWait: number
     },
     positions: RouteStep[],
     current_position: number

@@ -63,23 +63,23 @@
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
             <p>Main PCB</p>
-            <Status status={$statuses[STATUS.MAIN_PCB]} />
+            <Status status={$statuses.value[STATUS.MAIN_PCB]} />
             <p>Propulsion</p>
-            <Status on="Active" off="Off" status={$statuses[STATUS.PROPULSION]} />
+            <Status on="Active" off="Off" status={$statuses.value[STATUS.PROPULSION]} />
             <p>Levitation</p>
-            <Status status={$statuses[STATUS.LEVITATION]} />
+            <Status status={$statuses.value[STATUS.LEVITATION]} />
             <p>Sensor Hub</p>
-            <Status status={$statuses[STATUS.SENSOR_HUB]} />
+            <Status status={$statuses.value[STATUS.SENSOR_HUB]} />
             <p>LV Batteries</p>
-            <Status status={$statuses[STATUS.LV_BATTERIES]} />
+            <Status status={$statuses.value[STATUS.LV_BATTERIES]} />
             <p>HV Batteries</p>
-            <Status status={$statuses[STATUS.HV_BATTERIES]} />
+            <Status status={$statuses.value[STATUS.HV_BATTERIES]} />
             <p>Braking PCB</p>
-            <Status on="Armed" off="Extended" status={$statuses[STATUS.BRAKING_PCB]} />
+            <Status on="Armed" off="Extended" status={$statuses.value[STATUS.BRAKING_PCB]} />
             <p>Voltage Over 50</p>
             <Status offColor="text-primary-400" off="Safe"
                     onColor="text-error-400" on="UNSAFE"
-                    status={$statuses[STATUS.VOLTAGE_OVER]} />
+                    status={$statuses.value[STATUS.VOLTAGE_OVER]} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>

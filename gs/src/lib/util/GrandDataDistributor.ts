@@ -100,7 +100,7 @@ export class GrandDataDistributor {
  * The StoreManager class is responsible for managing the data stores
  */
 class StoreManager {
-    private stores: Map<string, Store<any>>;
+    private stores: Map<string, Writable<Store<any>>>;
 
     constructor() {
         this.stores = new Map();
@@ -114,7 +114,7 @@ class StoreManager {
      * @param processFunction - the function to process the data
      */
     public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>, initialUnits?:string) {
-        this.stores.set(name, new Store(initial, '', initialUnits || '', processFunction));
+        this.stores.set(name, writable<Store<T>>(new Store(initial, '', initialUnits || '', processFunction)));
     }
 
     /**
@@ -126,15 +126,16 @@ class StoreManager {
      */
     public updateStore(name: NamedDatatype, style:string, units:string, data: number) {
         const store = this.stores.get(name);
-        if (store) store.set(data, style, units);
+        if (store) get(store).set(data, style, units);
+        // if (store) store.set(new Store(data, ))
     }
 
-    public getWritable(name: NamedDatatype):Writable<any> {
+    public getValue(name: NamedDatatype):any {
         if (!this.stores.has(name)) throw new Error(`Store with name ${name} does not exist`);
-        return this.stores.get(name)!.writable;
+        return get(this.stores.get(name)!).value;
     }
 
-    public getStore(name: NamedDatatype):Store<any> {
+    public getWritable(name: NamedDatatype):Writable<Store<any>> {
         if (!this.stores.has(name)) throw new Error(`Store with name ${name} does not exist`);
         return this.stores.get(name)!;
     }
@@ -147,25 +148,25 @@ class StoreManager {
  */
 class Store<T> {
     private readonly processFunction: dataConvFun<T>;
-    private readonly _writable: Writable<T>;
+    private _value: T;
     private _style: string;
     private _units: string;
 
     constructor(initial:T, style:string, units:string, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
-        this._writable = writable<T>(initial);
+        this._value = initial;
         this.processFunction = processFunction;
         this._style = style;
         this._units = units;
     }
 
     public set(data: number, style: string, units:string) {
-        this.writable.set(this.processFunction(data, get(this.writable)));
+        this._value = this.processFunction(data, this._value);
         this._style = style;
         this._units = units;
     }
 
-    public get writable():Writable<T> {
-        return this._writable;
+    public get value():T {
+        return this._value;
     }
 
     public get style():string {
