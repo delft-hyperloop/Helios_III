@@ -126,7 +126,10 @@ class StoreManager {
      */
     public updateStore(name: NamedDatatype, style:string, units:string, data: number) {
         const store = this.stores.get(name);
-        if (store) store.set(new Store(data, style, units, get(store).processFunction))
+        if (store) {
+            const storeVal = get(store);
+            store.set(new Store(storeVal.processFunction(data, storeVal.value), style, units, storeVal.processFunction))
+        }
     }
 
     public getValue(name: NamedDatatype):any {
