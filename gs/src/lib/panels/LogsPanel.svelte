@@ -40,7 +40,11 @@
 
     onMount(async () => {
         unlistens[0] = await registerChannel(EventChannel.STATUS, 'STATUS');
-        unlistens[1] = await registerChannel(EventChannel.INFO, 'INFO');
+
+        unlistens[1] = await listen(EventChannel.INFO, (event: {payload: string}) => {
+          logs = [...logs, {message: event.payload.split(';')[0], log_type: 'INFO', timestamp: Date.now().valueOf()}]
+        });
+
         unlistens[2] = await registerChannel(EventChannel.WARNING, 'WARNING');
         unlistens[3] = await registerChannel(EventChannel.ERROR, 'ERROR');
 
