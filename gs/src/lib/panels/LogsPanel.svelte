@@ -39,10 +39,10 @@
     }
 
     onMount(async () => {
-        unlistens[0] = await registerChannel(EventChannel.STATUS, 'STATUS');
+        unlistens[0] = await registerChannel(EventChannel.INFO, 'INFO');
 
-        unlistens[1] = await listen(EventChannel.INFO, (event: {payload: string}) => {
-          logs = [...logs, {message: event.payload.split(';')[0], log_type: 'INFO', timestamp: Date.now().valueOf()}]
+        unlistens[1] = await listen(EventChannel.STATUS, (event: {payload: string}) => {
+          logs = [...logs, {message: event.payload.split(';')[0], log_type: 'STATUS', timestamp: Date.now().valueOf()}]
         });
 
         unlistens[2] = await registerChannel(EventChannel.WARNING, 'WARNING');
@@ -90,7 +90,7 @@
     <div class="h-full p-1 pb-16 overflow-y-auto" bind:this={logContainer}>
         {#each filteredLogs as log}
             <div class="flex items-center">
-                <p class="{colours.get(log.log_type)}"><span class="font-mono font-light">[{log.timestamp}]</span>{log.log_type}: {log.message}</p>
+                <p class="{colours.get(log.log_type)}"><span class="font-mono font-light">[{log.timestamp}]</span>{log.message}</p>
             </div>
         {/each}
         <hr>
