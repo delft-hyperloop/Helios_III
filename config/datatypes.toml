@@ -105,8 +105,6 @@ name = "AccelerationX"
 id = 0x115
 display_units = "m/s²"
 
-
-
 [[Datatype]]
 name = "AccelerationY"
 id = 0x114
@@ -185,34 +183,47 @@ id = 0x3A7
 name = "BatteryVoltageLow"
 id = 0x19D
 display_units = "V"
-upper = { warn = 6000, err = 8000 }
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+
 
 
 [[Datatype]]
 name = "BatteryVoltageHigh"
 id = 0x3A1
 display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "TotalBatteryVoltageLow"
 id = 0x1A5
 display_units = "V"
+upper = { warn = 2400, err = 2500}
+lower = { warn = 2000, err = 0}
 
 [[Datatype]]
 name = "TotalBatteryVoltageHigh"
 id = 0x3A9
 display_units = "V"
+upper = { warn = 41500, err = 42500}
+lower = { warn = 35000, err = 0}
 
 
 [[Datatype]]
 name = "BatteryTemperatureLow"
 id = 0x1A4
 display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
+
 
 [[Datatype]]
 name = "BatteryTemperatureHigh"
 id = 0x3A8
 display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
 
 [[Datatype]]
 name = "BatteryBalanceLow"
@@ -233,6 +244,8 @@ display_units = "V"
 name = "SingleCellTemperatureLow"
 id = 0x1DC
 display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
 
 [[Datatype]]
 name = "ChargeStateLow"
@@ -268,6 +281,8 @@ display_units = "A"
 name = "BatteryMaxVoltageLow"
 id = 0x1A8
 display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "BatteryEstimatedChargeLow"
@@ -278,6 +293,8 @@ display_units = "%"
 name = "BatteryMinTemperatureLow"
 id = 0x1AA
 display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
 
 
 
@@ -285,6 +302,8 @@ display_units = "ºC"
 name = "BatteryMaxTemperatureLow"
 id = 0x1AB
 display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
 
 
 [[Datatype]]
@@ -301,16 +320,22 @@ display_units = "%"
 name = "BatteryMinVoltageLow"
 id = 0x1A7
 display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "BatteryMinVoltageHigh"
 id = 0x3AB
 display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "BatteryMaxVoltageHigh"
 id = 0x3AC
 display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "BatteryEstimatedChargeHigh"
@@ -326,6 +351,8 @@ display_units = "ºC"
 name = "BatteryMaxTemperatureHigh"
 id = 0x3AF
 display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
 
 [[Datatype]]
 name = "BatteryMinBalancingHigh"
@@ -349,6 +376,8 @@ id = 0x425
 name = "BrakeTemperature"
 id = 0x13
 display_units = "ºC"
+upper = { warn = 60 , err = 70}
+lower = {err = 0}
 
 [[Datatype]]
 name = "PropulsionSpeed"
@@ -1359,6 +1388,8 @@ priority = 7
 [[Datatype]]
 name = "SingleCellVoltageLV1"
 id = 0x600
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "SingleCellVoltageLV2"
