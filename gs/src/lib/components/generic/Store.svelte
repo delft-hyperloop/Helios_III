@@ -5,8 +5,9 @@
     export let datatype: NamedDatatype;
     const store = GrandDataDistributor.getInstance().stores.getWritable(datatype);
 
+    $: store;
 </script>
 
-<span class={$store.style}>{typeof $store.value === "number" ? $store.value.toFixed(2) : $store.value} {$store.units}</span>
+<span class="text-{$store.style === 'critical' ? 'error' : $store.style}-400">{typeof $store.value === "number" ? $store.value.toFixed(2) : $store.value} {$store.units}</span>
 
 

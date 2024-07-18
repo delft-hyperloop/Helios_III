@@ -126,8 +126,7 @@ class StoreManager {
      */
     public updateStore(name: NamedDatatype, style:string, units:string, data: number) {
         const store = this.stores.get(name);
-        if (store) get(store).set(data, style, units);
-        // if (store) store.set(new Store(data, ))
+        if (store) store.set(new Store(data, style, units, get(store).processFunction))
     }
 
     public getValue(name: NamedDatatype):any {
@@ -147,7 +146,7 @@ class StoreManager {
  * This allows for processing the data before setting it to the store.
  */
 class Store<T> {
-    private readonly processFunction: dataConvFun<T>;
+    public readonly processFunction: dataConvFun<T>;
     private _value: T;
     private _style: string;
     private _units: string;
