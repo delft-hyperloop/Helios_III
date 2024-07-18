@@ -35,7 +35,7 @@
                flex-row flex-nowrap justify-between px-4 gap-4 border-t border-black">
     <p>Delft Hyperloop: Helios III</p>
     <div class="flex gap-4">
-        <p>Current state: {$fsmState}</p>
+        <p>Current state: {$fsmState.value}</p>
         <p class="">{time}</p>
     </div>
 </footer>
