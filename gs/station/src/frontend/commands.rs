@@ -6,14 +6,16 @@ use rand::Rng;
 use tauri::Manager;
 use tauri::State;
 
-use crate::api::{Datapoint, Route};
+use crate::api::{Datapoint, LocationSequence, LocationSpeedMap};
 use crate::api::Message;
 use crate::api::ProcessedData;
+use crate::api::Route;
 use crate::backend::Backend;
 use crate::frontend::app::APP_HANDLE;
 use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
 use crate::Command;
+use crate::data::validate::validate_route_internal;
 use crate::Datatype;
 
 #[macro_export]
@@ -195,6 +197,39 @@ pub fn test_panic() {
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn test_route() -> Route {
-    Route::default()
+pub fn test_route() -> Route { Route::default() }
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn validate_route(route: Route) -> bool {
+    validate_route_internal(route)
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn speeds_to_u64(speeds: LocationSpeedMap) -> u64 {
+    speeds.into()
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn speeds_from_u64(speeds: u64) -> LocationSpeedMap {
+    speeds.into()
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn positions_to_u64(positions: LocationSequence) -> u64 {
+    positions.into()
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn positions_from_u64(positions: u64) -> LocationSequence {
+    positions.into()
 }

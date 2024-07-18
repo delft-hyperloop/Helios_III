@@ -41,6 +41,12 @@ pub fn tauri_main(backend: Backend) {
             test_panic,
             save_logs,
             test_route,
+            validate_route,
+
+            speeds_to_u64,
+            speeds_from_u64,
+            positions_to_u64,
+            positions_from_u64,
         ])
         .setup(move |app| {
             let app_handle = app.handle();

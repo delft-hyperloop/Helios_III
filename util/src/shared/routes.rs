@@ -27,7 +27,7 @@ pub struct LocationSpeedMap(LinearMap<Location, u8, 10>);
 #[cfg(not(target_os = "none"))]
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone)]
 #[cfg_attr(not(target_os = "none"), derive(serde::Serialize, serde::Deserialize))]
-pub struct LocationSpeedMap(std::collections::BTreeMap<Location, u8>);
+pub struct LocationSpeedMap(pub(crate) std::collections::BTreeMap<Location, u8>);
 
 /// A sequence of locations that the pod will travel through
 ///
@@ -125,6 +125,16 @@ impl defmt::Format for Route {
             defmt::write!(fmt, "  {}: {}\n", key, value);
         }
         defmt::write!(fmt, "}}");
+    }
+}
+
+#[cfg(not(target_os = "none"))]
+impl IntoIterator for LocationSpeedMap {
+    type Item = (Location, u8);
+    type IntoIter = std::collections::btree_map::IntoIter<Location, u8>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
     }
 }
 
