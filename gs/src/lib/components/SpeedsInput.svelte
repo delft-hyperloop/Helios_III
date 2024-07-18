@@ -31,8 +31,6 @@
         LaneSwitchStraight: number,
         BackwardA: number,
         BackwardB: number,
-        StopAndWait: number,
-        BrakeHere: number
     }
 
     const speedForm:SpeedFormType = {
@@ -44,8 +42,6 @@
         BackwardC: 0,
         LaneSwitchStraight: 0,
         LaneSwitchCurved: 0,
-        StopAndWait: 0,
-        BrakeHere: 0 
     };
 
     type SpeedFormKey = keyof typeof speedForm;
@@ -112,13 +108,15 @@
         routeSteps = steps;
     }
 
-    function export_config() {
-        const return_value = {speeds: speedForm, steps: routeSteps};
-        // todo: @Andreas please figure it out
-    }
-
     const cBase = 'card p-4 w-modal shadow-xl space-y-4';
     const cHeader = 'text-2xl font-bold';
+
+    async function clickToCopy(elem:HTMLInputElement) {
+        await navigator.clipboard.writeText(elem.value);
+    }
+
+    let exportedRoutes: HTMLInputElement;
+    let exportedSpeeds: HTMLInputElement;
 </script>
 
 {#if $modalStore[0]}
@@ -203,7 +201,7 @@
                     </defs>
                 </svg>
             </div>
-            <div class="col-span-1 row-span-2 h-[600px] overflow-auto">
+            <div class="col-span-1 row-span-2 h-[500px] overflow-auto">
                 <DragDropList
                         id="aaa"
                         type={VerticalDropZone}
@@ -226,10 +224,10 @@
                     </div>
                 </DragDropList>
             </div>
-            <div class="col-span-2 gap-4">
+            <div class="col-span-2 w-full">
                 {#each inputs as input}
-                    <label>
-                        <span>{util.snakeToCamel(input)}</span>
+                    <label class="text-lg grid labels-grid gap-2 mb-2">
+                        <span class="text-lg">{util.snakeToCamel(input)}</span>
                         <input class={`input rounded-lg px-1 ${invalidInputs.includes(input) ? 'text-error-400' : ''}`}
                                type="number"
                                max="500"
@@ -246,6 +244,7 @@
                                invalidInputs = invalidInputs.filter(i => i !== input);
                            }
                         }}/>
+                        <span class="text-lg">m/s</span>
                     </label>
                 {/each}
             </div>
@@ -261,11 +260,25 @@
                     </div>
                 {/each}
             </div>
+            <div class="col-span-4 flex gap-4">
+                <button class="btn bg-primary-500 rounded-lg">
+                    Import Speeds
+                </button>
+                <input type="text" class="input rounded-lg">
+                <button class="btn bg-primary-500 rounded-lg">
+                    Import Route Setup
+                </button>
+                <input type="text" class="input rounded-lg">
+                <button class="btn bg-primary-500 rounded-lg" on:click={() => clickToCopy(exportedSpeeds)}>
+                    Copy Speeds Setup
+                </button>
+                <input contenteditable="false" bind:this={exportedSpeeds} readonly type="text" class="input rounded-lg">
+                <button class="btn bg-primary-500 rounded-lg" on:click={() => clickToCopy(exportedRoutes)}>
+                    Copy Route Setup
+                </button>
+                <input contenteditable="false" bind:this={exportedRoutes} readonly type="text" class="input rounded-lg">
+            </div>
         </div>
-
-
-
-
         <footer class="modal-footer {parent.regionFooter}">
             <button class="btn {parent.buttonNeutral} rounded-lg" on:click={parent.onClose}>
                 Cancel
@@ -280,5 +293,9 @@
 <style lang="scss">
     .modal-grid {
         grid-template-columns: 1fr 1fr 1fr 1.3fr;
+    }
+
+    .labels-grid {
+      grid-template-columns: 2fr 3fr 1fr;
     }
 </style>
