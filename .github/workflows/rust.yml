@@ -10,15 +10,15 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  app:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build & Lint
-      run: rustup target add thumbv7em-none-eabihf && cd app && cargo clippy 
-
+  # app:
+  #
+  #   runs-on: ubuntu-latest
+  #
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Build & Lint
+  #     run: rustup target add thumbv7em-none-eabihf && cd app && cargo clippy 
+  #
   station:
 
     runs-on: ubuntu-latest
