@@ -1,6 +1,6 @@
 <script lang="ts">
     import {invoke} from '@tauri-apps/api/tauri';
-    import {util} from "$lib";
+    import {EventChannel, util} from "$lib";
     import { popup } from '@skeletonlabs/skeleton';
     import type {PopupSettings} from "@skeletonlabs/skeleton";
 
@@ -16,9 +16,11 @@
         console.log(`Sending command: ${cmd}`);
         await invoke(cmd).then(r => {
             console.log(`Command ${cmd} sent with response: ` + r);
+            util.log(`Command ${cmd} sent`, EventChannel.INFO);
             r ? successCallback(r) : errorCallback(r as string);
         }).catch((e) => {
             console.error(`Error sending command ${cmd}: ${e}`);
+            util.log(`Command ${cmd} ERROR sending`, EventChannel.WARNING);
             errorCallback(`Error Sending Command: ${e}`);
         });
     };
