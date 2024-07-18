@@ -5,11 +5,12 @@
     import type {PopupSettings} from "@skeletonlabs/skeleton";
 
     export let className: string = '';
-    export let cmd: 'start_server' | 'start_levi' | 'quit_levi' | 'quit_server' | 'procedures';
+    export let cmd: 'start_server' | 'start_levi' | 'quit_levi' | 'quit_server' | 'procedures' | 'save_to_default' ;
     export let successCallback: (r:any) => void = () => {};
     export let errorCallback: (error:string) => void = () => {};
     export let textOverride: string = '';
     export let hoverContent: string = '';
+
 
     export let send = async () => {
         console.log(`Sending command: ${cmd}`);

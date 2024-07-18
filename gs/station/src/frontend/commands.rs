@@ -115,6 +115,22 @@ pub fn disconnect() {
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
+pub fn save_to_default() -> bool {
+    if let Some(backend_mutex) = unsafe { BACKEND.as_ref() } {
+        let log = &backend_mutex.lock().unwrap().log;
+        if let Ok(x) = PathBuf::from_str(&format!("../../../../ehw/logs/{}", chrono::Local::now())) {
+            Backend::save_to_path(log, x).is_ok()
+        } else {
+            false
+        }
+    } else {
+        false
+    }
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
 pub fn save_to_file(path: &str) -> bool {
     if let Some(backend_mutex) = unsafe { BACKEND.as_ref() } {
         let log = &backend_mutex.lock().unwrap().log;

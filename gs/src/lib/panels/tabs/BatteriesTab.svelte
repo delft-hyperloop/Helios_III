@@ -166,13 +166,12 @@
     $: lvCellVoltArr = [[lv0,lv1,lv2,lv3,lv4,lv5,lv6,lv7]];
     $: hvCellVoltArr = [["Module 1", hv0, hv1, hv2, hv3, hv4, hv5, hv6, hv7, hv8, hv9, hv10, hv11, hv12,hv13],
         ["Module 2", hv14, hv15, hv16, hv17, hv18, hv19, hv20, hv21, hv22, hv23, hv24, hv25, hv26, hv27,],
-        ["Module 3", hv28, hv29, hv30, hv31, hv32, hv33, hv34, hv35, hv36, hv37, hv38 ,hv39,],
-        ["Module 4",  hv40, hv41, hv42, hv43, hv44, hv45, hv46, hv47, hv48, hv49, hv50, hv51],
-        ["Module 5", hv52, hv53, hv54, hv55, hv56, hv57, hv58, hv59, hv60, hv61, hv62, hv63, hv64],
-        ["Module 6", hv65, hv66, hv67, hv68, hv69, hv70, hv71, hv72, hv73, hv74, hv75, hv76, hv77],
-        ["Module 7", hv78, hv79, hv80, hv81, hv82, hv83, hv84, hv85, hv86, hv87, hv88, hv89, hv90],
-        ["Module 8", hv91, hv92, hv93, hv94, hv95, hv96, hv97, hv98, hv99, hv100, hv101, hv102, hv103],
-        ["Module 9", hv104, hv105, hv106, hv107, hv108, hv109, hv110, hv111]]
+        ["Module 3", hv28, hv29, hv30, hv31, hv32, hv33, hv34, hv35, hv36, hv37, hv38 ,hv39, hv108, hv105],
+        ["Module 4",  hv40, hv41, hv42, hv43, hv44, hv45, hv46, hv47, hv48, hv49, hv50, hv51,hv107 ,hv104],
+        ["Module 5", hv52, hv53, hv54, hv55, hv56, hv57, hv58, hv59, hv60, hv61, hv62, hv63, hv64, hv106],
+        ["Module 6", hv65, hv66, hv67, hv68, hv69, hv70, hv71, hv72, hv73, hv74, hv75, hv76, hv77, hv110],
+        ["Module 7", hv78, hv79, hv80, hv81, hv82, hv83, hv84, hv85, hv86, hv87, hv88, hv89, hv90, hv109],
+        ["Module 8", hv91, hv92, hv93, hv94, hv95, hv96, hv97, hv98, hv99, hv100, hv101, hv102, hv103, hv111],]
 
     let dcStatus:boolean = false;
     let connectorStatus:boolean = false;

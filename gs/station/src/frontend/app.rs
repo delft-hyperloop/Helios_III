@@ -34,7 +34,8 @@ pub fn tauri_main(backend: Backend) {
             disconnect,
             quit_levi,
             procedures,
-            test_panic
+            test_panic,
+            save_to_default,
         ])
         .setup(move |app| {
             let app_handle = app.handle();

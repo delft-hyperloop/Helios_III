@@ -110,7 +110,7 @@ impl App {
             //     self.backend.send_command(Command::SetSpeeds(46542390612732));
             // },
             KeyCode::Char('w') => {
-                self.logs.push((self.backend.save().unwrap(), timestamp()));
+                self.l  ogs.push((self.backend.save().unwrap(), timestamp()));
             },
             _ => {},
         }

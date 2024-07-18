@@ -5,7 +5,6 @@
     import {parseProcedure} from "$lib/util/parsers";
 
     const toastStore = getToastStore();
-
     const handleSuccess = () => {
         toastStore.trigger({
             message: "Server started successfully",
@@ -43,8 +42,8 @@
         <TauriCommand cmd="start_levi" />
         <TauriCommand cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />
         <TauriCommand cmd="quit_levi" />
-        <TauriCommand cmd="disconnect"
-                      successCallback={() => serverStatus.set(false)} />
+        <TauriCommand cmd="disconnect" successCallback={() => serverStatus.set(false)} />
+        <TauriCommand cmd="save_to_default" />
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
 
