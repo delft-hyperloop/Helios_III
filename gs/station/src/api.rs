@@ -6,9 +6,10 @@ use std::sync::mpsc::Sender;
 #[cfg(feature = "tui")]
 use ratatui::prelude::Color;
 
-use crate::{Command, GS_IP_ADDRESS};
+use crate::Command;
 use crate::Datatype;
 use crate::Info;
+use crate::GS_IP_ADDRESS;
 // use crate::POD_IP_ADDRESS;
 
 include!("../../../util/src/shared/routes.rs");

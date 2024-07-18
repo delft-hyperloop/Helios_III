@@ -1,7 +1,9 @@
 use core::sync::atomic::AtomicBool;
 use core::sync::atomic::Ordering;
+
 use crate::core::finite_state_machine::Fsm;
-use crate::{Datatype, send_data};
+use crate::send_data;
+use crate::Datatype;
 
 // AtomicBool(s) for statuses
 /// Whether we should extend the brakes
@@ -37,8 +39,12 @@ pub struct Status {
     pub levi_connected: bool,
 }
 
-fn n(b:bool, p: u64) -> u64 {
-    if b { 1 << p } else { 0 }
+fn n(b: bool, p: u64) -> u64 {
+    if b {
+        1 << p
+    } else {
+        0
+    }
 }
 
 impl Fsm {
@@ -69,7 +75,6 @@ impl Fsm {
         VOLTAGE_OVER_50.store(false, Ordering::Relaxed);
     }
 }
-
 
 /// Some overrides that can be set to change the behavior of the fsm
 /// # Values

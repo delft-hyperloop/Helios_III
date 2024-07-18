@@ -1,4 +1,3 @@
-use core::sync::atomic::AtomicBool;
 use core::sync::atomic::Ordering;
 
 use defmt::info;

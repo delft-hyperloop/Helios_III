@@ -2,9 +2,9 @@ use core::sync::atomic::Ordering;
 
 use defmt::info;
 
-use crate::core::controllers::breaking_controller::BRAKES_EXTENDED;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
+use crate::core::fsm_status::BRAKES_EXTENDED;
 use crate::transit;
 use crate::Event;
 use crate::Info;

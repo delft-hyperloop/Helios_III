@@ -1,19 +1,20 @@
 use std::path::PathBuf;
 use std::str::FromStr;
-use chrono::Local;
 
+use chrono::Local;
 use rand::Rng;
-use tauri::{Manager, State};
+use tauri::Manager;
+use tauri::State;
 
 use crate::api::Datapoint;
 use crate::api::Message;
 use crate::api::ProcessedData;
 use crate::backend::Backend;
+use crate::frontend::app::APP_HANDLE;
 use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
 use crate::Command;
 use crate::Datatype;
-use crate::frontend::app::APP_HANDLE;
 
 #[macro_export]
 #[allow(unused)]
@@ -124,7 +125,10 @@ pub fn save_logs() -> bool {
         let formatted_time = now.format("%d_%m_%Y at %H_%M_%S").to_string();
         if let Ok(x) = PathBuf::from_str(&format!("../../ehw/logs/log-{}.txt", formatted_time)) {
             if Backend::save_to_path(log, x).is_ok() {
-                APP_HANDLE.try_lock().map(|x| x.as_ref().map(|y| y.emit_all("a", "b").is_ok()).is_some()).is_ok()
+                APP_HANDLE
+                    .try_lock()
+                    .map(|x| x.as_ref().map(|y| y.emit_all("a", "b").is_ok()).is_some())
+                    .is_ok()
                 // APP_HANDLE.try_borrow().map(|x| x.emit_all("clear_logs", "kiko").is_ok()).is_ok()
             } else {
                 false

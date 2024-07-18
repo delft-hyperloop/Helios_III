@@ -175,7 +175,7 @@ pub fn send_event(event_sender: EventSender, event: Event) {
 macro_rules! send_data {
     ($data_sender:expr, $dtype:expr, $data:expr) => {
         {
-            if ! unsafe { $crate::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) } {
+            if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
                 defmt::warn!("[send] Not connected, dropping {:?} {:?}", $dtype, $data);
             } else {
                 if let Err(e) = $data_sender.try_send(
@@ -188,7 +188,7 @@ macro_rules! send_data {
     };
     ($data_sender:expr, $dtype:expr, $data:expr, $timestamp:expr) => {
         {
-            if ! unsafe { $crate::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) } {
+            if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
                 defmt::warn!("[send] Not connected, dropping {:?} {:?} {:?}", $dtype, $data, $timestamp);
             } else {
                 if let Err(e) = $data_sender.try_send(
@@ -201,7 +201,7 @@ macro_rules! send_data {
     };
     ($data_sender:expr, $dtype:expr, $data:expr; $timeout:expr) => {
         {
-            if ! unsafe { $crate::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) } {
+            if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
                 defmt::warn!("[send] Not connected, dropping {:?} {:?}", $dtype, $data);
             } else {
                 if let Err(e) = $data_sender.try_send(
@@ -215,7 +215,7 @@ macro_rules! send_data {
     };
     ($data_sender:expr, $dtype:expr, $data:expr, $timestamp:expr; $timeout:expr) => {
         {
-            if ! unsafe { $crate::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) } {
+            if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
                 defmt::warn!("[send] Not connected, dropping {:?} {:?} {:?}", $dtype, $data, $timestamp);
             } else {
                 if let Err(e) = $data_sender.try_send(

@@ -17,13 +17,13 @@ use embassy_stm32::peripherals::PA6;
 use embassy_stm32::peripherals::PB1;
 use embassy_time::Timer;
 
+use crate::core::fsm_status::CONNECTED;
 use crate::send_data;
 use crate::try_spawn;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
-use crate::CONNECTED;
 
 pub struct PropulsionController {
     pub speed_set_pin: embassy_stm32::dac::DacCh1<'static, DAC1>,
@@ -99,7 +99,7 @@ pub async fn read_prop_adc(
     Timer::after_millis(1000).await;
     loop {
         Timer::after_millis(10).await;
-        if !unsafe { CONNECTED.load(Ordering::Relaxed) } {
+        if !CONNECTED.load(Ordering::Relaxed) {
             continue;
         }
         let v_ref_int = adc.read_internal(&mut v_ref_int_channel);

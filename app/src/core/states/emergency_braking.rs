@@ -3,9 +3,9 @@ use defmt::error;
 use defmt::info;
 use defmt::warn;
 
-use crate::core::controllers::breaking_controller::BRAKE;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
+use crate::core::fsm_status::BRAKE;
 use crate::send_data;
 use crate::transit;
 use crate::Datatype;

@@ -217,6 +217,12 @@
         <Tile containerClass="col-span-2" heading="HV Current">
             <Chart title="HV Current" background="bg-surface-900" />
         </Tile>
+        <Tile containerClass="col-span-2" heading="LV Total">
+            <Chart title="LV Total" background="bg-surface-900" />
+        </Tile>
+        <Tile containerClass="col-span-2" heading="HV Total">
+            <Chart title="HV Total" background="bg-surface-900" />
+        </Tile>
         <Tile containerClass="col-span-4" heading="Lv Cell Voltages">
             <Table background="bg-surface-900" tableArr={lvCellVoltArr} titles =  {lvTitles} />
         </Tile>

@@ -81,6 +81,12 @@
     let hvCurrent = new PlotBuffer(500, 60000, [-15, 15], false)
     $chartStore.set('HV Current', hvCurrent)
 
+    let lvTotal = new PlotBuffer(500, 2*60000, [-1, 30], false)
+    $chartStore.set('LV Total', lvTotal)
+
+    let hvTotal = new PlotBuffer(500, 2*60000, [-10, 450], false)
+    $chartStore.set('HV Total', hvTotal)
+
     ///////////////////////////////////////////////////////
     //////////////// BMS REGISTER /////////////////////////
     ///////////////////////////////////////////////////////
