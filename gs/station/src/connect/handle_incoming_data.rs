@@ -46,7 +46,7 @@ pub async fn handle_incoming_data(
         Datatype::EventsHash => {
             if data.value != EVENTS_HASH {
                 msg_sender.send(Message::Error("Event hash mismatch".to_string()))?;
-                msg_sender.send(Message::Status(Info::EventHashFailed))?;
+                msg_sender.send(Message::Status(Info::EventsHashFailed))?;
             } else {
                 msg_sender.send(Message::Status(Info::EventsHashPassed))?;
             }
