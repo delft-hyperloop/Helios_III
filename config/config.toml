@@ -37,7 +37,7 @@ levi_requested_data = ["Localisation", "PropulsionCurrent"]
 LocalisationHeartbeat = 1500
 FrontendHeartbeating = 2500 
 SensorHubHeartbeat = 1500
-TotalBatteryVoltageHigh = 1500
+TotalBatteryVoltageHigh = 7500
 
 [[Info]]
 label = "EmergencyBraking"

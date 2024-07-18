@@ -11,11 +11,12 @@ use crate::MessageSender;
 // const CYGNUS_MAX_DIFFERENCE: f64 = 9.0; // Volts
 const LEVI_LED_THRESHOLD: f64 = 50.0;
 
-pub const HV_DATATYPES: [Datatype; 4] = [
+pub const HV_DATATYPES: [Datatype; 5] = [
     Datatype::levi_volt_avg,
     Datatype::levi_volt_min,
     Datatype::levi_volt_max,
     Datatype::TotalBatteryVoltageHigh,
+    Datatype::FSMState,
 ];
 
 pub type DataReceiver = tokio::sync::broadcast::Receiver<ProcessedData>;
@@ -27,6 +28,7 @@ struct Backlog {
     levi_min: f64,
     levi_max: f64,
     bms_avg: f64,
+    state: f64,
 }
 
 impl Backlog {
@@ -56,6 +58,10 @@ impl Backlog {
     fn levi_falling_edge(&self) -> bool {
         self.levi_max < LEVI_LED_THRESHOLD
     }
+
+    fn is_pre_charging(&self) -> bool {
+        (self.state - 4.0) < f64::EPSILON * 4.0
+    }
 }
 
 pub async fn aggregate_voltage_readings(
@@ -79,17 +85,24 @@ pub async fn aggregate_voltage_readings(
                 Datatype::levi_volt_avg => {
                     // backlog.prev_levi_avg = backlog.levi_avg;
                     backlog.levi_avg = data.value;
-                    continue;
+                    if !backlog.is_pre_charging() {
+                        continue;
+                    }
                 },
                 Datatype::levi_volt_min => {
                     backlog.levi_min = data.value;
-                    continue;
+                    if !backlog.is_pre_charging() {
+                        continue;
+                    }
                 },
                 Datatype::levi_volt_max => {
                     backlog.levi_max = data.value;
-                    continue;
+                    if !backlog.is_pre_charging() {
+                        continue;
+                    }
                 },
                 Datatype::TotalBatteryVoltageHigh => backlog.bms_avg = data.value,
+                Datatype::FSMState => backlog.state = data.value,
                 _ => {},
             },
             Err(RecvError::Closed) => {

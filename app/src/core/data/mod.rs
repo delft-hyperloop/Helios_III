@@ -8,6 +8,7 @@ mod sources;
 pub mod trash;
 // mod trash;
 
+use defmt::warn;
 use embassy_time::Duration;
 use embassy_time::Instant;
 use heapless::Vec;
@@ -74,6 +75,7 @@ pub async fn data_middle_step(
                 seen = true;
                 *last = Some(Instant::now());
             } else if last.is_some_and(|l| l.elapsed() > *out) {
+                warn!("[heartbeat] timeout triggered for {:?}", dt);
                 event_sender.send(Event::EmergencyBraking).await;
                 outgoing
                     .send(Datapoint::new(Datatype::HeartbeatExpired, dt.to_id() as u64, ticks()))
