@@ -6,7 +6,7 @@ use defmt::warn;
 use crate::core::controllers::breaking_controller::BRAKE;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::transit;
+use crate::{Info, send_data, transit};
 use crate::Datatype;
 use crate::Event;
 
@@ -29,6 +29,8 @@ impl Fsm {
         error!("Emergency Braking!!");
         warn!("Emergency Braking!!!");
         error!("------ Emergency Braking!! ------");
+
+        send_data!(self.data_queue, Datatype::Info, Info::EmergencyBraking as u64);
     }
 
     pub async fn react_emergency_braking(&mut self, event: Event) {

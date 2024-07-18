@@ -127,7 +127,7 @@ pub async fn can_receiving_handler(
                     send_event(event_sender, Event::from_id(id, Some(69420)));
                 } else {
                     #[cfg(debug_assertions)]
-                    info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
+                    // info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
                     send_data!(
                         data_sender,
                         Datatype::UnknownCanId,
