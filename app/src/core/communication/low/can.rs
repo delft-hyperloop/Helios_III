@@ -150,6 +150,7 @@ pub async fn can_receiving_handler(
         // # VERY IMPORTANT
         // without this, our main pcb is magically converted to an adhd CAN
         // pcb with no mind for anything else. Tread carefully around it
-        thread_delay(100).await;
+        // thread_delay(100).await;
+        Timer::after_micros(600).await;
     }
 }
