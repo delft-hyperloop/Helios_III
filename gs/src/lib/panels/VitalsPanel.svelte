@@ -105,7 +105,7 @@
                             <span>Total: <Store datatype="TotalBatteryVoltageHigh" /></span>
                         </div>
                     </div>
-                    <div class="flex gap-4">
+                    <div class="flex gap-4 mt-4">
                         <Command cmd="StopHV" />
                         <Command cmd="ArmBrakes" />
                         <Command cmd="StartRun" />

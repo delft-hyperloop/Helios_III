@@ -7,7 +7,7 @@
     export let offColor: string = 'text-error-400';
 </script>
 
-<div class="flex gap-2">
+<div class="flex gap-2 text-sm">
     {#if label !== ''}
         <p>{label}:</p>
     {/if}
