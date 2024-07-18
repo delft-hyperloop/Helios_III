@@ -25,6 +25,10 @@
 - [ ] confirmation when saving to file
 
 
-
 - [ ] dynamically load config...?
 - [ ] at least the file to save at
+
+- [ ] balance tcp load
+- [ ] emergency button doesnt work on gs (only shortcuts work) (or there's no visual indication that it works)
+
+

@@ -13,11 +13,11 @@ use crate::tui::render::CmdRow;
 use crate::tui::timestamp;
 use crate::tui::Tui;
 use crate::Command;
-use crate::Datatype;
-use crate::Event;
-use crate::Info;
-use crate::COMMANDS_LIST;
-use crate::HEARTBEAT;
+use gslib::Datatype;
+use gslib::Event;
+use gslib::Info;
+use gslib::COMMANDS_LIST;
+use gslib::HEARTBEAT;
 
 #[allow(dead_code)]
 pub struct App {
