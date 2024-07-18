@@ -261,3 +261,15 @@ colour = "red"
 label = "HeartbeatExpired"
 colour = "red"
 
+[[Info]]
+label = "BrakingCommunicationTriggered"
+colour = "yellow"
+
+[[Info]]
+label = "PrechargeTimerSpawnFailed"
+colour = "yellow"
+
+[[Info]]
+label = "PrechargeFinished"
+colour = "green"
+

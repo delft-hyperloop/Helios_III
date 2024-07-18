@@ -26,7 +26,7 @@ pub async fn external_communication_task(mut comm: impl CommunicationLayer + 'st
                 error!("[connection] could not receive data");
                 break 'connection;
             }
-            thread_delay(100).await;
+            thread_delay(50).await;
         }
         CONNECTED.store(false, Ordering::Relaxed);
         comm.disconnect().await;
