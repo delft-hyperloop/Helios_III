@@ -5,7 +5,7 @@
     import type {PopupSettings} from "@skeletonlabs/skeleton";
 
     export let className: string = '';
-    export let cmd: 'start_server' | 'start_levi' | 'quit_levi' | 'quit_server' | 'procedures' | 'save_logs' ;
+    export let cmd: 'connect_to_pod' | 'start_levi' | 'quit_levi' | 'disconnect' | 'procedures' | 'save_logs' | 'test_r' ;
     export let successCallback: (r:any) => void = () => {};
     export let errorCallback: (error:string) => void = () => {};
     export let textOverride: string = '';

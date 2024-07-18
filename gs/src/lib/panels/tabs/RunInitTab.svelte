@@ -1,19 +1,18 @@
 <script lang="ts">
-  import {
+    import {
     Table,
     Status,
     Command,
     Tile,
     TileGrid,
     SpeedsInput, GrandDataDistributor, Chart
-  } from "$lib";
+    } from "$lib";
     import {getModalStore, type ModalComponent} from "@skeletonlabs/skeleton";
-  import {DatatypeEnum} from "$lib/namedDatatypeEnum";
+    import {DatatypeEnum} from "$lib/namedDatatypeEnum";
     import {invoke} from "@tauri-apps/api/tauri";
-  import {STATUS} from "$lib/types";
+    import {STATUS} from "$lib/types";
     const storeManager = GrandDataDistributor.getInstance().stores;
 
-    const state = storeManager.getWritable("FSMState");
     const statuses = storeManager.getWritable("ConnectionStatus")
 
     let tableArr2:any[][];
@@ -71,10 +70,16 @@
             <Status status={$statuses[STATUS.LEVITATION]} />
             <p>Sensor Hub</p>
             <Status status={$statuses[STATUS.SENSOR_HUB]} />
-            <p>Batteries</p>
-            <Status status={$statuses[STATUS.BATTERIES]} />
+            <p>LV Batteries</p>
+            <Status status={$statuses[STATUS.LV_BATTERIES]} />
+            <p>HV Batteries</p>
+            <Status status={$statuses[STATUS.HV_BATTERIES]} />
             <p>Braking PCB</p>
             <Status on="Armed" off="Extended" status={$statuses[STATUS.BRAKING_PCB]} />
+            <p>Voltage Over 50</p>
+            <Status offColor="text-primary-400" off="Safe"
+                    onColor="text-error-400" on="UNSAFE"
+                    status={$statuses[STATUS.VOLTAGE_OVER]} />
         </Tile>
         <Tile heading="Data">
             <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
