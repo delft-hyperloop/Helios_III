@@ -5,7 +5,7 @@
     import { getModalStore } from '@skeletonlabs/skeleton';
     import {invoke} from "@tauri-apps/api/tauri";
     import util from '$lib/util/util';
-    import {type RouteStep} from "$lib";
+    import {EventChannel, type RouteStep} from "$lib";
     import Icon from "@iconify/svelte";
     import type {RouteConfig} from "$lib/types";
     import {routeConfig} from "$lib/stores/data";
@@ -61,17 +61,27 @@
         }
     }
 
-    // function importSpeeds() {
-    //     const speeds = speedInputValue.split(',');
-    //     if (speeds.length !== inputs.length) {
-    //         console.log(`Invalid speeds input`);
-    //         return;
-    //     }
-    //
-    //     for (let i = 0; i < inputs.length; i++) {
-    //         speedForm[inputs[i]] = parseFloat(speeds[i]);
-    //     }
-    // }
+    async function importSpeeds() {
+        console.log(`Sending command: speeds_from_u64`);
+        await invoke('speeds_from_u64', {val: speedInputValue}).then(r => {
+            console.log(`Command speeds_from_u64 sent with response: ` + r);
+            util.log(`Command speeds_from_u64 sent`, EventChannel.INFO);
+        }).catch((e) => {
+            console.error(`Error sending command speeds_from_u64: ${e}`);
+            util.log(`Command speeds_from_u64 ERROR sending`, EventChannel.WARNING);
+        });
+    }
+
+    async function importRoutes() {
+        console.log(`Sending command: positions_from_u64`);
+        await invoke('positions_from_u64', {val: speedInputValue}).then(r => {
+            console.log(`Command positions_from_u64 sent with response: ` + r);
+            util.log(`Command positions_from_u64 sent`, EventChannel.INFO);
+        }).catch((e) => {
+            console.error(`Error sending command positions_from_u64: ${e}`);
+            util.log(`Command positions_from_u64 ERROR sending`, EventChannel.WARNING);
+        });
+    }
 
     async function clickToCopy(elem:HTMLInputElement) {
         await navigator.clipboard.writeText(elem.value);
