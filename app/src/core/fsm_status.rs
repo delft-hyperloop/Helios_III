@@ -65,14 +65,10 @@ impl Fsm {
         value |= n(BRAKES_EXTENDED.load(Ordering::Relaxed), 6);
         value |= n(VOLTAGE_OVER_50.load(Ordering::Relaxed), 7);
         send_data!(self.data_queue, Datatype::ConnectionStatus, value);
-        CONNECTED.store(false, Ordering::Relaxed);
         PROPULSION_CONNECTED.store(false, Ordering::Relaxed);
-        LEVITATION_CONNECTED.store(false, Ordering::Relaxed);
         HUB_CONNECTED.store(false, Ordering::Relaxed);
         LV_BATTERIES_CONNECTED.store(false, Ordering::Relaxed);
         HV_BATTERIES_CONNECTED.store(false, Ordering::Relaxed);
-        BRAKES_EXTENDED.store(false, Ordering::Relaxed);
-        VOLTAGE_OVER_50.store(false, Ordering::Relaxed);
     }
 }
 

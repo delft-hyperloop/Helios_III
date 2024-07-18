@@ -1,4 +1,4 @@
-use core::sync::atomic::Ordering;
+use core::cmp::Ordering;
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_time::Instant;
@@ -233,11 +233,11 @@ impl Fsm {
 
             Event::LeviLedOn => {
                 self.peripherals.led_controller.hv_led.set_high();
-                VOLTAGE_OVER_50.store(true, Ordering::Relaxed);
+                VOLTAGE_OVER_50.store(true, core::sync::atomic::Ordering::Relaxed);
             },
             Event::LeviLedOff => {
                 self.peripherals.led_controller.hv_led.set_low();
-                VOLTAGE_OVER_50.store(false, Ordering::Relaxed);
+                VOLTAGE_OVER_50.store(false, core::sync::atomic::Ordering::Relaxed);
             }
 
             Event::LeviConnected => self.status.levi_connected = true,
@@ -375,6 +375,6 @@ impl Fsm {
                 Instant::now().as_ticks(),
             ))
             .await;
-        VOLTAGE_OVER_50.store(true, Ordering::Relaxed);
+        VOLTAGE_OVER_50.store(true, core::sync::atomic::Ordering::Relaxed);
     }
 }
