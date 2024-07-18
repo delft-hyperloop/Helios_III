@@ -1,10 +1,9 @@
-use crate::api::Message;
-use crate::api::ProcessedData;
+use gslib::{Datatype, Message};
+use gslib::ProcessedData;
 use crate::battery::DataSender;
 use crate::battery::HV_DATATYPES;
 use crate::Command;
 use crate::CommandSender;
-use crate::Datatype;
 use crate::MessageSender;
 
 pub fn handle_line_from_levi(

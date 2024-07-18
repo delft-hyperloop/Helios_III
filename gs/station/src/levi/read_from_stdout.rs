@@ -1,6 +1,6 @@
 use tokio::io::AsyncBufReadExt;
 
-use crate::api::Message;
+use gslib::Message;
 use crate::battery::DataSender;
 use crate::levi::parse_input::handle_line_from_levi;
 use crate::CommandSender;

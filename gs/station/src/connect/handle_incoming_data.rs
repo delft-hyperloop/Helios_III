@@ -1,19 +1,19 @@
 #![allow(clippy::single_match)]
 
-use crate::api::Datapoint;
-use crate::api::Message;
+use gslib::Datapoint;
+use gslib::Message;
 use crate::battery::DataSender;
 use crate::battery::HV_DATATYPES;
 use crate::data::process::process;
 use crate::Command;
 use crate::CommandSender;
-use crate::Datatype;
-use crate::Info;
+use gslib::Datatype;
+use gslib::Info;
 use crate::MessageSender;
-use crate::COMMAND_HASH;
-use crate::CONFIG_HASH;
-use crate::DATA_HASH;
-use crate::EVENTS_HASH;
+use gslib::COMMAND_HASH;
+use gslib::CONFIG_HASH;
+use gslib::DATA_HASH;
+use gslib::EVENTS_HASH;
 
 pub async fn handle_incoming_data(
     data: Datapoint,
@@ -30,6 +30,7 @@ pub async fn handle_incoming_data(
         Datatype::CommandHash => {
             if data.value != COMMAND_HASH {
                 msg_sender.send(Message::Error("Command hash mismatch".to_string()))?;
+                msg_sender.send(Message::Status(Info::CommandHashFailed))?;
             } else {
                 msg_sender.send(Message::Status(Info::CommandHashPassed))?;
             }
@@ -37,6 +38,7 @@ pub async fn handle_incoming_data(
         Datatype::DataHash => {
             if data.value != DATA_HASH {
                 msg_sender.send(Message::Error("Data hash mismatch".to_string()))?;
+                msg_sender.send(Message::Status(Info::DataHashFailed))?;
             } else {
                 msg_sender.send(Message::Status(Info::DataHashPassed))?;
             }
@@ -44,6 +46,7 @@ pub async fn handle_incoming_data(
         Datatype::EventsHash => {
             if data.value != EVENTS_HASH {
                 msg_sender.send(Message::Error("Event hash mismatch".to_string()))?;
+                msg_sender.send(Message::Status(Info::EventHashFailed))?;
             } else {
                 msg_sender.send(Message::Status(Info::EventsHashPassed))?;
             }
@@ -51,6 +54,7 @@ pub async fn handle_incoming_data(
         Datatype::ConfigHash => {
             if data.value != CONFIG_HASH {
                 msg_sender.send(Message::Error("Config hash mismatch".to_string()))?;
+                msg_sender.send(Message::Status(Info::ConfigHashFailed))?;
             } else {
                 msg_sender.send(Message::Status(Info::ConfigHashPassed))?;
             }

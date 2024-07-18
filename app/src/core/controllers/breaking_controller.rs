@@ -17,7 +17,7 @@ use embassy_time::Timer;
 use crate::core::fsm_status::BRAKE;
 use crate::core::fsm_status::BRAKES_EXTENDED;
 use crate::core::fsm_status::DISABLE_BRAKING_COMMUNICATION;
-use crate::pconfig::queue_event;
+use crate::pconfig::{queue_event, thread_delay};
 use crate::send_data;
 use crate::try_spawn;
 use crate::DataSender;
@@ -90,7 +90,7 @@ async fn read_braking_communication(
             edge = true;
             BRAKES_EXTENDED.store(false, Ordering::Relaxed);
         }
-        Timer::after_micros(10).await;
+        thread_delay(10).await;
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(500) {
             send_data!(data_sender, Datatype::BrakingCommDebug, v as u64);
             last_timestamp = Instant::now();
@@ -136,7 +136,7 @@ impl BrakingController {
     pub async fn arm_breaks(&mut self) {
         self.braking_rearm.set_low();
         send_data!(self.data_sender, Datatype::BrakingRearmDebug, 0);
-        Timer::after_micros(50).await; // braking pcb only takes an instant to rearm the brakes
+        thread_delay(50).await; // braking pcb only takes an instant to rearm the brakes
         self.braking_rearm.set_high();
         send_data!(self.data_sender, Datatype::BrakingRearmDebug, 1);
     }

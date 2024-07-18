@@ -1,14 +1,16 @@
 use core::cmp::Ordering;
+
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_time::Instant;
 
 use crate::core::communication::data::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
-use crate::core::fsm_status::{Location, VOLTAGE_OVER_50};
+use crate::core::fsm_status::Location;
 use crate::core::fsm_status::Route;
 use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
+use crate::core::fsm_status::VOLTAGE_OVER_50;
 use crate::pconfig::ticks;
 use crate::Command;
 use crate::DataSender;
@@ -238,7 +240,7 @@ impl Fsm {
             Event::LeviLedOff => {
                 self.peripherals.led_controller.hv_led.set_low();
                 VOLTAGE_OVER_50.store(false, core::sync::atomic::Ordering::Relaxed);
-            }
+            },
 
             Event::LeviConnected => self.status.levi_connected = true,
 
