@@ -11,7 +11,8 @@ use crate::core::fsm_status::Route;
 use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
 use crate::pconfig::ticks;
-use crate::{Command, DataSender};
+use crate::Command;
+use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventReceiver;
@@ -214,6 +215,7 @@ impl Fsm {
             | Event::ValueOutOfBounds => {
                 transit!(self, State::EmergencyBraking);
                 self.send_levi_cmd(Command::LeviEmergencyBrake(4)).await;
+                self.periodic_checks();
                 return;
             },
 
@@ -311,6 +313,7 @@ impl Fsm {
             State::EmergencyBraking => self.react_emergency_braking(event).await,
             State::Crashing => self.log(Info::Crashed).await,
         }
+        self.periodic_checks();
     }
 
     /// # Send data to the ground station

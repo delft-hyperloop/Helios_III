@@ -4,7 +4,8 @@ use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::core::fsm_status::Location;
 use crate::core::fsm_status::RouteUse;
-use crate::{Command, transit};
+use crate::transit;
+use crate::Command;
 use crate::Event;
 use crate::Info;
 

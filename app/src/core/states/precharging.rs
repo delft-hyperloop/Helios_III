@@ -1,14 +1,17 @@
-use defmt::{error, info};
+use defmt::error;
+use defmt::info;
 use defmt::warn;
 use embassy_time::Instant;
 use embassy_time::Timer;
 
-use crate::core::controllers::hv_controller::{timeout_finish_pre_charge};
+use crate::core::controllers::hv_controller::timeout_finish_pre_charge;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::pconfig::send_event;
-use crate::{Command, Info, transit};
+use crate::transit;
+use crate::Command;
 use crate::Event;
+use crate::Info;
 
 impl Fsm {
     pub fn entry_pre_charge(&mut self) {
@@ -38,8 +41,12 @@ impl Fsm {
 
     pub async fn react_pre_charge(&mut self, event: Event) {
         match event {
-            Event::HvLevitationBelowBms => self.peripherals.hv_peripherals.pre_charge_successful = false,
-            Event::HvLevitationAboveBms => self.peripherals.hv_peripherals.pre_charge_successful = true,
+            Event::HvLevitationBelowBms => {
+                self.peripherals.hv_peripherals.pre_charge_successful = false
+            },
+            Event::HvLevitationAboveBms => {
+                self.peripherals.hv_peripherals.pre_charge_successful = true
+            },
 
             Event::PrechargeAbort | Event::TurnOffHVCommand => {
                 self.peripherals.hv_peripherals.power_hv_off();

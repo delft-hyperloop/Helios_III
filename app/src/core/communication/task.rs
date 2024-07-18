@@ -4,7 +4,7 @@ use defmt::error;
 use embassy_time::Timer;
 
 use crate::core::communication::CommunicationLayer;
-use crate::CONNECTED;
+use crate::core::fsm_status::CONNECTED;
 
 #[embassy_executor::task]
 pub async fn external_communication_task(mut comm: impl CommunicationLayer + 'static) -> ! {
@@ -12,7 +12,7 @@ pub async fn external_communication_task(mut comm: impl CommunicationLayer + 'st
 
     'netstack: loop {
         match comm.connect().await {
-            Ok(_) => unsafe { CONNECTED.store(true, Ordering::SeqCst) },
+            Ok(_) => CONNECTED.store(true, Ordering::Relaxed),
             Err(_) => continue 'netstack,
         };
         comm.handshake().await;
@@ -28,7 +28,7 @@ pub async fn external_communication_task(mut comm: impl CommunicationLayer + 'st
             }
             Timer::after_millis(1).await;
         }
-        unsafe { CONNECTED.store(false, Ordering::SeqCst) }
+        CONNECTED.store(false, Ordering::Relaxed);
         comm.disconnect().await;
     }
 }

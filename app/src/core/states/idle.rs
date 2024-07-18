@@ -13,7 +13,6 @@ impl Fsm {
     pub fn entry_idle(&mut self) {
         info!("Entering Idle State");
         // self.peripherals.led_controller.hv_led.set_high();
-
     }
 
     pub async fn react_idle(&mut self, event: Event) {

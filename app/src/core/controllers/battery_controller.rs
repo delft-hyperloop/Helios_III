@@ -299,18 +299,27 @@ impl BatteryController {
         queue_dp(self.data_sender, battery_voltage_dt, avg_cell_voltage, timestamp).await;
         queue_dp(self.data_sender, battery_voltage_min, min_cell_voltage, timestamp).await;
         queue_dp(self.data_sender, battery_voltage_max, max_cell_voltage, timestamp).await;
-        if (total_pack_voltage != 0){
-        queue_dp(self.data_sender, total_battery_voltage_dt, total_pack_voltage, timestamp).await
+        if (total_pack_voltage != 0) {
+            queue_dp(self.data_sender, total_battery_voltage_dt, total_pack_voltage, timestamp)
+                .await
         };
-        if (!self.high_voltage){
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV1, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV2, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV3, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV4, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV5, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV6, max_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV7, avg_cell_voltage,timestamp).await;
-            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV8, min_cell_voltage,timestamp).await;
+        if (!self.high_voltage) {
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV1, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV2, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV3, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV4, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV5, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV6, max_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV7, avg_cell_voltage, timestamp)
+                .await;
+            queue_dp(self.data_sender, Datatype::SingleCellVoltageLV8, min_cell_voltage, timestamp)
+                .await;
         }
     }
 

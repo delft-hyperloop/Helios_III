@@ -8,10 +8,13 @@ mod sources;
 pub mod trash;
 // mod trash;
 
+use core::sync::atomic::Ordering;
 use defmt::warn;
 use embassy_time::Duration;
 use embassy_time::Instant;
 use heapless::Vec;
+use crate::core::data::sources::{HV_BMS_DATA, LV_BMS_DATA, PROPULSION_DATA, SENSOR_HUB_DATA};
+use crate::core::fsm_status::{HUB_CONNECTED, HV_BATTERIES_CONNECTED, LV_BATTERIES_CONNECTED, PROPULSION_CONNECTED};
 
 use crate::pconfig::queue_event;
 use crate::pconfig::ticks;
@@ -93,6 +96,15 @@ pub async fn data_middle_step(
         }
 
         // 3. check for special cases
+        match data.datatype {
+            x if LV_BMS_DATA.contains(&x) => LV_BATTERIES_CONNECTED.store(true, Ordering::Relaxed),
+            x if HV_BMS_DATA.contains(&x) => HV_BATTERIES_CONNECTED.store(true, Ordering::Relaxed),
+            x if PROPULSION_DATA.contains(&x) => PROPULSION_CONNECTED.store(true, Ordering::Relaxed),
+            x if SENSOR_HUB_DATA.contains(&x) => HUB_CONNECTED.store(true, Ordering::Relaxed),
+            x if PROPULSION_DATA.contains(&x) => PROPULSION_CONNECTED.store(true, Ordering::Relaxed),
+            _ => {}
+        }
+
 
         outgoing.send(data).await;
     }

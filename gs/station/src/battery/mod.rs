@@ -114,6 +114,7 @@ pub async fn aggregate_voltage_readings(
         if !backlog.is_ready() {
             continue;
         }
+
         if !edge {
             edge = true;
             send(Event::LeviConnected);
@@ -125,6 +126,7 @@ pub async fn aggregate_voltage_readings(
         // }
 
         if backlog.levi_rising_edge() {
+            send(Event::EmergencyBraking);
             send(Event::LeviLedOn);
         }
 

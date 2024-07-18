@@ -107,7 +107,6 @@ static CAN_ONE_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_
 static CAN_TWO_QUEUE: StaticCell<Channel<NoopRawMutex, can::frame::Frame, { CAN_QUEUE_SIZE }>> =
     StaticCell::new();
 
-pub static mut CONNECTED: AtomicBool = AtomicBool::new(false);
 
 /// Util struct for initialising [`FSMPeripherals`]
 pub struct InternalMessaging {
