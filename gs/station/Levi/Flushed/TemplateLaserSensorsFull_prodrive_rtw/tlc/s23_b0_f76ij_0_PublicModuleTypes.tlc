@@ -1,0 +1,49 @@
+%implements s23_b0_f76ij_0_PublicModuleTypes "C"
+
+%function PublicModuleTypes(block) Output
+
+#ifndef struct_tag_wF0FRePRqwb1KERDRGXJOB
+#define struct_tag_wF0FRePRqwb1KERDRGXJOB
+struct tag_wF0FRePRqwb1KERDRGXJOB
+{
+    int32_T isInitialized;
+    boolean_T isSetupComplete;
+    real_T pCumSum;
+    real_T pCumSumRev[1999];
+    real_T pCumRevIndex;
+};
+#endif /* struct_tag_wF0FRePRqwb1KERDRGXJOB */
+#ifndef typedef_c_dsp_private_SlidingWindowAverageCG_TemplateLaserSensorsFull_T
+#define typedef_c_dsp_private_SlidingWindowAverageCG_TemplateLaserSensorsFull_T
+typedef struct tag_wF0FRePRqwb1KERDRGXJOB c_dsp_private_SlidingWindowAverageCG_TemplateLaserSensorsFull_T;
+#endif /* typedef_c_dsp_private_SlidingWindowAverageCG_TemplateLaserSensorsFull_T */
+#ifndef struct_tag_BlgwLpgj2bjudmbmVKWwDE
+#define struct_tag_BlgwLpgj2bjudmbmVKWwDE
+struct tag_BlgwLpgj2bjudmbmVKWwDE
+{
+    uint32_T f1[8];
+};
+#endif /* struct_tag_BlgwLpgj2bjudmbmVKWwDE */
+#ifndef typedef_cell_wrap_TemplateLaserSensorsFull_T
+#define typedef_cell_wrap_TemplateLaserSensorsFull_T
+typedef struct tag_BlgwLpgj2bjudmbmVKWwDE cell_wrap_TemplateLaserSensorsFull_T;
+#endif /* typedef_cell_wrap_TemplateLaserSensorsFull_T */
+#ifndef struct_tag_FsmzB1ZuAHwoRkOFQx86U
+#define struct_tag_FsmzB1ZuAHwoRkOFQx86U
+struct tag_FsmzB1ZuAHwoRkOFQx86U
+{
+    boolean_T matlabCodegenIsDeleted;
+    int32_T isInitialized;
+    boolean_T isSetupComplete;
+    boolean_T TunablePropsChanged;
+    cell_wrap_TemplateLaserSensorsFull_T inputVarSize;
+    c_dsp_private_SlidingWindowAverageCG_TemplateLaserSensorsFull_T *pStatistic;
+    int32_T NumChannels;
+    c_dsp_private_SlidingWindowAverageCG_TemplateLaserSensorsFull_T _pobj0;
+};
+#endif /* struct_tag_FsmzB1ZuAHwoRkOFQx86U */
+#ifndef typedef_dsp_simulink_MovingAverage_TemplateLaserSensorsFull_T
+#define typedef_dsp_simulink_MovingAverage_TemplateLaserSensorsFull_T
+typedef struct tag_FsmzB1ZuAHwoRkOFQx86U dsp_simulink_MovingAverage_TemplateLaserSensorsFull_T;
+#endif /* typedef_dsp_simulink_MovingAverage_TemplateLaserSensorsFull_T */
+%endfunction

@@ -8,7 +8,7 @@ use crate::core::controllers::hv_controller::timeout_finish_pre_charge;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::pconfig::send_event;
-use crate::transit;
+use crate::{Datatype, send_data, transit};
 use crate::Command;
 use crate::Event;
 use crate::Info;
@@ -26,6 +26,7 @@ impl Fsm {
                 error!("spawn error: {:?}", e);
                 send_event(self.event_sender, Event::BootingFailedEvent);
                 send_event(self.event_sender, Event::EmergencyBraking);
+                send_data!(self.data_queue, Datatype::Info, Info::PrechargeTimerSpawnFailed as u64);
                 return;
             },
         }
@@ -56,6 +57,7 @@ impl Fsm {
                 self.pod_safe().await;
                 transit!(self, State::EmergencyBraking);
                 self.send_levi_cmd(Command::EmergencyBrake(4)).await;
+                self.log(Info::PrechargeAborted).await;
             },
             Event::FinishPrecharge => {
                 if !self.peripherals.hv_peripherals.pre_charge_successful {
@@ -73,6 +75,7 @@ impl Fsm {
                 // 4. turn on positive relay
                 warn!("4. turn on positive relay");
                 self.peripherals.hv_peripherals.pin_4.set_high();
+                self.log(Info::PrechargeFinished).await;
                 transit!(self, State::HVOn);
             },
             _ => info!("[fsm] State precharging ignores event {:?}", event),

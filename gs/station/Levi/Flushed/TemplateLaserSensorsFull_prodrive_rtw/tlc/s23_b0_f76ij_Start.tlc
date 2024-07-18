@@ -1,0 +1,420 @@
+%implements s23_b0_f76ij_Start "C"
+
+%function Start(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%assign _modelSS = ""
+
+/* Start for Inport: '<Root>/IMU1' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,1)
+%<SLibCG_TrackEI(10)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU1", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_DW->MovingAverage6_p"], 1, 1, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_p.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_DW->MovingAverage7_p"], 2, 1, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,1)
+%<SLibCGIRAccessLocalVar(17, 0, "")> %% rtb_Gain9
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,2)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage_Start", ["TemplateLaserSensorsFull_M", "rtb_Gain9", "&TemplateLaserSensorsFull_DW->MovingAverage2"], 0, 1, 0, 0, 0, 3)>\
+
+
+%endif
+/* Start for Inport: '<Root>/IMU2' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,1)
+%<SLibCG_TrackEI(11)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU2", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_DW->MovingAverage6_pn"], 1, 2, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pn.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_DW->MovingAverage7_pn"], 2, 2, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,1)
+%<SLibCGIRAccessLocalVar(20, 0, "")> %% rtb_Gain8
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,2)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage_Start", ["TemplateLaserSensorsFull_M", "rtb_Gain8", "&TemplateLaserSensorsFull_DW->MovingAverage2_p"], 0, 2, 0, 0, 0, 3)>\
+
+
+%endif
+/* Start for Inport: '<Root>/IMU5' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,1)
+%<SLibCG_TrackEI(14)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU5", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_DW->MovingAverage6_pnaev"], 1, 5, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pnaev.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_DW->MovingAverage7_pnaev"], 2, 5, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,1)
+%<SLibCGIRAccessLocalVar(23, 0, "")> %% rtb_Gain10
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,2)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage_Start", ["TemplateLaserSensorsFull_M", "rtb_Gain10", "&TemplateLaserSensorsFull_DW->MovingAverage2_pn"], 0, 3, 0, 0, 0, 3)>\
+
+
+%endif
+/* Start for Inport: '<Root>/IMU4' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,1)
+%<SLibCG_TrackEI(13)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU4", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_DW->MovingAverage6_pna"], 1, 3, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pna.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_DW->MovingAverage7_pna"], 2, 3, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,1)
+%<SLibCGIRAccessLocalVar(26, 0, "")> %% rtb_mVtoacc
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,2)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage_Start", ["TemplateLaserSensorsFull_M", "rtb_mVtoacc", "&TemplateLaserSensorsFull_DW->MovingAverage2_pna"], 0, 4, 0, 0, 0, 3)>\
+
+
+%endif
+/* Start for Inport: '<Root>/IMU3' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,1)
+%<SLibCG_TrackEI(12)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU3", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_DW->MovingAverage6_pnaevv"], 1, 6, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pnaevv.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_DW->MovingAverage7_pnaevv"], 2, 6, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,1)
+%<SLibCGIRAccessLocalVar(29, 0, "")> %% rtb_Gain11
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,2)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage_Start", ["TemplateLaserSensorsFull_M", "rtb_Gain11", "&TemplateLaserSensorsFull_DW->MovingAverage2_pnae"], 0, 5, 0, 0, 0, 3)>\
+
+
+%endif
+/* Start for Inport: '<Root>/IMU6' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,1)
+%<SLibCG_TrackEI(15)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU6", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_DW->MovingAverage6_pnaevvf"], 1, 7, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pnaevvf.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_DW->MovingAverage7_pnaevvf"], 2, 7, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,1)
+%<SLibCGIRAccessLocalVar(32, 0, "")> %% rtb_Gain12
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,2)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage_Start", ["TemplateLaserSensorsFull_M", "rtb_Gain12", "&TemplateLaserSensorsFull_DW->MovingAverage2_pnaev"], 0, 6, 0, 0, 0, 3)>\
+
+
+%endif
+/* Start for Inport: '<Root>/IMU7' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,1)
+%<SLibCG_TrackEI(16)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU7", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_DW->MovingAverage6_pnae"], 1, 4, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pnae.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_DW->MovingAverage7_pnae"], 2, 4, 0, 0, 0, 3)>\
+
+
+%endif
+/* Start for Inport: '<Root>/IMU8' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,1)
+%<SLibCG_TrackEI(17)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6_Start",1,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU8", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_DW->MovingAverage6"], 1, 0, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7_Start",2,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7_Start", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_DW->MovingAverage7"], 2, 0, 0, 0, 0, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Start",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,0)
+%<SLibCG_AccessArg(3 ,0, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,1)
+%<SLibCGIRAccessLocalVar(39, 0, "")> %% rtb_IO_valtomV
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage_Start",0,2)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage_Start", ["TemplateLaserSensorsFull_M", "rtb_IO_valtomV", "&TemplateLaserSensorsFull_DW->MovingAverage"], 0, 0, 0, 0, 0, 3)>\
+
+%endif
+%closefile cfgTxt
+%<cfgTxt>
+%assign rtmArgSys = ::CompiledModel.System[::CompiledModel.System[::CompiledModel.RTWCGModules.RTWCGModule[3].CGSystemIdx].NonInlinedParentSystemIdx]
+%if SysFcnArgNeeded("Start", rtmArgSys.Interface.RTMArgDef, rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Start"))
+%<SLibCG_AccessArg(3, 0, 0)>
+%endif
+%if SLibCG_ArgAccessed(3, 0, 0)
+%<SLibAccessArg(rtmArgSys.Interface.RTMArgDef, "Start", rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Start"))>
+%endif
+%if (IsModelReferenceBaseSys(rtmArgSys) && (IsModelRefScalableBuild() || GenerateClassInterface)) ||...
+(GenerateClassInterface && SLibIsMultiInstanceServer(rtmArgSys))
+%<SLibCG_UndoAccessArg(3, 0, 0)>
+%endif
+%endfunction
+%function StartFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Start(\
+%assign comma = ""
+%if SLibCG_ArgAccessed(3, 0, 0)
+%<comma>%<::tSimStructType> * const TemplateLaserSensorsFull_M\
+%assign comma = ", "
+%<SLibUpdateSymbolForFunction("Start", SLibGetFcnDefinitionRTMSymbolName(), TLC_FALSE)>\
+%endif
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(3, 0, fcnProtoType)>
+%endfunction

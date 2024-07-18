@@ -20,7 +20,7 @@ public static void SetRun(Levitation arcas)
             }
             catch (Exception)
             {
-                Console.WriteLine("WARNING:set_run");
+                Console.WriteLine("WARNING:arcas_cant_run_or_already_in_run_mode");
                 try
                 {
                     arcas.TopController.WaitState(TopControllerState.Run, 1);
@@ -29,7 +29,7 @@ public static void SetRun(Levitation arcas)
                 catch (Exception)
                 {
 
-                    Console.WriteLine("ERROR:run_error");
+                    Console.WriteLine("ERROR:arcas_cant_run");
                 }
             }
         }
@@ -47,7 +47,7 @@ public static void ApplyConfig(Levitation arcas)
     }
     catch (PmpException ex)
     {
-        Console.WriteLine("WARNING:config_error");
+        Console.WriteLine("WARNING:config_already_loaded_or_cant_load");
         Thread.Sleep(2000);
     }
 }
@@ -145,7 +145,7 @@ public static void Initialize(Levitation arcas, ITopController topController, bo
             }
             catch (Exception)
             {
-                Console.WriteLine("WARNING:config_error");
+                Console.WriteLine("WARNING:cant_set_arcas_to_config_state");
             }
 
   // Print information of subcontrollers
@@ -158,21 +158,21 @@ public static void Initialize(Levitation arcas, ITopController topController, bo
     {
         try
         {
-            ISubController CouplerVert = subControllers["Unknown-slave-EtherCAT:0.5"];
-            CouplerVert.ApplyModelFromFile(arcas.CouplerPath);
+            ISubController CouplerLaser = subControllers["Unknown-slave-EtherCAT:0.5"];
+            CouplerLaser.ApplyModelFromFile(arcas.CouplerPath);
         }
         catch (Exception ex)
         {
-            Console.WriteLine("WARNING:config_error");
+            Console.WriteLine("WARNING:LASER_ADC_ECAT_already_configured_or_disconnected");
         }
         try
         {
-            ISubController CouplerLat = subControllers["Unknown-slave-EtherCAT:0.7"];
-            CouplerLat.ApplyModelFromFile(arcas.CouplerPath);
+            ISubController CouplerIMU = subControllers["Unknown-slave-EtherCAT:0.8"];
+            CouplerIMU.ApplyModelFromFile(arcas.CouplerPath);
         }
         catch (Exception ex)
         {
-                    Console.WriteLine("WARNING:config_error");
+            Console.WriteLine("WARNING:IMU_ADC_ECAT_already_configured_or_disconnected");
         }
 
         try
@@ -182,18 +182,37 @@ public static void Initialize(Levitation arcas, ITopController topController, bo
         }
         catch (Exception ex)
         {
-            Console.WriteLine("WARNING:config_error");
+            Console.WriteLine("WARNING:LASER_ADC_BUS1_already_configured_or_disconnected");
         }
         try
         {
-            ISubController BusLat = subControllers["Unknown-slave-EtherCAT:0.8"];
+            ISubController BusLat = subControllers["Unknown-slave-EtherCAT:0.7"];
             BusLat.ApplyModelFromFile(arcas.BusPath);
         }
         catch (Exception ex)
         {
-            Console.WriteLine("WARNING:config_error");
-            Thread.Sleep(2000);
+            Console.WriteLine("WARNING:LASER_ADC_BUS2_already_configured_or_disconnected");
         } 
+
+         try
+        {
+            ISubController BusAcc = subControllers["Unknown-slave-EtherCAT:0.9"];
+            BusAcc.ApplyModelFromFile(arcas.BusPath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("WARNING:LASER_IMU_BUS1_already_configured_or_disconnected");
+        }
+
+         try
+        {
+            ISubController BusGyro = subControllers["Unknown-slave-EtherCAT:0.10"];
+            BusGyro.ApplyModelFromFile(arcas.BusPath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("WARNING:LASER_IMU_BUS2_already_configured_or_disconnected");
+        }
     }
     if (applyConfig)
     {

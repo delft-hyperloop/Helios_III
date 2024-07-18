@@ -7,9 +7,9 @@
  *
  * Code generation for model "TemplateLaserSensorsFull".
  *
- * Model version              : 1.8
+ * Model version              : 1.40
  * Simulink Coder version : 9.5 (R2021a) 14-Nov-2020
- * C source code generated on : Mon May 20 13:05:41 2024
+ * C source code generated on : Sat Jul 13 15:26:00 2024
  *
  * Target selection: pmp.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping

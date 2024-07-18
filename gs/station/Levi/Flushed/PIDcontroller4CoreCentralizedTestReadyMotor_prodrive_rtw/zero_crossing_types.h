@@ -7,9 +7,9 @@
  *
  * Code generation for model "PIDcontroller4CoreCentralizedTestReadyMotor".
  *
- * Model version              : 6.240
+ * Model version              : 6.284
  * Simulink Coder version : 9.5 (R2021a) 14-Nov-2020
- * C source code generated on : Mon May 20 17:30:36 2024
+ * C source code generated on : Fri Jun 28 16:03:05 2024
  *
  * Target selection: pmp.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
