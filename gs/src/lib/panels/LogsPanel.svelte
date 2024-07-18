@@ -44,6 +44,8 @@
         unlistens[2] = await registerChannel(EventChannel.WARNING, 'WARNING');
         unlistens[3] = await registerChannel(EventChannel.ERROR, 'ERROR');
 
+        unlistens[4] = await listen("clear_logs", () => clearLogs());
+
         logContainer.addEventListener('scroll', () => {
             userHasScrolled = logContainer.scrollTop < logContainer.scrollHeight - logContainer.clientHeight;
         });
