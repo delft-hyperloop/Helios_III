@@ -17,17 +17,6 @@ const addEntryToChart = (chart: PlotBuffer, data: number, index: number) => {
     return data;
 }
 
-const u64ToDouble = (u64: bigint): number => {
-    const buffer = new ArrayBuffer(8);
-
-    const high = Number(BigInt(u64) / BigInt(2 ** 32));
-    const low = Number(BigInt(u64) % BigInt(2 ** 32));
-
-    buffer.writeUInt32LE(low, 0);
-    buffer.writeUInt32LE(high, 4);
-
-    return buffer.readDoubleLE(0);
-}
 
 const sensorParse = (u64 : bigint) : number =>{
     return u64>MAX_VALUE-100000 ? - (MAX_VALUE-Number(u64)+1)/100 : Number(u64)/100;
@@ -98,4 +87,4 @@ function setBitsToBooleans(num: number): boolean[] {
     return bits;
 }
 
-export {tempParse, voltParse, addEntryToChart, u64ToDouble, sensorParse, pressureParse, metersPerMinuteToByte, parseProcedure, parseShortCut, setBitsToBooleans};
+export {tempParse, voltParse, addEntryToChart,  sensorParse, pressureParse, metersPerMinuteToByte, parseProcedure, parseShortCut, setBitsToBooleans};
