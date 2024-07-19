@@ -60,6 +60,9 @@ pub async fn handle_incoming_data(
                 msg_sender.send(Message::Status(Info::ConfigHashPassed))?;
             }
         },
+        Datatype::Info => {
+            msg_sender.send(Message::Status(Info::from_id(data.value as u16)))?;
+        },
         x if HV_DATATYPES.contains(&x) => {
             data_sender.send(process(&data))?;
         },
