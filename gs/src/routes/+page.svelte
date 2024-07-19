@@ -4,38 +4,7 @@
     import DetailsPanel from "$lib/panels/DetailsPanel.svelte";
     import LogsPanel from "$lib/panels/LogsPanel.svelte";
 
-    import { getToastStore } from '@skeletonlabs/skeleton';
-    import {listen, type UnlistenFn} from "@tauri-apps/api/event";
-    import {onDestroy, onMount} from "svelte";
     import {details_pane, vitals_pane} from "$lib";
-    import {EventChannel} from "$lib/types";
-    import {bigErrorStatus, ErrorStatus} from "$lib/stores/state";
-
-    let unlisten_status: UnlistenFn;
-    const toastStore = getToastStore();
-
-    onMount(async () => {
-        unlisten_status = await listen(EventChannel.STATUS, (event: {payload: string}) => {
-        const message:string[] = event.payload.split(";");
-        toastStore.trigger({
-          message: message[0],
-          background: message[1] || "bg-surface-600",
-        });
-
-        switch (message[0]) {
-          case "Unsafe":
-            bigErrorStatus.set(ErrorStatus.UNSAFE)
-            break;
-          case "Safe":
-            bigErrorStatus.set(ErrorStatus.SAFE)
-            break;
-        }
-      });
-    });
-
-    onDestroy(() => {
-        unlisten_status();
-    });
 </script>
 
 <main class="w-full flex-grow border-t border-black overflow-auto">
