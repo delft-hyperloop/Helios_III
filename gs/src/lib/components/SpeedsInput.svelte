@@ -52,14 +52,21 @@
       CurrentRouteConfig.positions = reorder(CurrentRouteConfig.positions, from.index, to.index);
     }
 
-    function onFormSubmit(): void {
-        if (Object.values(speedForm).some(v => v < -500 || v > 500)) {
-            console.log(`Invalid values in form`);
-            invoke('test_panic');
-            return;
-        } else {
+    async function onFormSubmit() {
+      let modifiedRouteConfig = { ...CurrentRouteConfig, positions: [...CurrentRouteConfig.positions] };
 
+      if (modifiedRouteConfig.positions.length < 16) {
+        for (let i = modifiedRouteConfig.positions.length; i < 16; i++) {
+          modifiedRouteConfig.positions.push('BrakeHere');
         }
+      }
+
+      await invoke('set_route', { route: modifiedRouteConfig }).then(r => {
+        console.log(`Route config SET: ${r}`);
+        isValid = r as boolean;
+      }).catch(e => {
+        console.error(`Error setting route config: ${e}`);
+      })
     }
 
     async function importSpeeds() {
@@ -80,7 +87,6 @@
         await invoke('positions_from_u64', {positions: Number(routesInputValue)}).then(r => {
             console.log(`Command positions_from_u64 sent with response: `);
             console.log(r)
-            util.log(`Command positions_from_u64 sent`, EventChannel.INFO);
             CurrentRouteConfig.positions = r as RouteStep[];
         }).catch((e) => {
             console.error(`Error sending command positions_from_u64: ${e}`);

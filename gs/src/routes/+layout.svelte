@@ -466,7 +466,7 @@
     ///////////////////////////////////////////////////////////////
 
     gdd.stores.registerStore<number>("FSMState", 0);
-    gdd.stores.registerStore<boolean[]>("ConnectionStatus", [false, false, false, false, false, false], setBitsToBooleans)
+    gdd.stores.registerStore<boolean[]>("ConnectionStatus", [false, false, false, false, false, false, false, false], setBitsToBooleans)
 
     gdd.start(50);
 
