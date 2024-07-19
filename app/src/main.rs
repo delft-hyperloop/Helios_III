@@ -18,7 +18,7 @@ use embassy_stm32::rng;
 use embassy_sync::blocking_mutex::raw::NoopRawMutex;
 use embassy_sync::channel::Channel;
 use embassy_sync::priority_channel::PriorityChannel;
-use embassy_time::{Instant, Timer};
+use embassy_time::Timer;
 use heapless::binary_heap::Max;
 use panic_probe as _;
 use static_cell::StaticCell;
@@ -31,7 +31,7 @@ use core::finite_state_machine::*;
 use crate::core::communication::data::Datapoint;
 use crate::core::data::data_middle_step;
 use crate::core::data::trash;
-use crate::pconfig::{default_configuration, queue_dp};
+use crate::pconfig::default_configuration;
 
 // We need to include the external variables imported from build.rs
 // Imports: check config.toml and build.rs for more info

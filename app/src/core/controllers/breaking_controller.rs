@@ -17,13 +17,15 @@ use embassy_time::Timer;
 use crate::core::fsm_status::BRAKE;
 use crate::core::fsm_status::BRAKES_EXTENDED;
 use crate::core::fsm_status::DISABLE_BRAKING_COMMUNICATION;
-use crate::pconfig::{queue_event, thread_delay};
-use crate::{Info, send_data};
+use crate::pconfig::queue_event;
+use crate::pconfig::thread_delay;
+use crate::send_data;
 use crate::try_spawn;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
+use crate::Info;
 
 pub struct BrakingController {
     pub braking_rearm: Output<'static>,
