@@ -338,7 +338,7 @@
                                pattern="^-?[0-9]*$"
                                on:focus={() => focusedInput = input} on:blur={() => focusedInput = ''}
                                on:input={() => {
-                           if (CurrentRouteConfig.speeds[input] < -500 || CurrentRouteConfig.speeds[input] > 500) {
+                           if (CurrentRouteConfig.speeds[input] < -9 || CurrentRouteConfig.speeds[input] > 9) {
                                if (!invalidInputs.includes(input)) {
                                    invalidInputs = [...invalidInputs, input];
                                }
