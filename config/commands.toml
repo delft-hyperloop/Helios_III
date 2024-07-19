@@ -157,6 +157,10 @@ id = 0x69
 name = "FinishRunConfig"
 id = 0x67
 
+[[Command]]
+name = "EndRun"
+id = 0x6b
+
 
 # Ground station-related commands
 
