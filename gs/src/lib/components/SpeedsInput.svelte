@@ -16,6 +16,7 @@
     const RouteStepNames: RouteStep[] = ["ForwardA", "ForwardB", "ForwardC", "BackwardsA", "BackwardsB", "BackwardsC",
       "LaneSwitchStraight", "LaneSwitchCurved", "StopAndWait", "BrakeHere"];
 
+    let isValid: boolean = false;
     $: focusedInput = '';
     let invalidInputs: SpeedFormKey[] = [];
     export let parent: SvelteComponent;
@@ -34,7 +35,7 @@
 
     const speedForm:SpeedFormType = CurrentRouteConfig.speeds;
     type SpeedFormKey = keyof typeof speedForm;
-    const inputs: SpeedFormKey[] = Object.keys(speedForm) as SpeedFormKey[];
+    const inputs: SpeedFormKey[] = Object.keys(CurrentRouteConfig.speeds) as SpeedFormKey[];
 
     function onRouteStepClick(step: RouteStep): void {
       if (CurrentRouteConfig.positions.length < 16) {
@@ -63,9 +64,11 @@
 
     async function importSpeeds() {
         console.log(`Sending command: speeds_from_u64`);
-        await invoke('speeds_from_u64', {val: speedInputValue}).then(r => {
-            console.log(`Command speeds_from_u64 sent with response: ` + r);
+        await invoke('speeds_from_u64', {speeds: Number(speedInputValue)}).then(r => {
+            console.log(`Command speeds_from_u64 sent with response: `);
+            console.log(r)
             util.log(`Command speeds_from_u64 sent`, EventChannel.INFO);
+            CurrentRouteConfig.speeds = r as SpeedFormType;
         }).catch((e) => {
             console.error(`Error sending command speeds_from_u64: ${e}`);
             util.log(`Command speeds_from_u64 ERROR sending`, EventChannel.WARNING);
@@ -74,13 +77,77 @@
 
     async function importRoutes() {
         console.log(`Sending command: positions_from_u64`);
-        await invoke('positions_from_u64', {val: speedInputValue}).then(r => {
-            console.log(`Command positions_from_u64 sent with response: ` + r);
+        await invoke('positions_from_u64', {positions: Number(routesInputValue)}).then(r => {
+            console.log(`Command positions_from_u64 sent with response: `);
+            console.log(r)
             util.log(`Command positions_from_u64 sent`, EventChannel.INFO);
+            CurrentRouteConfig.positions = r as RouteStep[];
         }).catch((e) => {
             console.error(`Error sending command positions_from_u64: ${e}`);
             util.log(`Command positions_from_u64 ERROR sending`, EventChannel.WARNING);
         });
+    }
+
+    async function processRoutes() {
+      console.log(`Sending command: positions_to_u64`);
+      await invoke('positions_to_u64', {positions: CurrentRouteConfig.positions}).then(r => {
+        console.log(`Command positions_to_u64 sent with response: `);
+        console.log(r)
+        util.log(`Command positions_to_u64 sent`, EventChannel.INFO);
+        exportedRoutes.value = r as string;
+      }).catch((e) => {
+        console.error(`Error sending command positions_to_u64: ${e}`);
+        util.log(`Command positions_to_u64 ERROR sending`, EventChannel.WARNING);
+      });
+    }
+
+    async function processSpeeds() {
+        console.log(`Sending command: speeds_to_u64`);
+        await invoke('speeds_to_u64', {speeds: CurrentRouteConfig.speeds}).then(r => {
+            console.log(`Command speeds_to_u64 sent with response: `);
+            console.log(r)
+            util.log(`Command speeds_to_u64 sent`, EventChannel.INFO);
+            exportedSpeeds.value = r as string;
+        }).catch((e) => {
+            console.error(`Error sending command speeds_to_u64: ${e}`);
+            util.log(`Command speeds_to_u64 ERROR sending`, EventChannel.WARNING);
+        });
+    }
+
+    async function validateCurrentRouteConfig() {
+        await invoke('validate_route', { route: CurrentRouteConfig }).then(r => {
+            console.log(`Route config validated: ${r}`);
+            isValid = r as boolean;
+        }).catch(e => {
+            console.error(`Error validating route config: ${e}`);
+        })
+    }
+
+    async function resetSpeeds() {
+      CurrentRouteConfig.speeds = {
+        ForwardA: 0,
+        ForwardB: 0,
+        ForwardC: 0,
+        BackwardsA: 0,
+        BackwardsB: 0,
+        BackwardsC: 0,
+        LaneSwitchCurved: 0,
+        LaneSwitchStraight: 0,
+      }
+    }
+
+    async function resetRouteConfig() {
+        CurrentRouteConfig.positions = [];
+    }
+
+    $: if (CurrentRouteConfig.positions) {
+      validateCurrentRouteConfig();
+      processRoutes();
+    }
+
+    $: if (CurrentRouteConfig.speeds) {
+      validateCurrentRouteConfig();
+      processSpeeds();
     }
 
     async function clickToCopy(elem:HTMLInputElement) {
@@ -207,11 +274,11 @@
                                type="number"
                                max="500"
                                min="-500"
-                               bind:value={speedForm[input]}
+                               bind:value={CurrentRouteConfig.speeds[input]}
                                pattern="^-?[0-9]*$"
                                on:focus={() => focusedInput = input} on:blur={() => focusedInput = ''}
                                on:input={() => {
-                           if (speedForm[input] < -500 || speedForm[input] > 500) {
+                           if (CurrentRouteConfig.speeds[input] < -500 || CurrentRouteConfig.speeds[input] > 500) {
                                if (!invalidInputs.includes(input)) {
                                    invalidInputs = [...invalidInputs, input];
                                }
@@ -236,11 +303,11 @@
                 {/each}
             </div>
             <div class="col-span-4 flex gap-4">
-                <button class="btn bg-primary-500 rounded-lg">
+                <button class="btn bg-primary-500 rounded-lg" on:click={importSpeeds}>
                     Import Speeds
                 </button>
                 <input bind:value={speedInputValue} type="text" class="input rounded-lg">
-                <button class="btn bg-primary-500 rounded-lg">
+                <button class="btn bg-primary-500 rounded-lg" on:click={importRoutes}>
                     Import Route Setup
                 </button>
                 <input bind:value={routesInputValue} type="text" class="input rounded-lg">
@@ -252,6 +319,15 @@
                     Copy Route Setup
                 </button>
                 <input contenteditable="false" bind:this={exportedRoutes} readonly type="text" class="input rounded-lg">
+            </div>
+            <div class="col-span-4 flex gap-4">
+                <button class="btn bg-primary-500 rounded-lg" on:click={resetSpeeds}>
+                    Reset Speeds
+                </button>
+                <button class="btn bg-primary-500 rounded-lg" on:click={resetRouteConfig}>
+                    Reset Route
+                </button>
+                <span>Valid: {isValid}</span>
             </div>
         </div>
         <footer class="modal-footer {parent.regionFooter}">
