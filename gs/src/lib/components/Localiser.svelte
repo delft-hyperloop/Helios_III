@@ -108,10 +108,10 @@
                 </g>
                 <g id="point">
                     <circle bind:this={point_start} cx="10" cy="26" r="10" fill="#525B5B"/>
-                    <circle bind:this={point_divergence} cx="347" cy="26" r="10" fill="#525B5B"/>
-                    <circle bind:this={point_choice_straight} cx="572" cy="26" r="10" fill="#525B5B"/>
+                    <circle bind:this={point_divergence} cx="347" cy="26" r="5" fill="#525B5B"/>
+                    <circle bind:this={point_choice_straight} cx="572" cy="26" r="5" fill="#525B5B"/>
                     <circle bind:this={point_end_straight} cx="909" cy="26" r="10" fill="#525B5B"/>
-                    <circle bind:this={point_choice_turn} cx="638" cy="78" r="10" fill="#525B5B"/>
+                    <circle bind:this={point_choice_turn} cx="638" cy="78" r="5" fill="#525B5B"/>
                     <circle bind:this={point_end_turn} cx="860" cy="138" r="10" fill="#525B5B"/>
                     <circle cx={emergPosition} cy={emergYPosition} r="5" fill="red"/>
                 </g>

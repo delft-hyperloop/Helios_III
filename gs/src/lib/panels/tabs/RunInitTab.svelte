@@ -11,6 +11,7 @@
     import {DatatypeEnum} from "$lib/namedDatatypeEnum";
     import {invoke} from "@tauri-apps/api/tauri";
     import {STATUS} from "$lib/types";
+    import {routeConfig} from "$lib/stores/data";
     const storeManager = GrandDataDistributor.getInstance().stores;
 
     const statuses = storeManager.getWritable("ConnectionStatus")
@@ -59,6 +60,23 @@
                 <button class="btn rounded-md bg-primary-500 col-span-2" on:click={finishRunConfig} disabled={false}>
                     Submit Configuration
                 </button>
+                <h3 class="col-span-2">Desired speeds</h3>
+                <p>Forward A</p>
+                <p>{$routeConfig.speeds.ForwardA} m/s</p>
+                <p>Forward B</p>
+                <p>{$routeConfig.speeds.ForwardB} m/s</p>
+                <p>Forward C</p>
+                <p>{$routeConfig.speeds.ForwardC} m/s</p>
+                <p>Backwards A</p>
+                <p>{$routeConfig.speeds.BackwardsA} m/s</p>
+                <p>Backwards B</p>
+                <p>{$routeConfig.speeds.BackwardsB} m/s</p>
+                <p>Backwards C</p>
+                <p>{$routeConfig.speeds.BackwardsC} m/s</p>
+                <p>Lane Switch Curved</p>
+                <p>{$routeConfig.speeds.LaneSwitchCurved} m/s</p>
+                <p>Lane Switch Straight</p>
+                <p>{$routeConfig.speeds.LaneSwitchStraight} m/s</p>
             </div>
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >

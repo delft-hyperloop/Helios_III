@@ -176,8 +176,8 @@
         await navigator.clipboard.writeText(elem.value);
     }
 
-    let speedInputValue: number = 0;
-    let routesInputValue: number = 0;
+    let speedInputValue: number = 14104086254467416064;
+    let routesInputValue: number = 1822648539875311616;
 
     let exportedRoutes: HTMLInputElement;
     let exportedSpeeds: HTMLInputElement;
