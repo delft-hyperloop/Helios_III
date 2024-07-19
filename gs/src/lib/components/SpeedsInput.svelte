@@ -107,7 +107,7 @@
 
     async function importSpeeds() {
       console.log(`Sending command: speeds_from_u64`);
-      await invoke('speeds_from_u64', {speeds: Number(speedInputValue)}).then(r => {
+      await invoke('speeds_from_u64', {speeds: speedInputValue}).then(r => {
         console.log(`Command speeds_from_u64 sent with response: `);
         console.log(r)
         util.log(`Command speeds_from_u64 sent`, EventChannel.INFO);
@@ -120,7 +120,7 @@
 
     async function importRoutes() {
       console.log(`Sending command: positions_from_u64`);
-      await invoke('positions_from_u64', {positions: Number(routesInputValue)}).then(r => {
+      await invoke('positions_from_u64', {positions: routesInputValue}).then(r => {
         console.log(`Command positions_from_u64 sent with response: `);
         console.log(r)
         CurrentRouteConfig.positions = r as RouteStep[];
@@ -214,8 +214,8 @@
         await navigator.clipboard.writeText(elem.value);
     }
 
-    let speedInputValue: number = 14104086254467416064;
-    let routesInputValue: number = 1822648539875311616;
+    let speedInputValue = "14104086254467416064";
+    let routesInputValue = "1822648539875311616";
 
     let exportedRoutes: HTMLInputElement;
     let exportedSpeeds: HTMLInputElement;

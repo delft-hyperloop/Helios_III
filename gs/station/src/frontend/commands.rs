@@ -214,7 +214,12 @@ pub fn speeds_to_u64(speeds: LocationSpeedMap) -> u64 { speeds.into() }
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn speeds_from_u64(speeds: u64) -> LocationSpeedMap { speeds.into() }
+pub fn speeds_from_u64(speeds: String) -> Result<LocationSpeedMap, String> {
+    match u64::from_str(&speeds) {
+        Ok(parsed_speeds) => Ok(parsed_speeds.into()),
+        Err(e) => Err(format!("Failed to parse speeds from string: {}", e)),
+    }
+}
 
 #[macro_export]
 #[allow(unused)]
@@ -224,7 +229,12 @@ pub fn positions_to_u64(positions: LocationSequence) -> u64 { positions.into() }
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn positions_from_u64(positions: u64) -> LocationSequence { positions.into() }
+pub fn positions_from_u64(positions: String) -> Result<LocationSequence, String> {
+    match u64::from_str(&positions) {
+        Ok(parsed_positions) => Ok(parsed_positions.into()),
+        Err(e) => Err(format!("Failed to parse positions from string: {}", e)),
+    }
+}
 
 #[macro_export]
 #[allow(unused)]
