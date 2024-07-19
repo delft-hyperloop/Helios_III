@@ -62,6 +62,11 @@ export class GrandDataDistributor {
         if (!this.intervalId) this.intervalId = setInterval(() => this.fetchData(), interval);
     }
 
+    public async fetchTestOnce() {
+        const data:Datapoint[] = await invoke('generate_test_data');
+        this.processData(data);
+    }
+
     /**
      * Stop the data fetching process. This will clear the interval.
      */
