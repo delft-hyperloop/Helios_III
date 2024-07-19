@@ -26,6 +26,10 @@
     //////////////////////////////
     /////////// CHARTS ///////////
     //////////////////////////////
+
+    let breakingCommsChart = new PlotBuffer(500, 60000, [0, 120], true, "Breaking Comms");
+    $chartStore.set("Breaking Comms", breakingCommsChart);
+
     let emsTempChart = new PlotBuffer(500, 60000, [0, 120], true, "EMS 1");
     emsTempChart.addSeries(StrokePresets.theoretical("EMS 2"))
     $chartStore.set("EMS Temperatures", emsTempChart);
@@ -448,7 +452,10 @@
 
     gdd.stores.registerStore<number>("LowPressureSensor", 0);
     gdd.stores.registerStore<number>("HighPressureSensor", 0);
-    gdd.stores.registerStore<number>("BrakingCommDebug", 0);
+    gdd.stores.registerStore<number>("BrakingCommDebug", 0, data => {
+        breakingCommsChart.addEntry(1, data);
+        return data;
+    });
     gdd.stores.registerStore<number>("BrakingSignalDebug", 0)
     gdd.stores.registerStore<number>("BrakingRearmDebug", 0)
 

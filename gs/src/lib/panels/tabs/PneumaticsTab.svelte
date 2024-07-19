@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {GrandDataDistributor, Pneumatics, Table, Tile, TileGrid} from "$lib";
+  import {Chart, GrandDataDistributor, Pneumatics, Table, Tile, TileGrid} from "$lib";
     import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
 
     const storeManager = GrandDataDistributor.getInstance().stores;
@@ -24,6 +24,9 @@
         </Tile>
         <Tile>
             <Table background="bg-surface-900" titles={["Section", "Bars"]} tableArr={pressureTable}/>
+        </Tile>
+        <Tile>
+            <Chart title="Breaking Comms" />
         </Tile>
     </TileGrid>
 </div>
