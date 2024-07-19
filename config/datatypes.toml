@@ -199,14 +199,14 @@ lower = {warn = 280, err = 270, brake = 260}
 name = "TotalBatteryVoltageLow"
 id = 0x1A5
 display_units = "V"
-upper = { warn = 2600, err = 2700, brake = 2700}
-lower = { warn = 2100, brake = 2000}
+upper = { warn = 3000, err = 3100, brake = 3100}
+lower = { warn = 2100, brake = 2100}
 
 [[Datatype]]
 name = "TotalBatteryVoltageHigh"
 id = 0x3A9
 display_units = "V"
-upper = { warn = 41500, err = 42500 , brake = 43000}
+upper = { warn = 44000, err = 44500 , brake = 45000}
 lower = { warn = 35000, err = 0, brake = 35000}
 
 
