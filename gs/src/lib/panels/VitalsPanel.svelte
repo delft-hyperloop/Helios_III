@@ -19,21 +19,25 @@
     $: tableBatteryVitals = [
         ["Min", DE.BATTERYMINVOLTAGEHIGH, DE.BATTERYMINTEMPERATUREHIGH, DE.BATTERYMINVOLTAGELOW, DE.BATTERYMINTEMPERATURELOW],
         ["Max", DE.BATTERYMAXVOLTAGEHIGH, DE.BATTERYMAXTEMPERATUREHIGH, DE.BATTERYMAXVOLTAGELOW, DE.BATTERYMAXTEMPERATURELOW],
-        ["Avg", DE.BATTERYVOLTAGEHIGH, DE.BATTERYTEMPERATUREHIGH, DE.BATTERYVOLTAGELOW, DE.BATTERYTEMPERATURELOW]
+        ["Avg", DE.BATTERYVOLTAGEHIGH, DE.BATTERYTEMPERATUREHIGH, DE.BATTERYVOLTAGELOW, DE.BATTERYTEMPERATURELOW],
+        ["Safe Range", "[360, 420]", "[15,50]", "[280,360]", "[15,50]"]
     ]
 
     $: tableTempsArr = [
-        ["Upper drawer VB", DE.AVERAGE_TEMP_VB_BOTTOM, "HEMS 1", DE.TEMP_HEMS_1],
-        ["Bottom drawer VB", DE.AVERAGE_TEMP_VB_BOTTOM, "HEMS 2", DE.TEMP_HEMS_2],
-        ["Outside of VB", DE.AMBIENT_TEMP, "HEMS 3", DE.TEMP_HEMS_3],
-        ["Propulsion", DE.PROPULSIONTEMPERATURE, "HEMS 4", DE.TEMP_HEMS_4],
-        ["Levitation", DE.LEVITATIONTEMPERATURE, "EMS 1", DE.TEMP_EMS_1],
-        ["Brake", DE.BRAKETEMPERATURE, "EMS 2", DE.TEMP_EMS_2],
+        ["Up VB", DE.AVERAGE_TEMP_VB_TOP, "[0,70]", "HEMS 1", DE.TEMP_HEMS_1, "[0,80] "],
+        ["Low VB", DE.AVERAGE_TEMP_VB_BOTTOM, "[0,70]", "HEMS 2", DE.TEMP_HEMS_2, "[0,80]"],
+        ["Ambient", DE.AMBIENT_TEMP, "[0,50]", "HEMS 3", DE.TEMP_HEMS_3, "[0,80]"],
+        ["Propulsion", DE.PROPULSIONTEMPERATURE, "[0,80]", "HEMS 4", DE.TEMP_HEMS_4, "[0,80]"],
+        ["Levitation", DE.LEVITATIONTEMPERATURE, "[0,80]", "EMS 1", DE.TEMP_EMS_1, "[0,80]"],
+        ["Brake", DE.BRAKETEMPERATURE, "[0,100]", "EMS 2", DE.TEMP_EMS_2, "[0,80]"],
     ]
 
     $: tableArr2 = [
-        ["Voltage", DE.PROPULSIONVOLTAGE, "VRefInt", DE.PROPULSIONVREFINT],
-        ["Current", DE.PROPULSIONCURRENT, "",DE.INSULATIONPOSITIVE],
+        ["HEMS A1", DE.LEVI_HEMS_CURRENT_A1, "[-10,10]", "HEMS A2", DE.LEVI_HEMS_CURRENT_A2, "[-10,10]"],
+        ["HEMS B1", DE.LEVI_HEMS_CURRENT_B1, "[-10,10]", "HEMS B2", DE.LEVI_HEMS_CURRENT_B2, "[-10,10]"],
+        ["HEMS C1", DE.LEVI_HEMS_CURRENT_C1, "[-10,10]", "HEMS C2", DE.LEVI_HEMS_CURRENT_C2, "[-10,10]"],
+        ["HEMS D1", DE.LEVI_HEMS_CURRENT_D1, "[-10,10]", "HEMS D2", DE.LEVI_HEMS_CURRENT_D2, "[-10,10]"],
+        ["EMS AB", DE.LEVI_EMS_CURRENT_AB, "[-10,10]", "EMS CD", DE.LEVI_EMS_CURRENT_CD, "[-10,10]"],
     ]
 
     const location = storeManager.getWritable("Localisation");
@@ -82,26 +86,23 @@
                 </Tile>
                 <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
-                        <div class="flex gap-4">
+                        <div class="flex gap-4 ">
                             <p>
                                 Velocity: <Store datatype="Velocity" />
                                 <br>
                                 Position: <Store datatype="Localisation" />
+                                <br>
+                                Acceleration: <Store datatype="Acceleration" />
                             </p>
                             <p>
-                                HV Current: <Store datatype="BatteryCurrentHigh" />
+                                HV Current: <Store datatype="BatteryCurrentHigh" /> - [0, 25]
                                 <br>
-                                LV Current: <Store datatype="BatteryCurrentLow" />
+                                LV Current: <Store datatype="BatteryCurrentLow" /> - [0, 10]
                             </p>
                             <p>
-                                Safety min: 0
+                                Low Pressure: <Store datatype="LowPressureSensor" /> - [40, 52]
                                 <br>
-                                Safety min: 0
-                            </p>
-                            <p>
-                                Safety max: 0
-                                <br>
-                                Safety max: 0
+                                High Pressure: <Store datatype="HighPressureSensor" /> - [80, 180]
                             </p>
                         </div>
                         <div style="grid-template-columns: 1fr 2fr 3fr;" class="grid gap-2">
@@ -114,15 +115,15 @@
                             <span>Total: <Store datatype="TotalBatteryVoltageHigh" /></span>
                         </div>
                     </div>
-                    <div class="flex justify-between mt-4">
+                    <div class="flex flex-wrap justify-between mt-4">
                         <div class="flex gap-4">
-                            <Command cmd="StopHV" className="py-2 text-error-400 border-error-400 border-2" />
-                            <Command cmd="ArmBrakes" />
-                            <Command cmd="StartRun" />
+                            <Command cmd="StopHV" className="py-1 text-error-400 border-error-400 border-2" />
+                            <Command cmd="ArmBrakes" className="py-1 bg-primary-500 text-surface-900 " />
+                            <Command cmd="StartRun" className="py-1 bg-primary-500 text-surface-900" />
                         </div>
                         <div class="flex flex-col">
-                            <span>LV Total Safe: [0, 0]</span>
-                            <span>HV Total Safe: [0, 0]</span>
+                            <span>LV Total Safe: [21, 29.5]</span>
+                            <span>HV Total Safe: [347, 470]</span>
                         </div>
                     </div>
                 </Tile>
@@ -130,18 +131,13 @@
                     <Table titles={tableBatteryTitles} tableArr={tableBatteryVitals}/>
                 </Tile>
                 <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
-                    <Table tableArr={tableTempsArr} titles={["Module", "Temp °C", "Module", "Temp °C"]}/>
+                    <Table tableArr={tableTempsArr} titles={["Module", "Temp °C", "Safe range", "Module", "Temp °C", "Safe range"]}/>
                 </Tile>
                 <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
-                    <Table titles={["Propulsion", "Status", "Propulsion", "Status"]} tableArr={tableArr2}/>
+                    <Table titles={["Datatype", "Value", "Safe range", "Datatype", "Value", "Safe range"]} tableArr={tableArr2}/>
                 </Tile>
                 <Tile bgToken={800} containerClass="col-span-2 px-16">
                     <FSM />
-                </Tile>
-                <Tile heading="Safe values" bgToken={800} containerClass="col-span-2">
-                    <span>LV Total Safe: [0, 0]</span>
-                    <span>HV Total Safe: [0, 0]</span>
-                    <span>HV Total Safe: [0, 0]</span>
                 </Tile>
             </TileGrid>
         </div>
