@@ -9,7 +9,7 @@ use embassy_stm32::peripherals::PD0;
 use embassy_stm32::peripherals::PD1;
 use panic_probe as _;
 
-use crate::core::communication::low::can::can_receiving_handler;
+use crate::core::communication::low::can::{can_receiving_handler, can_two_watchdog};
 use crate::core::communication::low::can::can_transmitter;
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::battery_controller::GroundFaultDetection;
@@ -101,7 +101,7 @@ impl CanController {
                 })
             ))
         );
-
+        try_spawn!(event_sender, x.spawn(can_two_watchdog(event_sender, data_sender)));
         try_spawn!(event_sender, x.spawn(can_transmitter(can_one_receiver, c1_tx)));
         try_spawn!(event_sender, x.spawn(can_transmitter(can_two_receiver, c2_tx)));
 
