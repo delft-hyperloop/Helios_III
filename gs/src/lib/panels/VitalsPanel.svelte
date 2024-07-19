@@ -77,11 +77,9 @@
     {:else}
         <div class="snap-x scroll-px-0.5 snap-mandatory overflow-x-auto h-[90vh]">
             <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="">
-                <!--     FSM       -->
                 <Tile bgToken={800} containerClass="col-span-2">
                     <Localiser turning={true} loc={$location.value} showLabels={false} />
                 </Tile>
-                <!--      Under FSM      -->
                 <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4">
@@ -95,23 +93,39 @@
                                 <br>
                                 LV Current: <Store datatype="BatteryCurrentLow" />
                             </p>
+                            <p>
+                                Safety min: 0
+                                <br>
+                                Safety min: 0
+                            </p>
+                            <p>
+                                Safety max: 0
+                                <br>
+                                Safety max: 0
+                            </p>
                         </div>
-                        <div style="grid-template-columns: 1fr 2fr 2fr;" class="grid gap-y-2">
+                        <div style="grid-template-columns: 1fr 2fr 3fr;" class="grid gap-2">
                             <span>LV: </span>
                             <Battery fill="#3b669c" orientation="horizontal" perc={Number($lvBattery.value)}/>
                             <span>Total: <Store datatype="TotalBatteryVoltageLow" /></span>
+
                             <span>HV: </span>
                             <Battery fill="#723f9c" orientation="horizontal" perc={Number($hvBattery.value)}/>
                             <span>Total: <Store datatype="TotalBatteryVoltageHigh" /></span>
                         </div>
                     </div>
-                    <div class="flex gap-4 mt-4">
-                        <Command cmd="StopHV" className="py-2 text-error-400 border-error-400 border-2" />
-                        <Command cmd="ArmBrakes" />
-                        <Command cmd="StartRun" />
+                    <div class="flex justify-between mt-4">
+                        <div class="flex gap-4">
+                            <Command cmd="StopHV" className="py-2 text-error-400 border-error-400 border-2" />
+                            <Command cmd="ArmBrakes" />
+                            <Command cmd="StartRun" />
+                        </div>
+                        <div class="flex flex-col">
+                            <span>LV Total Safe: [0, 0]</span>
+                            <span>HV Total Safe: [0, 0]</span>
+                        </div>
                     </div>
                 </Tile>
-                <!--     TEMPERATURE TABLE      -->
                 <Tile containerClass="pt-2 pb-1 col-span-2" bgToken={800}>
                     <Table titles={tableBatteryTitles} tableArr={tableBatteryVitals}/>
                 </Tile>
@@ -122,9 +136,13 @@
                     <Table titles={["Propulsion", "Status", "Propulsion", "Status"]} tableArr={tableArr2}/>
                 </Tile>
                 <Tile bgToken={800} containerClass="col-span-2 px-16">
-                        <FSM />
+                    <FSM />
                 </Tile>
-
+                <Tile heading="Safe values" bgToken={800} containerClass="col-span-2">
+                    <span>LV Total Safe: [0, 0]</span>
+                    <span>HV Total Safe: [0, 0]</span>
+                    <span>HV Total Safe: [0, 0]</span>
+                </Tile>
             </TileGrid>
         </div>
     {/if}
