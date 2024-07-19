@@ -193,7 +193,7 @@ name = "BatteryVoltageHigh"
 id = 0x3A1
 display_units = "V"
 upper = { warn = 360, err = 420 }
-lower = {warn = 280, err = 270}
+lower = {warn = 280, err = 270, brake = 260}
 
 [[Datatype]]
 name = "TotalBatteryVoltageLow"
@@ -446,12 +446,16 @@ name = "Average_Temp_VB_Bottom"
 id = 0x251
 upper = 80000 # (e-2) degrees
 display_units = "ºC"
+lower = {err = 0}
+
 
 [[Datatype]]
 name = "Average_Temp_VB_top"
 id = 0x250
 upper = 80000 # (e-2) degrees
 display_units = "ºC"
+lower = {err = 0}
+
 
 
 [[Datatype]]
