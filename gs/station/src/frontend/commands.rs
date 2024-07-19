@@ -225,3 +225,11 @@ pub fn positions_to_u64(positions: LocationSequence) -> u64 { positions.into() }
 #[allow(unused)]
 #[tauri::command]
 pub fn positions_from_u64(positions: u64) -> LocationSequence { positions.into() }
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn set_route(route: Route) -> bool {
+    send_command("SetRoute".into(), route.positions.into())
+        && send_command("SetSpeeds".into(), route.speeds.into())
+}
