@@ -5,7 +5,7 @@ use embassy_stm32::can::CanRx;
 use embassy_stm32::can::CanTx;
 use embassy_stm32::can::Frame;
 use embassy_stm32::can::Instance;
-use embassy_time::Timer;
+use embassy_time::{Instant, Timer};
 use panic_probe as _;
 
 // use embedded_hal::can::Id;
@@ -13,7 +13,7 @@ use crate::core::communication::Datapoint;
 use crate::core::controllers::battery_controller::ground_fault_detection_isolation_details;
 use crate::core::controllers::battery_controller::ground_fault_detection_voltage_details;
 use crate::core::controllers::can_controller::CanTwoUtils;
-use crate::pconfig::bytes_to_u64;
+use crate::pconfig::{bytes_to_u64, thread_delay};
 use crate::pconfig::id_as_value;
 use crate::pconfig::send_event;
 use crate::send_data;
@@ -86,14 +86,14 @@ pub async fn can_receiving_handler(
                                     data_sender,
                                     timestamp.as_ticks(),
                                 )
-                                .await;
+                                    .await;
                             } else if id == Datatype::IMDIsolationDetails.to_id() {
                                 ground_fault_detection_voltage_details(
                                     frame.data(),
                                     data_sender,
                                     timestamp.as_ticks(),
                                 )
-                                .await;
+                                    .await;
                             } else if gfd_counter > 2 && frame.data()[2] == 0xFE {
                                 gfd_counter = 0;
                                 can_sender
@@ -114,20 +114,26 @@ pub async fn can_receiving_handler(
                         }
                     } else {
                         trace!("#{}", bytes_to_u64(frame.data()));
-                        send_data!(data_sender, Datatype::from_id(id), bytes_to_u64(frame.data()));
+                        data_sender
+                            .send(Datapoint::new(
+                                Datatype::from_id(id),
+                                bytes_to_u64(frame.data()),
+                                timestamp.as_ticks(),
+                            ))
+                            .await;
                     }
                 } else if EVENT_IDS.contains(&id) {
                     // since we are never supposed to change the speed through the can bus (and run config is the only event with an actual value), i want a magic number that i can filter out from the run config handler just to make sure the pod doesn't do something stupid
                     send_event(event_sender, Event::from_id(id, Some(69420)));
                 } else {
-                    // #[cfg(debug_assertions)]
+                    #[cfg(debug_assertions)]
                     // info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
-                    // send_data!(
-                    //     data_sender,
-                    //     Datatype::UnknownCanId,
-                    //     id as u64,
-                    //     bytes_to_u64(frame.data())
-                    // );
+                    send_data!(
+                        data_sender,
+                        Datatype::UnknownCanId,
+                        id as u64,
+                        bytes_to_u64(frame.data())
+                    );
                 }
             },
             Err(e) => {
@@ -145,6 +151,6 @@ pub async fn can_receiving_handler(
         // without this, our main pcb is magically converted to an adhd CAN
         // pcb with no mind for anything else. Tread carefully around it
         // thread_delay(100).await;
-        Timer::after_micros(400).await;
+        Timer::after_micros(500).await;
     }
 }
