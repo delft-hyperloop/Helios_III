@@ -46,6 +46,7 @@ pub fn tauri_main(backend: Backend) {
             speeds_from_u64,
             positions_to_u64,
             positions_from_u64,
+            set_route,
         ])
         .setup(move |app| {
             let app_handle = app.handle();

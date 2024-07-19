@@ -220,8 +220,7 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
             }
         },
         Datatype::Velocity => x / 100.0,
-        Datatype::BrakeTemperature
-        | Datatype::BrakePressure => {
+        Datatype::BrakeTemperature | Datatype::BrakePressure => {
             if x > 100_000_000.0 {
                 0.0
             } else {

@@ -63,6 +63,9 @@ pub async fn handle_incoming_data(
         Datatype::Info => {
             msg_sender.send(Message::Status(Info::from_id(data.value as u16)))?;
         },
+        Datatype::ConnectionStatus => {
+            eprintln!("got a new connection status {:?}", data);
+        },
         x if HV_DATATYPES.contains(&x) => {
             data_sender.send(process(&data))?;
         },
