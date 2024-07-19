@@ -44,10 +44,6 @@
         <TauriCommand cmd="quit_levi" />
         <TauriCommand cmd="disconnect" successCallback={() => serverStatus.set(false)} />
         <TauriCommand cmd="save_logs"/>
-        <!-- <TauriCommand cmd="test_route" successCallback={console.log}/> -->
-        <!-- <button class="btn bg-primary-500 text-black rounded-lg py-2" on:click={() => GrandDataDistributor.getInstance().fetchTestOnce()}> -->
-        <!--     TEST DATA -->
-        <!-- </button> -->
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
 
