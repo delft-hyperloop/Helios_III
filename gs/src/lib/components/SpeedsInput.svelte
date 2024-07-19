@@ -52,8 +52,44 @@
       CurrentRouteConfig.positions = reorder(CurrentRouteConfig.positions, from.index, to.index);
     }
 
+    function speedToU8(speed: number):number {
+        return speed === 0 ? 0 : Math.floor(128 + (128*((speed+10)/20)));
+    }
+
+    function u8ToSpeed(u8:number):number {
+        return u8 === 0 ? 0 : Math.floor(20*((u8-128)/128)-10);
+    }
+
+    function u8toSpeeds(speeds: SpeedFormType): SpeedFormType {
+        return {
+            ForwardA: u8ToSpeed(speeds.ForwardA),
+            ForwardB: u8ToSpeed(speeds.ForwardB),
+            ForwardC: u8ToSpeed(speeds.ForwardC),
+            BackwardsA: u8ToSpeed(speeds.BackwardsA),
+            BackwardsB: u8ToSpeed(speeds.BackwardsB),
+            BackwardsC: u8ToSpeed(speeds.BackwardsC),
+            LaneSwitchCurved: u8ToSpeed(speeds.LaneSwitchCurved),
+            LaneSwitchStraight: u8ToSpeed(speeds.LaneSwitchStraight),
+        }
+    }
+
+    function speedsToU8(speeds: SpeedFormType):SpeedFormType {
+        return {
+            ForwardA: speedToU8(speeds.ForwardA),
+            ForwardB: speedToU8(speeds.ForwardB),
+            ForwardC: speedToU8(speeds.ForwardC),
+            BackwardsA: speedToU8(speeds.BackwardsA),
+            BackwardsB: speedToU8(speeds.BackwardsB),
+            BackwardsC: speedToU8(speeds.BackwardsC),
+            LaneSwitchCurved: speedToU8(speeds.LaneSwitchCurved),
+            LaneSwitchStraight: speedToU8(speeds.LaneSwitchStraight),
+        }
+    }
+
     async function onFormSubmit() {
       let modifiedRouteConfig = { ...CurrentRouteConfig, positions: [...CurrentRouteConfig.positions] };
+
+      modifiedRouteConfig.speeds = speedsToU8(CurrentRouteConfig.speeds);
 
       if (modifiedRouteConfig.positions.length < 16) {
         for (let i = modifiedRouteConfig.positions.length; i < 16; i++) {
@@ -70,28 +106,41 @@
     }
 
     async function importSpeeds() {
-        console.log(`Sending command: speeds_from_u64`);
-        await invoke('speeds_from_u64', {speeds: Number(speedInputValue)}).then(r => {
-            console.log(`Command speeds_from_u64 sent with response: `);
-            console.log(r)
-            util.log(`Command speeds_from_u64 sent`, EventChannel.INFO);
-            CurrentRouteConfig.speeds = r as SpeedFormType;
-        }).catch((e) => {
-            console.error(`Error sending command speeds_from_u64: ${e}`);
-            util.log(`Command speeds_from_u64 ERROR sending`, EventChannel.WARNING);
-        });
+      console.log(`Sending command: speeds_from_u64`);
+      await invoke('speeds_from_u64', {speeds: Number(speedInputValue)}).then(r => {
+        console.log(`Command speeds_from_u64 sent with response: `);
+        console.log(r)
+        util.log(`Command speeds_from_u64 sent`, EventChannel.INFO);
+        CurrentRouteConfig.speeds = u8toSpeeds(r as SpeedFormType);
+      }).catch((e) => {
+        console.error(`Error sending command speeds_from_u64: ${e}`);
+        util.log(`Command speeds_from_u64 ERROR sending`, EventChannel.WARNING);
+      });
     }
 
     async function importRoutes() {
-        console.log(`Sending command: positions_from_u64`);
-        await invoke('positions_from_u64', {positions: Number(routesInputValue)}).then(r => {
-            console.log(`Command positions_from_u64 sent with response: `);
-            console.log(r)
-            CurrentRouteConfig.positions = r as RouteStep[];
-        }).catch((e) => {
-            console.error(`Error sending command positions_from_u64: ${e}`);
-            util.log(`Command positions_from_u64 ERROR sending`, EventChannel.WARNING);
-        });
+      console.log(`Sending command: positions_from_u64`);
+      await invoke('positions_from_u64', {positions: Number(routesInputValue)}).then(r => {
+        console.log(`Command positions_from_u64 sent with response: `);
+        console.log(r)
+        CurrentRouteConfig.positions = r as RouteStep[];
+      }).catch((e) => {
+        console.error(`Error sending command positions_from_u64: ${e}`);
+        util.log(`Command positions_from_u64 ERROR sending`, EventChannel.WARNING);
+      });
+    }
+
+    async function processSpeeds() {
+      console.log(`Sending command: speeds_to_u64`);
+      await invoke('speeds_to_u64', {speeds: speedsToU8(CurrentRouteConfig.speeds)}).then(r => {
+        console.log(`Command speeds_to_u64 sent with response: `);
+        console.log(r)
+        util.log(`Command speeds_to_u64 sent`, EventChannel.INFO);
+        exportedSpeeds.value = r as string;
+      }).catch((e) => {
+        console.error(`Error sending command speeds_to_u64: ${e}`);
+        util.log(`Command speeds_to_u64 ERROR sending`, EventChannel.WARNING);
+      });
     }
 
     async function processRoutes() {
@@ -115,29 +164,10 @@
       });
     }
 
-    // todo: convert speeds to u8 with the following function:
-    // if speed = 0 {
-    //   return 0 
-    // } else {
-    //   return 128 + (128*((speed+10)/20))
-    // }
-    //
-
-    async function processSpeeds() {
-        console.log(`Sending command: speeds_to_u64`);
-        await invoke('speeds_to_u64', {speeds: CurrentRouteConfig.speeds}).then(r => {
-            console.log(`Command speeds_to_u64 sent with response: `);
-            console.log(r)
-            util.log(`Command speeds_to_u64 sent`, EventChannel.INFO);
-            exportedSpeeds.value = r as string;
-        }).catch((e) => {
-            console.error(`Error sending command speeds_to_u64: ${e}`);
-            util.log(`Command speeds_to_u64 ERROR sending`, EventChannel.WARNING);
-        });
-    }
-
     async function validateCurrentRouteConfig() {
         let modifiedRouteConfig = { ...CurrentRouteConfig, positions: [...CurrentRouteConfig.positions] };
+
+        modifiedRouteConfig.speeds = speedsToU8(CurrentRouteConfig.speeds);
 
         if (modifiedRouteConfig.positions.length < 16) {
             for (let i = modifiedRouteConfig.positions.length; i < 16; i++) {
