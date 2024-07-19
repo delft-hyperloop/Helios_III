@@ -31,6 +31,7 @@ pub static HV_BATTERIES_CONNECTED: AtomicBool = AtomicBool::new(false);
 pub static OUT_OF_RANGE_DISABLED: AtomicBool = AtomicBool::new(false);
 /// frontend highlight the ls track
 pub static IN_A_LANE_SWITCH: AtomicBool = AtomicBool::new(false);
+pub static DISABLE_BRAKE_MOVING_NO_LOCALISATION: AtomicBool = AtomicBool::new(false);
 
 pub static POD_IS_MOVING: AtomicBool = AtomicBool::new(false);
 
@@ -99,7 +100,8 @@ impl Overrides {
         self.values = value;
         DISABLE_BRAKING_COMMUNICATION
             .store(self.prevent_braking_communication(), Ordering::Relaxed);
-        OUT_OF_RANGE_DISABLED.store(self.out_of_range_disabled(), Ordering::Relaxed)
+        OUT_OF_RANGE_DISABLED.store(self.out_of_range_disabled(), Ordering::Relaxed);
+        DISABLE_BRAKE_MOVING_NO_LOCALISATION.store(self.disable_brake_moving_without_location(), Ordering::Relaxed);
     }
 
     /// Allow propulsion to start while not levitating
@@ -116,6 +118,7 @@ impl Overrides {
     pub fn hv_without_levi(&self) -> bool { self.values & 0b10000 != 0 }
 
     pub fn out_of_range_disabled(&self) -> bool { self.values & 0b100000 != 0 }
+    pub fn disable_brake_moving_without_location(&self) -> bool { self.values & 0b1000000 != 0 }
 }
 
 include!("../../../util/src/shared/routes.rs");

@@ -106,7 +106,7 @@ pub async fn data_middle_step(
             }
         }
 
-        if POD_IS_MOVING.load(Ordering::Relaxed) {
+        if POD_IS_MOVING.load(Ordering::Relaxed) && BRAKE_MOVING_NO_LOCALISATION.load(Ordering::Relaxed) {
             if Duration::from_millis(3500) > unsafe { LOCALISATION_LAST_SEEN }.elapsed() {
                 event_sender.send(Event::EmergencyBraking).await;
             }
