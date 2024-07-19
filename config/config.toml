@@ -1,7 +1,7 @@
 [gs]
-ip = [192,168,1,15]
+ip = [192,168,0,232]
 force = true 
-port = 6946
+port = 6944
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
 timeout = 2000 # this is the timeout for the socket, in milliseconds.
 heartbeat = 500 # how often to send a keep_alive heartbeat, in milliseconds.
@@ -13,8 +13,8 @@ shortcut_channel = "shortcut_channel"
 levi_exec_path = "C:/Rust/Helios_III/gs/station/Levi/windows-x86_64-debug/PmpGettingStartedCs.exe"
 
 [pod.net]
-ip = [192,168,1,17]
-port = 6942
+ip = [192,168,0,199]
+port = 6944
 dhcp = true # if true, ip and port are unused
 mac_addr = [0x00, 0x1e, 0x67, 0x4c, 0x5c, 0x3e]
 keep_alive = 1000 # keep alive interval, in milliseconds.
