@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Chart, TileGrid, Tile, Table} from "$lib";
+  import {Chart, TileGrid, Tile, Table, Command} from "$lib";
     import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
 
     $: tableGaps = [
@@ -25,6 +25,14 @@
 <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Levitation</h2>
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="">
+        <Tile heading="Levi Control" insideClass="flex gap-x-4" containerClass="col-span-4">
+            <Command cmd="launch" />
+            <Command cmd="land" />
+            <Command cmd="vert0" text="Vertical 0 current" />
+            <Command cmd="vert_mode_dance" text="Vertical Dance" />
+            <Command cmd="vert_mode_sine" text="Vertical Sine" />
+            <Command cmd="vert0_reset" text="Reset Vertical 0 current" />
+        </Tile>
         <Tile containerClass="col-span-4">
             <Chart title="HEMS Current" background="bg-surface-900" height={300} />
         </Tile>
