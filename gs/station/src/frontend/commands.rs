@@ -230,6 +230,6 @@ pub fn positions_from_u64(positions: u64) -> LocationSequence { positions.into()
 #[allow(unused)]
 #[tauri::command]
 pub fn set_route(route: Route) -> bool {
-    send_command("SetRoute".into(), route.positions.into())
-        && send_command("SetSpeeds".into(), route.speeds.into())
+    send_command("SetRoute".into(), 1822648539875311616)
+        && send_command("SetSpeeds".into(), 14104086254467416064)
 }

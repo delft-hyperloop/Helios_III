@@ -175,6 +175,8 @@
 
     let dcStatus:boolean = false;
     let connectorStatus:boolean = false;
+
+    const lvTotalStore = storeManager.getWritable("TotalBatteryVoltageLow");
 </script>
 
 <div class="p-4">
@@ -198,7 +200,7 @@
             </div>
             <div class="w-full flex justify-between items-center">
                 <Status label="DC Converter status" on="charging" off="off" offColor="text-surface-50" bind:status={dcStatus} />
-                <ToggleCommand onCmd="DcOn" offCmd="DcOff" bind:status={dcStatus} />
+                <ToggleCommand onCmd="DcOn" offCmd="DcOff" bind:status={dcStatus} disabled={$lvTotalStore.value < 21} />
             </div>
         </Tile>
         <Tile insideClass="flex h-full items-center">
