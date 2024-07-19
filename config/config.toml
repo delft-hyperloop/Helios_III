@@ -278,3 +278,7 @@ colour = "red"
 label = "LvBmsTimedOut"
 colour = "red"
 
+[[Info]]
+label = "StartingCanWatchdog"
+colour = "blue"
+

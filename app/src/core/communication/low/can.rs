@@ -165,7 +165,9 @@ pub async fn can_receiving_handler(
 
 #[embassy_executor::task]
 async fn can_two_watchdog(event_sender: EventSender, data_sender: DataSender) {
-    Timer::after_secs(20).await;
+    Timer::after_secs(5).await;
+    
+    send_data!(data_sender, Datatype::Info, Info::StartingCanWatchdog as u64);
     let mut lv_trigger = true;
     let mut hv_trigger = true;
     loop {
@@ -187,5 +189,7 @@ async fn can_two_watchdog(event_sender: EventSender, data_sender: DataSender) {
         } else {
             hv_trigger = true;
         }
+
+        Timer::after_millis(1000).await;
     }
 }
