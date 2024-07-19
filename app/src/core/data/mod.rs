@@ -68,19 +68,14 @@ pub async fn data_middle_step(
                 // send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
             },
             ValueCheckResult::BrakeNow => {
-                // queue_event(event_sender, Event::ValueOutOfBounds).await;
-                // send_data!(
-                //     outgoing,
-                //     Datatype::ValueCausedBraking,
-                //     data.datatype.to_id() as u64,
-                //     data.value
-                // );
-                // send_data!(
-                //     outgoing,
-                //     Datatype::Info,
-                //     Info::ValueCausedBraking as u64,
-                //     data.value
-                // );
+                queue_event(event_sender, Event::ValueOutOfBounds).await;
+                send_data!(
+                    outgoing,
+                    Datatype::ValueCausedBraking,
+                    data.datatype.to_id() as u64,
+                    data.value
+                );
+                send_data!(outgoing, Datatype::Info, Info::ValueCausedBraking as u64, data.value);
             },
         }
         // 2. check heartbeats

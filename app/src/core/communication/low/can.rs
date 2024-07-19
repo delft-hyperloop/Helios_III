@@ -16,6 +16,7 @@ use crate::core::controllers::can_controller::CanTwoUtils;
 use crate::pconfig::bytes_to_u64;
 use crate::pconfig::id_as_value;
 use crate::pconfig::send_event;
+use crate::send_data;
 use crate::CanReceiver;
 use crate::CanSender;
 use crate::DataSender;
@@ -113,13 +114,7 @@ pub async fn can_receiving_handler(
                         }
                     } else {
                         trace!("#{}", bytes_to_u64(frame.data()));
-                        data_sender
-                            .send(Datapoint::new(
-                                Datatype::from_id(id),
-                                bytes_to_u64(frame.data()),
-                                timestamp.as_ticks(),
-                            ))
-                            .await;
+                        send_data!(data_sender, Datatype::from_id(id), bytes_to_u64(frame.data()));
                     }
                 } else if EVENT_IDS.contains(&id) {
                     // since we are never supposed to change the speed through the can bus (and run config is the only event with an actual value), i want a magic number that i can filter out from the run config handler just to make sure the pod doesn't do something stupid

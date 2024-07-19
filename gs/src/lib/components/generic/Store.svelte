@@ -3,14 +3,14 @@
     import {GrandDataDistributor} from "$lib";
     import {latestTimestamp} from "$lib/stores/state";
 
-
+    const STALE_DATA_TICKS = 2_500_000;
     export let datatype: NamedDatatype;
     const store = GrandDataDistributor.getInstance().stores.getWritable(datatype);
 
     $: store;
 </script>
 
-<span class="text-{$latestTimestamp - $store.timestamp > 10000 ? 'surface' : $store.style === 'critical' ? 'error' : $store.style}-400">
+<span class="text-{$latestTimestamp - $store.timestamp > STALE_DATA_TICKS ? 'surface' : $store.style === 'critical' ? 'error' : $store.style}-400">
     {typeof $store.value === "number" ?
         $store.value.toFixed(2) : $store.value} {$store.units}
 </span>

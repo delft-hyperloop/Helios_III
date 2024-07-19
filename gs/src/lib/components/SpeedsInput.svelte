@@ -90,7 +90,15 @@
 
     async function processRoutes() {
       console.log(`Sending command: positions_to_u64`);
-      await invoke('positions_to_u64', {positions: CurrentRouteConfig.positions}).then(r => {
+      let modifiedPos = [...CurrentRouteConfig.positions];
+
+      if (modifiedPos.length < 16) {
+        for (let i = modifiedPos.length; i < 16; i++) {
+          modifiedPos.push('BrakeHere');
+        }
+      }
+
+      await invoke('positions_to_u64', {positions: modifiedPos}).then(r => {
         console.log(`Command positions_to_u64 sent with response: `);
         console.log(r)
         util.log(`Command positions_to_u64 sent`, EventChannel.INFO);
@@ -115,7 +123,15 @@
     }
 
     async function validateCurrentRouteConfig() {
-        await invoke('validate_route', { route: CurrentRouteConfig }).then(r => {
+        let modifiedRouteConfig = { ...CurrentRouteConfig, positions: [...CurrentRouteConfig.positions] };
+
+        if (modifiedRouteConfig.positions.length < 16) {
+            for (let i = modifiedRouteConfig.positions.length; i < 16; i++) {
+              modifiedRouteConfig.positions.push('BrakeHere');
+            }
+        }
+
+        await invoke('validate_route', { route: modifiedRouteConfig }).then(r => {
             console.log(`Route config validated: ${r}`);
             isValid = r as boolean;
         }).catch(e => {

@@ -37,10 +37,9 @@ impl Fsm {
                 self.log(Info::BrakesArmed).await;
             },
             Event::RunConfigCompleteEvent => {
-                if self.status.overrides.run_without_configure() {
-                    self.log(Info::ConfigurationCompleted).await;
-                    transit!(self, State::Idle);
-                } else if self.status.route_set && self.status.speeds_set {
+                if self.status.overrides.run_without_configure()
+                    || (self.status.route_set && self.status.speeds_set)
+                {
                     self.log(Info::ConfigurationCompleted).await;
                     transit!(self, State::Idle);
                 } else {
