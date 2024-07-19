@@ -240,7 +240,7 @@ namespace PmpGettingStartedCs
                         Console.WriteLine("CRITICAL:mode_error\n");
                     }
                     break;
-/*
+
                 case "LeviStartLS":
                     try
                     {
@@ -251,9 +251,9 @@ namespace PmpGettingStartedCs
                     {
                         Console.WriteLine("CRITICAL:mode_error\n");
                     }
-                    break;*/
+                    break;
 
-/*                case "LeviStopLS":
+                case "LeviStopLS":
                     try
                     {
                         this.SetLS_Signal(0);
@@ -264,7 +264,7 @@ namespace PmpGettingStartedCs
                         Console.WriteLine("CRITICAL:mode_error\n");
                     }
                     break;
-*/
+
                 case "vert0_reset":
                     try
                     {
@@ -432,7 +432,7 @@ namespace PmpGettingStartedCs
                     break;
 
 
-               /* case string data_str when data_str.Contains("data:"):
+                case string data_str when data_str.Contains("data:"):
                     try
                     {
                         data_str = data_str.Trim();
@@ -447,14 +447,14 @@ namespace PmpGettingStartedCs
                         }
                         else if (data_id.ToLower().Contains("localisation"))
                         {
-                            this.SetSenseconLocation(data_value/1000);
+                            this.SetSenseconLocation(data_value / 1000);
                         }
                     }
                     catch (Exception)
                     {
                         Console.WriteLine("WARNING:receive_data_error\n");
                     }
-                    break;*/
+                    break;
 
                 default:
 /*                    Console.WriteLine("WARNING:invalid\n");*/
@@ -525,10 +525,10 @@ namespace PmpGettingStartedCs
             this.Offset_AB = LateralController.Signals["OffsetFront"];
             this.Offset_CD = LateralController.Signals["OffsetBack"];
 
-/*            this.SenseconLocation = LateralController.Signals["x_location_raw"];
+            this.SenseconLocation = LateralController.Signals["x_location_raw"];
             this.LeviLocation = LateralController.Signals["x_location"];
             this.LeviSpeed = LateralController.Signals["x_speed"];
-            this.LS_signal = LateralController.Signals["LS_signal"];*/
+            this.LS_signal = LateralController.Signals["LS_signal"];
             this.PropulsionCurrent = VerticalController.Signals["PropulsionCurrent"];
 
             this.Airgap = VerticalController.Signals["Airgap"];
@@ -775,20 +775,22 @@ namespace PmpGettingStartedCs
                         catch (Exception)
                         {
                             Console.WriteLine("CRITICAL:NO_LEVI_VOlTAGE_DATA");
+                            Thread.Sleep(1000);
                         }
                         Thread.Sleep(50);
-                        /*                        arcas.getVerticalAirgaps();
+                                                arcas.getVerticalAirgaps();
                                                 arcas.getLateralAirgaps();
                                                 arcas.getCurrents();
-                                                arcas.getDegreesOfFreedom();*/
+                                                arcas.getDegreesOfFreedom();
 
-                        /*                        arcas.getLocalization();*/
+                                                arcas.getLocalization();
 
                     }
                     catch (Exception)
                     {
 
                         Console.WriteLine("WARNING:cant_receive_data");
+                        Thread.Sleep(3000);
                     }
                 }
             }
