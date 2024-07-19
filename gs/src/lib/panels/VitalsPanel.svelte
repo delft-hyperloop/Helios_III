@@ -20,24 +20,24 @@
         ["Min", DE.BATTERYMINVOLTAGEHIGH, DE.BATTERYMINTEMPERATUREHIGH, DE.BATTERYMINVOLTAGELOW, DE.BATTERYMINTEMPERATURELOW],
         ["Max", DE.BATTERYMAXVOLTAGEHIGH, DE.BATTERYMAXTEMPERATUREHIGH, DE.BATTERYMAXVOLTAGELOW, DE.BATTERYMAXTEMPERATURELOW],
         ["Avg", DE.BATTERYVOLTAGEHIGH, DE.BATTERYTEMPERATUREHIGH, DE.BATTERYVOLTAGELOW, DE.BATTERYTEMPERATURELOW],
-        ["Safe Range", "[360, 420]", "[15,50]", "[280,360]", "[15,50]"]
+        ["Safe Range", "[360, 420] V", "[15,50] °C", "[280,360] V", "[15,50] °C"]
     ]
 
     $: tableTempsArr = [
-        ["Up VB", DE.AVERAGE_TEMP_VB_TOP, "[0,70]", "HEMS 1", DE.TEMP_HEMS_1, "[0,80] "],
-        ["Low VB", DE.AVERAGE_TEMP_VB_BOTTOM, "[0,70]", "HEMS 2", DE.TEMP_HEMS_2, "[0,80]"],
-        ["Ambient", DE.AMBIENT_TEMP, "[0,50]", "HEMS 3", DE.TEMP_HEMS_3, "[0,80]"],
-        ["Motor Front", "Temp_Motor_1", "[0,80]", "HEMS 4", DE.TEMP_HEMS_4, "[0,80]"],
-        ["Motor Back", "Temp_Motor_2", "[0,80]", "EMS 1", DE.TEMP_EMS_1, "[0,80]"],
-        ["Brake", DE.BRAKETEMPERATURE, "[0,100]", "EMS 2", DE.TEMP_EMS_2, "[0,80]"],
+        ["Up VB", DE.AVERAGE_TEMP_VB_TOP, "[0,70] °C", "HEMS 1", DE.TEMP_HEMS_1, "[0,80] °C"],
+        ["Low VB", DE.AVERAGE_TEMP_VB_BOTTOM, "[0,70] °C", "HEMS 2", DE.TEMP_HEMS_2, "[0,80] °C"],
+        ["Ambient", DE.AMBIENT_TEMP, "[0,50] °C", "HEMS 3", DE.TEMP_HEMS_3, "[0,80] °C"],
+        ["Motor Front", "Temp_Motor_1", "[0,80] °C", "HEMS 4", DE.TEMP_HEMS_4, "[0,80] °C"],
+        ["Motor Back", "Temp_Motor_2", "[0,80] °C", "EMS 1", DE.TEMP_EMS_1, "[0,80] °C"],
+        ["Brake", DE.BRAKETEMPERATURE, "[0,100] °C", "EMS 2", DE.TEMP_EMS_2, "[0,80] °C"],
     ]
 
     $: tableArr2 = [
-        ["HEMS A1", DE.LEVI_HEMS_CURRENT_A1, "[-10,10]", "HEMS A2", DE.LEVI_HEMS_CURRENT_A2, "[-10,10]"],
-        ["HEMS B1", DE.LEVI_HEMS_CURRENT_B1, "[-10,10]", "HEMS B2", DE.LEVI_HEMS_CURRENT_B2, "[-10,10]"],
-        ["HEMS C1", DE.LEVI_HEMS_CURRENT_C1, "[-10,10]", "HEMS C2", DE.LEVI_HEMS_CURRENT_C2, "[-10,10]"],
-        ["HEMS D1", DE.LEVI_HEMS_CURRENT_D1, "[-10,10]", "HEMS D2", DE.LEVI_HEMS_CURRENT_D2, "[-10,10]"],
-        ["EMS AB", DE.LEVI_EMS_CURRENT_AB, "[-10,10]", "EMS CD", DE.LEVI_EMS_CURRENT_CD, "[-10,10]"],
+        ["HEMS A1", DE.LEVI_HEMS_CURRENT_A1, "[-10,10] A", "HEMS A2", DE.LEVI_HEMS_CURRENT_A2, "[-10,10] A"],
+        ["HEMS B1", DE.LEVI_HEMS_CURRENT_B1, "[-10,10] A", "HEMS B2", DE.LEVI_HEMS_CURRENT_B2, "[-10,10] A"],
+        ["HEMS C1", DE.LEVI_HEMS_CURRENT_C1, "[-10,10] A", "HEMS C2", DE.LEVI_HEMS_CURRENT_C2, "[-10,10] A"],
+        ["HEMS D1", DE.LEVI_HEMS_CURRENT_D1, "[-10,10] A", "HEMS D2", DE.LEVI_HEMS_CURRENT_D2, "[-10,10] A"],
+        ["EMS AB", DE.LEVI_EMS_CURRENT_AB, "[-10,10] A", "EMS CD", DE.LEVI_EMS_CURRENT_CD, "[-10,10] A"],
     ]
 
     const location = storeManager.getWritable("Localisation");
@@ -88,21 +88,21 @@
                     <div class="flex flex-wrap justify-between">
                         <div class="flex gap-4 ">
                             <p>
-                                Velocity: <Store datatype="Velocity" />
+                                Velocity: <Store datatype="Velocity" /> m/s
                                 <br>
-                                Position: <Store datatype="Localisation" />
+                                Position: <Store datatype="Localisation" /> mm
                                 <br>
-                                Acceleration: <Store datatype="Acceleration" />
+                                Acceleration: <Store datatype="Acceleration" /> m/s²
                             </p>
                             <p>
-                                HV Current: <Store datatype="BatteryCurrentHigh" /> - [0, 25]
+                                HV Current: <Store datatype="BatteryCurrentHigh" /> - [0, 25] A
                                 <br>
-                                LV Current: <Store datatype="BatteryCurrentLow" /> - [0, 10]
+                                LV Current: <Store datatype="BatteryCurrentLow" /> - [0, 10] A
                             </p>
                             <p>
-                                Low Pressure: <Store datatype="LowPressureSensor" /> - [40, 52]
+                                Low Pressure: <Store datatype="LowPressureSensor" /> - [40, 52] bar
                                 <br>
-                                High Pressure: <Store datatype="HighPressureSensor" /> - [80, 180]
+                                High Pressure: <Store datatype="HighPressureSensor" /> - [80, 180] bar
                             </p>
                         </div>
                         <div style="grid-template-columns: 1fr 2fr 3fr;" class="grid gap-2">
@@ -122,8 +122,8 @@
                             <Command cmd="StartRun" className="py-1 bg-primary-500 text-surface-900" />
                         </div>
                         <div class="flex flex-col">
-                            <span>LV Total Safe: [21, 29.5]</span>
-                            <span>HV Total Safe: [347, 470]</span>
+                            <span>LV Total Safe: [21, 29.5] V</span>
+                            <span>HV Total Safe: [347, 470] V</span>
                         </div>
                     </div>
                 </Tile>
