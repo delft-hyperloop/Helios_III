@@ -199,8 +199,13 @@ lower = {warn = 280, err = 270, brake = 260}
 name = "TotalBatteryVoltageLow"
 id = 0x1A5
 display_units = "V"
+<<<<<<< HEAD
 upper = { warn = 2400, err = 2500, brake = 2500}
 lower = { warn = 1900, brake = 1800}
+=======
+upper = { warn = 2600, err = 2700, brake = 2700}
+lower = { warn = 2100, brake = 2000}
+>>>>>>> d5f89fe35f5eb998574b23a56c9f1e367efdc545
 
 [[Datatype]]
 name = "TotalBatteryVoltageHigh"
@@ -461,14 +466,15 @@ lower = {brake = 10 }
 [[Datatype]]
 name = "Temp_HEMS_1"
 id = 0x20a
-lower = {brake = 10 }# (e-2) degrees # the idea here is that we blink red if we read below 0 (sensor disconnect)
+lower = {brake = 10 , err = 15}# (e-2) degrees # the idea here is that we blink red if we read below 0 (sensor disconnect)
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_HEMS_2"
 id = 0x20b
-lower = {brake = 10  }# (e-2) degrees
+
+lower = {brake = 10 , err = 15 }# (e-2) degrees
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
 display_units = "ºC"
 
@@ -476,7 +482,7 @@ display_units = "ºC"
 [[Datatype]]
 name = "Temp_HEMS_3"
 id = 0x20c
-lower = {brake = 10  }# (e-2) degrees
+lower = {brake = 10, err = 15  }# (e-2) degrees
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
 display_units = "ºC"
 
@@ -484,7 +490,7 @@ display_units = "ºC"
 [[Datatype]]
 name = "Temp_HEMS_4"
 id = 0x20d
-lower = {brake = 10  }# (e-2) degrees
+lower = {brake = 10 , err = 15 }# (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
@@ -492,14 +498,14 @@ display_units = "ºC"
 [[Datatype]]
 name = "Temp_Motor_1"
 id = 0x20e
-lower = {brake = 10  }
+lower = {brake = 10  , err = 15}
 upper = { warn = 6000, err = 8000 }
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_Motor_2"
 id = 0x20f
-lower = {brake = 10 } # (e-2) degrees
+lower = {brake = 10, err = 15 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
@@ -514,35 +520,35 @@ display_units = "bar"
 [[Datatype]]
 name = "Ambient_temp"
 id = 0x224
-lower = {err =  0} # (e-2) degrees
+lower = {brake =  0, err = 15} # (e-2) degrees
 upper = {err = 5000 } # (e-2) degrees
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_1"
 id = 0x222
-lower = {brake = 10  } # (e-2) degrees
+lower = {brake = 10 , err = 15}  # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_2"
 id = 0x223
-lower = {brake = 10 } # (e-2) degrees
+lower = {brake = 10, err = 15}  # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_3"
 id = 0x225
-lower = {brake = 10  } # (e-2) degrees
+lower = {brake = 10, err = 15} # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_4"
 id = 0x226
-lower = {brake = 10} # (e-2) degrees
+lower = {brake = 10, err = 15}   # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
@@ -1099,15 +1105,15 @@ id = 0x777
 name = "LowPressureSensor"
 id = 0x127
 lower = {warn = 40, err = 35 } #(e-2) bar
-upper = { warn = 52, err = 56} #(e-2) bar
-display_units = "bat"
+upper = { warn = 170, err = 180} #(e-2) bar
+display_units = "bar"
 
 [[Datatype]]
 name = "HighPressureSensor"
 id = 0x128
 # lower = 80 #bar
 # upper = 180 #bar
-lower = {warn = 90, err = 70 } #(e-2) bar
+lower = {warn = 80, err = 60 } #(e-2) bar
 upper = { warn = 170, err = 180} #(e-2) bar
 display_units = "bar"
 
