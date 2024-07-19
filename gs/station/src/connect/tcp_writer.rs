@@ -1,8 +1,9 @@
+use gslib::Message;
+use gslib::Message::Error;
+use gslib::HEARTBEAT;
 use tokio::io::AsyncWriteExt;
 use tokio::net::tcp::OwnedWriteHalf;
 
-use gslib::{HEARTBEAT, Message};
-use gslib::Message::Error;
 use crate::Command;
 use crate::CommandReceiver;
 use crate::MessageSender;

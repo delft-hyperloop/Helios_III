@@ -23,14 +23,12 @@ use crate::core::fsm_status::HUB_CONNECTED;
 use crate::core::fsm_status::HV_BATTERIES_CONNECTED;
 use crate::core::fsm_status::LV_BATTERIES_CONNECTED;
 use crate::core::fsm_status::PROPULSION_CONNECTED;
-use crate::pconfig::queue_event;
 use crate::pconfig::ticks;
 use crate::send_data;
 use crate::DataReceiver;
 use crate::DataSender;
 use crate::Datapoint;
 use crate::Datatype;
-use crate::Event;
 use crate::EventSender;
 use crate::Info;
 use crate::ValueCheckResult;
@@ -47,7 +45,7 @@ type HB = Vec<(Datatype, Duration, Option<Instant>), { HEARTBEATS_LEN }>;
 pub async fn data_middle_step(
     incoming: DataReceiver,
     outgoing: DataSender,
-    event_sender: EventSender,
+    _event_sender: EventSender,
 ) -> ! {
     let mut hb = HB::new();
     let hb_dt = HEARTBEATS.iter().map(|x| x.0).collect::<Vec<Datatype, { HEARTBEATS_LEN }>>();
@@ -58,14 +56,16 @@ pub async fn data_middle_step(
         // 1. check thresholds
         match data.datatype.check_bounds(data.value) {
             ValueCheckResult::Fine => {},
-            ValueCheckResult::Warn => send_data!(
-                outgoing,
-                Datatype::ValueWarning,
-                data.datatype.to_id() as u64,
-                data.value
-            ),
+            ValueCheckResult::Warn => {
+                //     send_data!(
+                //     outgoing,
+                //     Datatype::ValueWarning,
+                //     data.datatype.to_id() as u64,
+                //     data.value
+                // ),
+            },
             ValueCheckResult::Error => {
-                send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
+                // send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
             },
             ValueCheckResult::BrakeNow => {
                 queue_event(event_sender, Event::ValueOutOfBounds).await;
@@ -87,7 +87,7 @@ pub async fn data_middle_step(
                 *last = Some(Instant::now());
             } else if last.is_some_and(|l| l.elapsed() > *out) {
                 warn!("[heartbeat] timeout triggered for {:?}", dt);
-                event_sender.send(Event::EmergencyBraking).await;
+                // event_sender.send(Event::EmergencyBraking).await;
                 outgoing
                     .send(Datapoint::new(Datatype::HeartbeatExpired, dt.to_id() as u64, ticks()))
                     .await;

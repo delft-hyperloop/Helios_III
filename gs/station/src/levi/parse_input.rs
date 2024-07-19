@@ -1,5 +1,7 @@
-use gslib::{Datatype, Message};
+use gslib::Datatype;
+use gslib::Message;
 use gslib::ProcessedData;
+
 use crate::battery::DataSender;
 use crate::battery::HV_DATATYPES;
 use crate::Command;

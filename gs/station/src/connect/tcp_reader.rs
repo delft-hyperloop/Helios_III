@@ -1,13 +1,14 @@
 use std::collections::VecDeque;
 
+use gslib::Info;
+use gslib::Message;
+use gslib::NETWORK_BUFFER_SIZE;
 use tokio::io::AsyncReadExt;
 use tokio::net::tcp::OwnedReadHalf;
 
-use gslib::{Info, Message};
 use crate::battery::DataSender;
 use crate::CommandSender;
 use crate::MessageSender;
-use gslib::NETWORK_BUFFER_SIZE;
 
 pub async fn get_messages_from_tcp(
     mut reader: OwnedReadHalf,

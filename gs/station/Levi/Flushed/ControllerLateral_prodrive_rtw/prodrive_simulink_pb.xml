@@ -146,6 +146,38 @@
       </Signals>
     </Input>
 
+    <Input Mutable="ConfigOnly" Name="IMU_x" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU_x" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU_yaw" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU_yaw" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU_y" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU_y" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="PropulsionOn" Type="LocalPeriodic" DataType="Bool">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Bool" Description="Simulink inport: PropulsionOn" Unit="" LowerBound="False" UpperBound="True" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Bool" Description="Disconnected value of the input." Unit="" LowerBound="False" UpperBound="True" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
   </Inputs>
   <Signals>
     <Signal Name="Mode" Access="R" DataType="Double" Description="Simulink outport: Mode" Unit="" LowerBound="Min" UpperBound="Max" />
@@ -196,23 +228,47 @@
 
     <Signal Name="EMS_F_Back" Access="R" DataType="Double" Description="Simulink outport: EMS_F_Back" Unit="" LowerBound="Min" UpperBound="Max" />
 
+    <Signal Name="L_K_i_out_0" Access="R" DataType="Double" Description="Simulink outport: L_K_i_out" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="L_K_i_out_1" Access="R" DataType="Double" Description="Simulink outport: L_K_i_out" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="uncapped_current" Access="R" DataType="Double" Description="Simulink outport: uncapped_current" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="LS_mode_vert" Access="R" DataType="Double" Description="Simulink outport: LS_mode_vert" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Complementary_B" Access="R" DataType="Double" Description="Simulink outport: Complementary_B" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Complementary_D" Access="R" DataType="Double" Description="Simulink outport: Complementary_D" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="x_speed" Access="R" DataType="Double" Description="Simulink outport: x_speed" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="x_location" Access="R" DataType="Double" Description="Simulink outport: x_location" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Complementary_A" Access="R" DataType="Double" Description="Simulink outport: Complementary_A" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Complementary_C" Access="R" DataType="Double" Description="Simulink outport: Complementary_C" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Inertia" Access="R" DataType="Double" Description="Simulink outport: Inertia" Unit="" LowerBound="Min" UpperBound="Max" />
+
     <Signal Name="BackGain" Access="RW" DataType="Double" Description="Multiply this with back passive stability and zero current finder" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
     <Signal Name="BeamErrorTime" Access="RW" DataType="Double" Description="Time between beam offsets" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
     <Signal Name="CurrentIntegralLat" Access="RW" DataType="Double" Description="Lateral Airgap I Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.05"  InvalidValue="NaN"/>
 
+    <Signal Name="ForgetFactor_Highpass_Lat" Access="RW" DataType="Double" Description="Alpha of highpass to remove steady state val" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.005"  InvalidValue="NaN"/>
+
     <Signal Name="FrontGain" Access="RW" DataType="Double" Description="Multiply this with front passive stability and zero current finder" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
-    <Signal Name="LS_curved_AG" Access="RW" DataType="Double" Description="mode 2 ag" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="8.0"  InvalidValue="NaN"/>
+    <Signal Name="LS_curved_AG" Access="RW" DataType="Double" Description="mode 2 ag" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="8.5"  InvalidValue="NaN"/>
 
-    <Signal Name="LS_mode" Access="RW" DataType="Double" Description="lane switch mode: 0, 1, 2" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+    <Signal Name="LS_mode" Access="RW" DataType="Double" Description="lane switch mode: 0, 1, 2" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="2.0"  InvalidValue="NaN"/>
 
-    <Signal Name="LS_straight_AG" Access="RW" DataType="Double" Description="mode 1 ag" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="8.0"  InvalidValue="NaN"/>
+    <Signal Name="LS_straight_AG" Access="RW" DataType="Double" Description="mode 1 ag" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="8.5"  InvalidValue="NaN"/>
 
     <Signal Name="L_K_d" Access="RW" DataType="Double" Description="Lateral KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="3.5"  InvalidValue="NaN"/>
 
-    <Signal Name="L_K_i" Access="RW" DataType="Double" Description="Lateral KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="12.0"  InvalidValue="NaN"/>
+    <Signal Name="L_K_i" Access="RW" DataType="Double" Description="Lateral KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="14.0"  InvalidValue="NaN"/>
 
     <Signal Name="L_K_p" Access="RW" DataType="Double" Description="Lateral KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="30.0"  InvalidValue="NaN"/>
 
@@ -248,7 +304,7 @@
 
     <Signal Name="M_f" Access="RW" DataType="Double" Description="Magnet Multiplying Factor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
-    <Signal Name="Mass" Access="RW" DataType="Double" Description="M" Unit=" kg" LowerBound="Min" UpperBound="Max" ResetValue="360.0"  InvalidValue="NaN"/>
+    <Signal Name="Mass" Access="RW" DataType="Double" Description="M" Unit=" kg" LowerBound="Min" UpperBound="Max" ResetValue="395.5"  InvalidValue="NaN"/>
 
     <Signal Name="MeasureCurrent" Access="RW" DataType="Double" Description="Using current measurement from arcas" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
@@ -266,19 +322,35 @@
 
     <Signal Name="ReferenceMass" Access="RW" DataType="Double" Description="R_M" Unit=" kg" LowerBound="Min" UpperBound="Max" ResetValue="110.0"  InvalidValue="NaN"/>
 
+    <Signal Name="ResetComplementary" Access="RW" DataType="Double" Description="Turn on to reset comp filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
     <Signal Name="RunTime" Access="RW" DataType="Double" Description="Runtime" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="3000.0"  InvalidValue="NaN"/>
 
     <Signal Name="SemiCentralized" Access="RW" DataType="Double" Description="Turn This on for a semi-centralized control based on torque interference between EMS front and back" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
     <Signal Name="SineTime" Access="RW" DataType="Double" Description="Time between full rotations" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
 
-    <Signal Name="StartupTime" Access="RW" DataType="Double" Description="Start-up Ramp-up" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="6.0"  InvalidValue="NaN"/>
+    <Signal Name="StartupTime" Access="RW" DataType="Double" Description="Start-up Ramp-up" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="2.0"  InvalidValue="NaN"/>
+
+    <Signal Name="StopDeIntegral" Access="RW" DataType="Double" Description="Stop the deintegral" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="UseBothEMS" Access="RW" DataType="Double" Description="use both EMS, even in LS mode" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="UseComplementaryBD" Access="RW" DataType="Double" Description="Switch on complementary filter for BD" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="kalman_xdotdot_gain" Access="RW" DataType="Double" Description="IMU direction" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="kalman_yawdot_gain" Access="RW" DataType="Double" Description="IMU direction" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="kalman_ydotdot_gain" Access="RW" DataType="Double" Description="IMU direction" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="lat_zero_reset" Access="RW" DataType="Double" Description="Reset zerocurrent integral" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
     <Signal Name="lateral_over_vertical_force_hems" Access="RW" DataType="Double" Description="Lateral restoring force coeff" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
     <Signal Name="lateral_over_vertical_force_motor" Access="RW" DataType="Double" Description="Lateral restoring force coeff" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
-    <Signal Name="t_trans" Access="RW" DataType="Double" Description="transition time" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+    <Signal Name="t_trans" Access="RW" DataType="Double" Description="transition time" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
 
 
   </Signals>

@@ -2,21 +2,23 @@ use std::path::PathBuf;
 use std::str::FromStr;
 
 use chrono::Local;
+use gslib::Datapoint;
+use gslib::Datatype;
+use gslib::LocationSequence;
+use gslib::LocationSpeedMap;
+use gslib::Message;
+use gslib::ProcessedData;
+use gslib::Route;
 use rand::Rng;
 use tauri::Manager;
 use tauri::State;
 
-use gslib::{Datapoint, LocationSequence, LocationSpeedMap};
-use gslib::Message;
-use gslib::ProcessedData;
-use gslib::Route;
 use crate::backend::Backend;
+use crate::data::validate::validate_route_internal;
 use crate::frontend::app::APP_HANDLE;
 use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
 use crate::Command;
-use crate::data::validate::validate_route_internal;
-use gslib::Datatype;
 
 #[macro_export]
 #[allow(unused)]
@@ -202,34 +204,24 @@ pub fn test_route() -> Route { Route::default() }
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn validate_route(route: Route) -> bool {
-    validate_route_internal(route)
-}
+pub fn validate_route(route: Route) -> bool { validate_route_internal(route) }
 
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn speeds_to_u64(speeds: LocationSpeedMap) -> u64 {
-    speeds.into()
-}
+pub fn speeds_to_u64(speeds: LocationSpeedMap) -> u64 { speeds.into() }
 
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn speeds_from_u64(speeds: u64) -> LocationSpeedMap {
-    speeds.into()
-}
+pub fn speeds_from_u64(speeds: u64) -> LocationSpeedMap { speeds.into() }
 
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn positions_to_u64(positions: LocationSequence) -> u64 {
-    positions.into()
-}
+pub fn positions_to_u64(positions: LocationSequence) -> u64 { positions.into() }
 
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn positions_from_u64(positions: u64) -> LocationSequence {
-    positions.into()
-}
+pub fn positions_from_u64(positions: u64) -> LocationSequence { positions.into() }

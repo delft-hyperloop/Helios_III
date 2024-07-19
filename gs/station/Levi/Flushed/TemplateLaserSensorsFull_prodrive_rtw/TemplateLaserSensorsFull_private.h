@@ -7,9 +7,9 @@
  *
  * Code generation for model "TemplateLaserSensorsFull".
  *
- * Model version              : 1.8
+ * Model version              : 1.40
  * Simulink Coder version : 9.5 (R2021a) 14-Nov-2020
- * C source code generated on : Mon May 20 13:05:41 2024
+ * C source code generated on : Sat Jul 13 15:26:00 2024
  *
  * Target selection: pmp.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -22,6 +22,7 @@
 #define RTW_HEADER_TemplateLaserSensorsFull_private_h_
 #include "rtwtypes.h"
 #include "multiword_types.h"
+#include "TemplateLaserSensorsFull.h"
 #if !defined(rt_VALIDATE_MEMORY)
 #define rt_VALIDATE_MEMORY(S, ptr)     if(!(ptr)) {\
  rtmSetErrorStatus(TemplateLaserSensorsFull_M, RT_MEMORY_ALLOCATION_ERROR);\
@@ -43,4 +44,33 @@
  }
 #endif
 #endif
+
+void TemplateLaserSensorsFull_MovingAverage_Init
+  (DW_MovingAverage_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage_Start
+  (DW_MovingAverage_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage(real_T rtu_0,
+  B_MovingAverage_TemplateLaserSensorsFull_T *localB,
+  DW_MovingAverage_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage6_Init
+  (DW_MovingAverage6_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage6_Start(real_T rtp_IMU_Filter,
+  DW_MovingAverage6_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage6(real_T rtu_0, real_T rtp_IMU_Filter,
+  B_MovingAverage6_TemplateLaserSensorsFull_T *localB,
+  DW_MovingAverage6_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage7_Init
+  (DW_MovingAverage7_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage7_Start(real_T rtp_IMU_SecondFilter,
+  DW_MovingAverage7_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage7(real_T rtu_0, real_T
+  rtp_IMU_SecondFilter, B_MovingAverage7_TemplateLaserSensorsFull_T *localB,
+  DW_MovingAverage7_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage_Term
+  (DW_MovingAverage_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage6_Term
+  (DW_MovingAverage6_TemplateLaserSensorsFull_T *localDW);
+void TemplateLaserSensorsFull_MovingAverage7_Term
+  (DW_MovingAverage7_TemplateLaserSensorsFull_T *localDW);
+
 #endif                      /* RTW_HEADER_TemplateLaserSensorsFull_private_h_ */

@@ -203,7 +203,7 @@ impl Fsm {
     pub(crate) async fn react(&mut self, event: Event) {
         info!("[fsm] reacting to {}", event.to_str());
 
-        self.send_dp(Datatype::FSMEvent, event.to_id() as u64, Instant::now().as_ticks()).await;
+        self.send_data(Datatype::FSMEvent, event.to_id() as u64).await;
 
         match event {
             Event::EmergencyBraking
@@ -220,9 +220,7 @@ impl Fsm {
                 return;
             },
 
-            Event::Heartbeating => {
-                self.send_dp(Datatype::FSMState, self.state as u64, ticks()).await
-            },
+            Event::Heartbeating => self.send_data(Datatype::FSMState, self.state as u64).await,
 
             Event::ExitEvent => {
                 transit!(self, State::Exit);
@@ -326,7 +324,7 @@ impl Fsm {
     /// # Send data to the ground station
     #[allow(unused)]
     pub async fn send_data(&mut self, dtype: Datatype, data: u64) {
-        self.data_queue.send(Datapoint::new(dtype, data, Instant::now().as_ticks())).await;
+        self.data_queue.send(Datapoint::new(dtype, data, ticks())).await;
     }
 
     /// ### Send data to the ground station while also specifying the timestamp
@@ -338,7 +336,7 @@ impl Fsm {
     /// # Send a command to Levi
     /// Send a command to the Levitation controller
     #[allow(unused)]
-    pub async fn send_levi_cmd(&mut self, cmd: crate::Command) {
+    pub async fn send_levi_cmd(&mut self, cmd: Command) {
         self.data_queue
             .send(Datapoint::new(
                 Datatype::LeviInstruction,
@@ -352,30 +350,20 @@ impl Fsm {
     /// Send an info message to the ground station,
     /// from the `enum Info`
     pub async fn log(&self, info: Info) {
-        self.data_queue
-            .send(Datapoint::new(Datatype::Info, info.to_idx(), Instant::now().as_ticks()))
-            .await;
+        self.data_queue.send(Datapoint::new(Datatype::Info, info.to_idx(), ticks())).await;
     }
 
     /// Tell the ground station that the pod is now safe to approach (HV off)
     pub async fn pod_safe(&self) {
         self.data_queue
-            .send(Datapoint::new(
-                Datatype::Info,
-                Info::to_idx(&Info::Safe),
-                Instant::now().as_ticks(),
-            ))
+            .send(Datapoint::new(Datatype::Info, Info::to_idx(&Info::Safe), ticks()))
             .await;
     }
 
     /// Tell the ground station that the pod is not safe to approach (HV on)
     pub async fn pod_unsafe(&self) {
         self.data_queue
-            .send(Datapoint::new(
-                Datatype::Info,
-                Info::to_idx(&Info::Unsafe),
-                Instant::now().as_ticks(),
-            ))
+            .send(Datapoint::new(Datatype::Info, Info::to_idx(&Info::Unsafe), ticks()))
             .await;
         VOLTAGE_OVER_50.store(true, core::sync::atomic::Ordering::Relaxed);
     }

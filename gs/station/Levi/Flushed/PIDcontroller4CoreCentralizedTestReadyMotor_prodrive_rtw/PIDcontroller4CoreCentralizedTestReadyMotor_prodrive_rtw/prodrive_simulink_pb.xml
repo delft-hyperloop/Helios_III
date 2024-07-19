@@ -1,0 +1,595 @@
+<ProcessingBlockType Name="Simulink-PIDcontroller4CoreCentralizedTestReadyMotor" Description="">
+  <Properties>
+      <Property Name="SamplePeriod" Value="0.00025"/>
+
+  </Properties>
+  <Texts>
+    <Text Name="Empty" Value=""/>
+  </Texts>
+  <Events>
+  </Events>
+
+  <Inputs>
+    <Input Mutable="ConfigOnly" Name="G_A" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: G_A" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="G_B" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: G_B" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="G_C" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: G_C" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="G_D" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: G_D" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="I_A_m" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: I_A_m" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="I_B_m" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: I_B_m" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="I_C_m" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: I_C_m" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="I_D_m" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: I_D_m" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="VerticalAxisState" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: VerticalAxisState" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="Vr1" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: Vr1" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="Vr2" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: Vr2" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="Vr3" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: Vr3" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="Vr4" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: Vr4" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="Vt1" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: Vt1" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="Vt2" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: Vt2" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="Vt3" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: Vt3" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="Vt4" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: Vt4" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="EMS_F_Front" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: EMS_F_Front" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="EMS_F_Back" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: EMS_F_Back" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="LS_mode" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: LS_mode" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU_z" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU_z" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU_pitch" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU_pitch" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+    <Input Mutable="ConfigOnly" Name="IMU_roll" Type="LocalPeriodic" DataType="Double">
+      <Signals>
+        <Signal Name="Value" Access="R" DataType="Double" Description="Simulink inport: IMU_roll" Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Name="DisconnectedValue" Access="RW" DataType="Double" Description="Disconnected value of the input." Unit="" LowerBound="Min" UpperBound="Max" />
+        <Signal Access="R" DataType="Bool" Description="Indicates whether the input is connected to a signal." LowerBound="False" Name="IsConnected" Unit="" UpperBound="True"/>
+      </Signals>
+    </Input>
+
+  </Inputs>
+  <Signals>
+    <Signal Name="I_A" Access="R" DataType="Double" Description="Simulink outport: I_A" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="ActualReferenceAirgap" Access="R" DataType="Double" Description="Simulink outport: ActualReferenceAirgap" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Mode" Access="R" DataType="Double" Description="Simulink outport: Mode" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Airgap" Access="R" DataType="Double" Description="Simulink outport: Airgap" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Acceleration_0" Access="R" DataType="Double" Description="Simulink outport: Acceleration" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Acceleration_1" Access="R" DataType="Double" Description="Simulink outport: Acceleration" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Acceleration_2" Access="R" DataType="Double" Description="Simulink outport: Acceleration" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="CalculatedForce_0" Access="R" DataType="Double" Description="0" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="CalculatedForce_1" Access="R" DataType="Double" Description="0" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="CalculatedForce_2" Access="R" DataType="Double" Description="0" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Speed_0" Access="R" DataType="Double" Description="Simulink outport: Speed" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Speed_1" Access="R" DataType="Double" Description="Simulink outport: Speed" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Speed_2" Access="R" DataType="Double" Description="Simulink outport: Speed" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="I_B" Access="R" DataType="Double" Description="Simulink outport: I_B" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="I_C" Access="R" DataType="Double" Description="Simulink outport: I_C" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="I_D" Access="R" DataType="Double" Description="Simulink outport: I_D" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Pitch" Access="R" DataType="Double" Description="Simulink outport: Pitch" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Roll" Access="R" DataType="Double" Description="Simulink outport: Roll" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="G_Factor" Access="R" DataType="Double" Description="Simulink outport: G_Factor" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="P_Factor" Access="R" DataType="Double" Description="Simulink outport: P_Factor" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="R_Factor" Access="R" DataType="Double" Description="Simulink outport: R_Factor" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Linpos_0" Access="R" DataType="Double" Description="Simulink outport: Linpos" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Linpos_1" Access="R" DataType="Double" Description="Simulink outport: Linpos" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Linpos_2" Access="R" DataType="Double" Description="Simulink outport: Linpos" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Linpos_3" Access="R" DataType="Double" Description="Simulink outport: Linpos" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Filtered_Gaps_0" Access="R" DataType="Double" Description="Simulink outport: Filtered_Gaps" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Filtered_Gaps_1" Access="R" DataType="Double" Description="Simulink outport: Filtered_Gaps" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Filtered_Gaps_2" Access="R" DataType="Double" Description="Simulink outport: Filtered_Gaps" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Filtered_Gaps_3" Access="R" DataType="Double" Description="Simulink outport: Filtered_Gaps" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="PitchError" Access="R" DataType="Double" Description="Simulink outport: PitchError" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="BeamErrorOutput_0" Access="R" DataType="Double" Description="Simulink outport: BeamErrorOutput" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="BeamErrorOutput_1" Access="R" DataType="Double" Description="Simulink outport: BeamErrorOutput" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="BeamErrorOutput_2" Access="R" DataType="Double" Description="Simulink outport: BeamErrorOutput" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="ControlSIgnals_0" Access="R" DataType="Double" Description="0" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="ControlSIgnals_1" Access="R" DataType="Double" Description="0" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="ControlSIgnals_2" Access="R" DataType="Double" Description="0" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="ExternalForces_0" Access="R" DataType="Double" Description="0" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="ExternalForces_1" Access="R" DataType="Double" Description="0" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="ExternalForces_2" Access="R" DataType="Double" Description="0" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="HEMSForces_0" Access="R" DataType="Double" Description="Simulink outport: HEMSForces" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="HEMSForces_1" Access="R" DataType="Double" Description="Simulink outport: HEMSForces" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="HEMSForces_2" Access="R" DataType="Double" Description="Simulink outport: HEMSForces" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="HEMSForces_3" Access="R" DataType="Double" Description="Simulink outport: HEMSForces" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="motorfrontback_0" Access="R" DataType="Double" Description="Simulink outport: motorfrontback" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="motorfrontback_1" Access="R" DataType="Double" Description="Simulink outport: motorfrontback" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="RefPitchOut" Access="R" DataType="Double" Description="Simulink outport: RefPitchOut" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="RefRollOut" Access="R" DataType="Double" Description="Simulink outport: RefRollOut" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="DataBeforeKalman_0" Access="R" DataType="Double" Description="Simulink outport: DataBeforeKalman" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="DataBeforeKalman_1" Access="R" DataType="Double" Description="Simulink outport: DataBeforeKalman" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="DataBeforeKalman_2" Access="R" DataType="Double" Description="Simulink outport: DataBeforeKalman" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Power" Access="R" DataType="Double" Description="Simulink outport: Power" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Power_avg" Access="R" DataType="Double" Description="Simulink outport: Power_avg" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Energy" Access="R" DataType="Double" Description="Simulink outport: Energy" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="CalculatedTPR_0" Access="R" DataType="Double" Description="Simulink outport: CalculatedTPR" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="CalculatedTPR_1" Access="R" DataType="Double" Description="Simulink outport: CalculatedTPR" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="CalculatedTPR_2" Access="R" DataType="Double" Description="Simulink outport: CalculatedTPR" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Arms_0" Access="R" DataType="Double" Description="Simulink outport: Arms" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Arms_1" Access="R" DataType="Double" Description="Simulink outport: Arms" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Arms_2" Access="R" DataType="Double" Description="Simulink outport: Arms" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="CalculatedMass" Access="R" DataType="Double" Description="Simulink outport: CalculatedMass" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="MotorAGAdjust" Access="R" DataType="Double" Description="Simulink outport: MotorAGAdjust" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="IMU_kalman_output_0" Access="R" DataType="Double" Description="Simulink outport: IMU_kalman_output" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="IMU_kalman_output_1" Access="R" DataType="Double" Description="Simulink outport: IMU_kalman_output" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="IMU_kalman_output_2" Access="R" DataType="Double" Description="Simulink outport: IMU_kalman_output" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="MMOI_0" Access="R" DataType="Double" Description="Simulink outport: MMOI" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="MMOI_1" Access="R" DataType="Double" Description="Simulink outport: MMOI" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="MMOI_2" Access="R" DataType="Double" Description="Simulink outport: MMOI" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="PIDD" Access="R" DataType="Double" Description="Simulink outport: PIDD" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="F_Mismatch" Access="R" DataType="Double" Description="Simulink outport: F_Mismatch" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Kalman_Output_0" Access="R" DataType="Double" Description="Simulink outport: Kalman_Output" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Kalman_Output_1" Access="R" DataType="Double" Description="Simulink outport: Kalman_Output" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="Kalman_Output_2" Access="R" DataType="Double" Description="Simulink outport: Kalman_Output" Unit="" LowerBound="Min" UpperBound="Max" />
+
+    <Signal Name="AirgapFilter" Access="RW" DataType="Double" Description="Double Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Airgap_GainSchedulingEnabled_0" Access="RW" DataType="Double" Description="Airgap Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Airgap_GainSchedulingEnabled_1" Access="RW" DataType="Double" Description="Airgap Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Airgap_GainSchedulingEnabled_2" Access="RW" DataType="Double" Description="Airgap Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Airgap_GainSchedulingEnabled_3" Access="RW" DataType="Double" Description="Airgap Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Airgap_GainSchedulingEnabled_4" Access="RW" DataType="Double" Description="Airgap Gain Scheduling Enabled List PIDNF" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="BaseRefAirgap" Access="RW" DataType="Double" Description="Reference airgap/wanted airgap" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="14.0"  InvalidValue="NaN"/>
+
+    <Signal Name="BeamErrorTime" Access="RW" DataType="Double" Description="Time between beam offsets" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="BeamOffsets" Access="RW" DataType="Double" Description="Maximum beam offset from true zero" Unit="mm" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="BeamOffsetsBackDelay" Access="RW" DataType="Double" Description="Time between front and back error" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.2"  InvalidValue="NaN"/>
+
+    <Signal Name="BeamOffsetsFactor" Access="RW" DataType="Double" Description="Factor between left and right" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="CoMIntegrals_0" Access="RW" DataType="Double" Description="Integral gains for moment arms based on center of mass" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="CoMIntegrals_1" Access="RW" DataType="Double" Description="Integral gains for moment arms based on center of mass" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="CoMIntegrals_2" Access="RW" DataType="Double" Description="Integral gains for moment arms based on center of mass" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="CurrentIntegralAG" Access="RW" DataType="Double" Description="Airgap I Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.05"  InvalidValue="NaN"/>
+
+    <Signal Name="CurrentIntegralP" Access="RW" DataType="Double" Description="Pitch I Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.05"  InvalidValue="NaN"/>
+
+    <Signal Name="CurrentIntegralR" Access="RW" DataType="Double" Description="Roll I Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.05"  InvalidValue="NaN"/>
+
+    <Signal Name="DoubleFilter" Access="RW" DataType="Double" Description="Double Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="EMSRollIntegral" Access="RW" DataType="Double" Description="Integral gains for moment arm based on EMS" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="EMS_Moment_Arm_Z" Access="RW" DataType="Double" Description="Moment arm in meters for EMS to roll" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.15"  InvalidValue="NaN"/>
+
+    <Signal Name="F_array_0" Access="RW" DataType="Double" Description="Forgetting factor setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.8"  InvalidValue="NaN"/>
+
+    <Signal Name="F_array_1" Access="RW" DataType="Double" Description="Forgetting factor setpoints (0-5)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.7"  InvalidValue="NaN"/>
+
+    <Signal Name="ForgettingFactor" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.7"  InvalidValue="NaN"/>
+
+    <Signal Name="ForgettingFactorAirgap" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.7"  InvalidValue="NaN"/>
+
+    <Signal Name="ForgettingFactorLinpos" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.8"  InvalidValue="NaN"/>
+
+    <Signal Name="ForgettingFactorPitch" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.9"  InvalidValue="NaN"/>
+
+    <Signal Name="ForgettingFactorRoll" Access="RW" DataType="Double" Description="Forgetting Factor Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.9"  InvalidValue="NaN"/>
+
+    <Signal Name="G_K_d" Access="RW" DataType="Double" Description="Airgap KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="5.0"  InvalidValue="NaN"/>
+
+    <Signal Name="G_K_d_LS" Access="RW" DataType="Double" Description="Airgap KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="5.0"  InvalidValue="NaN"/>
+
+    <Signal Name="G_K_i" Access="RW" DataType="Double" Description="Airgap KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="80.0"  InvalidValue="NaN"/>
+
+    <Signal Name="G_K_i_LS" Access="RW" DataType="Double" Description="Airgap KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="80.0"  InvalidValue="NaN"/>
+
+    <Signal Name="G_K_p" Access="RW" DataType="Double" Description="Airgap KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="180.0"  InvalidValue="NaN"/>
+
+    <Signal Name="G_K_p_LS" Access="RW" DataType="Double" Description="Airgap KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="180.0"  InvalidValue="NaN"/>
+
+    <Signal Name="G_T_c" Access="RW" DataType="Double" Description="Airgap T_c Derivative filter time constant (expected delay)" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="0.01"  InvalidValue="NaN"/>
+
+    <Signal Name="HEMS_Plane_Offsets_0" Access="RW" DataType="Double" Description="Offset for each magnet compared to a plane" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="HEMS_Plane_Offsets_1" Access="RW" DataType="Double" Description="Offset for each magnet compared to a plane" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="HEMS_Plane_Offsets_2" Access="RW" DataType="Double" Description="Offset for each magnet compared to a plane" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="HEMS_Plane_Offsets_3" Access="RW" DataType="Double" Description="Offset for each magnet compared to a plane" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="IMU_integration_gain" Access="RW" DataType="Double" Description="Integral for bias in IMU" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Kalman_F" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Kalman_I" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Kalman_P" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="-7000.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Kalman_R" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="-5000.0"  InvalidValue="NaN"/>
+
+    <Signal Name="LandingAirgap" Access="RW" DataType="Double" Description="Landing airgap" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="12.0"  InvalidValue="NaN"/>
+
+    <Signal Name="LandingTime" Access="RW" DataType="Double" Description="Landing Ramp-up" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="7.0"  InvalidValue="NaN"/>
+
+    <Signal Name="LinposFilter" Access="RW" DataType="Double" Description="Double Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="LinposOn" Access="RW" DataType="Double" Description="Using Linpos from LSQ" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="LowAirgapPropellingSwitch" Access="RW" DataType="Double" Description="Allow smaller airgap when using propulsion" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="M_f" Access="RW" DataType="Double" Description="Magnet Multiplying Factor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Mass" Access="RW" DataType="Double" Description="M" Unit=" kg" LowerBound="Min" UpperBound="Max" ResetValue="395.5"  InvalidValue="NaN"/>
+
+    <Signal Name="MeasureCurrent" Access="RW" DataType="Double" Description="Using current measurement from arcas" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="MismatchedHEMSKalman" Access="RW" DataType="Double" Description="Use the mismatched data or raw data for kalman HEMS forces" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="MismatchedHEMSLateral" Access="RW" DataType="Double" Description="Use the mismatched data or raw data for lateral HEMS forces" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="MismatchingKalmanAGPR_0" Access="RW" DataType="Double" Description="Turns On Mismatching INTERPOLATION Between Kalman And Non Kalman Data" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="MismatchingKalmanAGPR_1" Access="RW" DataType="Double" Description="Turns On Mismatching INTERPOLATION Between Kalman And Non Kalman Data" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="MismatchingKalmanAGPR_2" Access="RW" DataType="Double" Description="Turns On Mismatching INTERPOLATION Between Kalman And Non Kalman Data" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="MotorAGIntegrals" Access="RW" DataType="Double" Description="Integral gains for finding the motor air gap based on actual force vs requested force" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="MotorAirgapOffset" Access="RW" DataType="Double" Description="Motor Airgap Offset" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="3.63"  InvalidValue="NaN"/>
+
+    <Signal Name="OperatingMode" Access="RW" DataType="Double" Description="Operating Mode" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="2.0"  InvalidValue="NaN"/>
+
+    <Signal Name="P_K_d" Access="RW" DataType="Double" Description="Pitch KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.5"  InvalidValue="NaN"/>
+
+    <Signal Name="P_K_d_LS" Access="RW" DataType="Double" Description="Pitch KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.5"  InvalidValue="NaN"/>
+
+    <Signal Name="P_K_i" Access="RW" DataType="Double" Description="Pitch KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="55.0"  InvalidValue="NaN"/>
+
+    <Signal Name="P_K_i_LS" Access="RW" DataType="Double" Description="Pitch KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="55.0"  InvalidValue="NaN"/>
+
+    <Signal Name="P_K_p" Access="RW" DataType="Double" Description="Pitch KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="160.0"  InvalidValue="NaN"/>
+
+    <Signal Name="P_K_p_LS" Access="RW" DataType="Double" Description="Pitch KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="160.0"  InvalidValue="NaN"/>
+
+    <Signal Name="PitchFilter" Access="RW" DataType="Double" Description="Double Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="PodHeight" Access="RW" DataType="Double" Description="PodHeight" Unit=" m" LowerBound="Min" UpperBound="Max" ResetValue="0.745"  InvalidValue="NaN"/>
+
+    <Signal Name="PodHeightFactor" Access="RW" DataType="Double" Description=" PodHeightFactor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.2"  InvalidValue="NaN"/>
+
+    <Signal Name="PodLength" Access="RW" DataType="Double" Description="PodLength" Unit=" m" LowerBound="Min" UpperBound="Max" ResetValue="1.114"  InvalidValue="NaN"/>
+
+    <Signal Name="PodLengthFactor" Access="RW" DataType="Double" Description="PodLengthFactor " Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.1"  InvalidValue="NaN"/>
+
+    <Signal Name="PodWidth" Access="RW" DataType="Double" Description="PodWidth" Unit=" m" LowerBound="Min" UpperBound="Max" ResetValue="0.784"  InvalidValue="NaN"/>
+
+    <Signal Name="PodWidthFactor" Access="RW" DataType="Double" Description=" PodWidthFactor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.1"  InvalidValue="NaN"/>
+
+    <Signal Name="Polarity" Access="RW" DataType="Double" Description="Polarity" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="-1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="PropellingAirgap" Access="RW" DataType="Double" Description="Airgap for the lane switch" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="14.0"  InvalidValue="NaN"/>
+
+    <Signal Name="PropellingPitch" Access="RW" DataType="Double" Description="Pitch for the lane switch" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="PropellingRoll" Access="RW" DataType="Double" Description="Roll for the lane switch" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="-0.05"  InvalidValue="NaN"/>
+
+    <Signal Name="PropellingTime" Access="RW" DataType="Double" Description="Time in seconds to stay at a lower airgap for propulsion" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.0"  InvalidValue="NaN"/>
+
+    <Signal Name="PropulsionCurrent" Access="RW" DataType="Double" Description="Propulsion Current usage" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="15.0"  InvalidValue="NaN"/>
+
+    <Signal Name="PropulsionOn" Access="RW" DataType="Double" Description="Propulsion On switch" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="PropulsionRampTime" Access="RW" DataType="Double" Description="Time in seconds to ramp up propulsion current" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="R_K_d" Access="RW" DataType="Double" Description="Roll KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.5"  InvalidValue="NaN"/>
+
+    <Signal Name="R_K_d_LS" Access="RW" DataType="Double" Description="Roll KD Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="4.5"  InvalidValue="NaN"/>
+
+    <Signal Name="R_K_i" Access="RW" DataType="Double" Description="Roll KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="50.0"  InvalidValue="NaN"/>
+
+    <Signal Name="R_K_i_LS" Access="RW" DataType="Double" Description="Roll KI Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="50.0"  InvalidValue="NaN"/>
+
+    <Signal Name="R_K_p" Access="RW" DataType="Double" Description="Roll KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="170.0"  InvalidValue="NaN"/>
+
+    <Signal Name="R_K_p_LS" Access="RW" DataType="Double" Description="Roll KP Gain" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="170.0"  InvalidValue="NaN"/>
+
+    <Signal Name="RefPitch" Access="RW" DataType="Double" Description="Reference airgap/wanted pitch" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="RefRoll" Access="RW" DataType="Double" Description="Reference airgap/wanted roll" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="-0.05"  InvalidValue="NaN"/>
+
+    <Signal Name="ReferenceMass" Access="RW" DataType="Double" Description="R_M" Unit=" kg" LowerBound="Min" UpperBound="Max" ResetValue="110.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Reference_P_Inertia" Access="RW" DataType="Double" Description="R_P_I" Unit=" kg" LowerBound="Min" UpperBound="Max" ResetValue="131.2"  InvalidValue="NaN"/>
+
+    <Signal Name="Reference_R_Inertia" Access="RW" DataType="Double" Description="R_R_I" Unit=" kg" LowerBound="Min" UpperBound="Max" ResetValue="27.5"  InvalidValue="NaN"/>
+
+    <Signal Name="ResetArms" Access="RW" DataType="Double" Description="Reset Integrals of the moment arms" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="RollFilter" Access="RW" DataType="Double" Description="Double Filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="RunTime" Access="RW" DataType="Double" Description="Runtime" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="3000.0"  InvalidValue="NaN"/>
+
+    <Signal Name="SineSwitches_0" Access="RW" DataType="Double" Description="Determines which sine offsets are turned on or off (airgap, pitch, roll)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="SineSwitches_1" Access="RW" DataType="Double" Description="Determines which sine offsets are turned on or off (airgap, pitch, roll)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="SineSwitches_2" Access="RW" DataType="Double" Description="Determines which sine offsets are turned on or off (airgap, pitch, roll)" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="SkipKalman" Access="RW" DataType="Double" Description="Skip the kalman filter" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="StartingAirgap" Access="RW" DataType="Double" Description="Starting airgap" Unit=" mm" LowerBound="Min" UpperBound="Max" ResetValue="11.0"  InvalidValue="NaN"/>
+
+    <Signal Name="StartupTime" Access="RW" DataType="Double" Description="Start-up Ramp-up" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="2.0"  InvalidValue="NaN"/>
+
+    <Signal Name="Undo_0current" Access="RW" DataType="Double" Description="Undo Integral" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="UseIMU" Access="RW" DataType="Double" Description="Use IMU kalman" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="X_Arm_Offset" Access="RW" DataType="Double" Description="Moment arm in meters for lateral direction (roll)" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="0.007"  InvalidValue="NaN"/>
+
+    <Signal Name="Y_Arm_Offset" Access="RW" DataType="Double" Description="Moment arm in meters for horizontal direction (pitch)" Unit="m" LowerBound="Min" UpperBound="Max" ResetValue="-0.0507"  InvalidValue="NaN"/>
+
+    <Signal Name="kalman_pitchdot_gain" Access="RW" DataType="Double" Description="IMU direction" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="-1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="kalman_rolldot_gain" Access="RW" DataType="Double" Description="IMU direction" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="kalman_zdotdot_gain" Access="RW" DataType="Double" Description="IMU direction" Unit="s" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="motorforce_on" Access="RW" DataType="Double" Description="Motor force/torque on switch" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="1.0"  InvalidValue="NaN"/>
+
+    <Signal Name="var_ag_IMU" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.005"  InvalidValue="NaN"/>
+
+    <Signal Name="var_ag_dot" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.5"  InvalidValue="NaN"/>
+
+    <Signal Name="var_ag_proc" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="var_ag_sens" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.03"  InvalidValue="NaN"/>
+
+    <Signal Name="var_ag_sens_LS" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.03"  InvalidValue="NaN"/>
+
+    <Signal Name="var_pitch_IMU" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.1"  InvalidValue="NaN"/>
+
+    <Signal Name="var_pitch_dot" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.1"  InvalidValue="NaN"/>
+
+    <Signal Name="var_pitch_proc" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="var_pitch_sens" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.4"  InvalidValue="NaN"/>
+
+    <Signal Name="var_pitch_sens_LS" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.4"  InvalidValue="NaN"/>
+
+    <Signal Name="var_roll_IMU" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.1"  InvalidValue="NaN"/>
+
+    <Signal Name="var_roll_dot" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.1"  InvalidValue="NaN"/>
+
+    <Signal Name="var_roll_proc" Access="RW" DataType="Double" Description="covar process" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.0"  InvalidValue="NaN"/>
+
+    <Signal Name="var_roll_sens" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.5"  InvalidValue="NaN"/>
+
+    <Signal Name="var_roll_sens_LS" Access="RW" DataType="Double" Description="covar sensor" Unit="" LowerBound="Min" UpperBound="Max" ResetValue="0.5"  InvalidValue="NaN"/>
+
+    <Signal Name="MagnetFailure" Access="RW" DataType="Uint32" Description="TurnOffHEMS" Unit="" LowerBound="0" UpperBound="Max" ResetValue="0" />
+
+
+  </Signals>
+  <Updatables>
+  </Updatables>
+</ProcessingBlockType>

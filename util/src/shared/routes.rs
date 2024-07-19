@@ -130,12 +130,10 @@ impl defmt::Format for Route {
 
 #[cfg(not(target_os = "none"))]
 impl IntoIterator for LocationSpeedMap {
-    type Item = (Location, u8);
     type IntoIter = std::collections::btree_map::IntoIter<Location, u8>;
+    type Item = (Location, u8);
 
-    fn into_iter(self) -> Self::IntoIter {
-        self.0.into_iter()
-    }
+    fn into_iter(self) -> Self::IntoIter { self.0.into_iter() }
 }
 
 #[allow(dead_code)]

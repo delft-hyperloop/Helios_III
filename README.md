@@ -14,7 +14,8 @@ flashing & running the main application requires
 - [`rustup target thumbv7em-none-eabihf`](https://doc.rust-lang.org/nightly/rustc/platform-support/thumbv7em-none-eabi.html)
 - a connected `STM32H743ZIT6` device
 
-`cargo run` will generate debug symbols and enable logging, `cargo run --release` will disable all logging.
+`cargo run` will generate debug symbols and enable logging, `cargo run --release` will include a lot of compile-time optimisations (smaller & faster binary, slower compile time),
+`DEFMT_LOG="off" cargo run --release` disables logging and compiles for release.
 
 ## Ground station
 The ground station backend can no longer be run independently, and thus it needs a frontend.

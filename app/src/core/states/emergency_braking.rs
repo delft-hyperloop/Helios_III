@@ -32,7 +32,7 @@ impl Fsm {
         warn!("Emergency Braking!!!");
         error!("------ Emergency Braking!! ------");
 
-        send_data!(self.data_queue, Datatype::Info, Info::EmergencyBraking as u64);
+        send_data!(self.data_queue, Datatype::Info, Info::EntryEmergencyBrakeState as u64);
     }
 
     pub async fn react_emergency_braking(&mut self, event: Event) {

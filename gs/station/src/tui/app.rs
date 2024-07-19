@@ -2,22 +2,22 @@ use std::collections::BTreeMap;
 use std::time::Duration;
 use std::time::Instant;
 
-use ratatui::Frame;
-
 use gslib::state_to_string;
 use gslib::Datapoint;
+use gslib::Datatype;
+use gslib::Event;
+use gslib::Info;
 use gslib::LocationSequence;
 use gslib::Message;
+use gslib::COMMANDS_LIST;
+use gslib::HEARTBEAT;
+use ratatui::Frame;
+
 use crate::backend::Backend;
 use crate::tui::render::CmdRow;
 use crate::tui::timestamp;
 use crate::tui::Tui;
 use crate::Command;
-use crate::Datatype;
-use crate::Event;
-use crate::Info;
-use crate::COMMANDS_LIST;
-use crate::HEARTBEAT;
 
 #[allow(dead_code)]
 pub struct App {

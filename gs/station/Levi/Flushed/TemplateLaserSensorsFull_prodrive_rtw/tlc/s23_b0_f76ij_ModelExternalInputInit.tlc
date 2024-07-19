@@ -1,0 +1,52 @@
+%implements s23_b0_f76ij_ModelExternalInputInit "C"
+
+%function ModelExternalInputInit(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+(void)memset(TemplateLaserSensorsFull_U, 0, sizeof(ExtU_TemplateLaserSensorsFull_T));
+%<SLibCG_TrackEI(17)>\
+%<SLibCG_TrackEI(16)>\
+%<SLibCG_TrackEI(15)>\
+%<SLibCG_TrackEI(14)>\
+%<SLibCG_TrackEI(13)>\
+%<SLibCG_TrackEI(12)>\
+%<SLibCG_TrackEI(11)>\
+%<SLibCG_TrackEI(10)>\
+%<SLibCG_TrackEI(9)>\
+%<SLibCG_TrackEI(8)>\
+%<SLibCG_TrackEI(7)>\
+%<SLibCG_TrackEI(6)>\
+%<SLibCG_TrackEI(5)>\
+%<SLibCG_TrackEI(4)>\
+%<SLibCG_TrackEI(3)>\
+%<SLibCG_TrackEI(2)>\
+%<SLibCG_TrackEI(1)>\
+%<SLibCG_TrackEI(0)>\
+%closefile cfgTxt
+%<cfgTxt>
+%assign rtmArgSys = ::CompiledModel.System[::CompiledModel.System[::CompiledModel.RTWCGModules.RTWCGModule[3].CGSystemIdx].NonInlinedParentSystemIdx]
+%if SysFcnArgNeeded("ModelExternalInputInit", rtmArgSys.Interface.RTMArgDef, rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "ModelExternalInputInit"))
+%<SLibCG_AccessArg(3, 5, 0)>
+%endif
+%if SLibCG_ArgAccessed(3, 5, 0)
+%<SLibAccessArg(rtmArgSys.Interface.RTMArgDef, "ModelExternalInputInit", rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "ModelExternalInputInit"))>
+%endif
+%if (IsModelReferenceBaseSys(rtmArgSys) && (IsModelRefScalableBuild() || GenerateClassInterface)) ||...
+(GenerateClassInterface && SLibIsMultiInstanceServer(rtmArgSys))
+%<SLibCG_UndoAccessArg(3, 5, 0)>
+%endif
+%endfunction
+%function ModelExternalInputInitFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void ModelExternalInputInit(\
+%assign comma = ""
+%if SLibCG_ArgAccessed(3, 5, 0)
+%<comma>%<::tSimStructType> * const TemplateLaserSensorsFull_M\
+%assign comma = ", "
+%<SLibUpdateSymbolForFunction("ModelExternalInputInit", SLibGetFcnDefinitionRTMSymbolName(), TLC_FALSE)>\
+%endif
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(3, 5, fcnProtoType)>
+%endfunction

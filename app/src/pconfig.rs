@@ -177,12 +177,12 @@ macro_rules! send_data {
     ($data_sender:expr, $dtype:expr, $data:expr) => {
         {
             if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
-                defmt::warn!("[send] Not connected, dropping {:?} {:?}", $dtype, $data);
+                defmt::debug!("[send] Not connected, dropping {:?} {:?}", $dtype, $data);
             } else {
                 if let Err(e) = $data_sender.try_send(
                     $crate::Datapoint::new($dtype, $data, $crate::pconfig::ticks())
                 ) {
-                    defmt::error!("[send] data channel full: {:?}", e);
+                    defmt::warn!("[send] data channel full: {:?}", e);
                 }
             }
         }
@@ -190,12 +190,12 @@ macro_rules! send_data {
     ($data_sender:expr, $dtype:expr, $data:expr, $timestamp:expr) => {
         {
             if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
-                defmt::warn!("[send] Not connected, dropping {:?} {:?} {:?}", $dtype, $data, $timestamp);
+                defmt::debug!("[send] Not connected, dropping {:?} {:?} {:?}", $dtype, $data, $timestamp);
             } else {
                 if let Err(e) = $data_sender.try_send(
                     $crate::Datapoint::new($dtype, $data, $timestamp)
                 ) {
-                    defmt::error!("[send] data channel full: {:?}", e);
+                    defmt::warn!("[send] data channel full: {:?}", e);
                 }
             }
         }
@@ -203,12 +203,12 @@ macro_rules! send_data {
     ($data_sender:expr, $dtype:expr, $data:expr; $timeout:expr) => {
         {
             if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
-                defmt::warn!("[send] Not connected, dropping {:?} {:?}", $dtype, $data);
+                defmt::debug!("[send] Not connected, dropping {:?} {:?}", $dtype, $data);
             } else {
                 if let Err(e) = $data_sender.try_send(
                     $crate::Datapoint::new($dtype, $data, $crate::pconfig::ticks())
                 ) {
-                    defmt::error!("[send] data channel full: {:?}", e);
+                    defmt::warn!("[send] data channel full: {:?}", e);
                     embassy_time::Timer::after_millis($timeout).await;
                 }
             }
@@ -217,12 +217,12 @@ macro_rules! send_data {
     ($data_sender:expr, $dtype:expr, $data:expr, $timestamp:expr; $timeout:expr) => {
         {
             if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
-                defmt::warn!("[send] Not connected, dropping {:?} {:?} {:?}", $dtype, $data, $timestamp);
+                defmt::debug!("[send] Not connected, dropping {:?} {:?} {:?}", $dtype, $data, $timestamp);
             } else {
                 if let Err(e) = $data_sender.try_send(
                     $crate::core::communication::Datapoint::new($dtype, $data, $timestamp)
                 ) {
-                    defmt::error!("[send] data channel full: {:?}", e);
+                    defmt::warn!("[send] data channel full: {:?}", e);
                     embassy_time::Timer::after_millis($timeout).await;
                 }
             }
@@ -271,4 +271,5 @@ pub async fn queue_dp(data_sender: DataSender, t: Datatype, d: u64, p: u64) {
 }
 
 /// Wrapper function around timer::after to signify that this is a context-switch delay
+#[allow(dead_code)]
 pub async fn thread_delay(micros: u64) { Timer::after_micros(micros).await; }
