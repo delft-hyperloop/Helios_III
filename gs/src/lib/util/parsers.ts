@@ -69,6 +69,9 @@ const parseShortCut = async (shortcut:string):Promise<void> => {
 }
 
 function setBitsToBooleans(num: number): boolean[] {
+
+    console.log("We are statusing " + num)
+
     const numBits = 6;
     const float64 = new Float64Array(1);
     float64[0] = num;
@@ -83,6 +86,8 @@ function setBitsToBooleans(num: number): boolean[] {
             bits[i] = true;
         }
     }
+
+    console.log(bits)
 
     return bits;
 }
