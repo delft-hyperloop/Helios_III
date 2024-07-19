@@ -307,6 +307,8 @@
     gdd.stores.registerStore<number>("BatteryEnergyParamsHigh", 0);
     gdd.stores.registerStore<number>("BatteryEnergyParamsLow", 0);
 
+    gdd.stores.registerStore<number>("Temp_Motor_1", 0);
+    gdd.stores.registerStore<number>("Temp_Motor_2", 0);
     ////////////////////////////////////////////////////////////////
     ///////////////// PROPULSION REGISTER //////////////////////////
     ////////////////////////////////////////////////////////////////
