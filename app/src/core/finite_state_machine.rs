@@ -220,9 +220,7 @@ impl Fsm {
                 return;
             },
 
-            Event::Heartbeating => {
-                self.send_data(Datatype::FSMState, self.state as u64).await
-            },
+            Event::Heartbeating => self.send_data(Datatype::FSMState, self.state as u64).await,
 
             Event::ExitEvent => {
                 transit!(self, State::Exit);
@@ -352,30 +350,20 @@ impl Fsm {
     /// Send an info message to the ground station,
     /// from the `enum Info`
     pub async fn log(&self, info: Info) {
-        self.data_queue
-            .send(Datapoint::new(Datatype::Info, info.to_idx(), ticks()))
-            .await;
+        self.data_queue.send(Datapoint::new(Datatype::Info, info.to_idx(), ticks())).await;
     }
 
     /// Tell the ground station that the pod is now safe to approach (HV off)
     pub async fn pod_safe(&self) {
         self.data_queue
-            .send(Datapoint::new(
-                Datatype::Info,
-                Info::to_idx(&Info::Safe),
-                ticks(),
-            ))
+            .send(Datapoint::new(Datatype::Info, Info::to_idx(&Info::Safe), ticks()))
             .await;
     }
 
     /// Tell the ground station that the pod is not safe to approach (HV on)
     pub async fn pod_unsafe(&self) {
         self.data_queue
-            .send(Datapoint::new(
-                Datatype::Info,
-                Info::to_idx(&Info::Unsafe),
-                ticks(),
-            ))
+            .send(Datapoint::new(Datatype::Info, Info::to_idx(&Info::Unsafe), ticks()))
             .await;
         VOLTAGE_OVER_50.store(true, core::sync::atomic::Ordering::Relaxed);
     }

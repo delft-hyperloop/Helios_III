@@ -57,13 +57,13 @@ pub async fn data_middle_step(
         match data.datatype.check_bounds(data.value) {
             ValueCheckResult::Fine => {},
             ValueCheckResult::Warn => {
-            //     send_data!(
-            //     outgoing,
-            //     Datatype::ValueWarning,
-            //     data.datatype.to_id() as u64,
-            //     data.value
-            // ),
-            }
+                //     send_data!(
+                //     outgoing,
+                //     Datatype::ValueWarning,
+                //     data.datatype.to_id() as u64,
+                //     data.value
+                // ),
+            },
             ValueCheckResult::Error => {
                 // send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
             },

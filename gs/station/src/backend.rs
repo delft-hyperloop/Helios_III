@@ -2,14 +2,16 @@ use std::path::PathBuf;
 use std::str::FromStr;
 
 use anyhow::anyhow;
+use gslib::Command;
+use gslib::Info;
+use gslib::Log;
+use gslib::Message;
+use gslib::ProcessedData;
 use regex::Regex;
 use tokio::task::AbortHandle;
 
-use gslib::{Info, Log, Message};
-use gslib::ProcessedData;
 use crate::battery::DataReceiver;
 use crate::battery::DataSender;
-use gslib::Command;
 use crate::CommandReceiver;
 use crate::CommandSender;
 use crate::MessageReceiver;
@@ -37,8 +39,6 @@ pub struct Backend {
     pub log: Log,
     pub save_path: PathBuf,
 }
-
-
 
 impl Default for Backend {
     fn default() -> Self { Self::new() }

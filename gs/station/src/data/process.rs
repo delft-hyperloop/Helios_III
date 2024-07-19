@@ -1,6 +1,6 @@
 use gslib::Datapoint;
-use gslib::ProcessedData;
 use gslib::Datatype;
+use gslib::ProcessedData;
 use gslib::ValueCheckResult;
 
 /// Preprocessing data from the pod before sending to the frontend
@@ -220,7 +220,10 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
             }
         },
         Datatype::Velocity => x / 100.0,
-        Datatype::BrakeTemperature | Datatype::BrakePressure => {
+        Datatype::BrakeTemperature
+        | Datatype::BrakePressure
+        | Datatype::HighPressureSensor
+        | Datatype::LowPressureSensor => {
             if x > 100_000_000.0 {
                 0.0
             } else {
