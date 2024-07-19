@@ -166,6 +166,9 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
                             debug!("[tcp] Shutdown command received");
                             send_event(self.es, Event::ExitEvent);
                         },
+                        Command::EndRun(_) => {
+                            send_event(self.es, Event::ExitEvent);
+                        }
                         Command::StartHV(_) => {
                             debug!("[tcp] StartHV command received");
                             send_event(self.es, Event::TurnOnHVCommand);
