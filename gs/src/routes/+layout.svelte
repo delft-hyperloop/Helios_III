@@ -9,7 +9,7 @@
         addEntryToChart,
     } from "$lib";
     import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
-    import {chartStore} from "$lib/stores/state";
+    import {chartStore, latestTimestamp} from "$lib/stores/state";
     import {initProcedures} from "$lib/stores/data";
     import {onDestroy} from "svelte";
     import {listen} from "@tauri-apps/api/event";
@@ -471,6 +471,10 @@
     gdd.start(50);
 
     initializeStores();
+
+    setInterval(() => {
+       latestTimestamp.set(Date.now());
+    }, 1000)
 
     onDestroy(async () => {
       GrandDataDistributor.getInstance().kill();

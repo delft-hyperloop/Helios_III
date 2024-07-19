@@ -3,7 +3,7 @@
     import {GrandDataDistributor} from "$lib";
     import {latestTimestamp} from "$lib/stores/state";
 
-    const STALE_DATA_TICKS = 2_500_000;
+    const STALE_DATA_TICKS = 10_000;
     export let datatype: NamedDatatype;
     const store = GrandDataDistributor.getInstance().stores.getWritable(datatype);
 
