@@ -437,19 +437,19 @@ id = 0x7FA
 
 [[Datatype]]
 name = "Presure_VB"
-id = 0x210
+id = 0x252
 display_units = "bar"
 # no limit necessary
 
 [[Datatype]]
 name = "Average_Temp_VB_Bottom"
-id = 0x211
+id = 0x251
 upper = 80000 # (e-2) degrees
 display_units = "ºC"
 
 [[Datatype]]
 name = "Average_Temp_VB_top"
-id = 0x200
+id = 0x250
 upper = 80000 # (e-2) degrees
 display_units = "ºC"
 
