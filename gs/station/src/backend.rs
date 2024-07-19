@@ -119,12 +119,13 @@ impl Backend {
         }
     }
 
-    pub fn send_command(&mut self, cmd: Command) {
+    pub fn send_command(&mut self, cmd: Command) -> bool {
         // self.info(format!("[TRACE] enqueuing command {:?}", cmd));
         #[cfg(all(feature = "backend", not(feature = "tui")))]
         eprintln!("[backend] sending command {:?}", &cmd);
         self.command_transmitter.send(cmd).unwrap();
         self.log_cmd(&cmd);
+        self.server_handle.is_some()
     }
 
     pub fn info(&mut self, msg: String) {

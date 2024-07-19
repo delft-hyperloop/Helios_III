@@ -23,12 +23,14 @@ use crate::core::fsm_status::HUB_CONNECTED;
 use crate::core::fsm_status::HV_BATTERIES_CONNECTED;
 use crate::core::fsm_status::LV_BATTERIES_CONNECTED;
 use crate::core::fsm_status::PROPULSION_CONNECTED;
+use crate::pconfig::queue_event;
 use crate::pconfig::ticks;
 use crate::send_data;
 use crate::DataReceiver;
 use crate::DataSender;
 use crate::Datapoint;
 use crate::Datatype;
+use crate::Event;
 use crate::EventSender;
 use crate::Info;
 use crate::ValueCheckResult;
@@ -45,7 +47,7 @@ type HB = Vec<(Datatype, Duration, Option<Instant>), { HEARTBEATS_LEN }>;
 pub async fn data_middle_step(
     incoming: DataReceiver,
     outgoing: DataSender,
-    _event_sender: EventSender,
+    event_sender: EventSender,
 ) -> ! {
     let mut hb = HB::new();
     let hb_dt = HEARTBEATS.iter().map(|x| x.0).collect::<Vec<Datatype, { HEARTBEATS_LEN }>>();

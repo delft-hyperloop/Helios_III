@@ -71,11 +71,11 @@ pub fn unload_buffer(state: State<BackendState>) -> Vec<ProcessedData> {
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn send_command(cmd_name: String, val: u64) {
-    eprintln!("Received command {} {}", cmd_name, val);
+pub fn send_command(cmd_name: String, val: u64) -> bool {
+    eprintln!("Received command {} {} [{}]", cmd_name, val, Local::now());
     let c = Command::from_string(&cmd_name, val);
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
-        backend_mutex.get_mut().unwrap().send_command(c);
+        backend_mutex.get_mut().unwrap().send_command(c)
     } else {
         panic!("kys");
     }
