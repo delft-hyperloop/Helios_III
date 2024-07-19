@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {serverStatus, TauriCommand} from "$lib";
+  import {GrandDataDistributor, serverStatus, TauriCommand} from "$lib";
     import {getToastStore} from "@skeletonlabs/skeleton";
     import {procedures} from "$lib/stores/data";
     import {parseProcedure} from "$lib/util/parsers";
@@ -45,6 +45,9 @@
         <TauriCommand cmd="disconnect" successCallback={() => serverStatus.set(false)} />
         <TauriCommand cmd="save_logs"/>
         <TauriCommand cmd="test_route" successCallback={console.log}/>
+        <button class="btn bg-primary-500 text-black rounded-lg py-2" on:click={() => GrandDataDistributor.getInstance().fetchTestOnce()}>
+            TEST DATA
+        </button>
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
 

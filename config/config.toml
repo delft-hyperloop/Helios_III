@@ -35,7 +35,9 @@ levi_requested_data = ["Localisation", "PropulsionCurrent"]
 # syntax:
 # <datatype name> = <timeout in milliseconds>
 # LocalisationHeartbeat = 1500
-FrontendHeartbeating = 2500 
+FrontendHeartbeating = 2500
+TotalBatteryVoltageLow = 4000
+TotalBatteryVoltageHigh = 4000
 # SensorHubHeartbeat = 1500
 
 

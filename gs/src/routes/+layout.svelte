@@ -26,6 +26,10 @@
     //////////////////////////////
     /////////// CHARTS ///////////
     //////////////////////////////
+
+    let breakingCommsChart = new PlotBuffer(500, 60000, [0, 120], true, "Breaking Comms");
+    $chartStore.set("Breaking Comms", breakingCommsChart);
+
     let emsTempChart = new PlotBuffer(500, 60000, [0, 120], true, "EMS 1");
     emsTempChart.addSeries(StrokePresets.theoretical("EMS 2"))
     $chartStore.set("EMS Temperatures", emsTempChart);
@@ -319,13 +323,12 @@
         return curr;
     });
 
-    gdd.stores.registerStore<number>("Localisation", 0, data => {
+    gdd.stores.registerStore<number>("levi_location", 0, data => {
         const curr = Number(data);
         $chartStore.get("Localisation")!.addEntry(1, curr);
         return curr;
     });
 
-    gdd.stores.registerStore<number>("Localisation", 0);
     gdd.stores.registerStore<number>("Acceleration", 0);
     gdd.stores.registerStore<number>("Direction", 0);
 
@@ -448,7 +451,10 @@
 
     gdd.stores.registerStore<number>("LowPressureSensor", 0);
     gdd.stores.registerStore<number>("HighPressureSensor", 0);
-    gdd.stores.registerStore<number>("BrakingCommDebug", 0);
+    gdd.stores.registerStore<number>("BrakingCommDebug", 0, data => {
+        breakingCommsChart.addEntry(1, data);
+        return data;
+    });
     gdd.stores.registerStore<number>("BrakingSignalDebug", 0)
     gdd.stores.registerStore<number>("BrakingRearmDebug", 0)
 
@@ -466,7 +472,8 @@
     ///////////////////////////////////////////////////////////////
 
     gdd.stores.registerStore<number>("FSMState", 0);
-    gdd.stores.registerStore<boolean[]>("ConnectionStatus", [false, false, false, false, false, false, false, false], setBitsToBooleans)
+
+    gdd.stores.registerStore<boolean[]>("ConnectionStatus", [false, false, false, false, false, false, false, false, false], setBitsToBooleans)
 
     gdd.start(50);
 
