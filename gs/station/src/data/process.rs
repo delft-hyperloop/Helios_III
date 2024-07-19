@@ -221,9 +221,7 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
         },
         Datatype::Velocity => x / 100.0,
         Datatype::BrakeTemperature
-        | Datatype::BrakePressure
-        | Datatype::HighPressureSensor
-        | Datatype::LowPressureSensor => {
+        | Datatype::BrakePressure => {
             if x > 100_000_000.0 {
                 0.0
             } else {
@@ -235,7 +233,9 @@ pub fn process(datapoint: &Datapoint) -> ProcessedData {
         | Datatype::GyroscopeZ
         | Datatype::AccelerationX
         | Datatype::AccelerationY
-        | Datatype::AccelerationZ => {
+        | Datatype::AccelerationZ
+        | Datatype::HighPressureSensor
+        | Datatype::LowPressureSensor => {
             if x > 4_294_967_295.0 - 100000.0 {
                 (4_294_967_295.0 - x + 1.0) / 100.0
             } else {

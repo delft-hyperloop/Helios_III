@@ -199,15 +199,15 @@ lower = {warn = 280, err = 270, brake = 260}
 name = "TotalBatteryVoltageLow"
 id = 0x1A5
 display_units = "V"
-upper = { warn = 2400, err = 2500}
-lower = { warn = 2000, err = 0}
+upper = { warn = 2400, err = 2500, brake = 2500}
+lower = { warn = 1900, brake = 1800}
 
 [[Datatype]]
 name = "TotalBatteryVoltageHigh"
 id = 0x3A9
 display_units = "V"
-upper = { warn = 41500, err = 42500}
-lower = { warn = 35000, err = 0}
+upper = { warn = 41500, err = 42500 , brake = 43000}
+lower = { warn = 35000, err = 0, brake = 35000}
 
 
 [[Datatype]]
@@ -446,7 +446,7 @@ name = "Average_Temp_VB_Bottom"
 id = 0x251
 upper = 80000 # (e-2) degrees
 display_units = "ºC"
-lower = {err = 0}
+lower = {brake = 10 }
 
 
 [[Datatype]]
@@ -454,21 +454,21 @@ name = "Average_Temp_VB_top"
 id = 0x250
 upper = 80000 # (e-2) degrees
 display_units = "ºC"
-lower = {err = 0}
+lower = {brake = 10 }
 
 
 
 [[Datatype]]
 name = "Temp_HEMS_1"
 id = 0x20a
-lower = {err = 0 }# (e-2) degrees # the idea here is that we blink red if we read below 0 (sensor disconnect)
+lower = {brake = 10 }# (e-2) degrees # the idea here is that we blink red if we read below 0 (sensor disconnect)
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_HEMS_2"
 id = 0x20b
-lower = {err = 0 }# (e-2) degrees
+lower = {brake = 10  }# (e-2) degrees
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
 display_units = "ºC"
 
@@ -476,7 +476,7 @@ display_units = "ºC"
 [[Datatype]]
 name = "Temp_HEMS_3"
 id = 0x20c
-lower = {err = 0 }# (e-2) degrees
+lower = {brake = 10  }# (e-2) degrees
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
 display_units = "ºC"
 
@@ -484,7 +484,7 @@ display_units = "ºC"
 [[Datatype]]
 name = "Temp_HEMS_4"
 id = 0x20d
-lower = {err = 0 }# (e-2) degrees
+lower = {brake = 10  }# (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
@@ -492,14 +492,14 @@ display_units = "ºC"
 [[Datatype]]
 name = "Temp_Motor_1"
 id = 0x20e
-lower = {err = 0 }
+lower = {brake = 10  }
 upper = { warn = 6000, err = 8000 }
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_Motor_2"
 id = 0x20f
-lower = {err = 0 } # (e-2) degrees
+lower = {brake = 10 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
@@ -521,28 +521,28 @@ display_units = "ºC"
 [[Datatype]]
 name = "Temp_EMS_1"
 id = 0x222
-lower = {err = 0 } # (e-2) degrees
+lower = {brake = 10  } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_2"
 id = 0x223
-lower = {err = 0 } # (e-2) degrees
+lower = {brake = 10 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_3"
 id = 0x225
-lower = {err = 0 } # (e-2) degrees
+lower = {brake = 10  } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_4"
 id = 0x226
-lower = {err = 0 } # (e-2) degrees
+lower = {brake = 10} # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
 display_units = "ºC"
 
