@@ -1099,8 +1099,8 @@ id = 0x777
 [[Datatype]]
 name = "LowPressureSensor"
 id = 0x127
-lower = {warn = 40, err = 35 } #(e-2) bar
-upper = { warn = 170, err = 180} #(e-2) bar
+lower = {warn = 4000, err = 3500 } #(e-2) bar
+upper = { warn = 17000, err = 18000} #(e-2) bar
 display_units = "bar"
 
 [[Datatype]]
@@ -1108,8 +1108,8 @@ name = "HighPressureSensor"
 id = 0x128
 # lower = 80 #bar
 # upper = 180 #bar
-lower = {warn = 80, err = 60 } #(e-2) bar
-upper = { warn = 170, err = 180} #(e-2) bar
+lower = {warn = 8000, err = 6000 } #(e-2) bar
+upper = { warn = 17000, err = 18000} #(e-2) bar
 display_units = "bar"
 
 # SJOERD LEVITATION DATATYPES
