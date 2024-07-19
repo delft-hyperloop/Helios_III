@@ -92,7 +92,7 @@ async fn read_braking_communication(
             edge = true;
             BRAKES_EXTENDED.store(false, Ordering::Relaxed);
         }
-        Timer::after_micros(100).await;
+        Timer::after_micros(10).await;
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(500) {
             send_data!(data_sender, Datatype::BrakingCommDebug, v as u64);
             last_timestamp = Instant::now();

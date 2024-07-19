@@ -1,8 +1,10 @@
+use core::sync::atomic::Ordering;
 use defmt::debug;
 use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
+use crate::core::fsm_status::POD_IS_MOVING;
 use crate::transit;
 use crate::Event;
 use crate::Info;
@@ -12,6 +14,7 @@ impl Fsm {
         self.status.speeds_set = false;
         self.status.route_set = false;
         self.peripherals.braking_controller.start_run_brake_precondition();
+        POD_IS_MOVING.store(false, Ordering::Relaxed);
     }
 
     pub async fn react_run_config(&mut self, event: Event) {

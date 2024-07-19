@@ -1,3 +1,4 @@
+use core::sync::atomic::Ordering;
 use defmt::error;
 #[cfg(debug_assertions)]
 use defmt::info;
@@ -5,7 +6,7 @@ use defmt::warn;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::core::fsm_status::BRAKE;
+use crate::core::fsm_status::{BRAKE, POD_IS_MOVING};
 use crate::send_data;
 use crate::transit;
 use crate::Datatype;
@@ -31,7 +32,7 @@ impl Fsm {
         error!("Emergency Braking!!");
         warn!("Emergency Braking!!!");
         error!("------ Emergency Braking!! ------");
-
+        POD_IS_MOVING.store(false, Ordering::Relaxed);
         // send_data!(self.data_queue, Datatype::Info, Info::EntryEmergencyBrakeState as u64);
     }
 

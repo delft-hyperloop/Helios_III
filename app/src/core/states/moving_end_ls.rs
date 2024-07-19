@@ -1,8 +1,9 @@
+use core::sync::atomic::Ordering;
 use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::core::fsm_status::Location;
+use crate::core::fsm_status::{Location, POD_IS_MOVING};
 use crate::core::fsm_status::RouteUse;
 use crate::transit;
 use crate::Command;
@@ -10,7 +11,9 @@ use crate::Event;
 use crate::Info;
 
 impl Fsm {
-    pub fn entry_end_ls(&mut self) { self.peripherals.propulsion_controller.stop(); }
+    pub fn entry_end_ls(&mut self) {
+        POD_IS_MOVING.store(true, Ordering::Relaxed);
+        self.peripherals.propulsion_controller.stop(); }
 
     pub async fn react_end_ls(&mut self, event: Event) {
         match event {

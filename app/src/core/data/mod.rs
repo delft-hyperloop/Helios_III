@@ -19,11 +19,11 @@ use crate::core::data::sources::HV_BMS_DATA;
 use crate::core::data::sources::LV_BMS_DATA;
 use crate::core::data::sources::PROPULSION_DATA;
 use crate::core::data::sources::SENSOR_HUB_DATA;
-use crate::core::fsm_status::HUB_CONNECTED;
+use crate::core::fsm_status::{HUB_CONNECTED, LOCALISATION_LAST_SEEN, OUT_OF_RANGE_DISABLED, POD_IS_MOVING};
 use crate::core::fsm_status::HV_BATTERIES_CONNECTED;
 use crate::core::fsm_status::LV_BATTERIES_CONNECTED;
 use crate::core::fsm_status::PROPULSION_CONNECTED;
-use crate::pconfig::queue_event;
+use crate::pconfig::{queue_data, queue_event};
 use crate::pconfig::ticks;
 use crate::send_data;
 use crate::DataReceiver;
@@ -56,29 +56,31 @@ pub async fn data_middle_step(
         let data = incoming.receive().await;
 
         // 1. check thresholds
-        match data.datatype.check_bounds(data.value) {
-            ValueCheckResult::Fine => {},
-            ValueCheckResult::Warn => {
-                //     send_data!(
-                //     outgoing,
-                //     Datatype::ValueWarning,
-                //     data.datatype.to_id() as u64,
-                //     data.value
-                // ),
-            },
-            ValueCheckResult::Error => {
-                // send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
-            },
-            ValueCheckResult::BrakeNow => {
-                queue_event(event_sender, Event::ValueOutOfBounds).await;
-                send_data!(
-                    outgoing,
-                    Datatype::ValueCausedBraking,
-                    data.datatype.to_id() as u64,
-                    data.value
-                );
-                send_data!(outgoing, Datatype::Info, Info::ValueCausedBraking as u64, data.value);
-            },
+        if OUT_OF_RANGE_DISABLED.load(Ordering::Relaxed) {
+            match data.datatype.check_bounds(data.value) {
+                ValueCheckResult::Fine => {},
+                ValueCheckResult::Warn => {
+                    // send_data!(
+                    //     outgoing,
+                    //     Datatype::ValueWarning,
+                    //     data.datatype.to_id() as u64,
+                    //     data.value
+                    // ),
+                },
+                ValueCheckResult::Error => {
+                    // send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
+                },
+                ValueCheckResult::BrakeNow => {
+                    queue_event(event_sender, Event::ValueOutOfBounds).await;
+                    send_data!(
+                        outgoing,
+                        Datatype::ValueCausedBraking,
+                        data.datatype.to_id() as u64,
+                        data.value
+                    );
+                    send_data!(outgoing, Datatype::Info, Info::ValueCausedBraking as u64, data.value);
+                },
+            }
         }
         // 2. check heartbeats
         let mut seen = !hb_dt.contains(&data.datatype);
@@ -89,13 +91,9 @@ pub async fn data_middle_step(
                 *last = Some(Instant::now());
             } else if last.is_some_and(|l| l.elapsed() > *out) {
                 warn!("[heartbeat] timeout triggered for {:?}", dt);
-                // event_sender.send(Event::EmergencyBraking).await;
-                outgoing
-                    .send(Datapoint::new(Datatype::HeartbeatExpired, dt.to_id() as u64, ticks()))
-                    .await;
-                outgoing
-                    .send(Datapoint::new(Datatype::Info, Info::HeartbeatExpired as u64, ticks()))
-                    .await;
+                event_sender.send(Event::EmergencyBraking).await;
+                queue_data(outgoing, Datatype::HeartbeatExpired, dt.to_id() as u64).await;
+                queue_data(outgoing, Datatype::Info, Info::HeartbeatExpired as u64).await;
                 *last = None;
             }
         }
@@ -105,6 +103,12 @@ pub async fn data_middle_step(
                 Err(_) => {
                     send_data!(outgoing, Datatype::Info, Info::lamp_error_unreachable.to_idx());
                 },
+            }
+        }
+
+        if POD_IS_MOVING.load(Ordering::Relaxed) {
+            if Duration::from_millis(3500) > unsafe { LOCALISATION_LAST_SEEN }.elapsed() {
+                event_sender.send(Event::EmergencyBraking).await;
             }
         }
 
@@ -119,6 +123,9 @@ pub async fn data_middle_step(
             x if PROPULSION_DATA.contains(&x) => {
                 PROPULSION_CONNECTED.store(true, Ordering::Relaxed)
             },
+            Datatype::Localisation => unsafe {
+                LOCALISATION_LAST_SEEN = Instant::now();
+            }
             _ => {},
         }
 

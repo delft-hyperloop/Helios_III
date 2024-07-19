@@ -4,7 +4,7 @@ use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::core::fsm_status::BRAKES_EXTENDED;
+use crate::core::fsm_status::{BRAKES_EXTENDED, POD_IS_MOVING};
 use crate::transit;
 use crate::Event;
 use crate::Info;
@@ -12,6 +12,7 @@ use crate::Info;
 impl Fsm {
     pub fn entry_idle(&mut self) {
         info!("Entering Idle State");
+        POD_IS_MOVING.store(false, Ordering::Relaxed);
         // self.peripherals.led_controller.hv_led.set_high();
     }
 
