@@ -5,7 +5,7 @@ use embassy_stm32::can::CanRx;
 use embassy_stm32::can::CanTx;
 use embassy_stm32::can::Frame;
 use embassy_stm32::can::Instance;
-use embassy_time::{Instant, Timer};
+use embassy_time::Timer;
 use panic_probe as _;
 
 // use embedded_hal::can::Id;
@@ -13,7 +13,7 @@ use crate::core::communication::Datapoint;
 use crate::core::controllers::battery_controller::ground_fault_detection_isolation_details;
 use crate::core::controllers::battery_controller::ground_fault_detection_voltage_details;
 use crate::core::controllers::can_controller::CanTwoUtils;
-use crate::pconfig::{bytes_to_u64, thread_delay};
+use crate::pconfig::bytes_to_u64;
 use crate::pconfig::id_as_value;
 use crate::pconfig::send_event;
 use crate::send_data;

@@ -278,33 +278,33 @@ impl BatteryController {
     }
 
     pub async fn diagnostic_bms(&mut self, data: &[u8], timestamp: u64) {
-        // let high_voltage_checks = [
-        //     (0, 0b1, Info::UndervoltageHvBattery),
-        //     (0, 0b10, Info::OvervoltageHvBattery),
-        //     (0, 0b100, Info::DischargeOvercurrentHvBattery),
-        //     (0, 0b1000, Info::OvercurrentHvBattery),
-        //     (0, 0b10000, Info::LeakageHvBattery),
-        //     (0, 0b100000, Info::NoCellComunnicationHvBattery),
-        //     (2, 0b1000, Info::OverheatHvBattery),
-        // ];
-        //
-        // let low_voltage_checks = [
-        //     (0, 0b1, Info::UndervoltageLvBattery),
-        //     (0, 0b10, Info::OvervoltageLvBattery),
-        //     (0, 0b100, Info::DischargeOvercurrentLvBattery),
-        //     (0, 0b1000, Info::OvercurrentLvBattery),
-        //     (0, 0b10000, Info::LeakageLvBattery),
-        //     (0, 0b100000, Info::NoCellComunnicationLvBattery),
-        //     (2, 0b1000, Info::OverheatLvBattery),
-        // ];
-        //
-        // let checks = if self.high_voltage { &high_voltage_checks } else { &low_voltage_checks };
-        //
-        // for &(byte_index, bit_mask, info) in checks {
-        //     if data[byte_index] & bit_mask != 0 {
-        //         self.data_sender.send(Datapoint::new(Datatype::Info, info as u64, timestamp)).await
-        //     }
-        // }
+        let high_voltage_checks = [
+            (0, 0b1, Info::UndervoltageHvBattery),
+            (0, 0b10, Info::OvervoltageHvBattery),
+            (0, 0b100, Info::DischargeOvercurrentHvBattery),
+            (0, 0b1000, Info::OvercurrentHvBattery),
+            (0, 0b10000, Info::LeakageHvBattery),
+            (0, 0b100000, Info::NoCellComunnicationHvBattery),
+            (2, 0b1000, Info::OverheatHvBattery),
+        ];
+
+        let low_voltage_checks = [
+            (0, 0b1, Info::UndervoltageLvBattery),
+            (0, 0b10, Info::OvervoltageLvBattery),
+            (0, 0b100, Info::DischargeOvercurrentLvBattery),
+            (0, 0b1000, Info::OvercurrentLvBattery),
+            (0, 0b10000, Info::LeakageLvBattery),
+            (0, 0b100000, Info::NoCellComunnicationLvBattery),
+            (2, 0b1000, Info::OverheatLvBattery),
+        ];
+
+        let checks = if self.high_voltage { &high_voltage_checks } else { &low_voltage_checks };
+
+        for &(byte_index, bit_mask, info) in checks {
+            if data[byte_index] & bit_mask != 0 {
+                self.data_sender.send(Datapoint::new(Datatype::Info, info as u64, timestamp)).await
+            }
+        }
     }
 
     pub async fn state_of_charge_bms(&mut self, data: &[u8], timestamp: u64) {

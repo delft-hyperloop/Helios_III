@@ -24,11 +24,9 @@ use crate::core::fsm_status::HV_BATTERIES_CONNECTED;
 use crate::core::fsm_status::LV_BATTERIES_CONNECTED;
 use crate::core::fsm_status::PROPULSION_CONNECTED;
 use crate::pconfig::{queue_data, queue_event};
-use crate::pconfig::ticks;
 use crate::send_data;
 use crate::DataReceiver;
 use crate::DataSender;
-use crate::Datapoint;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
@@ -106,10 +104,8 @@ pub async fn data_middle_step(
             }
         }
 
-        if POD_IS_MOVING.load(Ordering::Relaxed) && DISABLE_BRAKE_MOVING_NO_LOCALISATION.load(Ordering::Relaxed) {
-            if Duration::from_millis(3500) > unsafe { LOCALISATION_LAST_SEEN }.elapsed() {
-                event_sender.send(Event::EmergencyBraking).await;
-            }
+        if POD_IS_MOVING.load(Ordering::Relaxed) && DISABLE_BRAKE_MOVING_NO_LOCALISATION.load(Ordering::Relaxed) && Duration::from_millis(3500) > unsafe { LOCALISATION_LAST_SEEN }.elapsed() {
+            event_sender.send(Event::EmergencyBraking).await;
         }
 
         // 3. check for special cases
