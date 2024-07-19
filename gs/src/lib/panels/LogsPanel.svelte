@@ -44,7 +44,12 @@
         unlistens[1] = await listen(EventChannel.STATUS, (event: {payload: string}) => {
           logs = [...logs, {message: event.payload.split(';')[0], log_type: 'STATUS', timestamp: Date.now().valueOf()}]
 
+          console.log("received smth", event.payload)
+
           const message:string[] = event.payload.split(";");
+
+          console.log(message)
+
           toastStore.trigger({
             message: message[0],
             background: message[1] || "bg-surface-600",
