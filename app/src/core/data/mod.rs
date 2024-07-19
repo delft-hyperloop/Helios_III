@@ -19,7 +19,7 @@ use crate::core::data::sources::HV_BMS_DATA;
 use crate::core::data::sources::LV_BMS_DATA;
 use crate::core::data::sources::PROPULSION_DATA;
 use crate::core::data::sources::SENSOR_HUB_DATA;
-use crate::core::fsm_status::{HUB_CONNECTED, LOCALISATION_LAST_SEEN, OUT_OF_RANGE_DISABLED, POD_IS_MOVING};
+use crate::core::fsm_status::{DISABLE_BRAKE_MOVING_NO_LOCALISATION, HUB_CONNECTED, LOCALISATION_LAST_SEEN, OUT_OF_RANGE_DISABLED, POD_IS_MOVING};
 use crate::core::fsm_status::HV_BATTERIES_CONNECTED;
 use crate::core::fsm_status::LV_BATTERIES_CONNECTED;
 use crate::core::fsm_status::PROPULSION_CONNECTED;
@@ -106,7 +106,7 @@ pub async fn data_middle_step(
             }
         }
 
-        if POD_IS_MOVING.load(Ordering::Relaxed) && BRAKE_MOVING_NO_LOCALISATION.load(Ordering::Relaxed) {
+        if POD_IS_MOVING.load(Ordering::Relaxed) && DISABLE_BRAKE_MOVING_NO_LOCALISATION.load(Ordering::Relaxed) {
             if Duration::from_millis(3500) > unsafe { LOCALISATION_LAST_SEEN }.elapsed() {
                 event_sender.send(Event::EmergencyBraking).await;
             }

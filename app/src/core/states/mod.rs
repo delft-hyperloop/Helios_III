@@ -56,11 +56,11 @@ mod moving {
             match self.route.peek_next_position() {
                 Location::LaneSwitchStraight => {
                     self.send_levi_cmd(Command::ls1(0)).await;
-                    IN_A_LANE_SWITCH.store(false, Ordering::AcqRel);
+                    IN_A_LANE_SWITCH.store(false, Ordering::Relaxed);
                 },
                 Location::LaneSwitchCurved => {
                     self.send_levi_cmd(Command::ls2(0)).await;
-                    IN_A_LANE_SWITCH.store(true, Ordering::AcqRel);
+                    IN_A_LANE_SWITCH.store(true, Ordering::Relaxed);
                 }
                 _ => self.send_levi_cmd(Command::ls0(0)).await,
             }

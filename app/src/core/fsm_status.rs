@@ -35,7 +35,7 @@ pub static DISABLE_BRAKE_MOVING_NO_LOCALISATION: AtomicBool = AtomicBool::new(fa
 
 pub static POD_IS_MOVING: AtomicBool = AtomicBool::new(false);
 
-pub static mut LOCALISATION_LAST_SEEN: Instant = Instant::now();
+pub static mut LOCALISATION_LAST_SEEN: Instant = Instant::from_millis(0);
 
 
 #[derive(Debug, Default)]
