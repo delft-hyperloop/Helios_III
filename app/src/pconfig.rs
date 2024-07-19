@@ -1,5 +1,4 @@
 use defmt::error;
-use defmt::info;
 use embassy_net::IpAddress::Ipv4;
 use embassy_net::IpEndpoint;
 use embassy_net::Ipv4Address;
@@ -8,13 +7,13 @@ use embassy_stm32::rcc;
 use embassy_stm32::rcc::Pll;
 use embassy_stm32::rcc::*;
 use embassy_stm32::Config;
-use embassy_time::Instant;
+use embassy_time::{Instant, Timer};
 use embedded_can::ExtendedId;
 use embedded_nal_async::Ipv4Addr;
 use embedded_nal_async::SocketAddr;
 use embedded_nal_async::SocketAddrV4;
 
-use crate::core::communication::Datapoint;
+use crate::core::communication::data::Datapoint;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
@@ -24,18 +23,11 @@ use crate::EventSender;
 pub fn default_configuration() -> Config {
     let mut config = Config::default();
 
-    // config.rcc.hse = Some(rcc::Hse { // THESE ARE THE CONFIGURATIONS FOR TIRTH's MAIN PCB
-    //     freq: embassy_stm32::time::Hertz(24_000_000),
-    //     mode: rcc::HseMode::Oscillator
-    // });
-    config.rcc.hse = Some(rcc::Hse {
-        // THESE ARE THE CONFIGURATIONS FOR RUNNING ON NUCLEO'S
-        freq: embassy_stm32::time::Hertz(25_000_000),
-        mode: rcc::HseMode::Oscillator,
-    });
+    config.rcc.hse =
+        Some(rcc::Hse { freq: embassy_stm32::time::Hertz(8_000_000), mode: HseMode::Oscillator });
     config.rcc.pll1 = Some(Pll {
         source: PllSource::HSE,
-        prediv: PllPreDiv::DIV6,
+        prediv: PllPreDiv::DIV2,
         mul: PllMul::MUL50,
         divp: Some(PllDiv::DIV8),
         divq: Some(PllDiv::DIV8),
@@ -61,11 +53,12 @@ pub fn default_configuration() -> Config {
     config.rcc.apb3_pre = APBPrescaler::DIV2; // 100 Mhz
     config.rcc.apb4_pre = APBPrescaler::DIV2; // 100 Mhz
     config.rcc.voltage_scale = VoltageScale::Scale1;
-    config.rcc.mux.fdcansel = rcc::mux::Fdcansel::HSE;
+    config.rcc.mux.fdcansel = rcc::mux::Fdcansel::PLL1_Q;
     config
 }
 
 #[inline]
+#[allow(dead_code)]
 pub fn embassy_socket_from_config(t: ([u8; 4], u16)) -> IpEndpoint {
     IpEndpoint::new(Ipv4(Ipv4Address::new(t.0[0], t.0[1], t.0[2], t.0[3])), t.1)
 }
@@ -120,9 +113,7 @@ pub fn extended_as_value(id: &ExtendedId) -> u16 {
     }
     let temp = id.as_raw();
     let big_id = (temp & (0xFFFF000)) >> 16;
-    // info!("big_id {:?}", big_id);
     let mut small_id = temp & 0xFF;
-    // info!("small_id {:?}", small_id);
     let dt = temp & 0x0000F00;
     #[allow(clippy::self_assignment)]
     match dt {
@@ -134,7 +125,6 @@ pub fn extended_as_value(id: &ExtendedId) -> u16 {
         0x800 => small_id += 96,   // Balance messages
         _ => {},                   // small_id = small_id | 0x000,
     }
-    info!("small_id {:?}", small_id);
     (big_id + small_id) as u16
 }
 
@@ -153,6 +143,7 @@ macro_rules! try_spawn {
 }
 
 pub fn ticks() -> u64 { Instant::now().as_ticks() }
+pub fn millis() -> u64 { Instant::now().as_millis() }
 
 /// Instantly sends an event through the MPMC queue.
 /// * If the queue is full, the event will be discarded.
@@ -184,39 +175,55 @@ pub fn send_event(event_sender: EventSender, event: Event) {
 macro_rules! send_data {
     ($data_sender:expr, $dtype:expr, $data:expr) => {
         {
-            if let Err(e) = $data_sender.try_send(
-                $crate::Datapoint::new($dtype, $data, $crate::pconfig::ticks())
-            ) {
-                defmt::error!("[send] data channel full: {:?}", e);
+            if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
+                defmt::debug!("[send] Not connected, dropping {:?} {:?}", $dtype, $data);
+            } else {
+                if let Err(e) = $data_sender.try_send(
+                    $crate::Datapoint::new($dtype, $data, $crate::pconfig::ticks())
+                ) {
+                    defmt::warn!("[send] data channel full: {:?}", e);
+                }
             }
         }
     };
     ($data_sender:expr, $dtype:expr, $data:expr, $timestamp:expr) => {
         {
-            if let Err(e) = $data_sender.try_send(
-                $crate::Datapoint::new($dtype, $data, $timestamp)
-            ) {
-                defmt::error!("[send] data channel full: {:?}", e);
+            if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
+                defmt::debug!("[send] Not connected, dropping {:?} {:?} {:?}", $dtype, $data, $timestamp);
+            } else {
+                if let Err(e) = $data_sender.try_send(
+                    $crate::Datapoint::new($dtype, $data, $timestamp)
+                ) {
+                    defmt::warn!("[send] data channel full: {:?}", e);
+                }
             }
         }
     };
     ($data_sender:expr, $dtype:expr, $data:expr; $timeout:expr) => {
         {
-            if let Err(e) = $data_sender.try_send(
-                $crate::Datapoint::new($dtype, $data, $crate::pconfig::ticks())
-            ) {
-                defmt::error!("[send] data channel full: {:?}", e);
-                embassy_time::Timer::after_millis($timeout).await;
+            if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
+                defmt::debug!("[send] Not connected, dropping {:?} {:?}", $dtype, $data);
+            } else {
+                if let Err(e) = $data_sender.try_send(
+                    $crate::Datapoint::new($dtype, $data, $crate::pconfig::ticks())
+                ) {
+                    defmt::warn!("[send] data channel full: {:?}", e);
+                    embassy_time::Timer::after_millis($timeout).await;
+                }
             }
         }
     };
     ($data_sender:expr, $dtype:expr, $data:expr, $timestamp:expr; $timeout:expr) => {
         {
-            if let Err(e) = $data_sender.try_send(
-                $crate::core::communication::Datapoint::new($dtype, $data, $timestamp)
-            ) {
-                defmt::error!("[send] data channel full: {:?}", e);
-                embassy_time::Timer::after_millis($timeout).await;
+            if ! $crate::core::fsm_status::CONNECTED.load(core::sync::atomic::Ordering::Relaxed) {
+                defmt::debug!("[send] Not connected, dropping {:?} {:?} {:?}", $dtype, $data, $timestamp);
+            } else {
+                if let Err(e) = $data_sender.try_send(
+                    $crate::core::communication::Datapoint::new($dtype, $data, $timestamp)
+                ) {
+                    defmt::warn!("[send] data channel full: {:?}", e);
+                    embassy_time::Timer::after_millis($timeout).await;
+                }
             }
         }
     };
@@ -260,4 +267,11 @@ pub async fn queue_data(data_sender: DataSender, t: Datatype, data: u64) {
 /// * If you don't need to specify a specific timestamp, use [`queue_data`] instead
 pub async fn queue_dp(data_sender: DataSender, t: Datatype, d: u64, p: u64) {
     data_sender.send(Datapoint::new(t, d, p)).await
+}
+
+
+/// Wrapper function around timer::after to signify that this is a context-switch delay
+#[allow(dead_code)]
+pub async fn thread_delay(micros: u64) {
+    Timer::after_micros(micros).await;
 }

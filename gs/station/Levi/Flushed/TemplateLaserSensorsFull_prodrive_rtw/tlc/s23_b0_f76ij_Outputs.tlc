@@ -1,0 +1,792 @@
+%implements s23_b0_f76ij_Outputs "C"
+
+%function Outputs(block, system) Output
+%<SLibCGIRAccessLocalVar(17, 0, "")> %% rtb_Gain9
+%<SLibCGIRAccessLocalVar(20, 0, "")> %% rtb_Gain8
+%<SLibCGIRAccessLocalVar(23, 0, "")> %% rtb_Gain10
+%<SLibCGIRAccessLocalVar(26, 0, "")> %% rtb_mVtoacc
+%<SLibCGIRAccessLocalVar(29, 0, "")> %% rtb_Gain11
+%<SLibCGIRAccessLocalVar(32, 0, "")> %% rtb_Gain12
+%<SLibCGIRAccessLocalVar(39, 0, "")> %% rtb_IO_valtomV
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+real_T rtb_Memory;
+real_T rtb_Sqrt;
+real_T rtb_Square;
+real_T rtb_Square1;
+%closefile localVarDecl
+%assign _modelSS = ""
+
+%<SLibCG_TrackCoderDataGroup(3, 0)>\
+%<SLibCG_TrackDW(3)>\
+%<SLibCG_TrackBlockIO(3)>\
+%<SLibCG_TrackEO(21)>\
+%<SLibCG_TrackEO(20)>\
+%<SLibCG_TrackEO(19)>\
+%<SLibCG_TrackEO(18)>\
+%<SLibCG_TrackEO(17)>\
+%<SLibCG_TrackEO(16)>\
+%<SLibCG_TrackEO(15)>\
+%<SLibCG_TrackEO(14)>\
+%<SLibCG_TrackEO(13)>\
+%<SLibCG_TrackEO(12)>\
+%<SLibCG_TrackEO(11)>\
+%<SLibCG_TrackEO(10)>\
+%<SLibCG_TrackEO(9)>\
+%<SLibCG_TrackEO(8)>\
+%<SLibCG_TrackEO(7)>\
+%<SLibCG_TrackEO(6)>\
+%<SLibCG_TrackEO(5)>\
+%<SLibCG_TrackEO(4)>\
+%<SLibCG_TrackEO(3)>\
+%<SLibCG_TrackEO(2)>\
+%<SLibCG_TrackEO(1)>\
+%<SLibCG_TrackEO(0)>\
+%<SLibCG_TrackEI(9)>\
+%<SLibCG_TrackEI(8)>\
+%<SLibCG_TrackEI(7)>\
+%<SLibCG_TrackEI(6)>\
+%<SLibCG_TrackEI(5)>\
+%<SLibCG_TrackEI(4)>\
+%<SLibCG_TrackEI(3)>\
+%<SLibCG_TrackEI(2)>\
+%<SLibCG_TrackEI(1)>\
+%<SLibCG_TrackEI(0)>\
+/* {S!d2846}Outport: '<Root>/G_A' incorporates:
+ *  Constant: '<Root>/Constant1'
+ *  Gain: '<Root>/Gain'
+ *  Inport: '<Root>/Voltage_A'
+ *  Sum: '<Root>/Add'
+ */
+TemplateLaserSensorsFull_Y->G_A = TemplateLaserSensorsFull_InstP->a_A * TemplateLaserSensorsFull_U->Voltage_A + TemplateLaserSensorsFull_InstP->b_A;
+/* {S!d2848}Outport: '<Root>/G_B' incorporates:
+ *  Constant: '<Root>/Constant2'
+ *  Gain: '<Root>/Gain1'
+ *  Inport: '<Root>/Voltage_B'
+ *  Sum: '<Root>/Add1'
+ */
+TemplateLaserSensorsFull_Y->G_B = TemplateLaserSensorsFull_InstP->a_B * TemplateLaserSensorsFull_U->Voltage_B + TemplateLaserSensorsFull_InstP->b_B;
+/* {S!d2850}Outport: '<Root>/G_C' incorporates:
+ *  Constant: '<Root>/Constant3'
+ *  Gain: '<Root>/Gain2'
+ *  Inport: '<Root>/Voltage_C'
+ *  Sum: '<Root>/Add2'
+ */
+TemplateLaserSensorsFull_Y->G_C = TemplateLaserSensorsFull_InstP->a_C * TemplateLaserSensorsFull_U->Voltage_C + TemplateLaserSensorsFull_InstP->b_C;
+/* {S!d2852}Outport: '<Root>/G_D' incorporates:
+ *  Constant: '<Root>/Constant4'
+ *  Gain: '<Root>/Gain3'
+ *  Inport: '<Root>/Voltage_D'
+ *  Sum: '<Root>/Add3'
+ */
+TemplateLaserSensorsFull_Y->G_D = TemplateLaserSensorsFull_InstP->a_D * TemplateLaserSensorsFull_U->Voltage_D + TemplateLaserSensorsFull_InstP->b_D;
+/* {S!d2854}Outport: '<Root>/G_A2' incorporates:
+ *  Constant: '<Root>/Constant5'
+ *  Gain: '<Root>/Gain4'
+ *  Inport: '<Root>/Voltage_A2'
+ *  Sum: '<Root>/Add4'
+ */
+TemplateLaserSensorsFull_Y->G_A2 = TemplateLaserSensorsFull_InstP->a_A2 * TemplateLaserSensorsFull_U->Voltage_A2 + TemplateLaserSensorsFull_InstP->b_A2;
+/* {S!d2856}Outport: '<Root>/G_B2' incorporates:
+ *  Constant: '<Root>/Constant6'
+ *  Gain: '<Root>/Gain5'
+ *  Inport: '<Root>/Voltage_B2'
+ *  Sum: '<Root>/Add5'
+ */
+TemplateLaserSensorsFull_Y->G_B2 = TemplateLaserSensorsFull_InstP->a_B2 * TemplateLaserSensorsFull_U->Voltage_B2 + TemplateLaserSensorsFull_InstP->b_B2;
+/* {S!d2858}Outport: '<Root>/G_C2' incorporates:
+ *  Constant: '<Root>/Constant7'
+ *  Gain: '<Root>/Gain6'
+ *  Inport: '<Root>/Voltage_C2'
+ *  Sum: '<Root>/Add6'
+ */
+TemplateLaserSensorsFull_Y->G_C2 = TemplateLaserSensorsFull_InstP->a_C2 * TemplateLaserSensorsFull_U->Voltage_C2 + TemplateLaserSensorsFull_InstP->b_C2;
+/* {S!d2860}Outport: '<Root>/G_D2' incorporates:
+ *  Constant: '<Root>/Constant8'
+ *  Gain: '<Root>/Gain7'
+ *  Inport: '<Root>/Voltage_D2'
+ *  Sum: '<Root>/Add7'
+ */
+TemplateLaserSensorsFull_Y->G_D2 = TemplateLaserSensorsFull_InstP->a_D2 * TemplateLaserSensorsFull_U->Voltage_D2 + TemplateLaserSensorsFull_InstP->b_D2;
+/* {S!d2862}Outport: '<Root>/VerticalAxisControllerState_Out' incorporates:
+ *  Inport: '<Root>/VerticalAxisControllerState_In'
+ */
+TemplateLaserSensorsFull_Y->VerticalAxisControllerState_Out = TemplateLaserSensorsFull_U->VerticalAxisControllerState_In;
+/* {S!d2864}Outport: '<Root>/LateralAxisControllerState_Out' incorporates:
+ *  Inport: '<Root>/LateralAxisControllerState_In'
+ */
+TemplateLaserSensorsFull_Y->LateralAxisControllerState_Out = TemplateLaserSensorsFull_U->LateralAxisControllerState_In;
+/* {S!d2866}Inport: '<Root>/IMU1' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,1)
+%<SLibCG_TrackEI(10)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU1", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_B->MovingAverage6_p", "&TemplateLaserSensorsFull_DW->MovingAverage6_p"], 1, 1, 6, 0, 6, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_p.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_B->MovingAverage7_p", "&TemplateLaserSensorsFull_DW->MovingAverage7_p"], 2, 1, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2868}Memory: '<S1>/Memory' */
+rtb_Memory = TemplateLaserSensorsFull_DW->Memory_PreviousInput;
+/* {S!d2870}Gain: '<Root>/Gain9' incorporates:
+ *  Memory: '<S1>/Memory'
+ *  Product: '<S18>/Product'
+ */
+rtb_Gain9 = TemplateLaserSensorsFull_B->MovingAverage7_p.MovingAverage7 * TemplateLaserSensorsFull_DW->Memory_PreviousInput * 0.00721917412647993;
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,1)
+%<SLibCGIRAccessLocalVar(17, 0, "")> %% rtb_Gain9
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,2)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage", ["TemplateLaserSensorsFull_M", "rtb_Gain9", "&TemplateLaserSensorsFull_B->MovingAverage2", "&TemplateLaserSensorsFull_DW->MovingAverage2"], 0, 1, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2876}Switch: '<S2>/Switch4' incorporates:
+ *  Constant: '<S2>/Constant9'
+ */
+if (TemplateLaserSensorsFull_InstP->remove_IMU_bias_g > 0.0) {
+    /* {S!d2872}Switch: '<S2>/Switch4' */
+    TemplateLaserSensorsFull_B->Switch4 = TemplateLaserSensorsFull_B->MovingAverage2.MovingAverage;
+} else {
+    /* {S!d2874}Switch: '<S2>/Switch4' incorporates:
+ *  Memory: '<S2>/Memory'
+ */
+    TemplateLaserSensorsFull_B->Switch4 = TemplateLaserSensorsFull_DW->Memory_PreviousInput_m;
+}
+/* {E!d2876}End of Switch: '<S2>/Switch4' */
+
+/* {S!d2878}Outport: '<Root>/IMU_x' incorporates:
+ *  Sum: '<S2>/Subtract3'
+ */
+TemplateLaserSensorsFull_Y->IMU_x = rtb_Gain9 - TemplateLaserSensorsFull_B->Switch4;
+/* {S!d2880}Inport: '<Root>/IMU2' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,1)
+%<SLibCG_TrackEI(11)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU2", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_B->MovingAverage6_pn", "&TemplateLaserSensorsFull_DW->MovingAverage6_pn"], 1, 2, 6, 0, 6, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pn.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_B->MovingAverage7_pn", "&TemplateLaserSensorsFull_DW->MovingAverage7_pn"], 2, 2, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2882}Gain: '<Root>/Gain8' incorporates:
+ *  Product: '<S20>/Product'
+ */
+rtb_Gain8 = TemplateLaserSensorsFull_B->MovingAverage7_pn.MovingAverage7 * rtb_Memory * 0.00720772668300418;
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,1)
+%<SLibCGIRAccessLocalVar(20, 0, "")> %% rtb_Gain8
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,2)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage", ["TemplateLaserSensorsFull_M", "rtb_Gain8", "&TemplateLaserSensorsFull_B->MovingAverage2_p", "&TemplateLaserSensorsFull_DW->MovingAverage2_p"], 0, 2, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2888}Switch: '<S3>/Switch4' incorporates:
+ *  Constant: '<S3>/Constant9'
+ */
+if (TemplateLaserSensorsFull_InstP->remove_IMU_bias_g > 0.0) {
+    /* {S!d2884}Switch: '<S3>/Switch4' */
+    TemplateLaserSensorsFull_B->Switch4_d = TemplateLaserSensorsFull_B->MovingAverage2_p.MovingAverage;
+} else {
+    /* {S!d2886}Switch: '<S3>/Switch4' incorporates:
+ *  Memory: '<S3>/Memory'
+ */
+    TemplateLaserSensorsFull_B->Switch4_d = TemplateLaserSensorsFull_DW->Memory_PreviousInput_mw;
+}
+/* {E!d2888}End of Switch: '<S3>/Switch4' */
+
+/* {S!d2890}Outport: '<Root>/IMU_y' incorporates:
+ *  Sum: '<S3>/Subtract3'
+ */
+TemplateLaserSensorsFull_Y->IMU_y = rtb_Gain8 - TemplateLaserSensorsFull_B->Switch4_d;
+/* {S!d2892}Inport: '<Root>/IMU5' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,1)
+%<SLibCG_TrackEI(14)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU5", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_B->MovingAverage6_pnaev", "&TemplateLaserSensorsFull_DW->MovingAverage6_pnaev"], 1, 5, 6, 0, 6, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pnaev.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_B->MovingAverage7_pnaev", "&TemplateLaserSensorsFull_DW->MovingAverage7_pnaev"], 2, 5, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2894}Gain: '<Root>/Gain10' incorporates:
+ *  Product: '<S26>/Product'
+ */
+rtb_Gain10 = TemplateLaserSensorsFull_B->MovingAverage7_pnaev.MovingAverage7 * rtb_Memory * 8.6281276962899049E-5;
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,1)
+%<SLibCGIRAccessLocalVar(23, 0, "")> %% rtb_Gain10
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,2)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage", ["TemplateLaserSensorsFull_M", "rtb_Gain10", "&TemplateLaserSensorsFull_B->MovingAverage2_pn", "&TemplateLaserSensorsFull_DW->MovingAverage2_pn"], 0, 3, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2900}Switch: '<S4>/Switch4' incorporates:
+ *  Constant: '<S4>/Constant9'
+ */
+if (TemplateLaserSensorsFull_InstP->remove_IMU_bias_g > 0.0) {
+    /* {S!d2896}Switch: '<S4>/Switch4' */
+    TemplateLaserSensorsFull_B->Switch4_g = TemplateLaserSensorsFull_B->MovingAverage2_pn.MovingAverage;
+} else {
+    /* {S!d2898}Switch: '<S4>/Switch4' incorporates:
+ *  Memory: '<S4>/Memory'
+ */
+    TemplateLaserSensorsFull_B->Switch4_g = TemplateLaserSensorsFull_DW->Memory_PreviousInput_g;
+}
+/* {E!d2900}End of Switch: '<S4>/Switch4' */
+
+/* {S!d2902}Outport: '<Root>/IMU_pitch' incorporates:
+ *  Sum: '<S4>/Subtract3'
+ */
+TemplateLaserSensorsFull_Y->IMU_pitch = rtb_Gain10 - TemplateLaserSensorsFull_B->Switch4_g;
+/* {S!d2904}Inport: '<Root>/IMU4' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,1)
+%<SLibCG_TrackEI(13)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU4", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_B->MovingAverage6_pna", "&TemplateLaserSensorsFull_DW->MovingAverage6_pna"], 1, 3, 6, 0, 6, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pna.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_B->MovingAverage7_pna", "&TemplateLaserSensorsFull_DW->MovingAverage7_pna"], 2, 3, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2906}Gain: '<Root>/mV to acc' incorporates:
+ *  Product: '<S22>/Product'
+ */
+rtb_mVtoacc = TemplateLaserSensorsFull_B->MovingAverage7_pna.MovingAverage7 * rtb_Memory * 0.018084163697849796;
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,1)
+%<SLibCGIRAccessLocalVar(26, 0, "")> %% rtb_mVtoacc
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,2)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage", ["TemplateLaserSensorsFull_M", "rtb_mVtoacc", "&TemplateLaserSensorsFull_B->MovingAverage2_pna", "&TemplateLaserSensorsFull_DW->MovingAverage2_pna"], 0, 4, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2912}Switch: '<S5>/Switch4' incorporates:
+ *  Constant: '<S5>/Constant9'
+ */
+if (TemplateLaserSensorsFull_InstP->remove_IMU_bias_g > 0.0) {
+    /* {S!d2908}Switch: '<S5>/Switch4' */
+    TemplateLaserSensorsFull_B->Switch4_d5 = TemplateLaserSensorsFull_B->MovingAverage2_pna.MovingAverage;
+} else {
+    /* {S!d2910}Switch: '<S5>/Switch4' incorporates:
+ *  Memory: '<S5>/Memory'
+ */
+    TemplateLaserSensorsFull_B->Switch4_d5 = TemplateLaserSensorsFull_DW->Memory_PreviousInput_d;
+}
+/* {E!d2912}End of Switch: '<S5>/Switch4' */
+
+/* {S!d2914}Outport: '<Root>/IMU_z' incorporates:
+ *  Sum: '<S5>/Subtract3'
+ */
+TemplateLaserSensorsFull_Y->IMU_z = rtb_mVtoacc - TemplateLaserSensorsFull_B->Switch4_d5;
+/* {S!d2916}Inport: '<Root>/IMU3' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,1)
+%<SLibCG_TrackEI(12)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU3", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_B->MovingAverage6_pnaevv", "&TemplateLaserSensorsFull_DW->MovingAverage6_pnaevv"], 1, 6, 6, 0, 6, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pnaevv.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_B->MovingAverage7_pnaevv", "&TemplateLaserSensorsFull_DW->MovingAverage7_pnaevv"], 2, 6, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2918}Gain: '<Root>/Gain11' incorporates:
+ *  Product: '<S28>/Product'
+ */
+rtb_Gain11 = TemplateLaserSensorsFull_B->MovingAverage7_pnaevv.MovingAverage7 * rtb_Memory * 8.6333419666753E-5;
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,1)
+%<SLibCGIRAccessLocalVar(29, 0, "")> %% rtb_Gain11
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,2)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage", ["TemplateLaserSensorsFull_M", "rtb_Gain11", "&TemplateLaserSensorsFull_B->MovingAverage2_pnae", "&TemplateLaserSensorsFull_DW->MovingAverage2_pnae"], 0, 5, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2924}Switch: '<S6>/Switch4' incorporates:
+ *  Constant: '<S6>/Constant9'
+ */
+if (TemplateLaserSensorsFull_InstP->remove_IMU_bias_g > 0.0) {
+    /* {S!d2920}Switch: '<S6>/Switch4' */
+    TemplateLaserSensorsFull_B->Switch4_n = TemplateLaserSensorsFull_B->MovingAverage2_pnae.MovingAverage;
+} else {
+    /* {S!d2922}Switch: '<S6>/Switch4' incorporates:
+ *  Memory: '<S6>/Memory'
+ */
+    TemplateLaserSensorsFull_B->Switch4_n = TemplateLaserSensorsFull_DW->Memory_PreviousInput_j;
+}
+/* {E!d2924}End of Switch: '<S6>/Switch4' */
+
+/* {S!d2926}Outport: '<Root>/IMU_roll' incorporates:
+ *  Sum: '<S6>/Subtract3'
+ */
+TemplateLaserSensorsFull_Y->IMU_roll = rtb_Gain11 - TemplateLaserSensorsFull_B->Switch4_n;
+/* {S!d2928}Inport: '<Root>/IMU6' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,1)
+%<SLibCG_TrackEI(15)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU6", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_B->MovingAverage6_pnaevvf", "&TemplateLaserSensorsFull_DW->MovingAverage6_pnaevvf"], 1, 7, 6, 0, 6, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pnaevvf.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_B->MovingAverage7_pnaevvf", "&TemplateLaserSensorsFull_DW->MovingAverage7_pnaevvf"], 2, 7, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2930}Gain: '<Root>/Gain12' incorporates:
+ *  Product: '<S30>/Product'
+ */
+rtb_Gain12 = TemplateLaserSensorsFull_B->MovingAverage7_pnaevvf.MovingAverage7 * rtb_Memory * 8.6400552963538971E-5;
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,1)
+%<SLibCGIRAccessLocalVar(32, 0, "")> %% rtb_Gain12
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,2)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage", ["TemplateLaserSensorsFull_M", "rtb_Gain12", "&TemplateLaserSensorsFull_B->MovingAverage2_pnaev", "&TemplateLaserSensorsFull_DW->MovingAverage2_pnaev"], 0, 6, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2936}Switch: '<S7>/Switch4' incorporates:
+ *  Constant: '<S7>/Constant9'
+ */
+if (TemplateLaserSensorsFull_InstP->remove_IMU_bias_g > 0.0) {
+    /* {S!d2932}Switch: '<S7>/Switch4' */
+    TemplateLaserSensorsFull_B->Switch4_nk = TemplateLaserSensorsFull_B->MovingAverage2_pnaev.MovingAverage;
+} else {
+    /* {S!d2934}Switch: '<S7>/Switch4' incorporates:
+ *  Memory: '<S7>/Memory'
+ */
+    TemplateLaserSensorsFull_B->Switch4_nk = TemplateLaserSensorsFull_DW->Memory_PreviousInput_p;
+}
+/* {E!d2936}End of Switch: '<S7>/Switch4' */
+
+/* {S!d2938}Outport: '<Root>/IMU_yaw' incorporates:
+ *  Sum: '<S7>/Subtract3'
+ */
+TemplateLaserSensorsFull_Y->IMU_yaw = rtb_Gain12 - TemplateLaserSensorsFull_B->Switch4_nk;
+/* {S!d2940}Inport: '<Root>/IMU7' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,1)
+%<SLibCG_TrackEI(16)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU7", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_B->MovingAverage6_pnae", "&TemplateLaserSensorsFull_DW->MovingAverage6_pnae"], 1, 4, 6, 0, 6, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6_pnae.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_B->MovingAverage7_pnae", "&TemplateLaserSensorsFull_DW->MovingAverage7_pnae"], 2, 4, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2942}Outport: '<Root>/IMU_temp' incorporates:
+ *  Product: '<S24>/Product'
+ */
+TemplateLaserSensorsFull_Y->IMU_temp = TemplateLaserSensorsFull_B->MovingAverage7_pnae.MovingAverage7 * rtb_Memory;
+/* {S!d2944}Inport: '<Root>/IMU8' */
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[1], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,1)
+%<SLibCG_TrackEI(17)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage6",1,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage6", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_U->IMU8", "TemplateLaserSensorsFull_InstP->IMU_Filter", "&TemplateLaserSensorsFull_B->MovingAverage6", "&TemplateLaserSensorsFull_DW->MovingAverage6"], 1, 0, 6, 0, 6, 3)>\
+
+%endif
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[2], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,1)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,2)
+%<SLibCG_TrackCoderDataGroup(3, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,3)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage7",2,4)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage7", ["TemplateLaserSensorsFull_M", "TemplateLaserSensorsFull_B->MovingAverage6.MovingAverage6", "TemplateLaserSensorsFull_InstP->IMU_SecondFilter", "&TemplateLaserSensorsFull_B->MovingAverage7", "&TemplateLaserSensorsFull_DW->MovingAverage7"], 2, 0, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2946}Outport: '<Root>/IMU_out8' incorporates:
+ *  Product: '<S16>/Product'
+ */
+TemplateLaserSensorsFull_Y->IMU_out8 = TemplateLaserSensorsFull_B->MovingAverage7.MovingAverage7 * rtb_Memory;
+/* {S!d2948}Outport: '<Root>/Vx' */
+TemplateLaserSensorsFull_Y->Vx = TemplateLaserSensorsFull_B->MovingAverage7_p.MovingAverage7;
+/* {S!d2950}Outport: '<Root>/Vz' */
+TemplateLaserSensorsFull_Y->Vz = TemplateLaserSensorsFull_B->MovingAverage7_pna.MovingAverage7;
+/* {S!d2952}Outport: '<Root>/Vy' */
+TemplateLaserSensorsFull_Y->Vy = TemplateLaserSensorsFull_B->MovingAverage7_pn.MovingAverage7;
+/* {S!d2954}Gain: '<S1>/Cx' */
+rtb_Sqrt = 0.00721917412647993 * TemplateLaserSensorsFull_B->MovingAverage7_p.MovingAverage7;
+/* {S!d2956}Math: '<S1>/Square' */
+rtb_Square = rtb_Sqrt * rtb_Sqrt;
+/* {S!d2958}Gain: '<S1>/Cy' */
+rtb_Sqrt = 0.00720772668300418 * TemplateLaserSensorsFull_B->MovingAverage7_pn.MovingAverage7;
+/* {S!d2960}Math: '<S1>/Square1' */
+rtb_Square1 = rtb_Sqrt * rtb_Sqrt;
+/* {S!d2962}Gain: '<S1>/Cz' */
+rtb_Sqrt = 0.018084163697849796 * TemplateLaserSensorsFull_B->MovingAverage7_pna.MovingAverage7;
+/* {S!d2964}Product: '<S1>/Divide1' incorporates:
+ *  Constant: '<S1>/g'
+ *  Math: '<S1>/Square2'
+ *  Sqrt: '<S1>/Sqrt'
+ *  Sum: '<S1>/Add9'
+ */
+rtb_IO_valtomV = 9.80665 / sqrt((rtb_Square + rtb_Square1) + rtb_Sqrt * rtb_Sqrt);
+%if !SLibCGSysFcnIsEmptyForTid(CompiledModel.System[0], "Output",0)
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,0)
+%<SLibCG_AccessArg(3 ,2, 0)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,1)
+%<SLibCGIRAccessLocalVar(39, 0, "")> %% rtb_IO_valtomV
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,2)
+%<SLibCG_TrackBlockIO(3)>
+%endif
+%if SLibCG_SystemFcnArgAccessed("TemplateLaserSensorsFull_MovingAverage",0,3)
+%<SLibCG_TrackDW(3)>
+%endif
+
+%<SLibCGIRGenReusableSysCall("TemplateLaserSensorsFull_MovingAverage", ["TemplateLaserSensorsFull_M", "rtb_IO_valtomV", "&TemplateLaserSensorsFull_B->MovingAverage", "&TemplateLaserSensorsFull_DW->MovingAverage"], 0, 0, 6, 0, 6, 3)>\
+
+
+%endif
+/* {S!d2970}Switch: '<S1>/Switch' incorporates:
+ *  Constant: '<S1>/Constant'
+ */
+if (TemplateLaserSensorsFull_InstP->CalibrateIMU > 0.0) {
+    /* {S!d2966}Switch: '<S1>/Switch' */
+    TemplateLaserSensorsFull_B->Switch = TemplateLaserSensorsFull_B->MovingAverage.MovingAverage;
+} else {
+    /* {S!d2968}Switch: '<S1>/Switch' */
+    TemplateLaserSensorsFull_B->Switch = rtb_Memory;
+}
+/* {E!d2970}End of Switch: '<S1>/Switch' */
+
+/* {S!d2972}Outport: '<Root>/IOval_to_mV' */
+TemplateLaserSensorsFull_Y->IOval_to_mV = rtb_Memory;
+%<SLibInsertSolverResetCode()>\
+%closefile cfgTxt
+%<cfgTxt>
+%assign rtmArgSys = ::CompiledModel.System[::CompiledModel.System[::CompiledModel.RTWCGModules.RTWCGModule[3].CGSystemIdx].NonInlinedParentSystemIdx]
+%if SysFcnArgNeeded("Output", rtmArgSys.Interface.RTMArgDef, rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Output"))
+%<SLibCG_AccessArg(3, 2, 0)>
+%endif
+%if SLibCG_ArgAccessed(3, 2, 0)
+%<SLibAccessArg(rtmArgSys.Interface.RTMArgDef, "Output", rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Output"))>
+%endif
+%if (IsModelReferenceBaseSys(rtmArgSys) && (IsModelRefScalableBuild() || GenerateClassInterface)) ||...
+(GenerateClassInterface && SLibIsMultiInstanceServer(rtmArgSys))
+%<SLibCG_UndoAccessArg(3, 2, 0)>
+%endif
+%<LibSetSystemField(system, "CachedOutputLocalVars", localVarDecl)>
+%endfunction
+%function OutputsFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Outputs(\
+%assign comma = ""
+%if SLibCG_ArgAccessed(3, 2, 0)
+%<comma>%<::tSimStructType> * const TemplateLaserSensorsFull_M\
+%assign comma = ", "
+%<SLibUpdateSymbolForFunction("Outputs", SLibGetFcnDefinitionRTMSymbolName(), TLC_FALSE)>\
+%endif
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(3, 2, fcnProtoType)>
+%endfunction

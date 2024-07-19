@@ -19,6 +19,11 @@ impl Fsm {
 
     pub async fn react_mv_st(&mut self, event: Event) {
         match event {
+            Event::HvLevitationBelowBms => {
+                transit!(self, State::EmergencyBraking);
+                self.send_levi_cmd(Command::EmergencyBrake(4)).await;
+            },
+
             Event::LaneSwitchForward => {
                 match self.route.next_position() {
                     Location::LaneSwitchStraight => {
@@ -48,6 +53,7 @@ impl Fsm {
                         error!("Invalid configuration!");
                         self.log(Info::InvalidRouteConfigurationAbortingRun).await;
                         transit!(self, State::EmergencyBraking);
+                        self.send_levi_cmd(Command::EmergencyBrake(4)).await;
                     },
                 }
             },

@@ -75,6 +75,10 @@ name = "ConnectionStatus"
 id = 0x7fe
 
 [[Datatype]]
+name = "PropulsionTemperature"
+id = 0x212
+
+[[Datatype]]
 name = "PropulsionVoltage"
 id = 0x1b2
 display_units = "V"
@@ -92,30 +96,40 @@ display_units = "V"
 [[Datatype]]
 name = "LevitationTemperature"
 id = 0x0b
+display_units = "ºC"
+upper = { warn = 6000, err = 8000 }
+
 
 [[Datatype]]
 name = "AccelerationX"
 id = 0x115
+display_units = "m/s²"
 
 [[Datatype]]
 name = "AccelerationY"
 id = 0x114
+display_units = "m/s²"
 
 [[Datatype]]
 name = "AccelerationZ"
 id = 0x113
+display_units = "m/s²"
 
 [[Datatype]]
 name = "GyroscopeX"
 id = 0x112
+display_units = "rad/s²"
 
 [[Datatype]]
 name = "GyroscopeY"
 id = 0x111
+display_units = "rad/s²"
 
 [[Datatype]]
 name = "GyroscopeZ"
 id = 0x110
+display_units = "rad/s²"
+
 
 [[Datatype]]
 name = "IMDGeneralInfo"
@@ -124,28 +138,38 @@ id = 0x37
 [[Datatype]]
 name = "IMDIsolationDetails"
 id = 0x38
+display_units = "Ω"
+
 
 [[Datatype]]
 name = "IMDVoltageDetails"
 id = 0x39
+display_units = "V"
+upper = { warn = 420, err = 450 }
 
 
 [[Datatype]]
 name = "InsulationNegative"
 id = 0x50A
+display_units = "Ω"
+
 
 [[Datatype]]
 name = "InsulationPositive"
 id = 0x50B
+display_units = "Ω"
+
 
 [[Datatype]]
 name = "InsulationOriginal"
 id = 0x50C
+display_units = "Ω"
 
 [[Datatype]]
 name = "DefaultBMSLow"
 id = 0x19C
 [[Datatype]]
+
 name = "DiagnosticBMSLow"
 id = 0x1A3
 [[Datatype]]
@@ -158,122 +182,187 @@ id = 0x3A7
 [[Datatype]]
 name = "BatteryVoltageLow"
 id = 0x19D
+display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+
+
+
 [[Datatype]]
 name = "BatteryVoltageHigh"
 id = 0x3A1
+display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "TotalBatteryVoltageLow"
 id = 0x1A5
+display_units = "V"
+upper = { warn = 2400, err = 2500}
+lower = { warn = 2000, err = 0}
 
 [[Datatype]]
 name = "TotalBatteryVoltageHigh"
 id = 0x3A9
+display_units = "V"
+upper = { warn = 41500, err = 42500}
+lower = { warn = 35000, err = 0}
 
 
 [[Datatype]]
 name = "BatteryTemperatureLow"
 id = 0x1A4
+display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
+
+
 [[Datatype]]
 name = "BatteryTemperatureHigh"
 id = 0x3A8
+display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
 
 [[Datatype]]
 name = "BatteryBalanceLow"
 id = 0x19F
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryBalanceHigh"
 id = 0x3A3
+display_units = "%"
 
 [[Datatype]]
 name = "SingleCellVoltageLow"
 id = 0x1BC
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureLow"
 id = 0x1DC
+display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
 
 [[Datatype]]
 name = "ChargeStateLow"
 id = 0x1A1
+display_units = "A"
 
 [[Datatype]]
 name = "ChargeStateHigh"
 id = 0x3A5
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryCurrentLow"
 id = 0x1A6
+display_units = "A"
 
 [[Datatype]]
 name = "BatteryCurrentHigh"
 id = 0x3AA
+display_units = "A"
 
 [[Datatype]]
 name = "BatteryEnergyParamsLow"
 id = 0x1A2
+display_units = "A"
 
 [[Datatype]]
 name = "BatteryEnergyParamsHigh"
 id = 0x3A6
+display_units = "A"
 
 [[Datatype]]
 name = "BatteryMaxVoltageLow"
 id = 0x1A8
+display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "BatteryEstimatedChargeLow"
 id = 0x1A9
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryMinTemperatureLow"
 id = 0x1AA
+display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
+
+
 
 [[Datatype]]
 name = "BatteryMaxTemperatureLow"
 id = 0x1AB
+display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
+
 
 [[Datatype]]
 name = "BatteryMinBalancingLow"
 id = 0x1AC
+display_units = "V"
 
 [[Datatype]]
 name = "BatteryMaxBalancingLow"
 id = 0x1AD
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryMinVoltageLow"
 id = 0x1A7
+display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "BatteryMinVoltageHigh"
 id = 0x3AB
+display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "BatteryMaxVoltageHigh"
 id = 0x3AC
+display_units = "V"
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
 
 [[Datatype]]
 name = "BatteryEstimatedChargeHigh"
 id = 0x3AD
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryMinTemperatureHigh"
 id = 0x3AE
+display_units = "ºC"
 
 [[Datatype]]
 name = "BatteryMaxTemperatureHigh"
 id = 0x3AF
+display_units = "ºC"
+upper = { warn = 135 , err = 140}
+lower = {err = 0}
 
 [[Datatype]]
 name = "BatteryMinBalancingHigh"
 id = 0x3B0
-
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryMaxBalancingHigh"
 id = 0x3B1
+display_units = "%"
 
 [[Datatype]]
 name = "BatteryEventLow"
@@ -286,10 +375,14 @@ id = 0x425
 [[Datatype]]
 name = "BrakeTemperature"
 id = 0x13
+display_units = "ºC"
+upper = { warn = 60 , err = 70}
+lower = {err = 0}
 
 [[Datatype]]
 name = "PropulsionSpeed"
 id = 0x14
+display_units = "m/s"
 
 
 [[Datatype]]
@@ -309,14 +402,18 @@ name = "Localisation"
 id = 0x500
 lower = 500
 upper = 12000
+display_units = "mm"
+
 
 [[Datatype]]
 name = "Velocity"
 id = 0x501
+display_units = "m/s"
 
 [[Datatype]]
 name = "Acceleration"
 id = 0x506
+display_units = "m/s²"
 
 [[Datatype]]
 name = "Direction"
@@ -327,6 +424,7 @@ name = "BrakePressure"
 id = 0x15
 upper = 250
 lower = 1
+display_units = "bar"
 
 [[Datatype]]
 name = "UnknownCanId"
@@ -340,17 +438,20 @@ id = 0x7FA
 [[Datatype]]
 name = "Presure_VB"
 id = 0x210
+display_units = "bar"
 # no limit necessary
 
 [[Datatype]]
 name = "Average_Temp_VB_Bottom"
 id = 0x211
 upper = 80000 # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Average_Temp_VB_top"
 id = 0x200
 upper = 80000 # (e-2) degrees
+display_units = "ºC"
 
 
 [[Datatype]]
@@ -358,36 +459,45 @@ name = "Temp_HEMS_1"
 id = 0x20a
 lower = {err = 0 }# (e-2) degrees # the idea here is that we blink red if we read below 0 (sensor disconnect)
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_HEMS_2"
 id = 0x20b
 lower = {err = 0 }# (e-2) degrees
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
+display_units = "ºC"
+
 
 [[Datatype]]
 name = "Temp_HEMS_3"
 id = 0x20c
 lower = {err = 0 }# (e-2) degrees
 upper = { warn = 6000, err = 8000 }# (e-2) degrees
+display_units = "ºC"
+
 
 [[Datatype]]
 name = "Temp_HEMS_4"
 id = 0x20d
 lower = {err = 0 }# (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
+
 
 [[Datatype]]
 name = "Temp_Motor_1"
 id = 0x20e
 lower = {err = 0 }
 upper = { warn = 6000, err = 8000 }
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_Motor_2"
 id = 0x20f
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Ambient_presure"
@@ -395,340 +505,583 @@ id = 0x220
 # no limit necessary
 lower = {warn = 90, err =  50} #(e-2) bar
 upper = { warn = 120, err = 200 } #(e-2) bar
+display_units = "bar"
 
 [[Datatype]]
 name = "Ambient_temp"
 id = 0x224
 lower = {err =  0} # (e-2) degrees
 upper = {err = 5000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_1"
 id = 0x222
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_2"
 id = 0x223
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_3"
 id = 0x225
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
 
 [[Datatype]]
 name = "Temp_EMS_4"
 id = 0x226
 lower = {err = 0 } # (e-2) degrees
 upper = { warn = 6000, err = 8000 } # (e-2) degrees
+display_units = "ºC"
+
+[[Datatype]]
+name = "SingleCellVoltageHigh"
+id = 0x3BF
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_1"
 id = 0x3C0
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
+
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_1"
 id = 0x4A0
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_2"
 id = 0x3C1
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_2"
 id = 0x4A1
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_3"
 id = 0x3C2
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_3"
 id = 0x4A2
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_4"
 id = 0x3C3
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_4"
 id = 0x4A3
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_5"
 id = 0x3C4
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_5"
 id = 0x4A4
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_6"
 id = 0x3C5
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_6"
 id = 0x4A5
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_7"
 id = 0x3C6
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_7"
 id = 0x4A6
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_8"
 id = 0x3C7
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_8"
 id = 0x4A7
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_9"
 id = 0x3C8
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_9"
 id = 0x4A8
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_10"
 id = 0x3C9
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_10"
 id = 0x4A9
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_11"
 id = 0x3CA
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_11"
 id = 0x4AA
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_12"
 id = 0x3CB
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_12"
 id = 0x4AB
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_13"
 id = 0x3CC
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_13"
 id = 0x4AC
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "SingleCellVoltageHigh_14"
 id = 0x3CD
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "SingleCellTemperatureHigh_14"
 id = 0x4AD
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module1MaxVoltage"
 id = 0x4B0
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module2MaxVoltage"
 id = 0x4B1
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module3MaxVoltage"
 id = 0x4B2
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module4MaxVoltage"
 id = 0x4B3
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module5MaxVoltage"
 id = 0x4B4
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module6MaxVoltage"
 id = 0x4B5
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module7MaxVoltage"
 id = 0x4B6
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module8MaxVoltage"
 id = 0x4B7
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module1MinVoltage"
 id = 0x4B8
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module2MinVoltage"
 id = 0x4B9
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module3MinVoltage"
 id = 0x4BA
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module4MinVoltage"
 id = 0x4BB
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module5MinVoltage"
 id = 0x4BC
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module6MinVoltage"
 id = 0x4BD
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module7MinVoltage"
 id = 0x4BE
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module8MinVoltage"
 id = 0x4BF
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module1MaxTemperature"
 id = 0x4C0
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module2MaxTemperature"
 id = 0x4C1
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module3MaxTemperature"
 id = 0x4C2
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module4MaxTemperature"
 id = 0x4C3
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module5MaxTemperature"
 id = 0x4C4
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module6MaxTemperature"
 id = 0x4C5
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module7MaxTemperature"
 id = 0x4C6
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module8MaxTemperature"
 id = 0x4C7
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module1MinTemperature"
 id = 0x4C8
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module2MinTemperature"
 id = 0x4C9
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module3MinTemperature"
 id = 0x4CA
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module4MinTemperature"
 id = 0x4CB
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module5MinTemperature"
 id = 0x4CC
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module6MinTemperature"
 id = 0x4CD
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module7MinTemperature"
 id = 0x4CE
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module8MinTemperature"
 id = 0x4CF
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module1AvgVoltage"
 id = 0x4D0
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module2AvgVoltage"
 id = 0x4D1
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module3AvgVoltage"
 id = 0x4D2
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module4AvgVoltage"
 id = 0x4D3
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module5AvgVoltage"
 id = 0x4D4
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module6AvgVoltage"
 id = 0x4D5
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module7AvgVoltage"
 id = 0x4D6
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module8AvgVoltage"
 id = 0x4D7
+lower = {warn = 200 }# (e-2) degrees
+upper = { warn = 355, err = 360}
+display_units = "V"
 
 [[Datatype]]
 name = "Module1AvgTemperature"
 id = 0x4D8
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module2AvgTemperature"
 id = 0x4D9
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module3AvgTemperature"
 id = 0x4DA
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module4AvgTemperature"
 id = 0x4DB
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module5AvgTemperature"
 id = 0x4DC
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module6AvgTemperature"
 id = 0x4DD
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module7AvgTemperature"
 id = 0x4DE
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
 
 [[Datatype]]
 name = "Module8AvgTemperature"
 id = 0x4DF
+display_units = "ºC"
+lower = {warn = 100 }# (e-2) degrees
+upper = { warn = 150, err = 180}
+
 
 [[Datatype]]
 name = "ResponseHeartbeat"
@@ -743,6 +1096,7 @@ name = "LowPressureSensor"
 id = 0x127
 lower = {warn = 40, err = 35 } #(e-2) bar
 upper = { warn = 52, err = 56} #(e-2) bar
+display_units = "bat"
 
 [[Datatype]]
 name = "HighPressureSensor"
@@ -751,6 +1105,7 @@ id = 0x128
 # upper = 180 #bar
 lower = {warn = 90, err = 70 } #(e-2) bar
 upper = { warn = 170, err = 180} #(e-2) bar
+display_units = "bar"
 
 # SJOERD LEVITATION DATATYPES
 #Sjoerd needs to add or tell us limits here
@@ -970,30 +1325,37 @@ id = 0x166
 [[Datatype]]
 name = "CommandHash"
 id = 0x167
+priority = 1
 
 [[Datatype]]
 name = "EventsHash"
 id = 0x168
+priority = 1
 
 [[Datatype]]
 name = "DataHash"
 id = 0x169
+priority = 1
 
 [[Datatype]]
 name = "ConfigHash"
 id = 0x171
+priority = 1
 
 [[Datatype]]
 name = "ValueError"
 id = 0x16a
+priority = 1
 
 [[Datatype]]
 name = "ValueWarning"
 id = 0x16b
+priority = 1
 
 [[Datatype]]
 name = "ValueCausedBraking"
 id = 0x16c
+priority = 1
 
 [[Datatype]]
 name = "NextPositionDebug"
@@ -1010,8 +1372,858 @@ id = 0x16f
 [[Datatype]]
 name = "FrontendHeartbeating"
 id = 0x170
+priority = 1
 
 [[Datatype]]
 name = "HeartbeatExpired"
 id = 0x7fd
+priority = 1
+
+[[Datatype]]
+name = "OverflowUnit"
+id = 0x7fc
+priority = 7 
+
+
+[[Datatype]]
+name = "SingleCellVoltageLV1"
+id = 0x600
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+
+[[Datatype]]
+name = "SingleCellVoltageLV2"
+id = 0x601
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageLV3"
+id = 0x602
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageLV4"
+id = 0x603
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageLV5"
+id = 0x604
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageLV6"
+id = 0x605
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageLV7"
+id = 0x606
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageLV8"
+id = 0x607
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV1"
+id = 0x608
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV2"
+id = 0x609
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV3"
+id = 0x60A
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV4"
+id = 0x60B
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV5"
+id = 0x60C
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV6"
+id = 0x60D
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV7"
+id = 0x60E
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV8"
+id = 0x60F
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV9"
+id = 0x610
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV10"
+id = 0x611
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV11"
+id = 0x612
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV12"
+id = 0x613
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV13"
+id = 0x614
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV14"
+id = 0x615
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV15"
+id = 0x616
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV16"
+id = 0x617
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV17"
+id = 0x618
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV18"
+id = 0x619
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV19"
+id = 0x61A
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV20"
+id = 0x61B
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV21"
+id = 0x61C
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV22"
+id = 0x61D
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV23"
+id = 0x61E
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV24"
+id = 0x61F
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV25"
+id = 0x620
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV26"
+id = 0x621
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV27"
+id = 0x622
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV28"
+id = 0x623
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV29"
+id = 0x624
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV30"
+id = 0x625
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV31"
+id = 0x626
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV32"
+id = 0x627
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV33"
+id = 0x628
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV34"
+id = 0x629
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV35"
+id = 0x62A
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV36"
+id = 0x62B
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV37"
+id = 0x62C
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV38"
+id = 0x62D
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV39"
+id = 0x62E
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV40"
+id = 0x62F
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV41"
+id = 0x630
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV42"
+id = 0x631
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV43"
+id = 0x632
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV44"
+id = 0x633
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV45"
+id = 0x634
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV46"
+id = 0x635
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV47"
+id = 0x636
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV48"
+id = 0x637
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV49"
+id = 0x638
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV50"
+id = 0x639
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV51"
+id = 0x63A
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV52"
+id = 0x63B
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV53"
+id = 0x63C
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV54"
+id = 0x63D
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV55"
+id = 0x63E
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV56"
+id = 0x63F
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV57"
+id = 0x640
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV58"
+id = 0x641
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV59"
+id = 0x642
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV60"
+id = 0x643
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV61"
+id = 0x644
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV62"
+id = 0x645
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV63"
+id = 0x646
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV64"
+id = 0x647
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV65"
+id = 0x648
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV66"
+id = 0x649
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV67"
+id = 0x64A
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV68"
+id = 0x64B
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV69"
+id = 0x64C
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV70"
+id = 0x64D
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV71"
+id = 0x64E
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV72"
+id = 0x64F
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV73"
+id = 0x650
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV74"
+id = 0x651
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV75"
+id = 0x652
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV76"
+id = 0x653
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV77"
+id = 0x654
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV78"
+id = 0x655
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV79"
+id = 0x656
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV80"
+id = 0x657
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV81"
+id = 0x658
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV82"
+id = 0x659
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV83"
+id = 0x65A
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV84"
+id = 0x65B
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV85"
+id = 0x65C
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV86"
+id = 0x65D
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV87"
+id = 0x65E
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV88"
+id = 0x65F
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV89"
+id = 0x660
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV90"
+id = 0x661
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV91"
+id = 0x662
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV92"
+id = 0x663
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV93"
+id = 0x664
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV94"
+id = 0x665
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV95"
+id = 0x666
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV96"
+id = 0x667
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV97"
+id = 0x668
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV98"
+id = 0x669
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV99"
+id = 0x66A
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV100"
+id = 0x66B
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV101"
+id = 0x66C
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV102"
+id = 0x66D
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV103"
+id = 0x66E
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV104"
+id = 0x66F
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV105"
+id = 0x670
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV106"
+id = 0x671
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV107"
+id = 0x672
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV108"
+id = 0x673
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV109"
+id = 0x674
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV110"
+id = 0x675
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV111"
+id = 0x676
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
+[[Datatype]]
+name = "SingleCellVoltageHV112"
+id = 0x677
+upper = { warn = 360, err = 420 }
+lower = {warn = 280, err = 270}
+display_units = "V"
+
 

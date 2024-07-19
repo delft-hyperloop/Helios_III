@@ -7,9 +7,9 @@
  *
  * Code generation for model "PIDcontroller4CoreCentralizedTestReadyMotor".
  *
- * Model version              : 6.240
+ * Model version              : 6.284
  * Simulink Coder version : 9.5 (R2021a) 14-Nov-2020
- * C source code generated on : Mon May 20 17:30:36 2024
+ * C source code generated on : Fri Jun 28 16:03:05 2024
  *
  * Target selection: pmp.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -33,15 +33,18 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqp3(real_T A[12],
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_norm(const real_T x[3]);
 
 /* Forward declaration for local functions */
-static void PIDcontroller4CoreCentralizedTestReadyMotor_SystemCore_setup_o
-  (dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o1_T
-   *obj);
-static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_l(int32_T n,
-  const real_T x[12], int32_T ix0);
-static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqp3_i(real_T A[12],
-  real_T tau[3], int32_T jpvt[3]);
-static real_T PIDcontroller4CoreCentralizedTestReadyMotor_norm_l(const real_T x
-  [3]);
+static real_T
+  PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl
+  (c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
+   *obj, real_T u);
+
+/* Forward declaration for local functions */
+static real_T
+  PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl_h
+  (c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T
+   *obj, real_T u);
+
+/* Forward declaration for local functions */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_c(int32_T n,
   const real_T x[9], int32_T ix0);
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal(int32_T n, real_T
@@ -93,10 +96,8 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqrf(real_T A[54],
   real_T tau[6]);
 static void PIDcontroller4CoreCentralizedTestReadyMotor_qr(const real_T A[54],
   real_T Q[54], real_T R[36]);
-static real_T
-  PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl
-  (c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
-   *obj, real_T u);
+
+/* Forward declaration for local functions */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_i(int32_T n,
   const real_T x[36], int32_T ix0);
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_m(int32_T n,
@@ -113,6 +114,8 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_mc(int32_T n,
   real_T a, real_T x[6], int32_T ix0);
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_dt(int32_T n,
   real_T a, const real_T x[36], int32_T ix0, real_T y[6], int32_T iy0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_b(real_T *a,
+  real_T *b, real_T *c, real_T *s);
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_dtk(int32_T n,
   real_T a, const real_T x[6], int32_T ix0, real_T y[36], int32_T iy0);
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xrot_l(real_T x[36],
@@ -138,69 +141,76 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_qr_b(const real_T A[72],
 static void
   PIDcontroller4CoreCentralizedTestReadyMotor_EKFPredictorAdditive_predict(const
   real_T Qs[36], real_T x[6], real_T S[36], const real_T varargin_1[12]);
-real_T look1_pbinlxpw(real_T u0, const real_T bp0[], const real_T table[],
-                      uint32_T prevIndex[], uint32_T maxIndex)
-{
-  real_T frac;
-  real_T yL_0d0;
-  uint32_T bpIdx;
-  uint32_T found;
-  uint32_T iLeft;
-  uint32_T iRght;
 
-  /* Column-major Lookup 1-D
-     Search method: 'binary'
-     Use previous index: 'on'
-     Interpolation method: 'Linear point-slope'
-     Extrapolation method: 'Linear'
-     Use last breakpoint for index at or above upper limit: 'off'
-     Remove protection against out-of-range input in generated code: 'off'
-   */
-  /* Prelookup - Index and Fraction
-     Index Search method: 'binary'
-     Extrapolation method: 'Linear'
-     Use previous index: 'on'
-     Use last breakpoint for index at or above upper limit: 'off'
-     Remove protection against out-of-range input in generated code: 'off'
-   */
-  if (u0 <= bp0[0U]) {
-    bpIdx = 0U;
-    frac = (u0 - bp0[0U]) / (bp0[1U] - bp0[0U]);
-  } else if (u0 < bp0[maxIndex]) {
-    /* Binary Search using Previous Index */
-    bpIdx = prevIndex[0U];
-    iLeft = 0U;
-    iRght = maxIndex;
-    found = 0U;
-    while (found == 0U) {
-      if (u0 < bp0[bpIdx]) {
-        iRght = bpIdx - 1U;
-        bpIdx = ((bpIdx + iLeft) - 1U) >> 1U;
-      } else if (u0 < bp0[bpIdx + 1U]) {
-        found = 1U;
-      } else {
-        iLeft = bpIdx + 1U;
-        bpIdx = ((bpIdx + iRght) + 1U) >> 1U;
-      }
-    }
-
-    frac = (u0 - bp0[bpIdx]) / (bp0[bpIdx + 1U] - bp0[bpIdx]);
-  } else {
-    bpIdx = maxIndex - 1U;
-    frac = (u0 - bp0[maxIndex - 1U]) / (bp0[maxIndex] - bp0[maxIndex - 1U]);
-  }
-
-  prevIndex[0U] = bpIdx;
-
-  /* Column-major Interpolation 1-D
-     Interpolation method: 'Linear point-slope'
-     Use last breakpoint for index at or above upper limit: 'off'
-     Overflow mode: 'portable wrapping'
-   */
-  yL_0d0 = table[bpIdx];
-  return (table[bpIdx + 1U] - yL_0d0) * frac + yL_0d0;
-}
-
+/* Forward declaration for local functions */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_SystemCore_setup_o
+  (dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
+   *obj);
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_cx(int32_T n,
+  const real_T x[12], int32_T ix0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqp3_m(real_T A[12],
+  real_T tau[3], int32_T jpvt[3]);
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_norm_c(const real_T x
+  [3]);
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b(int32_T n,
+  const real_T x[9], int32_T ix0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_b(int32_T n,
+  real_T a, real_T x[9], int32_T ix0);
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4(int32_T n,
+  const real_T x[3], int32_T ix0);
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xdotc_c(int32_T n,
+  const real_T x[9], int32_T ix0, const real_T y[9], int32_T iy0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_g(int32_T n,
+  real_T a, int32_T ix0, real_T y[9], int32_T iy0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bh(int32_T n,
+  real_T a, real_T x[3], int32_T ix0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_gl(int32_T n,
+  real_T a, const real_T x[9], int32_T ix0, real_T y[3], int32_T iy0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_glf(int32_T n,
+  real_T a, const real_T x[3], int32_T ix0, real_T y[9], int32_T iy0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bha(real_T a,
+  real_T x[9], int32_T ix0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_bk(real_T *a,
+  real_T *b, real_T *c, real_T *s);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xrot_k(real_T x[9],
+  int32_T ix0, int32_T iy0, real_T c, real_T s);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xswap_m(real_T x[9],
+  int32_T ix0, int32_T iy0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_svd_i(const real_T A[9],
+  real_T U[9], real_T s[3], real_T V[9]);
+static void
+  PIDcontroller4CoreCentralizedTestReadyMotor_imu_sensor_vertical_kalman_leo(
+  const real_T x[6], const real_T u[12], real_T y[3]);
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z(int32_T n,
+  const real_T x[27], int32_T ix0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_n(int32_T m,
+  int32_T n, const real_T A[27], int32_T ia0, const real_T x[27], int32_T ix0,
+  real_T y[3]);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_j(int32_T m,
+  int32_T n, real_T alpha1, int32_T ix0, const real_T y[3], real_T A[27],
+  int32_T ia0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_qrFactor_p(const real_T
+  A[18], const real_T S[36], const real_T Ns[9], real_T b_S[9]);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_trisolve_i(const real_T
+  A[9], real_T B[18]);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_trisolve_im(const real_T
+  A[9], real_T B[18]);
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z1(int32_T n,
+  const real_T x[54], int32_T ix0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_nv(int32_T m,
+  int32_T n, const real_T A[54], int32_T ia0, const real_T x[54], int32_T ix0,
+  real_T y[6]);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_jf(int32_T m,
+  int32_T n, real_T alpha1, int32_T ix0, const real_T y[6], real_T A[54],
+  int32_T ia0);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqrf_h(real_T A[54],
+  real_T tau[6]);
+static void PIDcontroller4CoreCentralizedTestReadyMotor_qr_g(const real_T A[54],
+  real_T Q[54], real_T R[36]);
+static real_T
+  PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl_o
+  (c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
+   *obj, real_T u);
 real_T look2_pbinlxpw(real_T u0, real_T u1, const real_T bp0[], const real_T
                       bp1[], const real_T table[], uint32_T prevIndex[], const
                       uint32_T maxIndex[], uint32_T stride)
@@ -311,6 +321,69 @@ real_T look2_pbinlxpw(real_T u0, real_T u1, const real_T bp0[], const real_T
   yL_0d1 = table[iLeft];
   return (((table[iLeft + 1U] - yL_0d1) * fractions[0U] + yL_0d1) - yL_0d0) *
     frac + yL_0d0;
+}
+
+real_T look1_pbinlxpw(real_T u0, const real_T bp0[], const real_T table[],
+                      uint32_T prevIndex[], uint32_T maxIndex)
+{
+  real_T frac;
+  real_T yL_0d0;
+  uint32_T bpIdx;
+  uint32_T found;
+  uint32_T iLeft;
+  uint32_T iRght;
+
+  /* Column-major Lookup 1-D
+     Search method: 'binary'
+     Use previous index: 'on'
+     Interpolation method: 'Linear point-slope'
+     Extrapolation method: 'Linear'
+     Use last breakpoint for index at or above upper limit: 'off'
+     Remove protection against out-of-range input in generated code: 'off'
+   */
+  /* Prelookup - Index and Fraction
+     Index Search method: 'binary'
+     Extrapolation method: 'Linear'
+     Use previous index: 'on'
+     Use last breakpoint for index at or above upper limit: 'off'
+     Remove protection against out-of-range input in generated code: 'off'
+   */
+  if (u0 <= bp0[0U]) {
+    bpIdx = 0U;
+    frac = (u0 - bp0[0U]) / (bp0[1U] - bp0[0U]);
+  } else if (u0 < bp0[maxIndex]) {
+    /* Binary Search using Previous Index */
+    bpIdx = prevIndex[0U];
+    iLeft = 0U;
+    iRght = maxIndex;
+    found = 0U;
+    while (found == 0U) {
+      if (u0 < bp0[bpIdx]) {
+        iRght = bpIdx - 1U;
+        bpIdx = ((bpIdx + iLeft) - 1U) >> 1U;
+      } else if (u0 < bp0[bpIdx + 1U]) {
+        found = 1U;
+      } else {
+        iLeft = bpIdx + 1U;
+        bpIdx = ((bpIdx + iRght) + 1U) >> 1U;
+      }
+    }
+
+    frac = (u0 - bp0[bpIdx]) / (bp0[bpIdx + 1U] - bp0[bpIdx]);
+  } else {
+    bpIdx = maxIndex - 1U;
+    frac = (u0 - bp0[maxIndex - 1U]) / (bp0[maxIndex] - bp0[maxIndex - 1U]);
+  }
+
+  prevIndex[0U] = bpIdx;
+
+  /* Column-major Interpolation 1-D
+     Interpolation method: 'Linear point-slope'
+     Use last breakpoint for index at or above upper limit: 'off'
+     Overflow mode: 'portable wrapping'
+   */
+  yL_0d0 = table[bpIdx];
+  return (table[bpIdx + 1U] - yL_0d0) * frac + yL_0d0;
 }
 
 real_T look1_binlxpw(real_T u0, const real_T bp0[], const real_T table[],
@@ -544,14 +617,14 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
   c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T
     *obj;
 
-  /* InitializeConditions for MATLABSystem: '<S26>/Moving Average' */
+  /* InitializeConditions for MATLABSystem: '<S24>/Moving Average' */
   obj = localDW->obj.pStatistic;
   if (obj->isInitialized == 1) {
     obj->pwN = 1.0;
     obj->pmN = 0.0;
   }
 
-  /* End of InitializeConditions for MATLABSystem: '<S26>/Moving Average' */
+  /* End of InitializeConditions for MATLABSystem: '<S24>/Moving Average' */
 }
 
 /*
@@ -571,7 +644,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
 void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
   (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T *localDW)
 {
-  /* Start for MATLABSystem: '<S26>/Moving Average' */
+  /* Start for MATLABSystem: '<S24>/Moving Average' */
   localDW->obj.matlabCodegenIsDeleted = true;
   localDW->obj.isInitialized = 0;
   localDW->obj.NumChannels = -1;
@@ -606,7 +679,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(real_T rtu_0,
   real_T varargin_1;
   boolean_T p;
 
-  /* MATLABSystem: '<S26>/Moving Average' */
+  /* MATLABSystem: '<S24>/Moving Average' */
   varargin_1 = localDW->obj.ForgettingFactor;
   p = false;
   if ((varargin_1 == rtu_1) || (((int32_T)rtIsNaN(varargin_1)) && ((int32_T)
@@ -659,7 +732,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(real_T rtu_0,
   obj->pwN = lambda * varargin_1 + 1.0;
   obj->pmN = pmLocal;
 
-  /* MATLABSystem: '<S26>/Moving Average' */
+  /* MATLABSystem: '<S24>/Moving Average' */
   localB->MovingAverage = pmLocal;
 }
 
@@ -683,7 +756,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
   c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T
     *obj;
 
-  /* Terminate for MATLABSystem: '<S26>/Moving Average' */
+  /* Terminate for MATLABSystem: '<S24>/Moving Average' */
   if (!(int32_T)localDW->obj.matlabCodegenIsDeleted) {
     localDW->obj.matlabCodegenIsDeleted = true;
     if ((localDW->obj.isInitialized == 1) && ((int32_T)
@@ -697,10 +770,10 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
     }
   }
 
-  /* End of Terminate for MATLABSystem: '<S26>/Moving Average' */
+  /* End of Terminate for MATLABSystem: '<S24>/Moving Average' */
 }
 
-/* Function for MATLAB Function: '<S38>/FindCoordinates' */
+/* Function for MATLAB Function: '<S36>/FindCoordinates' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2(int32_T n, const
   real_T x[12], int32_T ix0)
 {
@@ -753,7 +826,7 @@ real_T rt_hypotd_snf(real_T u0, real_T u1)
   return y;
 }
 
-/* Function for MATLAB Function: '<S38>/FindCoordinates' */
+/* Function for MATLAB Function: '<S36>/FindCoordinates' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqp3(real_T A[12],
   real_T tau[3], int32_T jpvt[3])
 {
@@ -1036,7 +1109,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqp3(real_T A[12],
   }
 }
 
-/* Function for MATLAB Function: '<S38>/FindCoordinates' */
+/* Function for MATLAB Function: '<S36>/FindCoordinates' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_norm(const real_T x[3])
 {
   real_T absxk;
@@ -1078,8 +1151,8 @@ static real_T PIDcontroller4CoreCentralizedTestReadyMotor_norm(const real_T x[3]
 
 /*
  * Output and update for atomic system:
- *    '<S38>/FindCoordinates'
- *    '<S39>/FindCoordinates'
+ *    '<S36>/FindCoordinates'
+ *    '<S37>/FindCoordinates'
  */
 void PIDcontroller4CoreCentralizedTestReadyMotor_FindCoordinates(real_T rtu_z,
   real_T rtu_z_b, real_T rtu_z_l, real_T rtu_z_j, real_T rtu_hl, real_T rtu_hw,
@@ -1100,11 +1173,11 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_FindCoordinates(real_T rtu_z,
   int32_T c_i;
   int32_T rankA;
 
-  /* MATLAB Function 'Calculate Control Signals (PIDs)/BeamOffsetsGenerator/Subsystem1/FindCoordinates': '<S47>:1' */
-  /* '<S47>:1:5' */
-  /* '<S47>:1:6' */
-  /* '<S47>:1:8' */
-  /* '<S47>:1:11' */
+  /* MATLAB Function 'Calculate Control Signals (PIDs)/BeamOffsetsGenerator/Subsystem1/FindCoordinates': '<S45>:1' */
+  /* '<S45>:1:5' */
+  /* '<S45>:1:6' */
+  /* '<S45>:1:8' */
+  /* '<S45>:1:11' */
   A[0] = rtu_hl;
   A[4] = -rtu_hw;
   A[8] = 1.0;
@@ -1124,7 +1197,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_FindCoordinates(real_T rtu_z,
     rankA++;
   }
 
-  /* SignalConversion generated from: '<S47>/ SFunction ' */
+  /* SignalConversion generated from: '<S45>/ SFunction ' */
   zz[0] = rtu_z / 1000.0;
   zz[2] = rtu_z_b / 1000.0;
   zz[1] = rtu_z_l / 1000.0;
@@ -1189,25 +1262,25 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_FindCoordinates(real_T rtu_z,
     }
   }
 
-  /* '<S47>:1:16' */
-  /* '<S47>:1:17' */
-  /* '<S47>:1:18' */
-  /* '<S47>:1:21' */
+  /* '<S45>:1:16' */
+  /* '<S45>:1:17' */
+  /* '<S45>:1:18' */
+  /* '<S45>:1:21' */
   X[0] = 1.0;
   X[1] = 0.0;
   X[2] = C[0];
 
-  /* '<S47>:1:22' */
-  /* '<S47>:1:23' */
+  /* '<S45>:1:22' */
+  /* '<S45>:1:23' */
   Y[0] = 0.0;
   Y[1] = 1.0;
   Y[2] = C[1];
 
-  /* '<S47>:1:24' */
-  /* '<S47>:1:33' */
-  /* '<S47>:1:34' */
-  /* '<S47>:1:43' */
-  /* '<S47>:1:44' */
+  /* '<S45>:1:24' */
+  /* '<S45>:1:33' */
+  /* '<S45>:1:34' */
+  /* '<S45>:1:43' */
+  /* '<S45>:1:44' */
   tol = (rtu_hl - rtu_l_offset) * C[0];
   avg_g_tmp = C[1] * -rtu_hw;
   avg_g_tmp_0 = (-rtu_hl + rtu_l_offset) * C[0];
@@ -1243,48 +1316,81 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_FindCoordinates(real_T rtu_z,
 
 /*
  * Termination for atomic system:
- *    '<S38>/FindCoordinates'
- *    '<S39>/FindCoordinates'
+ *    '<S36>/FindCoordinates'
+ *    '<S37>/FindCoordinates'
  */
 void PIDcontroller4CoreCentralizedTestReadyMotor_FindCoordinates_Term(void)
 {
+}
+
+static real_T
+  PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl
+  (c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
+   *obj, real_T u)
+{
+  real_T csum;
+  real_T cumRevIndex;
+  real_T y;
+  real_T z;
+  int32_T k;
+  csum = obj->pCumSum + u;
+  z = obj->pCumSumRev[(int32_T)obj->pCumRevIndex - 1] + csum;
+  obj->pCumSumRev[(int32_T)obj->pCumRevIndex - 1] = u;
+  if (obj->pCumRevIndex != 3999.0) {
+    cumRevIndex = obj->pCumRevIndex + 1.0;
+  } else {
+    cumRevIndex = 1.0;
+    csum = 0.0;
+    for (k = 3997; k >= 0; k--) {
+      obj->pCumSumRev[k] += obj->pCumSumRev[k + 1];
+    }
+  }
+
+  y = z / 4000.0;
+  obj->pCumSum = csum;
+  obj->pCumRevIndex = cumRevIndex;
+  return y;
 }
 
 /*
  * System initialize for atomic system:
  *    synthesized block
  *    synthesized block
+ *    synthesized block
+ *    synthesized block
  */
-void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_n_Init
-  (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_f_T *localDW)
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Init
+  (DW_MovingAverage1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localDW)
 {
   c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
     *obj;
   int32_T i;
 
-  /* InitializeConditions for MATLABSystem: '<S3>/Moving Average' */
+  /* InitializeConditions for MATLABSystem: '<S70>/Moving Average1' */
   obj = localDW->obj.pStatistic;
   if (obj->isInitialized == 1) {
     obj->pCumSum = 0.0;
-    for (i = 0; i < 49; i++) {
+    for (i = 0; i < 3999; i++) {
       obj->pCumSumRev[i] = 0.0;
     }
 
     obj->pCumRevIndex = 1.0;
   }
 
-  /* End of InitializeConditions for MATLABSystem: '<S3>/Moving Average' */
+  /* End of InitializeConditions for MATLABSystem: '<S70>/Moving Average1' */
 }
 
 /*
  * Start for atomic system:
  *    synthesized block
  *    synthesized block
+ *    synthesized block
+ *    synthesized block
  */
-void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_i_Start
-  (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_f_T *localDW)
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Start
+  (DW_MovingAverage1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localDW)
 {
-  /* Start for MATLABSystem: '<S3>/Moving Average' */
+  /* Start for MATLABSystem: '<S70>/Moving Average1' */
   localDW->obj.matlabCodegenIsDeleted = true;
   localDW->obj.isInitialized = 0;
   localDW->obj.NumChannels = -1;
@@ -1301,6 +1407,162 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_i_Start
 
 /*
  * Output and update for atomic system:
+ *    synthesized block
+ *    synthesized block
+ *    synthesized block
+ *    synthesized block
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1(real_T rtu_0,
+  B_MovingAverage1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localB,
+  DW_MovingAverage1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localDW)
+{
+  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
+    *obj;
+  int32_T i;
+
+  /* MATLABSystem: '<S70>/Moving Average1' */
+  if (localDW->obj.TunablePropsChanged) {
+    localDW->obj.TunablePropsChanged = false;
+  }
+
+  obj = localDW->obj.pStatistic;
+  if (obj->isInitialized != 1) {
+    obj->isSetupComplete = false;
+    obj->isInitialized = 1;
+    obj->pCumSum = 0.0;
+    for (i = 0; i < 3999; i++) {
+      obj->pCumSumRev[i] = 0.0;
+    }
+
+    obj->pCumRevIndex = 1.0;
+    obj->isSetupComplete = true;
+    obj->pCumSum = 0.0;
+    for (i = 0; i < 3999; i++) {
+      obj->pCumSumRev[i] = 0.0;
+    }
+
+    obj->pCumRevIndex = 1.0;
+  }
+
+  /* MATLABSystem: '<S70>/Moving Average1' */
+  localB->MovingAverage1 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl
+    (obj, rtu_0);
+}
+
+/*
+ * Termination for atomic system:
+ *    synthesized block
+ *    synthesized block
+ *    synthesized block
+ *    synthesized block
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Term
+  (DW_MovingAverage1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localDW)
+{
+  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
+    *obj;
+
+  /* Terminate for MATLABSystem: '<S70>/Moving Average1' */
+  if (!(int32_T)localDW->obj.matlabCodegenIsDeleted) {
+    localDW->obj.matlabCodegenIsDeleted = true;
+    if ((localDW->obj.isInitialized == 1) && ((int32_T)
+         localDW->obj.isSetupComplete)) {
+      obj = localDW->obj.pStatistic;
+      if (obj->isInitialized == 1) {
+        obj->isInitialized = 2;
+      }
+
+      localDW->obj.NumChannels = -1;
+    }
+  }
+
+  /* End of Terminate for MATLABSystem: '<S70>/Moving Average1' */
+}
+
+static real_T
+  PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl_h
+  (c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T
+   *obj, real_T u)
+{
+  real_T csum;
+  real_T cumRevIndex;
+  real_T y;
+  real_T z;
+  int32_T k;
+  csum = obj->pCumSum + u;
+  z = obj->pCumSumRev[(int32_T)obj->pCumRevIndex - 1] + csum;
+  obj->pCumSumRev[(int32_T)obj->pCumRevIndex - 1] = u;
+  if (obj->pCumRevIndex != 999.0) {
+    cumRevIndex = obj->pCumRevIndex + 1.0;
+  } else {
+    cumRevIndex = 1.0;
+    csum = 0.0;
+    for (k = 997; k >= 0; k--) {
+      obj->pCumSumRev[k] += obj->pCumSumRev[k + 1];
+    }
+  }
+
+  y = z / 1000.0;
+  obj->pCumSum = csum;
+  obj->pCumRevIndex = cumRevIndex;
+  return y;
+}
+
+/*
+ * System initialize for atomic system:
+ *    synthesized block
+ *    synthesized block
+ *    synthesized block
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_n_Init
+  (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_f_T *localDW)
+{
+  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T
+    *obj;
+  int32_T i;
+
+  /* InitializeConditions for MATLABSystem: '<S71>/Moving Average' */
+  obj = localDW->obj.pStatistic;
+  if (obj->isInitialized == 1) {
+    obj->pCumSum = 0.0;
+    for (i = 0; i < 999; i++) {
+      obj->pCumSumRev[i] = 0.0;
+    }
+
+    obj->pCumRevIndex = 1.0;
+  }
+
+  /* End of InitializeConditions for MATLABSystem: '<S71>/Moving Average' */
+}
+
+/*
+ * Start for atomic system:
+ *    synthesized block
+ *    synthesized block
+ *    synthesized block
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_i_Start
+  (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_f_T *localDW)
+{
+  /* Start for MATLABSystem: '<S71>/Moving Average' */
+  localDW->obj.matlabCodegenIsDeleted = true;
+  localDW->obj.isInitialized = 0;
+  localDW->obj.NumChannels = -1;
+  localDW->obj.matlabCodegenIsDeleted = false;
+  localDW->objisempty = true;
+  localDW->obj.isSetupComplete = false;
+  localDW->obj.isInitialized = 1;
+  localDW->obj.NumChannels = 1;
+  localDW->obj._pobj0.isInitialized = 0;
+  localDW->obj.pStatistic = &localDW->obj._pobj0;
+  localDW->obj.isSetupComplete = true;
+  localDW->obj.TunablePropsChanged = false;
+}
+
+/*
+ * Output and update for atomic system:
+ *    synthesized block
  *    synthesized block
  *    synthesized block
  */
@@ -1308,15 +1570,11 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_p(real_T rtu_0,
   B_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_c_T *localB,
   DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_f_T *localDW)
 {
-  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
+  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T
     *obj;
-  real_T csumrev[49];
-  real_T csum;
-  real_T cumRevIndex;
-  real_T z;
   int32_T i;
 
-  /* MATLABSystem: '<S3>/Moving Average' */
+  /* MATLABSystem: '<S71>/Moving Average' */
   if (localDW->obj.TunablePropsChanged) {
     localDW->obj.TunablePropsChanged = false;
   }
@@ -1326,62 +1584,39 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_p(real_T rtu_0,
     obj->isSetupComplete = false;
     obj->isInitialized = 1;
     obj->pCumSum = 0.0;
-    for (i = 0; i < 49; i++) {
+    for (i = 0; i < 999; i++) {
       obj->pCumSumRev[i] = 0.0;
     }
 
     obj->pCumRevIndex = 1.0;
     obj->isSetupComplete = true;
     obj->pCumSum = 0.0;
-    for (i = 0; i < 49; i++) {
+    for (i = 0; i < 999; i++) {
       obj->pCumSumRev[i] = 0.0;
     }
 
     obj->pCumRevIndex = 1.0;
   }
 
-  cumRevIndex = obj->pCumRevIndex;
-  csum = obj->pCumSum;
-  for (i = 0; i < 49; i++) {
-    csumrev[i] = obj->pCumSumRev[i];
-  }
-
-  csum += rtu_0;
-  z = csumrev[(int32_T)cumRevIndex - 1] + csum;
-  csumrev[(int32_T)cumRevIndex - 1] = rtu_0;
-  if (cumRevIndex != 49.0) {
-    cumRevIndex++;
-  } else {
-    cumRevIndex = 1.0;
-    csum = 0.0;
-    for (i = 47; i >= 0; i--) {
-      csumrev[i] += csumrev[i + 1];
-    }
-  }
-
-  obj->pCumSum = csum;
-  for (i = 0; i < 49; i++) {
-    obj->pCumSumRev[i] = csumrev[i];
-  }
-
-  obj->pCumRevIndex = cumRevIndex;
-
-  /* MATLABSystem: '<S3>/Moving Average' */
-  localB->MovingAverage = z / 50.0;
+  /* MATLABSystem: '<S71>/Moving Average' */
+  localB->MovingAverage =
+    PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl_h
+    (obj, rtu_0);
 }
 
 /*
  * Termination for atomic system:
+ *    synthesized block
  *    synthesized block
  *    synthesized block
  */
 void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_j_Term
   (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_f_T *localDW)
 {
-  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
+  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T
     *obj;
 
-  /* Terminate for MATLABSystem: '<S3>/Moving Average' */
+  /* Terminate for MATLABSystem: '<S71>/Moving Average' */
   if (!(int32_T)localDW->obj.matlabCodegenIsDeleted) {
     localDW->obj.matlabCodegenIsDeleted = true;
     if ((localDW->obj.isInitialized == 1) && ((int32_T)
@@ -1395,603 +1630,10 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_j_Term
     }
   }
 
-  /* End of Terminate for MATLABSystem: '<S3>/Moving Average' */
+  /* End of Terminate for MATLABSystem: '<S71>/Moving Average' */
 }
 
-/*
- * System initialize for atomic system:
- *    synthesized block
- *    synthesized block
- */
-void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_e_Init
-  (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_fw_T *localDW)
-{
-  c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T
-    *obj;
-
-  /* InitializeConditions for MATLABSystem: '<Root>/Moving Average' */
-  obj = localDW->obj.pStatistic;
-  if (obj->isInitialized == 1) {
-    obj->pwN = 1.0;
-    obj->pmN = 0.0;
-  }
-
-  /* End of InitializeConditions for MATLABSystem: '<Root>/Moving Average' */
-}
-
-/*
- * Start for atomic system:
- *    synthesized block
- *    synthesized block
- */
-void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_m_Start
-  (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_fw_T *localDW)
-{
-  real_T varargin_2;
-  boolean_T flag;
-
-  /* Start for MATLABSystem: '<Root>/Moving Average' */
-  localDW->obj.matlabCodegenIsDeleted = true;
-  localDW->obj.isInitialized = 0;
-  localDW->obj.NumChannels = -1;
-  localDW->obj.matlabCodegenIsDeleted = false;
-  localDW->objisempty = true;
-  flag = (boolean_T)(localDW->obj.isInitialized == 1);
-  if (flag) {
-    localDW->obj.TunablePropsChanged = true;
-  }
-
-  localDW->obj.ForgettingFactor = 0.999;
-  localDW->obj.isSetupComplete = false;
-  localDW->obj.isInitialized = 1;
-  localDW->obj.NumChannels = 1;
-  varargin_2 = localDW->obj.ForgettingFactor;
-  localDW->obj._pobj0.isInitialized = 0;
-  flag = (boolean_T)(localDW->obj._pobj0.isInitialized == 1);
-  if (flag) {
-    localDW->obj._pobj0.TunablePropsChanged = true;
-  }
-
-  localDW->obj._pobj0.ForgettingFactor = varargin_2;
-  localDW->obj.pStatistic = &localDW->obj._pobj0;
-  localDW->obj.isSetupComplete = true;
-  localDW->obj.TunablePropsChanged = false;
-
-  /* End of Start for MATLABSystem: '<Root>/Moving Average' */
-}
-
-/*
- * Output and update for atomic system:
- *    synthesized block
- *    synthesized block
- */
-void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_pn(const real_T
-  rtu_0[3], B_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_ca_T
-  *localB, DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_fw_T
-  *localDW)
-{
-  c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T
-    *obj;
-  real_T b;
-  real_T c;
-  real_T lambda;
-  boolean_T flag;
-
-  /* MATLABSystem: '<Root>/Moving Average' */
-  if (localDW->obj.ForgettingFactor != 0.999) {
-    flag = (boolean_T)(localDW->obj.isInitialized == 1);
-    if (flag) {
-      localDW->obj.TunablePropsChanged = true;
-    }
-
-    localDW->obj.ForgettingFactor = 0.999;
-  }
-
-  if (localDW->obj.TunablePropsChanged) {
-    localDW->obj.TunablePropsChanged = false;
-    obj = localDW->obj.pStatistic;
-    flag = (boolean_T)(obj->isInitialized == 1);
-    if (flag) {
-      obj->TunablePropsChanged = true;
-    }
-
-    localDW->obj.pStatistic->ForgettingFactor = localDW->obj.ForgettingFactor;
-  }
-
-  obj = localDW->obj.pStatistic;
-  if (obj->isInitialized != 1) {
-    obj->isSetupComplete = false;
-    obj->isInitialized = 1;
-    obj->pwN = 1.0;
-    obj->pmN = 0.0;
-    obj->plambda = obj->ForgettingFactor;
-    obj->isSetupComplete = true;
-    obj->TunablePropsChanged = false;
-    obj->pwN = 1.0;
-    obj->pmN = 0.0;
-  }
-
-  if (obj->TunablePropsChanged) {
-    obj->TunablePropsChanged = false;
-    obj->plambda = obj->ForgettingFactor;
-  }
-
-  b = obj->pwN;
-  c = obj->pmN;
-  lambda = obj->plambda;
-  c = (1.0 - 1.0 / b) * c + 1.0 / b * rtu_0[0];
-  b = lambda * b + 1.0;
-
-  /* MATLABSystem: '<Root>/Moving Average' */
-  localB->MovingAverage[0] = c;
-
-  /* MATLABSystem: '<Root>/Moving Average' */
-  c = (1.0 - 1.0 / b) * c + 1.0 / b * rtu_0[1];
-  b = lambda * b + 1.0;
-
-  /* MATLABSystem: '<Root>/Moving Average' */
-  localB->MovingAverage[1] = c;
-
-  /* MATLABSystem: '<Root>/Moving Average' */
-  c = (1.0 - 1.0 / b) * c + 1.0 / b * rtu_0[2];
-  obj->pwN = lambda * b + 1.0;
-  obj->pmN = c;
-
-  /* MATLABSystem: '<Root>/Moving Average' */
-  localB->MovingAverage[2] = c;
-}
-
-/*
- * Termination for atomic system:
- *    synthesized block
- *    synthesized block
- */
-void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_l_Term
-  (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_fw_T *localDW)
-{
-  c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T
-    *obj;
-
-  /* Terminate for MATLABSystem: '<Root>/Moving Average' */
-  if (!(int32_T)localDW->obj.matlabCodegenIsDeleted) {
-    localDW->obj.matlabCodegenIsDeleted = true;
-    if ((localDW->obj.isInitialized == 1) && ((int32_T)
-         localDW->obj.isSetupComplete)) {
-      obj = localDW->obj.pStatistic;
-      if (obj->isInitialized == 1) {
-        obj->isInitialized = 2;
-      }
-
-      localDW->obj.NumChannels = -1;
-    }
-  }
-
-  /* End of Terminate for MATLABSystem: '<Root>/Moving Average' */
-}
-
-/*
- * Output and update for atomic system:
- *    '<S22>/Cap requested current1'
- *    '<S22>/Cap requested current2'
- *    '<S22>/Cap requested current3'
- */
-void PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1(real_T
-  rtu_measured_I, real_T rtu_requested_I, real_T rtu_max_delta,
-  B_Caprequestedcurrent1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localB)
-{
-  /* MATLAB Function 'Subsystem5/Cap requested current1': '<S743>:1' */
-  if (rtu_requested_I - rtu_measured_I > rtu_max_delta) {
-    /* '<S743>:1:4' */
-    /* '<S743>:1:5' */
-    localB->out_req_I = rtu_measured_I + rtu_max_delta;
-  } else if (rtu_measured_I - rtu_requested_I > rtu_max_delta) {
-    /* '<S743>:1:6' */
-    /* '<S743>:1:7' */
-    localB->out_req_I = rtu_measured_I - rtu_max_delta;
-  } else {
-    /* '<S743>:1:9' */
-    localB->out_req_I = rtu_requested_I;
-  }
-}
-
-/*
- * Termination for atomic system:
- *    '<S22>/Cap requested current1'
- *    '<S22>/Cap requested current2'
- *    '<S22>/Cap requested current3'
- */
-void PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1_Term(void)
-{
-}
-
-static void PIDcontroller4CoreCentralizedTestReadyMotor_SystemCore_setup_o
-  (dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o1_T
-   *obj)
-{
-  real_T varargin_2;
-  boolean_T flag;
-  obj->isSetupComplete = false;
-  obj->isInitialized = 1;
-  flag = (boolean_T)(obj->isInitialized == 1);
-  if (flag) {
-    obj->TunablePropsChanged = true;
-  }
-
-  obj->ForgettingFactor = 0.0;
-  obj->TunablePropsChanged = false;
-  obj->NumChannels = 4;
-  varargin_2 = obj->ForgettingFactor;
-  obj->_pobj0.isInitialized = 0;
-  flag = (boolean_T)(obj->_pobj0.isInitialized == 1);
-  if (flag) {
-    obj->_pobj0.TunablePropsChanged = true;
-  }
-
-  obj->_pobj0.ForgettingFactor = varargin_2;
-  obj->pStatistic = &obj->_pobj0;
-  obj->isSetupComplete = true;
-  obj->TunablePropsChanged = false;
-}
-
-/* Function for MATLAB Function: '<S410>/FindCoordinates' */
-static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_l(int32_T n,
-  const real_T x[12], int32_T ix0)
-{
-  real_T absxk;
-  real_T scale;
-  real_T t;
-  real_T y;
-  int32_T k;
-  int32_T kend;
-  y = 0.0;
-  if (n == 1) {
-    y = fabs(x[ix0 - 1]);
-  } else {
-    scale = 3.3121686421112381E-170;
-    kend = (ix0 + n) - 1;
-    for (k = ix0; k <= kend; k++) {
-      absxk = fabs(x[k - 1]);
-      if (absxk > scale) {
-        t = scale / absxk;
-        y = y * t * t + 1.0;
-        scale = absxk;
-      } else {
-        t = absxk / scale;
-        y += t * t;
-      }
-    }
-
-    y = scale * sqrt(y);
-  }
-
-  return y;
-}
-
-/* Function for MATLAB Function: '<S410>/FindCoordinates' */
-static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqp3_i(real_T A[12],
-  real_T tau[3], int32_T jpvt[3])
-{
-  real_T vn1[3];
-  real_T vn2[3];
-  real_T work[3];
-  real_T absxk;
-  real_T scale;
-  real_T smax;
-  real_T t;
-  int32_T b_ix;
-  int32_T c_ix;
-  int32_T exitg1;
-  int32_T g;
-  int32_T ia;
-  int32_T iac;
-  int32_T ii;
-  int32_T ix;
-  int32_T iy;
-  int32_T k;
-  int32_T pvt;
-  boolean_T exitg2;
-  jpvt[0] = 1;
-  tau[0] = 0.0;
-  work[0] = 0.0;
-  smax = 0.0;
-  scale = 3.3121686421112381E-170;
-  for (pvt = 1; pvt < 5; pvt++) {
-    absxk = fabs(A[pvt - 1]);
-    if (absxk > scale) {
-      t = scale / absxk;
-      smax = smax * t * t + 1.0;
-      scale = absxk;
-    } else {
-      t = absxk / scale;
-      smax += t * t;
-    }
-  }
-
-  vn1[0] = scale * sqrt(smax);
-  vn2[0] = vn1[0];
-  jpvt[1] = 2;
-  tau[1] = 0.0;
-  work[1] = 0.0;
-  smax = 0.0;
-  scale = 3.3121686421112381E-170;
-  while (pvt <= 8) {
-    absxk = fabs(A[pvt - 1]);
-    if (absxk > scale) {
-      t = scale / absxk;
-      smax = smax * t * t + 1.0;
-      scale = absxk;
-    } else {
-      t = absxk / scale;
-      smax += t * t;
-    }
-
-    pvt++;
-  }
-
-  vn1[1] = scale * sqrt(smax);
-  vn2[1] = vn1[1];
-  jpvt[2] = 3;
-  tau[2] = 0.0;
-  work[2] = 0.0;
-  smax = 0.0;
-  scale = 3.3121686421112381E-170;
-  while (pvt <= 12) {
-    absxk = fabs(A[pvt - 1]);
-    if (absxk > scale) {
-      t = scale / absxk;
-      smax = smax * t * t + 1.0;
-      scale = absxk;
-    } else {
-      t = absxk / scale;
-      smax += t * t;
-    }
-
-    pvt++;
-  }
-
-  vn1[2] = scale * sqrt(smax);
-  vn2[2] = vn1[2];
-  for (k = 0; k < 3; k++) {
-    iy = k << 2;
-    ii = iy + k;
-    pvt = 0;
-    if (3 - k > 1) {
-      ix = k;
-      smax = fabs(vn1[k]);
-      for (b_ix = 2; b_ix <= 3 - k; b_ix++) {
-        ix++;
-        scale = fabs(vn1[ix]);
-        if (scale > smax) {
-          pvt = b_ix - 1;
-          smax = scale;
-        }
-      }
-    }
-
-    pvt += k;
-    if (pvt != k) {
-      b_ix = pvt << 2;
-      smax = A[b_ix];
-      A[b_ix] = A[iy];
-      A[iy] = smax;
-      smax = A[b_ix + 1];
-      A[b_ix + 1] = A[iy + 1];
-      A[iy + 1] = smax;
-      smax = A[b_ix + 2];
-      A[b_ix + 2] = A[iy + 2];
-      A[iy + 2] = smax;
-      smax = A[b_ix + 3];
-      A[b_ix + 3] = A[iy + 3];
-      A[iy + 3] = smax;
-      ix = jpvt[pvt];
-      jpvt[pvt] = jpvt[k];
-      jpvt[k] = ix;
-      vn1[pvt] = vn1[k];
-      vn2[pvt] = vn2[k];
-    }
-
-    smax = A[ii];
-    tau[k] = 0.0;
-    scale = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_l(3 - k, A, ii + 2);
-    if (scale != 0.0) {
-      scale = rt_hypotd_snf(A[ii], scale);
-      if (A[ii] >= 0.0) {
-        scale = -scale;
-      }
-
-      if (fabs(scale) < 1.0020841800044864E-292) {
-        pvt = 0;
-        do {
-          pvt++;
-          ix = (ii - k) + 4;
-          for (b_ix = ii + 1; b_ix < ix; b_ix++) {
-            A[b_ix] *= 9.9792015476736E+291;
-          }
-
-          scale *= 9.9792015476736E+291;
-          smax *= 9.9792015476736E+291;
-        } while ((fabs(scale) < 1.0020841800044864E-292) && (pvt < 20));
-
-        scale = rt_hypotd_snf(smax,
-                              PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_l
-                              (3 - k, A, ii + 2));
-        if (smax >= 0.0) {
-          scale = -scale;
-        }
-
-        tau[k] = (scale - smax) / scale;
-        smax = 1.0 / (smax - scale);
-        for (b_ix = ii + 1; b_ix < ix; b_ix++) {
-          A[b_ix] *= smax;
-        }
-
-        for (ix = 0; ix < pvt; ix++) {
-          scale *= 1.0020841800044864E-292;
-        }
-
-        smax = scale;
-      } else {
-        tau[k] = (scale - A[ii]) / scale;
-        smax = 1.0 / (A[ii] - scale);
-        pvt = (ii - k) + 4;
-        for (ix = ii + 1; ix < pvt; ix++) {
-          A[ix] *= smax;
-        }
-
-        smax = scale;
-      }
-    }
-
-    A[ii] = smax;
-    if (k + 1 < 3) {
-      smax = A[ii];
-      A[ii] = 1.0;
-      if (tau[k] != 0.0) {
-        pvt = 4 - k;
-        ix = (ii - k) + 3;
-        while ((pvt > 0) && (A[ix] == 0.0)) {
-          pvt--;
-          ix--;
-        }
-
-        ix = 1 - k;
-        exitg2 = false;
-        while ((!exitg2) && (ix + 1 > 0)) {
-          b_ix = ((ix << 2) + ii) + 4;
-          iy = b_ix;
-          do {
-            exitg1 = 0;
-            if (iy + 1 <= b_ix + pvt) {
-              if (A[iy] != 0.0) {
-                exitg1 = 1;
-              } else {
-                iy++;
-              }
-            } else {
-              ix--;
-              exitg1 = 2;
-            }
-          } while (exitg1 == 0);
-
-          if (exitg1 == 1) {
-            exitg2 = true;
-          }
-        }
-      } else {
-        pvt = 0;
-        ix = -1;
-      }
-
-      if (pvt > 0) {
-        if (ix + 1 != 0) {
-          for (b_ix = 0; b_ix <= ix; b_ix++) {
-            work[b_ix] = 0.0;
-          }
-
-          b_ix = 0;
-          iy = ((ix << 2) + ii) + 5;
-          for (iac = ii + 5; iac <= iy; iac += 4) {
-            c_ix = ii;
-            scale = 0.0;
-            g = (iac + pvt) - 1;
-            for (ia = iac; ia <= g; ia++) {
-              scale += A[ia - 1] * A[c_ix];
-              c_ix++;
-            }
-
-            work[b_ix] += scale;
-            b_ix++;
-          }
-        }
-
-        if (!(-tau[k] == 0.0)) {
-          b_ix = ii + 4;
-          iy = 0;
-          for (iac = 0; iac <= ix; iac++) {
-            if (work[iy] != 0.0) {
-              scale = work[iy] * -tau[k];
-              c_ix = ii;
-              g = pvt + b_ix;
-              for (ia = b_ix; ia < g; ia++) {
-                A[ia] += A[c_ix] * scale;
-                c_ix++;
-              }
-            }
-
-            iy++;
-            b_ix += 4;
-          }
-        }
-      }
-
-      A[ii] = smax;
-    }
-
-    for (ii = k + 1; ii + 1 < 4; ii++) {
-      pvt = (ii << 2) + k;
-      if (vn1[ii] != 0.0) {
-        smax = fabs(A[pvt]) / vn1[ii];
-        smax = 1.0 - smax * smax;
-        if (smax < 0.0) {
-          smax = 0.0;
-        }
-
-        scale = vn1[ii] / vn2[ii];
-        scale = scale * scale * smax;
-        if (scale <= 1.4901161193847656E-8) {
-          vn1[ii] = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_l(3 - k, A,
-            pvt + 2);
-          vn2[ii] = vn1[ii];
-        } else {
-          vn1[ii] *= sqrt(smax);
-        }
-      }
-    }
-  }
-}
-
-/* Function for MATLAB Function: '<S410>/FindCoordinates' */
-static real_T PIDcontroller4CoreCentralizedTestReadyMotor_norm_l(const real_T x
-  [3])
-{
-  real_T absxk;
-  real_T scale;
-  real_T t;
-  real_T y;
-  scale = 3.3121686421112381E-170;
-  absxk = fabs(x[0]);
-  if (absxk > 3.3121686421112381E-170) {
-    y = 1.0;
-    scale = absxk;
-  } else {
-    t = absxk / 3.3121686421112381E-170;
-    y = t * t;
-  }
-
-  absxk = fabs(x[1]);
-  if (absxk > scale) {
-    t = scale / absxk;
-    y = y * t * t + 1.0;
-    scale = absxk;
-  } else {
-    t = absxk / scale;
-    y += t * t;
-  }
-
-  absxk = fabs(x[2]);
-  if (absxk > scale) {
-    t = scale / absxk;
-    y = y * t * t + 1.0;
-    scale = absxk;
-  } else {
-    t = absxk / scale;
-    y += t * t;
-  }
-
-  return scale * sqrt(y);
-}
-
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_c(int32_T n,
   const real_T x[9], int32_T ix0)
 {
@@ -2027,7 +1669,7 @@ static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_c(int32_T n,
   return y;
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal(int32_T n, real_T
   a, real_T x[9], int32_T ix0)
 {
@@ -2039,7 +1681,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal(int32_T n, real_T
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_ci(int32_T n,
   const real_T x[3], int32_T ix0)
 {
@@ -2075,7 +1717,7 @@ static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_ci(int32_T n,
   return y;
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xdotc(int32_T n, const
   real_T x[9], int32_T ix0, const real_T y[9], int32_T iy0)
 {
@@ -2097,7 +1739,7 @@ static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xdotc(int32_T n, const
   return d;
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy(int32_T n, real_T
   a, int32_T ix0, real_T y[9], int32_T iy0)
 {
@@ -2115,7 +1757,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy(int32_T n, real_T
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_j(int32_T n,
   real_T a, real_T x[3], int32_T ix0)
 {
@@ -2127,7 +1769,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_j(int32_T n,
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_p(int32_T n,
   real_T a, const real_T x[9], int32_T ix0, real_T y[3], int32_T iy0)
 {
@@ -2145,7 +1787,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_p(int32_T n,
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_pe(int32_T n,
   real_T a, const real_T x[3], int32_T ix0, real_T y[9], int32_T iy0)
 {
@@ -2163,7 +1805,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_pe(int32_T n,
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_ju(real_T a,
   real_T x[9], int32_T ix0)
 {
@@ -2173,7 +1815,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_ju(real_T a,
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xrotg(real_T *a, real_T *
   b, real_T *c, real_T *s)
 {
@@ -2217,7 +1859,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xrotg(real_T *a, real_T 
   *a = scale;
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xrot(real_T x[9],
   int32_T ix0, int32_T iy0, real_T c, real_T s)
 {
@@ -2236,7 +1878,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xrot(real_T x[9],
   x[ix0 + 1] = temp_tmp * c + temp * s;
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xswap(real_T x[9],
   int32_T ix0, int32_T iy0)
 {
@@ -2252,7 +1894,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xswap(real_T x[9],
   x[iy0 + 1] = temp;
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_svd(const real_T A[9],
   real_T U[9], real_T s[3], real_T V[9])
 {
@@ -2717,7 +2359,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_svd(const real_T A[9],
   s[2] = b_s[2];
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_cic(int32_T n,
   const real_T x[27], int32_T ix0)
 {
@@ -2753,7 +2395,7 @@ static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_cic(int32_T n,
   return y;
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xgemv(int32_T m, int32_T
   n, const real_T A[27], int32_T ia0, const real_T x[27], int32_T ix0, real_T y
   [3])
@@ -2787,7 +2429,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgemv(int32_T m, int32_T
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xgerc(int32_T m, int32_T
   n, real_T alpha1, int32_T ix0, const real_T y[3], real_T A[27], int32_T ia0)
 {
@@ -2818,7 +2460,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgerc(int32_T m, int32_T
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_qrFactor(const real_T A
   [18], const real_T S[36], const real_T Ns[9], real_T b_S[9])
 {
@@ -3112,7 +2754,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_qrFactor(const real_T A
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_trisolve(const real_T A
   [9], real_T B[18])
 {
@@ -3143,7 +2785,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_trisolve(const real_T A
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_trisolve_e(const real_T
   A[9], real_T B[18])
 {
@@ -3175,7 +2817,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_trisolve_e(const real_T
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_cica(int32_T n,
   const real_T x[54], int32_T ix0)
 {
@@ -3211,7 +2853,7 @@ static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_cica(int32_T n,
   return y;
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_f(int32_T m,
   int32_T n, const real_T A[54], int32_T ia0, const real_T x[54], int32_T ix0,
   real_T y[6])
@@ -3245,7 +2887,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_f(int32_T m,
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_o(int32_T m,
   int32_T n, real_T alpha1, int32_T ix0, const real_T y[6], real_T A[54],
   int32_T ia0)
@@ -3277,7 +2919,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_o(int32_T m,
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqrf(real_T A[54],
   real_T tau[6])
 {
@@ -3404,7 +3046,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqrf(real_T A[54],
   }
 }
 
-/* Function for MATLAB Function: '<S400>/Correct' */
+/* Function for MATLAB Function: '<S406>/Correct' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_qr(const real_T A[54],
   real_T Q[54], real_T R[36])
 {
@@ -3497,36 +3139,282 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_qr(const real_T A[54],
   }
 }
 
-static real_T
-  PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl
-  (c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
-   *obj, real_T u)
+/*
+ * Output and update for enable system:
+ *    '<S405>/Correct1'
+ *    '<S414>/Correct1'
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_Correct1(boolean_T rtu_Enable,
+  const real_T rtu_yMeas[3], const real_T rtu_R[9], boolean_T rtu_uBlockOrdering,
+  real_T rtd_P[36], real_T rtd_x[6],
+  B_Correct1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localB)
 {
-  real_T csum;
-  real_T cumRevIndex;
-  real_T y;
-  real_T z;
-  int32_T k;
-  csum = obj->pCumSum + u;
-  z = obj->pCumSumRev[(int32_T)obj->pCumRevIndex - 1] + csum;
-  obj->pCumSumRev[(int32_T)obj->pCumRevIndex - 1] = u;
-  if (obj->pCumRevIndex != 3999.0) {
-    cumRevIndex = obj->pCumRevIndex + 1.0;
-  } else {
-    cumRevIndex = 1.0;
-    csum = 0.0;
-    for (k = 3997; k >= 0; k--) {
-      obj->pCumSumRev[k] += obj->pCumSumRev[k + 1];
+  real_T a__1[54];
+  real_T y_0[54];
+  real_T A[36];
+  real_T y[36];
+  real_T C[18];
+  real_T K[18];
+  real_T b_C[18];
+  real_T dHdx[18];
+  real_T R[9];
+  real_T Ss[9];
+  real_T V[9];
+  real_T imvec[6];
+  real_T s[3];
+  real_T epsilon;
+  real_T rtu_yMeas_idx_1;
+  real_T rtu_yMeas_idx_2;
+  int32_T R_tmp;
+  int32_T aoffset;
+  int32_T c_k;
+  int32_T coffset;
+  int32_T i;
+  boolean_T p;
+
+  /* Outputs for Enabled SubSystem: '<S405>/Correct1' incorporates:
+   *  EnablePort: '<S406>/Enable'
+   */
+  if (rtu_Enable) {
+    /* MATLAB Function: '<S406>/Correct' incorporates:
+     *  DataStoreRead: '<S406>/Data Store ReadP'
+     *  DataStoreRead: '<S406>/Data Store ReadX'
+     */
+    localB->blockOrdering = rtu_uBlockOrdering;
+
+    /* MATLAB Function 'Extras/EKFCorrect/Correct': '<S409>:1' */
+    /* '<S409>:1:11' */
+    p = true;
+    for (c_k = 0; c_k < 9; c_k++) {
+      if (((int32_T)p) && ((!(int32_T)rtIsInf(rtu_R[c_k])) && (!(int32_T)rtIsNaN
+            (rtu_R[c_k])))) {
+      } else {
+        p = false;
+      }
+    }
+
+    if (p) {
+      PIDcontroller4CoreCentralizedTestReadyMotor_svd(rtu_R, Ss, s, V);
+    } else {
+      s[0] = (rtNaN);
+      s[1] = (rtNaN);
+      s[2] = (rtNaN);
+      for (c_k = 0; c_k < 9; c_k++) {
+        V[c_k] = (rtNaN);
+      }
+    }
+
+    for (c_k = 0; c_k < 9; c_k++) {
+      Ss[c_k] = 0.0;
+    }
+
+    Ss[0] = s[0];
+    Ss[4] = s[1];
+    Ss[8] = s[2];
+    for (c_k = 0; c_k < 9; c_k++) {
+      Ss[c_k] = sqrt(Ss[c_k]);
+    }
+
+    for (c_k = 0; c_k < 3; c_k++) {
+      for (i = 0; i < 3; i++) {
+        R_tmp = i + 3 * c_k;
+        R[R_tmp] = 0.0;
+        R[R_tmp] += Ss[3 * c_k] * V[i];
+        R[R_tmp] += Ss[3 * c_k + 1] * V[i + 3];
+        R[R_tmp] += Ss[3 * c_k + 2] * V[i + 6];
+      }
+    }
+
+    s[0] = rtd_x[1];
+    s[1] = rtd_x[3];
+    s[2] = rtd_x[5];
+    for (c_k = 0; c_k < 6; c_k++) {
+      for (i = 0; i < 6; i++) {
+        imvec[i] = rtd_x[i];
+      }
+
+      epsilon = 1.4901161193847656E-8 * fabs(rtd_x[c_k]);
+      if ((1.4901161193847656E-8 > epsilon) || ((int32_T)rtIsNaN(epsilon))) {
+        epsilon = 1.4901161193847656E-8;
+      }
+
+      imvec[c_k] = rtd_x[c_k] + epsilon;
+      dHdx[3 * c_k] = (imvec[1] - s[0]) / epsilon;
+      dHdx[3 * c_k + 1] = (imvec[3] - s[1]) / epsilon;
+      dHdx[3 * c_k + 2] = (imvec[5] - s[2]) / epsilon;
+    }
+
+    PIDcontroller4CoreCentralizedTestReadyMotor_qrFactor(dHdx, rtd_P, R, Ss);
+    for (c_k = 0; c_k < 6; c_k++) {
+      for (i = 0; i < 6; i++) {
+        coffset = c_k + 6 * i;
+        A[coffset] = 0.0;
+        for (R_tmp = 0; R_tmp < 6; R_tmp++) {
+          A[coffset] += rtd_P[6 * R_tmp + c_k] * rtd_P[6 * R_tmp + i];
+        }
+      }
+    }
+
+    for (c_k = 0; c_k < 3; c_k++) {
+      for (i = 0; i < 6; i++) {
+        coffset = c_k + 3 * i;
+        K[coffset] = 0.0;
+        for (R_tmp = 0; R_tmp < 6; R_tmp++) {
+          K[coffset] += A[6 * R_tmp + i] * dHdx[3 * R_tmp + c_k];
+        }
+      }
+    }
+
+    for (c_k = 0; c_k < 6; c_k++) {
+      C[3 * c_k] = K[3 * c_k];
+      i = 3 * c_k + 1;
+      C[i] = K[i];
+      i = 3 * c_k + 2;
+      C[i] = K[i];
+    }
+
+    PIDcontroller4CoreCentralizedTestReadyMotor_trisolve(Ss, C);
+    for (c_k = 0; c_k < 6; c_k++) {
+      b_C[3 * c_k] = C[3 * c_k];
+      i = 3 * c_k + 1;
+      b_C[i] = C[i];
+      i = 3 * c_k + 2;
+      b_C[i] = C[i];
+    }
+
+    for (c_k = 0; c_k < 3; c_k++) {
+      V[3 * c_k] = Ss[c_k];
+      V[3 * c_k + 1] = Ss[c_k + 3];
+      V[3 * c_k + 2] = Ss[c_k + 6];
+    }
+
+    PIDcontroller4CoreCentralizedTestReadyMotor_trisolve_e(V, b_C);
+    for (c_k = 0; c_k < 3; c_k++) {
+      for (i = 0; i < 6; i++) {
+        K[i + 6 * c_k] = b_C[3 * i + c_k];
+      }
+    }
+
+    for (c_k = 0; c_k < 18; c_k++) {
+      C[c_k] = -K[c_k];
+    }
+
+    for (c_k = 0; c_k < 6; c_k++) {
+      for (i = 0; i < 6; i++) {
+        R_tmp = i + 6 * c_k;
+        A[R_tmp] = 0.0;
+        A[R_tmp] += dHdx[3 * c_k] * C[i];
+        A[R_tmp] += dHdx[3 * c_k + 1] * C[i + 6];
+        A[R_tmp] += dHdx[3 * c_k + 2] * C[i + 12];
+      }
+    }
+
+    for (c_k = 0; c_k < 6; c_k++) {
+      R_tmp = 6 * c_k + c_k;
+      A[R_tmp]++;
+    }
+
+    for (c_k = 0; c_k < 6; c_k++) {
+      coffset = c_k * 6;
+      for (i = 0; i < 6; i++) {
+        aoffset = i * 6;
+        epsilon = 0.0;
+        for (R_tmp = 0; R_tmp < 6; R_tmp++) {
+          epsilon += A[R_tmp * 6 + c_k] * rtd_P[aoffset + R_tmp];
+        }
+
+        y[coffset + i] = epsilon;
+      }
+    }
+
+    for (c_k = 0; c_k < 3; c_k++) {
+      for (i = 0; i < 6; i++) {
+        coffset = c_k + 3 * i;
+        C[coffset] = 0.0;
+        C[coffset] += R[3 * c_k] * K[i];
+        C[coffset] += R[3 * c_k + 1] * K[i + 6];
+        C[coffset] += R[3 * c_k + 2] * K[i + 12];
+      }
+    }
+
+    for (c_k = 0; c_k < 6; c_k++) {
+      for (i = 0; i < 6; i++) {
+        y_0[i + 9 * c_k] = y[6 * c_k + i];
+      }
+
+      y_0[9 * c_k + 6] = C[3 * c_k];
+      y_0[9 * c_k + 7] = C[3 * c_k + 1];
+      y_0[9 * c_k + 8] = C[3 * c_k + 2];
+    }
+
+    PIDcontroller4CoreCentralizedTestReadyMotor_qr(y_0, a__1, A);
+
+    /* '<S409>:1:135' */
+    epsilon = rtu_yMeas[0] - rtd_x[1];
+    rtu_yMeas_idx_1 = rtu_yMeas[1] - rtd_x[3];
+    rtu_yMeas_idx_2 = rtu_yMeas[2] - rtd_x[5];
+    for (c_k = 0; c_k < 6; c_k++) {
+      /* DataStoreWrite: '<S406>/Data Store WriteP' incorporates:
+       *  MATLAB Function: '<S406>/Correct'
+       */
+      for (i = 0; i < 6; i++) {
+        rtd_P[i + 6 * c_k] = A[6 * i + c_k];
+      }
+
+      /* End of DataStoreWrite: '<S406>/Data Store WriteP' */
+
+      /* DataStoreWrite: '<S406>/Data Store WriteX' incorporates:
+       *  DataStoreRead: '<S406>/Data Store ReadX'
+       *  MATLAB Function: '<S406>/Correct'
+       */
+      rtd_x[c_k] += (K[c_k + 6] * rtu_yMeas_idx_1 + K[c_k] * epsilon) + K[c_k +
+        12] * rtu_yMeas_idx_2;
     }
   }
 
-  y = z / 4000.0;
-  obj->pCumSum = csum;
-  obj->pCumRevIndex = cumRevIndex;
-  return y;
+  /* End of Outputs for SubSystem: '<S405>/Correct1' */
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/*
+ * Termination for enable system:
+ *    '<S405>/Correct1'
+ *    '<S414>/Correct1'
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_Correct1_Term(void)
+{
+}
+
+/*
+ * Output and update for atomic system:
+ *    '<S405>/Output'
+ *    '<S414>/Output'
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_Output(boolean_T
+  rtu_uBlockOrdering, const real_T rtd_x[6],
+  B_Output_PIDcontroller4CoreCentralizedTestReadyMotor_T *localB)
+{
+  int32_T i;
+  for (i = 0; i < 6; i++) {
+    /* DataStoreRead: '<S407>/Data Store Read' */
+    localB->DataStoreRead[i] = rtd_x[i];
+  }
+
+  /* Inport: '<S407>/uBlockOrdering' */
+  /* MATLAB Function 'Extended Kalman Filter/Output/MATLAB Function': '<S410>:1' */
+  /* '<S410>:1:4' */
+  localB->uBlockOrdering = rtu_uBlockOrdering;
+}
+
+/*
+ * Termination for atomic system:
+ *    '<S405>/Output'
+ *    '<S414>/Output'
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_Output_Term(void)
+{
+}
+
+/* Function for MATLAB Function: '<S408>/Predict' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_i(int32_T n,
   const real_T x[36], int32_T ix0)
 {
@@ -3562,7 +3450,7 @@ static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_i(int32_T n,
   return y;
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_m(int32_T n,
   real_T a, real_T x[36], int32_T ix0)
 {
@@ -3574,7 +3462,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_m(int32_T n,
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xdotc_n(int32_T n,
   const real_T x[36], int32_T ix0, const real_T y[36], int32_T iy0)
 {
@@ -3596,7 +3484,7 @@ static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xdotc_n(int32_T n,
   return d;
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_d(int32_T n,
   real_T a, int32_T ix0, real_T y[36], int32_T iy0)
 {
@@ -3614,7 +3502,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_d(int32_T n,
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_i4(int32_T n,
   const real_T x[6], int32_T ix0)
 {
@@ -3650,7 +3538,7 @@ static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_i4(int32_T n,
   return y;
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_mce(real_T a,
   real_T x[36], int32_T ix0)
 {
@@ -3660,7 +3548,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_mce(real_T a,
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_mc(int32_T n,
   real_T a, real_T x[6], int32_T ix0)
 {
@@ -3672,7 +3560,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_mc(int32_T n,
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_dt(int32_T n,
   real_T a, const real_T x[36], int32_T ix0, real_T y[6], int32_T iy0)
 {
@@ -3690,7 +3578,51 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_dt(int32_T n,
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_b(real_T *a,
+  real_T *b, real_T *c, real_T *s)
+{
+  real_T absa;
+  real_T absb;
+  real_T ads;
+  real_T bds;
+  real_T roe;
+  real_T scale;
+  roe = *b;
+  absa = fabs(*a);
+  absb = fabs(*b);
+  if (absa > absb) {
+    roe = *a;
+  }
+
+  scale = absa + absb;
+  if (scale == 0.0) {
+    *s = 0.0;
+    *c = 1.0;
+    *b = 0.0;
+  } else {
+    ads = absa / scale;
+    bds = absb / scale;
+    scale *= sqrt(ads * ads + bds * bds);
+    if (roe < 0.0) {
+      scale = -scale;
+    }
+
+    *c = *a / scale;
+    *s = *b / scale;
+    if (absa > absb) {
+      *b = *s;
+    } else if (*c != 0.0) {
+      *b = 1.0 / *c;
+    } else {
+      *b = 1.0;
+    }
+  }
+
+  *a = scale;
+}
+
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_dtk(int32_T n,
   real_T a, const real_T x[6], int32_T ix0, real_T y[36], int32_T iy0)
 {
@@ -3708,7 +3640,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_dtk(int32_T n,
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xrot_l(real_T x[36],
   int32_T ix0, int32_T iy0, real_T c, real_T s)
 {
@@ -3727,7 +3659,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xrot_l(real_T x[36],
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xswap_f(real_T x[36],
   int32_T ix0, int32_T iy0)
 {
@@ -3744,7 +3676,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xswap_f(real_T x[36],
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_svd_a(const real_T A[36],
   real_T U[36], real_T s[6], real_T V[36])
 {
@@ -4027,8 +3959,8 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_svd_a(const real_T A[36]
       rt = e[i];
       e[i] = 0.0;
       for (qjj = i; qjj + 1 >= qp1q + 1; qjj--) {
-        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg(&b_s[qjj], &rt, &ztest,
-          &sqds);
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_b(&b_s[qjj], &rt,
+          &ztest, &sqds);
         if (qjj + 1 > qp1q + 1) {
           emm1 = e[qjj - 1];
           rt = emm1 * -sqds;
@@ -4044,8 +3976,8 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_svd_a(const real_T A[36]
       rt = e[qp1q - 1];
       e[qp1q - 1] = 0.0;
       for (qjj = qp1q; qjj < i + 2; qjj++) {
-        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg(&b_s[qjj], &rt, &ztest,
-          &sqds);
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_b(&b_s[qjj], &rt,
+          &ztest, &sqds);
         rt = -sqds * e[qjj];
         e[qjj] *= ztest;
         PIDcontroller4CoreCentralizedTestReadyMotor_xrot_l(U, 6 * qjj + 1, 6 *
@@ -4097,7 +4029,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_svd_a(const real_T A[36]
       rt = (sqds + rt) * (sqds - rt) + shift;
       ztest = e[qp1q] / ztest * sqds;
       for (qjj = qp1q + 1; qjj <= i + 1; qjj++) {
-        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg(&rt, &ztest, &sqds,
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_b(&rt, &ztest, &sqds,
           &smm1);
         if (qjj > qp1q + 1) {
           e[qjj - 2] = rt;
@@ -4111,7 +4043,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_svd_a(const real_T A[36]
         b_s[qjj] *= sqds;
         PIDcontroller4CoreCentralizedTestReadyMotor_xrot_l(V, 6 * (qjj - 1) + 1,
           6 * qjj + 1, sqds, smm1);
-        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg(&rt, &ztest, &sqds,
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_b(&rt, &ztest, &sqds,
           &smm1);
         b_s[qjj - 1] = rt;
         rt = e[qjj - 1] * sqds + smm1 * b_s[qjj];
@@ -4157,7 +4089,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_svd_a(const real_T A[36]
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_ssTF_vertical_kalman_leo
   (real_T x[6], const real_T u[12])
 {
@@ -4188,7 +4120,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_ssTF_vertical_kalman_leo
   x[5] = x_7 * 0.00025 + x_6;
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_i4w(int32_T n,
   const real_T x[72], int32_T ix0)
 {
@@ -4224,7 +4156,7 @@ static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_i4w(int32_T n,
   return y;
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_d(int32_T m,
   int32_T n, const real_T A[72], int32_T ia0, const real_T x[72], int32_T ix0,
   real_T y[6])
@@ -4258,7 +4190,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_d(int32_T m,
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_h(int32_T m,
   int32_T n, real_T alpha1, int32_T ix0, const real_T y[6], real_T A[72],
   int32_T ia0)
@@ -4290,7 +4222,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_h(int32_T m,
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqrf_j(real_T A[72],
   real_T tau[6])
 {
@@ -4417,7 +4349,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqrf_j(real_T A[72],
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void PIDcontroller4CoreCentralizedTestReadyMotor_qr_b(const real_T A[72],
   real_T Q[72], real_T R[36])
 {
@@ -4510,7 +4442,7 @@ static void PIDcontroller4CoreCentralizedTestReadyMotor_qr_b(const real_T A[72],
   }
 }
 
-/* Function for MATLAB Function: '<S402>/Predict' */
+/* Function for MATLAB Function: '<S408>/Predict' */
 static void
   PIDcontroller4CoreCentralizedTestReadyMotor_EKFPredictorAdditive_predict(const
   real_T Qs[36], real_T x[6], real_T S[36], const real_T varargin_1[12])
@@ -4577,6 +4509,2234 @@ static void
   }
 }
 
+/*
+ * Output and update for atomic system:
+ *    '<S405>/Predict'
+ *    '<S414>/Predict'
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_Predict(const real_T rtu_Q[36],
+  const real_T rtu_uState[12], real_T rtd_P[36], real_T rtd_x[6])
+{
+  real_T Ss[36];
+  real_T V[36];
+  real_T V_0[36];
+  real_T s[6];
+  int32_T V_tmp;
+  int32_T i;
+  int32_T i_0;
+  int32_T i_1;
+  boolean_T p;
+
+  /* MATLAB Function: '<S408>/Predict' */
+  /* MATLAB Function 'Extended Kalman Filter/Predict/Predict': '<S411>:1' */
+  /* '<S411>:1:11' */
+  p = true;
+  for (i = 0; i < 36; i++) {
+    if (((int32_T)p) && ((!(int32_T)rtIsInf(rtu_Q[i])) && (!(int32_T)rtIsNaN
+          (rtu_Q[i])))) {
+    } else {
+      p = false;
+    }
+  }
+
+  if (p) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_svd_a(rtu_Q, Ss, s, V);
+  } else {
+    for (i = 0; i < 6; i++) {
+      s[i] = (rtNaN);
+    }
+
+    for (i = 0; i < 36; i++) {
+      V[i] = (rtNaN);
+    }
+  }
+
+  for (i = 0; i < 36; i++) {
+    Ss[i] = 0.0;
+  }
+
+  for (i = 0; i < 6; i++) {
+    Ss[i + 6 * i] = s[i];
+  }
+
+  for (i = 0; i < 36; i++) {
+    Ss[i] = sqrt(Ss[i]);
+  }
+
+  for (i = 0; i < 6; i++) {
+    for (i_0 = 0; i_0 < 6; i_0++) {
+      V_0[i_0 + 6 * i] = 0.0;
+    }
+
+    for (i_1 = 0; i_1 < 6; i_1++) {
+      for (i_0 = 0; i_0 < 6; i_0++) {
+        V_tmp = 6 * i + i_0;
+        V_0[V_tmp] += V[6 * i_1 + i_0] * Ss[6 * i + i_1];
+      }
+    }
+  }
+
+  /* DataStoreWrite: '<S408>/Data Store WriteX' incorporates:
+   *  DataStoreWrite: '<S408>/Data Store WriteP'
+   *  MATLAB Function: '<S408>/Predict'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_EKFPredictorAdditive_predict(V_0,
+    rtd_x, rtd_P, rtu_uState);
+
+  /* '<S411>:1:123' */
+}
+
+/*
+ * Termination for atomic system:
+ *    '<S405>/Predict'
+ *    '<S414>/Predict'
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_Predict_Term(void)
+{
+}
+
+/*
+ * System initialize for atomic system:
+ *    synthesized block
+ *    synthesized block
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_e_Init
+  (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_fw_T *localDW)
+{
+  c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T
+    *obj;
+
+  /* InitializeConditions for MATLABSystem: '<Root>/Moving Average' */
+  obj = localDW->obj.pStatistic;
+  if (obj->isInitialized == 1) {
+    obj->pwN = 1.0;
+    obj->pmN = 0.0;
+  }
+
+  /* End of InitializeConditions for MATLABSystem: '<Root>/Moving Average' */
+}
+
+/*
+ * Start for atomic system:
+ *    synthesized block
+ *    synthesized block
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_m_Start
+  (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_fw_T *localDW)
+{
+  real_T varargin_2;
+  boolean_T flag;
+
+  /* Start for MATLABSystem: '<Root>/Moving Average' */
+  localDW->obj.matlabCodegenIsDeleted = true;
+  localDW->obj.isInitialized = 0;
+  localDW->obj.NumChannels = -1;
+  localDW->obj.matlabCodegenIsDeleted = false;
+  localDW->objisempty = true;
+  flag = (boolean_T)(localDW->obj.isInitialized == 1);
+  if (flag) {
+    localDW->obj.TunablePropsChanged = true;
+  }
+
+  localDW->obj.ForgettingFactor = 0.999;
+  localDW->obj.isSetupComplete = false;
+  localDW->obj.isInitialized = 1;
+  localDW->obj.NumChannels = 1;
+  varargin_2 = localDW->obj.ForgettingFactor;
+  localDW->obj._pobj0.isInitialized = 0;
+  flag = (boolean_T)(localDW->obj._pobj0.isInitialized == 1);
+  if (flag) {
+    localDW->obj._pobj0.TunablePropsChanged = true;
+  }
+
+  localDW->obj._pobj0.ForgettingFactor = varargin_2;
+  localDW->obj.pStatistic = &localDW->obj._pobj0;
+  localDW->obj.isSetupComplete = true;
+  localDW->obj.TunablePropsChanged = false;
+
+  /* End of Start for MATLABSystem: '<Root>/Moving Average' */
+}
+
+/*
+ * Output and update for atomic system:
+ *    synthesized block
+ *    synthesized block
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_pn(const real_T
+  rtu_0[3], B_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_ca_T
+  *localB, DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_fw_T
+  *localDW)
+{
+  c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T
+    *obj;
+  real_T b;
+  real_T c;
+  real_T lambda;
+  boolean_T flag;
+
+  /* MATLABSystem: '<Root>/Moving Average' */
+  if (localDW->obj.ForgettingFactor != 0.999) {
+    flag = (boolean_T)(localDW->obj.isInitialized == 1);
+    if (flag) {
+      localDW->obj.TunablePropsChanged = true;
+    }
+
+    localDW->obj.ForgettingFactor = 0.999;
+  }
+
+  if (localDW->obj.TunablePropsChanged) {
+    localDW->obj.TunablePropsChanged = false;
+    obj = localDW->obj.pStatistic;
+    flag = (boolean_T)(obj->isInitialized == 1);
+    if (flag) {
+      obj->TunablePropsChanged = true;
+    }
+
+    localDW->obj.pStatistic->ForgettingFactor = localDW->obj.ForgettingFactor;
+  }
+
+  obj = localDW->obj.pStatistic;
+  if (obj->isInitialized != 1) {
+    obj->isSetupComplete = false;
+    obj->isInitialized = 1;
+    obj->pwN = 1.0;
+    obj->pmN = 0.0;
+    obj->plambda = obj->ForgettingFactor;
+    obj->isSetupComplete = true;
+    obj->TunablePropsChanged = false;
+    obj->pwN = 1.0;
+    obj->pmN = 0.0;
+  }
+
+  if (obj->TunablePropsChanged) {
+    obj->TunablePropsChanged = false;
+    obj->plambda = obj->ForgettingFactor;
+  }
+
+  b = obj->pwN;
+  c = obj->pmN;
+  lambda = obj->plambda;
+  c = (1.0 - 1.0 / b) * c + 1.0 / b * rtu_0[0];
+  b = lambda * b + 1.0;
+
+  /* MATLABSystem: '<Root>/Moving Average' */
+  localB->MovingAverage[0] = c;
+
+  /* MATLABSystem: '<Root>/Moving Average' */
+  c = (1.0 - 1.0 / b) * c + 1.0 / b * rtu_0[1];
+  b = lambda * b + 1.0;
+
+  /* MATLABSystem: '<Root>/Moving Average' */
+  localB->MovingAverage[1] = c;
+
+  /* MATLABSystem: '<Root>/Moving Average' */
+  c = (1.0 - 1.0 / b) * c + 1.0 / b * rtu_0[2];
+  obj->pwN = lambda * b + 1.0;
+  obj->pmN = c;
+
+  /* MATLABSystem: '<Root>/Moving Average' */
+  localB->MovingAverage[2] = c;
+}
+
+/*
+ * Termination for atomic system:
+ *    synthesized block
+ *    synthesized block
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_l_Term
+  (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_fw_T *localDW)
+{
+  c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T
+    *obj;
+
+  /* Terminate for MATLABSystem: '<Root>/Moving Average' */
+  if (!(int32_T)localDW->obj.matlabCodegenIsDeleted) {
+    localDW->obj.matlabCodegenIsDeleted = true;
+    if ((localDW->obj.isInitialized == 1) && ((int32_T)
+         localDW->obj.isSetupComplete)) {
+      obj = localDW->obj.pStatistic;
+      if (obj->isInitialized == 1) {
+        obj->isInitialized = 2;
+      }
+
+      localDW->obj.NumChannels = -1;
+    }
+  }
+
+  /* End of Terminate for MATLABSystem: '<Root>/Moving Average' */
+}
+
+/*
+ * Output and update for atomic system:
+ *    '<S22>/Cap requested current1'
+ *    '<S22>/Cap requested current2'
+ *    '<S22>/Cap requested current3'
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1(real_T
+  rtu_measured_I, real_T rtu_requested_I, real_T rtu_max_delta,
+  B_Caprequestedcurrent1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localB)
+{
+  /* MATLAB Function 'Subsystem5/Cap requested current1': '<S548>:1' */
+  if (rtu_requested_I - rtu_measured_I > rtu_max_delta) {
+    /* '<S548>:1:4' */
+    /* '<S548>:1:5' */
+    localB->out_req_I = rtu_measured_I + rtu_max_delta;
+  } else if (rtu_measured_I - rtu_requested_I > rtu_max_delta) {
+    /* '<S548>:1:6' */
+    /* '<S548>:1:7' */
+    localB->out_req_I = rtu_measured_I - rtu_max_delta;
+  } else {
+    /* '<S548>:1:9' */
+    localB->out_req_I = rtu_requested_I;
+  }
+}
+
+/*
+ * Termination for atomic system:
+ *    '<S22>/Cap requested current1'
+ *    '<S22>/Cap requested current2'
+ *    '<S22>/Cap requested current3'
+ */
+void PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1_Term(void)
+{
+}
+
+static void PIDcontroller4CoreCentralizedTestReadyMotor_SystemCore_setup_o
+  (dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
+   *obj)
+{
+  real_T varargin_2;
+  boolean_T flag;
+  obj->isSetupComplete = false;
+  obj->isInitialized = 1;
+  flag = (boolean_T)(obj->isInitialized == 1);
+  if (flag) {
+    obj->TunablePropsChanged = true;
+  }
+
+  obj->ForgettingFactor = 0.0;
+  obj->TunablePropsChanged = false;
+  obj->NumChannels = 4;
+  varargin_2 = obj->ForgettingFactor;
+  obj->_pobj0.isInitialized = 0;
+  flag = (boolean_T)(obj->_pobj0.isInitialized == 1);
+  if (flag) {
+    obj->_pobj0.TunablePropsChanged = true;
+  }
+
+  obj->_pobj0.ForgettingFactor = varargin_2;
+  obj->pStatistic = &obj->_pobj0;
+  obj->isSetupComplete = true;
+  obj->TunablePropsChanged = false;
+}
+
+/* Function for MATLAB Function: '<S427>/FindCoordinates' */
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_cx(int32_T n,
+  const real_T x[12], int32_T ix0)
+{
+  real_T absxk;
+  real_T scale;
+  real_T t;
+  real_T y;
+  int32_T k;
+  int32_T kend;
+  y = 0.0;
+  if (n == 1) {
+    y = fabs(x[ix0 - 1]);
+  } else {
+    scale = 3.3121686421112381E-170;
+    kend = (ix0 + n) - 1;
+    for (k = ix0; k <= kend; k++) {
+      absxk = fabs(x[k - 1]);
+      if (absxk > scale) {
+        t = scale / absxk;
+        y = y * t * t + 1.0;
+        scale = absxk;
+      } else {
+        t = absxk / scale;
+        y += t * t;
+      }
+    }
+
+    y = scale * sqrt(y);
+  }
+
+  return y;
+}
+
+/* Function for MATLAB Function: '<S427>/FindCoordinates' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqp3_m(real_T A[12],
+  real_T tau[3], int32_T jpvt[3])
+{
+  real_T vn1[3];
+  real_T vn2[3];
+  real_T work[3];
+  real_T absxk;
+  real_T scale;
+  real_T smax;
+  real_T t;
+  int32_T b_ix;
+  int32_T c_ix;
+  int32_T exitg1;
+  int32_T g;
+  int32_T ia;
+  int32_T iac;
+  int32_T ii;
+  int32_T ix;
+  int32_T iy;
+  int32_T k;
+  int32_T pvt;
+  boolean_T exitg2;
+  jpvt[0] = 1;
+  tau[0] = 0.0;
+  work[0] = 0.0;
+  smax = 0.0;
+  scale = 3.3121686421112381E-170;
+  for (pvt = 1; pvt < 5; pvt++) {
+    absxk = fabs(A[pvt - 1]);
+    if (absxk > scale) {
+      t = scale / absxk;
+      smax = smax * t * t + 1.0;
+      scale = absxk;
+    } else {
+      t = absxk / scale;
+      smax += t * t;
+    }
+  }
+
+  vn1[0] = scale * sqrt(smax);
+  vn2[0] = vn1[0];
+  jpvt[1] = 2;
+  tau[1] = 0.0;
+  work[1] = 0.0;
+  smax = 0.0;
+  scale = 3.3121686421112381E-170;
+  while (pvt <= 8) {
+    absxk = fabs(A[pvt - 1]);
+    if (absxk > scale) {
+      t = scale / absxk;
+      smax = smax * t * t + 1.0;
+      scale = absxk;
+    } else {
+      t = absxk / scale;
+      smax += t * t;
+    }
+
+    pvt++;
+  }
+
+  vn1[1] = scale * sqrt(smax);
+  vn2[1] = vn1[1];
+  jpvt[2] = 3;
+  tau[2] = 0.0;
+  work[2] = 0.0;
+  smax = 0.0;
+  scale = 3.3121686421112381E-170;
+  while (pvt <= 12) {
+    absxk = fabs(A[pvt - 1]);
+    if (absxk > scale) {
+      t = scale / absxk;
+      smax = smax * t * t + 1.0;
+      scale = absxk;
+    } else {
+      t = absxk / scale;
+      smax += t * t;
+    }
+
+    pvt++;
+  }
+
+  vn1[2] = scale * sqrt(smax);
+  vn2[2] = vn1[2];
+  for (k = 0; k < 3; k++) {
+    iy = k << 2;
+    ii = iy + k;
+    pvt = 0;
+    if (3 - k > 1) {
+      ix = k;
+      smax = fabs(vn1[k]);
+      for (b_ix = 2; b_ix <= 3 - k; b_ix++) {
+        ix++;
+        scale = fabs(vn1[ix]);
+        if (scale > smax) {
+          pvt = b_ix - 1;
+          smax = scale;
+        }
+      }
+    }
+
+    pvt += k;
+    if (pvt != k) {
+      b_ix = pvt << 2;
+      smax = A[b_ix];
+      A[b_ix] = A[iy];
+      A[iy] = smax;
+      smax = A[b_ix + 1];
+      A[b_ix + 1] = A[iy + 1];
+      A[iy + 1] = smax;
+      smax = A[b_ix + 2];
+      A[b_ix + 2] = A[iy + 2];
+      A[iy + 2] = smax;
+      smax = A[b_ix + 3];
+      A[b_ix + 3] = A[iy + 3];
+      A[iy + 3] = smax;
+      ix = jpvt[pvt];
+      jpvt[pvt] = jpvt[k];
+      jpvt[k] = ix;
+      vn1[pvt] = vn1[k];
+      vn2[pvt] = vn2[k];
+    }
+
+    smax = A[ii];
+    tau[k] = 0.0;
+    scale = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_cx(3 - k, A, ii +
+      2);
+    if (scale != 0.0) {
+      scale = rt_hypotd_snf(A[ii], scale);
+      if (A[ii] >= 0.0) {
+        scale = -scale;
+      }
+
+      if (fabs(scale) < 1.0020841800044864E-292) {
+        pvt = 0;
+        do {
+          pvt++;
+          ix = (ii - k) + 4;
+          for (b_ix = ii + 1; b_ix < ix; b_ix++) {
+            A[b_ix] *= 9.9792015476736E+291;
+          }
+
+          scale *= 9.9792015476736E+291;
+          smax *= 9.9792015476736E+291;
+        } while ((fabs(scale) < 1.0020841800044864E-292) && (pvt < 20));
+
+        scale = rt_hypotd_snf(smax,
+                              PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_cx
+                              (3 - k, A, ii + 2));
+        if (smax >= 0.0) {
+          scale = -scale;
+        }
+
+        tau[k] = (scale - smax) / scale;
+        smax = 1.0 / (smax - scale);
+        for (b_ix = ii + 1; b_ix < ix; b_ix++) {
+          A[b_ix] *= smax;
+        }
+
+        for (ix = 0; ix < pvt; ix++) {
+          scale *= 1.0020841800044864E-292;
+        }
+
+        smax = scale;
+      } else {
+        tau[k] = (scale - A[ii]) / scale;
+        smax = 1.0 / (A[ii] - scale);
+        pvt = (ii - k) + 4;
+        for (ix = ii + 1; ix < pvt; ix++) {
+          A[ix] *= smax;
+        }
+
+        smax = scale;
+      }
+    }
+
+    A[ii] = smax;
+    if (k + 1 < 3) {
+      smax = A[ii];
+      A[ii] = 1.0;
+      if (tau[k] != 0.0) {
+        pvt = 4 - k;
+        ix = (ii - k) + 3;
+        while ((pvt > 0) && (A[ix] == 0.0)) {
+          pvt--;
+          ix--;
+        }
+
+        ix = 1 - k;
+        exitg2 = false;
+        while ((!exitg2) && (ix + 1 > 0)) {
+          b_ix = ((ix << 2) + ii) + 4;
+          iy = b_ix;
+          do {
+            exitg1 = 0;
+            if (iy + 1 <= b_ix + pvt) {
+              if (A[iy] != 0.0) {
+                exitg1 = 1;
+              } else {
+                iy++;
+              }
+            } else {
+              ix--;
+              exitg1 = 2;
+            }
+          } while (exitg1 == 0);
+
+          if (exitg1 == 1) {
+            exitg2 = true;
+          }
+        }
+      } else {
+        pvt = 0;
+        ix = -1;
+      }
+
+      if (pvt > 0) {
+        if (ix + 1 != 0) {
+          for (b_ix = 0; b_ix <= ix; b_ix++) {
+            work[b_ix] = 0.0;
+          }
+
+          b_ix = 0;
+          iy = ((ix << 2) + ii) + 5;
+          for (iac = ii + 5; iac <= iy; iac += 4) {
+            c_ix = ii;
+            scale = 0.0;
+            g = (iac + pvt) - 1;
+            for (ia = iac; ia <= g; ia++) {
+              scale += A[ia - 1] * A[c_ix];
+              c_ix++;
+            }
+
+            work[b_ix] += scale;
+            b_ix++;
+          }
+        }
+
+        if (!(-tau[k] == 0.0)) {
+          b_ix = ii + 4;
+          iy = 0;
+          for (iac = 0; iac <= ix; iac++) {
+            if (work[iy] != 0.0) {
+              scale = work[iy] * -tau[k];
+              c_ix = ii;
+              g = pvt + b_ix;
+              for (ia = b_ix; ia < g; ia++) {
+                A[ia] += A[c_ix] * scale;
+                c_ix++;
+              }
+            }
+
+            iy++;
+            b_ix += 4;
+          }
+        }
+      }
+
+      A[ii] = smax;
+    }
+
+    for (ii = k + 1; ii + 1 < 4; ii++) {
+      pvt = (ii << 2) + k;
+      if (vn1[ii] != 0.0) {
+        smax = fabs(A[pvt]) / vn1[ii];
+        smax = 1.0 - smax * smax;
+        if (smax < 0.0) {
+          smax = 0.0;
+        }
+
+        scale = vn1[ii] / vn2[ii];
+        scale = scale * scale * smax;
+        if (scale <= 1.4901161193847656E-8) {
+          vn1[ii] = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_cx(3 - k,
+            A, pvt + 2);
+          vn2[ii] = vn1[ii];
+        } else {
+          vn1[ii] *= sqrt(smax);
+        }
+      }
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S427>/FindCoordinates' */
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_norm_c(const real_T x
+  [3])
+{
+  real_T absxk;
+  real_T scale;
+  real_T t;
+  real_T y;
+  scale = 3.3121686421112381E-170;
+  absxk = fabs(x[0]);
+  if (absxk > 3.3121686421112381E-170) {
+    y = 1.0;
+    scale = absxk;
+  } else {
+    t = absxk / 3.3121686421112381E-170;
+    y = t * t;
+  }
+
+  absxk = fabs(x[1]);
+  if (absxk > scale) {
+    t = scale / absxk;
+    y = y * t * t + 1.0;
+    scale = absxk;
+  } else {
+    t = absxk / scale;
+    y += t * t;
+  }
+
+  absxk = fabs(x[2]);
+  if (absxk > scale) {
+    t = scale / absxk;
+    y = y * t * t + 1.0;
+    scale = absxk;
+  } else {
+    t = absxk / scale;
+    y += t * t;
+  }
+
+  return scale * sqrt(y);
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b(int32_T n,
+  const real_T x[9], int32_T ix0)
+{
+  real_T absxk;
+  real_T scale;
+  real_T t;
+  real_T y;
+  int32_T k;
+  int32_T kend;
+  y = 0.0;
+  if (n >= 1) {
+    if (n == 1) {
+      y = fabs(x[ix0 - 1]);
+    } else {
+      scale = 3.3121686421112381E-170;
+      kend = (ix0 + n) - 1;
+      for (k = ix0; k <= kend; k++) {
+        absxk = fabs(x[k - 1]);
+        if (absxk > scale) {
+          t = scale / absxk;
+          y = y * t * t + 1.0;
+          scale = absxk;
+        } else {
+          t = absxk / scale;
+          y += t * t;
+        }
+      }
+
+      y = scale * sqrt(y);
+    }
+  }
+
+  return y;
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_b(int32_T n,
+  real_T a, real_T x[9], int32_T ix0)
+{
+  int32_T b;
+  int32_T k;
+  b = (ix0 + n) - 1;
+  for (k = ix0; k <= b; k++) {
+    x[k - 1] *= a;
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4(int32_T n,
+  const real_T x[3], int32_T ix0)
+{
+  real_T absxk;
+  real_T scale;
+  real_T t;
+  real_T y;
+  int32_T k;
+  int32_T kend;
+  y = 0.0;
+  if (n >= 1) {
+    if (n == 1) {
+      y = fabs(x[ix0 - 1]);
+    } else {
+      scale = 3.3121686421112381E-170;
+      kend = (ix0 + n) - 1;
+      for (k = ix0; k <= kend; k++) {
+        absxk = fabs(x[k - 1]);
+        if (absxk > scale) {
+          t = scale / absxk;
+          y = y * t * t + 1.0;
+          scale = absxk;
+        } else {
+          t = absxk / scale;
+          y += t * t;
+        }
+      }
+
+      y = scale * sqrt(y);
+    }
+  }
+
+  return y;
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xdotc_c(int32_T n,
+  const real_T x[9], int32_T ix0, const real_T y[9], int32_T iy0)
+{
+  real_T d;
+  int32_T ix;
+  int32_T iy;
+  int32_T k;
+  d = 0.0;
+  if (n >= 1) {
+    ix = ix0;
+    iy = iy0;
+    for (k = 0; k < n; k++) {
+      d += x[ix - 1] * y[iy - 1];
+      ix++;
+      iy++;
+    }
+  }
+
+  return d;
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_g(int32_T n,
+  real_T a, int32_T ix0, real_T y[9], int32_T iy0)
+{
+  int32_T ix;
+  int32_T iy;
+  int32_T k;
+  if ((n >= 1) && (!(a == 0.0))) {
+    ix = ix0 - 1;
+    iy = iy0 - 1;
+    for (k = 0; k < n; k++) {
+      y[iy] += a * y[ix];
+      ix++;
+      iy++;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bh(int32_T n,
+  real_T a, real_T x[3], int32_T ix0)
+{
+  int32_T b;
+  int32_T k;
+  b = (ix0 + n) - 1;
+  for (k = ix0; k <= b; k++) {
+    x[k - 1] *= a;
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_gl(int32_T n,
+  real_T a, const real_T x[9], int32_T ix0, real_T y[3], int32_T iy0)
+{
+  int32_T ix;
+  int32_T iy;
+  int32_T k;
+  if ((n >= 1) && (!(a == 0.0))) {
+    ix = ix0 - 1;
+    iy = iy0 - 1;
+    for (k = 0; k < n; k++) {
+      y[iy] += a * x[ix];
+      ix++;
+      iy++;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_glf(int32_T n,
+  real_T a, const real_T x[3], int32_T ix0, real_T y[9], int32_T iy0)
+{
+  int32_T ix;
+  int32_T iy;
+  int32_T k;
+  if ((n >= 1) && (!(a == 0.0))) {
+    ix = ix0 - 1;
+    iy = iy0 - 1;
+    for (k = 0; k < n; k++) {
+      y[iy] += a * x[ix];
+      ix++;
+      iy++;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bha(real_T a,
+  real_T x[9], int32_T ix0)
+{
+  int32_T k;
+  for (k = ix0; k <= ix0 + 2; k++) {
+    x[k - 1] *= a;
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_bk(real_T *a,
+  real_T *b, real_T *c, real_T *s)
+{
+  real_T absa;
+  real_T absb;
+  real_T ads;
+  real_T bds;
+  real_T roe;
+  real_T scale;
+  roe = *b;
+  absa = fabs(*a);
+  absb = fabs(*b);
+  if (absa > absb) {
+    roe = *a;
+  }
+
+  scale = absa + absb;
+  if (scale == 0.0) {
+    *s = 0.0;
+    *c = 1.0;
+    *b = 0.0;
+  } else {
+    ads = absa / scale;
+    bds = absb / scale;
+    scale *= sqrt(ads * ads + bds * bds);
+    if (roe < 0.0) {
+      scale = -scale;
+    }
+
+    *c = *a / scale;
+    *s = *b / scale;
+    if (absa > absb) {
+      *b = *s;
+    } else if (*c != 0.0) {
+      *b = 1.0 / *c;
+    } else {
+      *b = 1.0;
+    }
+  }
+
+  *a = scale;
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xrot_k(real_T x[9],
+  int32_T ix0, int32_T iy0, real_T c, real_T s)
+{
+  real_T temp;
+  real_T temp_tmp;
+  temp = x[iy0 - 1];
+  temp_tmp = x[ix0 - 1];
+  x[iy0 - 1] = temp * c - temp_tmp * s;
+  x[ix0 - 1] = temp_tmp * c + temp * s;
+  temp = x[ix0] * c + x[iy0] * s;
+  x[iy0] = x[iy0] * c - x[ix0] * s;
+  x[ix0] = temp;
+  temp = x[iy0 + 1];
+  temp_tmp = x[ix0 + 1];
+  x[iy0 + 1] = temp * c - temp_tmp * s;
+  x[ix0 + 1] = temp_tmp * c + temp * s;
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xswap_m(real_T x[9],
+  int32_T ix0, int32_T iy0)
+{
+  real_T temp;
+  temp = x[ix0 - 1];
+  x[ix0 - 1] = x[iy0 - 1];
+  x[iy0 - 1] = temp;
+  temp = x[ix0];
+  x[ix0] = x[iy0];
+  x[iy0] = temp;
+  temp = x[ix0 + 1];
+  x[ix0 + 1] = x[iy0 + 1];
+  x[iy0 + 1] = temp;
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_svd_i(const real_T A[9],
+  real_T U[9], real_T s[3], real_T V[9])
+{
+  real_T b_A[9];
+  real_T b_s[3];
+  real_T e[3];
+  real_T work[3];
+  real_T emm1;
+  real_T nrm;
+  real_T rt;
+  real_T shift;
+  real_T smm1;
+  real_T sqds;
+  real_T ztest;
+  int32_T d;
+  int32_T exitg1;
+  int32_T k_ii;
+  int32_T kase;
+  int32_T m;
+  int32_T qjj;
+  int32_T qq;
+  boolean_T apply_transform;
+  boolean_T exitg2;
+  e[0] = 0.0;
+  work[0] = 0.0;
+  e[1] = 0.0;
+  work[1] = 0.0;
+  e[2] = 0.0;
+  work[2] = 0.0;
+  for (qq = 0; qq < 9; qq++) {
+    b_A[qq] = A[qq];
+    U[qq] = 0.0;
+    V[qq] = 0.0;
+  }
+
+  qq = 0;
+  apply_transform = false;
+  nrm = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b(3, b_A, 1);
+  if (nrm > 0.0) {
+    apply_transform = true;
+    if (b_A[0] < 0.0) {
+      b_s[0] = -nrm;
+    } else {
+      b_s[0] = nrm;
+    }
+
+    if (fabs(b_s[0]) >= 1.0020841800044864E-292) {
+      PIDcontroller4CoreCentralizedTestReadyMotor_xscal_b(3, 1.0 / b_s[0], b_A,
+        1);
+    } else {
+      for (qjj = 0; qjj < 3; qjj++) {
+        b_A[qjj] /= b_s[0];
+      }
+    }
+
+    b_A[0]++;
+    b_s[0] = -b_s[0];
+  } else {
+    b_s[0] = 0.0;
+  }
+
+  for (d = 1; d + 1 < 4; d++) {
+    qjj = 3 * d;
+    if (apply_transform) {
+      PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_g(3,
+        -(PIDcontroller4CoreCentralizedTestReadyMotor_xdotc_c(3, b_A, 1, b_A,
+        qjj + 1) / b_A[0]), 1, b_A, qjj + 1);
+    }
+
+    e[d] = b_A[qjj];
+  }
+
+  while (qq + 1 < 4) {
+    U[qq] = b_A[qq];
+    qq++;
+  }
+
+  nrm = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4(2, e, 2);
+  if (nrm == 0.0) {
+    e[0] = 0.0;
+  } else {
+    if (e[1] < 0.0) {
+      nrm = -nrm;
+    }
+
+    e[0] = nrm;
+    if (fabs(nrm) >= 1.0020841800044864E-292) {
+      PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bh(2, 1.0 / nrm, e, 2);
+    } else {
+      for (qq = 1; qq < 3; qq++) {
+        e[qq] /= nrm;
+      }
+    }
+
+    e[1]++;
+    e[0] = -e[0];
+    for (qq = 2; qq < 4; qq++) {
+      work[qq - 1] = 0.0;
+    }
+
+    for (qq = 1; qq + 1 < 4; qq++) {
+      PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_gl(2, e[qq], b_A, 3 * qq
+        + 2, work, 2);
+    }
+
+    for (qq = 1; qq + 1 < 4; qq++) {
+      PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_glf(2, -e[qq] / e[1],
+        work, 2, b_A, 3 * qq + 2);
+    }
+  }
+
+  for (qq = 1; qq + 1 < 4; qq++) {
+    V[qq] = e[qq];
+  }
+
+  apply_transform = false;
+  nrm = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b(2, b_A, 5);
+  if (nrm > 0.0) {
+    apply_transform = true;
+    if (b_A[4] < 0.0) {
+      b_s[1] = -nrm;
+    } else {
+      b_s[1] = nrm;
+    }
+
+    if (fabs(b_s[1]) >= 1.0020841800044864E-292) {
+      PIDcontroller4CoreCentralizedTestReadyMotor_xscal_b(2, 1.0 / b_s[1], b_A,
+        5);
+    } else {
+      for (qjj = 4; qjj < 6; qjj++) {
+        b_A[qjj] /= b_s[1];
+      }
+    }
+
+    b_A[4]++;
+    b_s[1] = -b_s[1];
+  } else {
+    b_s[1] = 0.0;
+  }
+
+  for (d = 2; d + 1 < 4; d++) {
+    qjj = 3 * d + 1;
+    if (apply_transform) {
+      PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_g(2,
+        -(PIDcontroller4CoreCentralizedTestReadyMotor_xdotc_c(2, b_A, 5, b_A,
+        qjj + 1) / b_A[4]), 5, b_A, qjj + 1);
+    }
+
+    e[d] = b_A[qjj];
+  }
+
+  for (qq = 1; qq + 1 < 4; qq++) {
+    U[qq + 3] = b_A[qq + 3];
+  }
+
+  m = 1;
+  b_s[2] = b_A[8];
+  U[6] = 0.0;
+  U[7] = 0.0;
+  U[8] = 1.0;
+  for (d = 1; d >= 0; d--) {
+    qq = 3 * d + d;
+    if (b_s[d] != 0.0) {
+      for (kase = d + 1; kase + 1 < 4; kase++) {
+        qjj = (3 * kase + d) + 1;
+        PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_g(3 - d,
+          -(PIDcontroller4CoreCentralizedTestReadyMotor_xdotc_c(3 - d, U, qq + 1,
+          U, qjj) / U[qq]), qq + 1, U, qjj);
+      }
+
+      for (qjj = d; qjj + 1 < 4; qjj++) {
+        kase = 3 * d + qjj;
+        U[kase] = -U[kase];
+      }
+
+      U[qq]++;
+      if (0 <= d - 1) {
+        U[3 * d] = 0.0;
+      }
+    } else {
+      U[3 * d] = 0.0;
+      U[3 * d + 1] = 0.0;
+      U[3 * d + 2] = 0.0;
+      U[qq] = 1.0;
+    }
+  }
+
+  for (qq = 2; qq >= 0; qq--) {
+    if ((qq + 1 <= 1) && (e[0] != 0.0)) {
+      for (d = 2; d < 4; d++) {
+        qjj = (d - 1) * 3 + 2;
+        PIDcontroller4CoreCentralizedTestReadyMotor_xaxpy_g(2,
+          -(PIDcontroller4CoreCentralizedTestReadyMotor_xdotc_c(2, V, 2, V, qjj)
+            / V[1]), 2, V, qjj);
+      }
+    }
+
+    V[3 * qq] = 0.0;
+    V[3 * qq + 1] = 0.0;
+    V[3 * qq + 2] = 0.0;
+    V[qq + 3 * qq] = 1.0;
+  }
+
+  ztest = e[0];
+  if (b_s[0] != 0.0) {
+    rt = fabs(b_s[0]);
+    nrm = b_s[0] / rt;
+    b_s[0] = rt;
+    ztest = e[0] / nrm;
+    PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bha(nrm, U, 1);
+  }
+
+  if (ztest != 0.0) {
+    rt = fabs(ztest);
+    nrm = rt / ztest;
+    ztest = rt;
+    b_s[1] *= nrm;
+    PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bha(nrm, V, 4);
+  }
+
+  e[0] = ztest;
+  ztest = b_A[7];
+  if (b_s[1] != 0.0) {
+    rt = fabs(b_s[1]);
+    nrm = b_s[1] / rt;
+    b_s[1] = rt;
+    ztest = b_A[7] / nrm;
+    PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bha(nrm, U, 4);
+  }
+
+  if (ztest != 0.0) {
+    rt = fabs(ztest);
+    nrm = rt / ztest;
+    ztest = rt;
+    b_s[2] = b_A[8] * nrm;
+    PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bha(nrm, V, 7);
+  }
+
+  e[1] = ztest;
+  if (b_s[2] != 0.0) {
+    rt = fabs(b_s[2]);
+    nrm = b_s[2] / rt;
+    b_s[2] = rt;
+    PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bha(nrm, U, 7);
+  }
+
+  e[2] = 0.0;
+  qq = 0;
+  if ((b_s[0] > e[0]) || ((int32_T)rtIsNaN(e[0]))) {
+    nrm = b_s[0];
+  } else {
+    nrm = e[0];
+  }
+
+  if ((b_s[1] > ztest) || ((int32_T)rtIsNaN(ztest))) {
+    ztest = b_s[1];
+  }
+
+  if ((!(nrm > ztest)) && (!(int32_T)rtIsNaN(ztest))) {
+    nrm = ztest;
+  }
+
+  if (b_s[2] > 0.0) {
+    rt = b_s[2];
+  } else {
+    rt = 0.0;
+  }
+
+  if ((!(nrm > rt)) && (!(int32_T)rtIsNaN(rt))) {
+    nrm = rt;
+  }
+
+  while ((m + 2 > 0) && (qq < 75)) {
+    kase = m + 1;
+    do {
+      exitg1 = 0;
+      d = kase;
+      if (kase == 0) {
+        exitg1 = 1;
+      } else {
+        rt = fabs(e[kase - 1]);
+        if ((rt <= (fabs(b_s[kase - 1]) + fabs(b_s[kase])) *
+             2.2204460492503131E-16) || ((rt <= 1.0020841800044864E-292) || ((qq
+               > 20) && (rt <= 2.2204460492503131E-16 * nrm)))) {
+          e[kase - 1] = 0.0;
+          exitg1 = 1;
+        } else {
+          kase--;
+        }
+      }
+    } while (exitg1 == 0);
+
+    if (m + 1 == kase) {
+      kase = 4;
+    } else {
+      qjj = m + 2;
+      k_ii = m + 2;
+      exitg2 = false;
+      while ((!exitg2) && (k_ii >= kase)) {
+        qjj = k_ii;
+        if (k_ii == kase) {
+          exitg2 = true;
+        } else {
+          rt = 0.0;
+          if (k_ii < m + 2) {
+            rt = fabs(e[k_ii - 1]);
+          }
+
+          if (k_ii > kase + 1) {
+            rt += fabs(e[k_ii - 2]);
+          }
+
+          ztest = fabs(b_s[k_ii - 1]);
+          if ((ztest <= 2.2204460492503131E-16 * rt) || (ztest <=
+               1.0020841800044864E-292)) {
+            b_s[k_ii - 1] = 0.0;
+            exitg2 = true;
+          } else {
+            k_ii--;
+          }
+        }
+      }
+
+      if (qjj == kase) {
+        kase = 3;
+      } else if (m + 2 == qjj) {
+        kase = 1;
+      } else {
+        kase = 2;
+        d = qjj;
+      }
+    }
+
+    switch (kase) {
+     case 1:
+      rt = e[m];
+      e[m] = 0.0;
+      for (qjj = m; qjj + 1 >= d + 1; qjj--) {
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_bk(&b_s[qjj], &rt,
+          &ztest, &sqds);
+        if (qjj + 1 > d + 1) {
+          rt = -sqds * e[0];
+          e[0] *= ztest;
+        }
+
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrot_k(V, 3 * qjj + 1, 3 *
+          (m + 1) + 1, ztest, sqds);
+      }
+      break;
+
+     case 2:
+      rt = e[d - 1];
+      e[d - 1] = 0.0;
+      for (qjj = d; qjj < m + 2; qjj++) {
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_bk(&b_s[qjj], &rt,
+          &ztest, &sqds);
+        rt = -sqds * e[qjj];
+        e[qjj] *= ztest;
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrot_k(U, 3 * qjj + 1, 3 *
+          (d - 1) + 1, ztest, sqds);
+      }
+      break;
+
+     case 3:
+      rt = b_s[m + 1];
+      ztest = fabs(rt);
+      sqds = fabs(b_s[m]);
+      if ((ztest > sqds) || ((int32_T)rtIsNaN(sqds))) {
+        sqds = ztest;
+      }
+
+      ztest = fabs(e[m]);
+      if ((sqds > ztest) || ((int32_T)rtIsNaN(ztest))) {
+        ztest = sqds;
+      }
+
+      sqds = fabs(b_s[d]);
+      if ((ztest > sqds) || ((int32_T)rtIsNaN(sqds))) {
+        sqds = ztest;
+      }
+
+      ztest = fabs(e[d]);
+      if ((sqds > ztest) || ((int32_T)rtIsNaN(ztest))) {
+        ztest = sqds;
+      }
+
+      rt /= ztest;
+      smm1 = b_s[m] / ztest;
+      emm1 = e[m] / ztest;
+      sqds = b_s[d] / ztest;
+      smm1 = ((smm1 + rt) * (smm1 - rt) + emm1 * emm1) / 2.0;
+      emm1 *= rt;
+      emm1 *= emm1;
+      if ((smm1 != 0.0) || (emm1 != 0.0)) {
+        shift = sqrt(smm1 * smm1 + emm1);
+        if (smm1 < 0.0) {
+          shift = -shift;
+        }
+
+        shift = emm1 / (smm1 + shift);
+      } else {
+        shift = 0.0;
+      }
+
+      rt = (sqds + rt) * (sqds - rt) + shift;
+      ztest = e[d] / ztest * sqds;
+      for (qjj = d + 1; qjj <= m + 1; qjj++) {
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_bk(&rt, &ztest, &sqds,
+          &smm1);
+        if (qjj > d + 1) {
+          e[0] = rt;
+        }
+
+        ztest = e[qjj - 1];
+        emm1 = b_s[qjj - 1];
+        rt = emm1 * sqds + ztest * smm1;
+        e[qjj - 1] = ztest * sqds - emm1 * smm1;
+        ztest = smm1 * b_s[qjj];
+        b_s[qjj] *= sqds;
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrot_k(V, 3 * (qjj - 1) + 1,
+          3 * qjj + 1, sqds, smm1);
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrotg_bk(&rt, &ztest, &sqds,
+          &smm1);
+        b_s[qjj - 1] = rt;
+        rt = e[qjj - 1] * sqds + smm1 * b_s[qjj];
+        b_s[qjj] = e[qjj - 1] * -smm1 + sqds * b_s[qjj];
+        ztest = smm1 * e[qjj];
+        e[qjj] *= sqds;
+        PIDcontroller4CoreCentralizedTestReadyMotor_xrot_k(U, 3 * (qjj - 1) + 1,
+          3 * qjj + 1, sqds, smm1);
+      }
+
+      e[m] = rt;
+      qq++;
+      break;
+
+     default:
+      if (b_s[d] < 0.0) {
+        b_s[d] = -b_s[d];
+        PIDcontroller4CoreCentralizedTestReadyMotor_xscal_bha(-1.0, V, 3 * d + 1);
+      }
+
+      qq = d + 1;
+      while ((d + 1 < 3) && (b_s[d] < b_s[qq])) {
+        rt = b_s[d];
+        b_s[d] = b_s[qq];
+        b_s[qq] = rt;
+        PIDcontroller4CoreCentralizedTestReadyMotor_xswap_m(V, 3 * d + 1, 3 * (d
+          + 1) + 1);
+        PIDcontroller4CoreCentralizedTestReadyMotor_xswap_m(U, 3 * d + 1, 3 * (d
+          + 1) + 1);
+        d = qq;
+        qq++;
+      }
+
+      qq = 0;
+      m--;
+      break;
+    }
+  }
+
+  s[0] = b_s[0];
+  s[1] = b_s[1];
+  s[2] = b_s[2];
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void
+  PIDcontroller4CoreCentralizedTestReadyMotor_imu_sensor_vertical_kalman_leo(
+  const real_T x[6], const real_T u[12], real_T y[3])
+{
+  y[0] = 9.81 - ((((u[0] + u[1]) + u[2]) + u[3]) + u[9]) / u[8];
+  y[1] = x[2];
+  y[2] = x[4];
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z(int32_T n,
+  const real_T x[27], int32_T ix0)
+{
+  real_T absxk;
+  real_T scale;
+  real_T t;
+  real_T y;
+  int32_T k;
+  int32_T kend;
+  y = 0.0;
+  if (n >= 1) {
+    if (n == 1) {
+      y = fabs(x[ix0 - 1]);
+    } else {
+      scale = 3.3121686421112381E-170;
+      kend = (ix0 + n) - 1;
+      for (k = ix0; k <= kend; k++) {
+        absxk = fabs(x[k - 1]);
+        if (absxk > scale) {
+          t = scale / absxk;
+          y = y * t * t + 1.0;
+          scale = absxk;
+        } else {
+          t = absxk / scale;
+          y += t * t;
+        }
+      }
+
+      y = scale * sqrt(y);
+    }
+  }
+
+  return y;
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_n(int32_T m,
+  int32_T n, const real_T A[27], int32_T ia0, const real_T x[27], int32_T ix0,
+  real_T y[3])
+{
+  real_T c;
+  int32_T b;
+  int32_T b_iy;
+  int32_T d;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  if ((m != 0) && (n != 0)) {
+    for (b_iy = 0; b_iy < n; b_iy++) {
+      y[b_iy] = 0.0;
+    }
+
+    b_iy = 0;
+    b = (n - 1) * 9 + ia0;
+    for (iac = ia0; iac <= b; iac += 9) {
+      ix = ix0;
+      c = 0.0;
+      d = (iac + m) - 1;
+      for (ia = iac; ia <= d; ia++) {
+        c += A[ia - 1] * x[ix - 1];
+        ix++;
+      }
+
+      y[b_iy] += c;
+      b_iy++;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_j(int32_T m,
+  int32_T n, real_T alpha1, int32_T ix0, const real_T y[3], real_T A[27],
+  int32_T ia0)
+{
+  real_T temp;
+  int32_T b;
+  int32_T ijA;
+  int32_T ix;
+  int32_T j;
+  int32_T jA;
+  int32_T jy;
+  if (!(alpha1 == 0.0)) {
+    jA = ia0 - 1;
+    jy = 0;
+    for (j = 0; j < n; j++) {
+      if (y[jy] != 0.0) {
+        temp = y[jy] * alpha1;
+        ix = ix0;
+        b = m + jA;
+        for (ijA = jA; ijA < b; ijA++) {
+          A[ijA] += A[ix - 1] * temp;
+          ix++;
+        }
+      }
+
+      jy++;
+      jA += 9;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_qrFactor_p(const real_T
+  A[18], const real_T S[36], const real_T Ns[9], real_T b_S[9])
+{
+  real_T b_A[27];
+  real_T y[18];
+  real_T R[9];
+  real_T work[3];
+  real_T beta1;
+  real_T s;
+  real_T tau_idx_0;
+  int32_T aoffset;
+  int32_T coffset;
+  int32_T coltop;
+  int32_T exitg1;
+  int32_T j;
+  int32_T knt;
+  boolean_T exitg2;
+  for (j = 0; j < 3; j++) {
+    coffset = j * 6;
+    for (knt = 0; knt < 6; knt++) {
+      aoffset = knt * 6;
+      s = 0.0;
+      for (coltop = 0; coltop < 6; coltop++) {
+        s += A[coltop * 3 + j] * S[aoffset + coltop];
+      }
+
+      y[coffset + knt] = s;
+      b_A[knt + 9 * j] = y[6 * j + knt];
+    }
+
+    b_A[9 * j + 6] = Ns[j];
+    b_A[9 * j + 7] = Ns[j + 3];
+    b_A[9 * j + 8] = Ns[j + 6];
+    work[j] = 0.0;
+  }
+
+  s = b_A[0];
+  tau_idx_0 = 0.0;
+  beta1 = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z(8, b_A, 2);
+  if (beta1 != 0.0) {
+    beta1 = rt_hypotd_snf(b_A[0], beta1);
+    if (b_A[0] >= 0.0) {
+      beta1 = -beta1;
+    }
+
+    if (fabs(beta1) < 1.0020841800044864E-292) {
+      knt = 0;
+      do {
+        knt++;
+        aoffset = 0;
+        for (coltop = 1; coltop < 9; coltop++) {
+          b_A[coltop] *= 9.9792015476736E+291;
+        }
+
+        beta1 *= 9.9792015476736E+291;
+        s *= 9.9792015476736E+291;
+      } while ((fabs(beta1) < 1.0020841800044864E-292) && (knt < 20));
+
+      beta1 = rt_hypotd_snf(s,
+                            PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z
+                            (8, b_A, 2));
+      if (s >= 0.0) {
+        beta1 = -beta1;
+      }
+
+      tau_idx_0 = (beta1 - s) / beta1;
+      s = 1.0 / (s - beta1);
+      for (coltop = 1; coltop < 9; coltop++) {
+        b_A[coltop] *= s;
+      }
+
+      while (aoffset <= knt - 1) {
+        beta1 *= 1.0020841800044864E-292;
+        aoffset++;
+      }
+
+      s = beta1;
+    } else {
+      tau_idx_0 = (beta1 - b_A[0]) / beta1;
+      s = 1.0 / (b_A[0] - beta1);
+      for (aoffset = 1; aoffset < 9; aoffset++) {
+        b_A[aoffset] *= s;
+      }
+
+      s = beta1;
+    }
+  }
+
+  b_A[0] = 1.0;
+  if (tau_idx_0 != 0.0) {
+    knt = 9;
+    aoffset = 0;
+    while ((knt > 0) && (b_A[aoffset + 8] == 0.0)) {
+      knt--;
+      aoffset--;
+    }
+
+    aoffset = 2;
+    exitg2 = false;
+    while ((!exitg2) && (aoffset > 0)) {
+      coltop = (aoffset - 1) * 9 + 9;
+      j = coltop;
+      do {
+        exitg1 = 0;
+        if (j + 1 <= coltop + knt) {
+          if (b_A[j] != 0.0) {
+            exitg1 = 1;
+          } else {
+            j++;
+          }
+        } else {
+          aoffset--;
+          exitg1 = 2;
+        }
+      } while (exitg1 == 0);
+
+      if (exitg1 == 1) {
+        exitg2 = true;
+      }
+    }
+  } else {
+    knt = 0;
+    aoffset = 0;
+  }
+
+  if (knt > 0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_n(knt, aoffset, b_A, 10,
+      b_A, 1, work);
+    PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_j(knt, aoffset, -tau_idx_0,
+      1, work, b_A, 10);
+  }
+
+  b_A[0] = s;
+  s = b_A[10];
+  tau_idx_0 = 0.0;
+  beta1 = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z(7, b_A, 12);
+  if (beta1 != 0.0) {
+    beta1 = rt_hypotd_snf(b_A[10], beta1);
+    if (b_A[10] >= 0.0) {
+      beta1 = -beta1;
+    }
+
+    if (fabs(beta1) < 1.0020841800044864E-292) {
+      knt = 0;
+      do {
+        knt++;
+        for (coltop = 11; coltop < 18; coltop++) {
+          b_A[coltop] *= 9.9792015476736E+291;
+        }
+
+        beta1 *= 9.9792015476736E+291;
+        s *= 9.9792015476736E+291;
+      } while ((fabs(beta1) < 1.0020841800044864E-292) && (knt < 20));
+
+      beta1 = rt_hypotd_snf(s,
+                            PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z
+                            (7, b_A, 12));
+      if (s >= 0.0) {
+        beta1 = -beta1;
+      }
+
+      tau_idx_0 = (beta1 - s) / beta1;
+      s = 1.0 / (s - beta1);
+      for (coltop = 11; coltop < 18; coltop++) {
+        b_A[coltop] *= s;
+      }
+
+      for (aoffset = 0; aoffset < knt; aoffset++) {
+        beta1 *= 1.0020841800044864E-292;
+      }
+
+      s = beta1;
+    } else {
+      tau_idx_0 = (beta1 - b_A[10]) / beta1;
+      s = 1.0 / (b_A[10] - beta1);
+      for (aoffset = 11; aoffset < 18; aoffset++) {
+        b_A[aoffset] *= s;
+      }
+
+      s = beta1;
+    }
+  }
+
+  b_A[10] = 1.0;
+  if (tau_idx_0 != 0.0) {
+    knt = 8;
+    aoffset = 9;
+    while ((knt > 0) && (b_A[aoffset + 8] == 0.0)) {
+      knt--;
+      aoffset--;
+    }
+
+    aoffset = 1;
+    j = 19;
+    do {
+      exitg1 = 0;
+      if (j + 1 <= 19 + knt) {
+        if (b_A[j] != 0.0) {
+          exitg1 = 1;
+        } else {
+          j++;
+        }
+      } else {
+        aoffset = 0;
+        exitg1 = 1;
+      }
+    } while (exitg1 == 0);
+  } else {
+    knt = 0;
+    aoffset = 0;
+  }
+
+  if (knt > 0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_n(knt, aoffset, b_A, 20,
+      b_A, 11, work);
+    PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_j(knt, aoffset, -tau_idx_0,
+      11, work, b_A, 20);
+  }
+
+  b_A[10] = s;
+  s = b_A[20];
+  beta1 = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z(6, b_A, 22);
+  if (beta1 != 0.0) {
+    beta1 = rt_hypotd_snf(b_A[20], beta1);
+    if (b_A[20] >= 0.0) {
+      beta1 = -beta1;
+    }
+
+    if (fabs(beta1) < 1.0020841800044864E-292) {
+      knt = 0;
+      do {
+        knt++;
+        for (coltop = 21; coltop < 27; coltop++) {
+          b_A[coltop] *= 9.9792015476736E+291;
+        }
+
+        beta1 *= 9.9792015476736E+291;
+        s *= 9.9792015476736E+291;
+      } while ((fabs(beta1) < 1.0020841800044864E-292) && (knt < 20));
+
+      beta1 = rt_hypotd_snf(s,
+                            PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z
+                            (6, b_A, 22));
+      if (s >= 0.0) {
+        beta1 = -beta1;
+      }
+
+      s = 1.0 / (s - beta1);
+      for (coltop = 21; coltop < 27; coltop++) {
+        b_A[coltop] *= s;
+      }
+
+      for (aoffset = 0; aoffset < knt; aoffset++) {
+        beta1 *= 1.0020841800044864E-292;
+      }
+
+      s = beta1;
+    } else {
+      s = 1.0 / (b_A[20] - beta1);
+      for (aoffset = 21; aoffset < 27; aoffset++) {
+        b_A[aoffset] *= s;
+      }
+
+      s = beta1;
+    }
+  }
+
+  b_A[20] = s;
+  R[0] = b_A[0];
+  for (coffset = 1; coffset + 1 < 4; coffset++) {
+    R[coffset] = 0.0;
+  }
+
+  for (coffset = 0; coffset < 2; coffset++) {
+    R[coffset + 3] = b_A[coffset + 9];
+  }
+
+  while (coffset + 1 < 4) {
+    R[coffset + 3] = 0.0;
+    coffset++;
+  }
+
+  for (coffset = 0; coffset < 3; coffset++) {
+    R[coffset + 6] = b_A[coffset + 18];
+  }
+
+  for (knt = 0; knt < 3; knt++) {
+    b_S[3 * knt] = R[knt];
+    b_S[3 * knt + 1] = R[knt + 3];
+    b_S[3 * knt + 2] = R[knt + 6];
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_trisolve_i(const real_T
+  A[9], real_T B[18])
+{
+  real_T tmp;
+  int32_T i;
+  int32_T j;
+  int32_T jBcol;
+  int32_T tmp_0;
+  for (j = 0; j < 6; j++) {
+    jBcol = 3 * j;
+    if (B[jBcol] != 0.0) {
+      B[jBcol] /= A[0];
+      for (i = 2; i < 4; i++) {
+        tmp_0 = (i + jBcol) - 1;
+        B[tmp_0] -= A[i - 1] * B[jBcol];
+      }
+    }
+
+    tmp = B[jBcol + 1];
+    if (tmp != 0.0) {
+      B[jBcol + 1] = tmp / A[4];
+      B[jBcol + 2] -= B[jBcol + 1] * A[5];
+    }
+
+    if (B[jBcol + 2] != 0.0) {
+      B[jBcol + 2] /= A[8];
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_trisolve_im(const real_T
+  A[9], real_T B[18])
+{
+  real_T tmp;
+  int32_T i;
+  int32_T j;
+  int32_T jBcol;
+  int32_T tmp_0;
+  for (j = 0; j < 6; j++) {
+    jBcol = 3 * j;
+    tmp = B[jBcol + 2];
+    if (tmp != 0.0) {
+      B[jBcol + 2] = tmp / A[8];
+      for (i = 0; i < 2; i++) {
+        tmp_0 = i + jBcol;
+        B[tmp_0] -= B[jBcol + 2] * A[i + 6];
+      }
+    }
+
+    tmp = B[jBcol + 1];
+    if (tmp != 0.0) {
+      B[jBcol + 1] = tmp / A[4];
+      B[jBcol] -= B[jBcol + 1] * A[3];
+    }
+
+    if (B[jBcol] != 0.0) {
+      B[jBcol] /= A[0];
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static real_T PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z1(int32_T n,
+  const real_T x[54], int32_T ix0)
+{
+  real_T absxk;
+  real_T scale;
+  real_T t;
+  real_T y;
+  int32_T k;
+  int32_T kend;
+  y = 0.0;
+  if (n >= 1) {
+    if (n == 1) {
+      y = fabs(x[ix0 - 1]);
+    } else {
+      scale = 3.3121686421112381E-170;
+      kend = (ix0 + n) - 1;
+      for (k = ix0; k <= kend; k++) {
+        absxk = fabs(x[k - 1]);
+        if (absxk > scale) {
+          t = scale / absxk;
+          y = y * t * t + 1.0;
+          scale = absxk;
+        } else {
+          t = absxk / scale;
+          y += t * t;
+        }
+      }
+
+      y = scale * sqrt(y);
+    }
+  }
+
+  return y;
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_nv(int32_T m,
+  int32_T n, const real_T A[54], int32_T ia0, const real_T x[54], int32_T ix0,
+  real_T y[6])
+{
+  real_T c;
+  int32_T b;
+  int32_T b_iy;
+  int32_T d;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  if ((m != 0) && (n != 0)) {
+    for (b_iy = 0; b_iy < n; b_iy++) {
+      y[b_iy] = 0.0;
+    }
+
+    b_iy = 0;
+    b = (n - 1) * 9 + ia0;
+    for (iac = ia0; iac <= b; iac += 9) {
+      ix = ix0;
+      c = 0.0;
+      d = (iac + m) - 1;
+      for (ia = iac; ia <= d; ia++) {
+        c += A[ia - 1] * x[ix - 1];
+        ix++;
+      }
+
+      y[b_iy] += c;
+      b_iy++;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_jf(int32_T m,
+  int32_T n, real_T alpha1, int32_T ix0, const real_T y[6], real_T A[54],
+  int32_T ia0)
+{
+  real_T temp;
+  int32_T b;
+  int32_T ijA;
+  int32_T ix;
+  int32_T j;
+  int32_T jA;
+  int32_T jy;
+  if (!(alpha1 == 0.0)) {
+    jA = ia0 - 1;
+    jy = 0;
+    for (j = 0; j < n; j++) {
+      if (y[jy] != 0.0) {
+        temp = y[jy] * alpha1;
+        ix = ix0;
+        b = m + jA;
+        for (ijA = jA; ijA < b; ijA++) {
+          A[ijA] += A[ix - 1] * temp;
+          ix++;
+        }
+      }
+
+      jy++;
+      jA += 9;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_xgeqrf_h(real_T A[54],
+  real_T tau[6])
+{
+  real_T work[6];
+  real_T b_atmp;
+  real_T beta1;
+  int32_T coltop;
+  int32_T exitg1;
+  int32_T i;
+  int32_T ia;
+  int32_T ii;
+  int32_T knt;
+  int32_T lastc;
+  boolean_T exitg2;
+  for (i = 0; i < 6; i++) {
+    work[i] = 0.0;
+  }
+
+  for (i = 0; i < 6; i++) {
+    ii = i * 9 + i;
+    b_atmp = A[ii];
+    tau[i] = 0.0;
+    beta1 = PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z1(8 - i, A, ii
+      + 2);
+    if (beta1 != 0.0) {
+      beta1 = rt_hypotd_snf(A[ii], beta1);
+      if (A[ii] >= 0.0) {
+        beta1 = -beta1;
+      }
+
+      if (fabs(beta1) < 1.0020841800044864E-292) {
+        knt = 0;
+        do {
+          knt++;
+          lastc = ii - i;
+          for (coltop = ii + 1; coltop < lastc + 9; coltop++) {
+            A[coltop] *= 9.9792015476736E+291;
+          }
+
+          beta1 *= 9.9792015476736E+291;
+          b_atmp *= 9.9792015476736E+291;
+        } while ((fabs(beta1) < 1.0020841800044864E-292) && (knt < 20));
+
+        beta1 = rt_hypotd_snf(b_atmp,
+                              PIDcontroller4CoreCentralizedTestReadyMotor_xnrm2_b4z1
+                              (8 - i, A, ii + 2));
+        if (b_atmp >= 0.0) {
+          beta1 = -beta1;
+        }
+
+        tau[i] = (beta1 - b_atmp) / beta1;
+        b_atmp = 1.0 / (b_atmp - beta1);
+        lastc = ii - i;
+        for (coltop = ii + 1; coltop < lastc + 9; coltop++) {
+          A[coltop] *= b_atmp;
+        }
+
+        for (lastc = 0; lastc < knt; lastc++) {
+          beta1 *= 1.0020841800044864E-292;
+        }
+
+        b_atmp = beta1;
+      } else {
+        tau[i] = (beta1 - A[ii]) / beta1;
+        b_atmp = 1.0 / (A[ii] - beta1);
+        knt = ii - i;
+        for (lastc = ii + 1; lastc < knt + 9; lastc++) {
+          A[lastc] *= b_atmp;
+        }
+
+        b_atmp = beta1;
+      }
+    }
+
+    A[ii] = b_atmp;
+    if (i + 1 < 6) {
+      b_atmp = A[ii];
+      A[ii] = 1.0;
+      if (tau[i] != 0.0) {
+        knt = 9 - i;
+        lastc = ii - i;
+        while ((knt > 0) && (A[lastc + 8] == 0.0)) {
+          knt--;
+          lastc--;
+        }
+
+        lastc = 5 - i;
+        exitg2 = false;
+        while ((!exitg2) && (lastc > 0)) {
+          coltop = ((lastc - 1) * 9 + ii) + 9;
+          ia = coltop;
+          do {
+            exitg1 = 0;
+            if (ia + 1 <= coltop + knt) {
+              if (A[ia] != 0.0) {
+                exitg1 = 1;
+              } else {
+                ia++;
+              }
+            } else {
+              lastc--;
+              exitg1 = 2;
+            }
+          } while (exitg1 == 0);
+
+          if (exitg1 == 1) {
+            exitg2 = true;
+          }
+        }
+      } else {
+        knt = 0;
+        lastc = 0;
+      }
+
+      if (knt > 0) {
+        PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_nv(knt, lastc, A, ii +
+          10, A, ii + 1, work);
+        PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_jf(knt, lastc, -tau[i],
+          ii + 1, work, A, ii + 10);
+      }
+
+      A[ii] = b_atmp;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S416>/Correct' */
+static void PIDcontroller4CoreCentralizedTestReadyMotor_qr_g(const real_T A[54],
+  real_T Q[54], real_T R[36])
+{
+  real_T b_A[54];
+  real_T tau[6];
+  real_T work[6];
+  int32_T coltop;
+  int32_T d_i;
+  int32_T exitg1;
+  int32_T ia;
+  int32_T itau;
+  int32_T lastc;
+  int32_T lastv;
+  boolean_T exitg2;
+  memcpy(&b_A[0], &A[0], 54U * sizeof(real_T));
+  PIDcontroller4CoreCentralizedTestReadyMotor_xgeqrf_h(b_A, tau);
+  for (itau = 0; itau < 6; itau++) {
+    for (d_i = 0; d_i <= itau; d_i++) {
+      R[d_i + 6 * itau] = b_A[9 * itau + d_i];
+    }
+
+    for (d_i = itau + 1; d_i + 1 < 7; d_i++) {
+      R[d_i + 6 * itau] = 0.0;
+    }
+
+    work[itau] = 0.0;
+  }
+
+  for (d_i = 5; d_i >= 0; d_i--) {
+    itau = (d_i * 9 + d_i) + 10;
+    if (d_i + 1 < 6) {
+      b_A[itau - 10] = 1.0;
+      if (tau[d_i] != 0.0) {
+        lastv = 9 - d_i;
+        lastc = itau - d_i;
+        while ((lastv > 0) && (b_A[lastc - 2] == 0.0)) {
+          lastv--;
+          lastc--;
+        }
+
+        lastc = 5 - d_i;
+        exitg2 = false;
+        while ((!exitg2) && (lastc > 0)) {
+          coltop = (lastc - 1) * 9 + itau;
+          ia = coltop;
+          do {
+            exitg1 = 0;
+            if (ia <= (coltop + lastv) - 1) {
+              if (b_A[ia - 1] != 0.0) {
+                exitg1 = 1;
+              } else {
+                ia++;
+              }
+            } else {
+              lastc--;
+              exitg1 = 2;
+            }
+          } while (exitg1 == 0);
+
+          if (exitg1 == 1) {
+            exitg2 = true;
+          }
+        }
+      } else {
+        lastv = 0;
+        lastc = 0;
+      }
+
+      if (lastv > 0) {
+        PIDcontroller4CoreCentralizedTestReadyMotor_xgemv_nv(lastv, lastc, b_A,
+          itau, b_A, itau - 9, work);
+        PIDcontroller4CoreCentralizedTestReadyMotor_xgerc_jf(lastv, lastc,
+          -tau[d_i], itau - 9, work, b_A, itau);
+      }
+    }
+
+    lastv = (itau - d_i) - 1;
+    for (lastc = itau - 9; lastc < lastv; lastc++) {
+      b_A[lastc] *= -tau[d_i];
+    }
+
+    b_A[itau - 10] = 1.0 - tau[d_i];
+    for (lastv = 0; lastv < d_i; lastv++) {
+      b_A[(itau - lastv) - 11] = 0.0;
+    }
+  }
+
+  for (itau = 0; itau < 6; itau++) {
+    memcpy(&Q[itau * 9], &b_A[itau * 9], 9U * sizeof(real_T));
+  }
+}
+
+static real_T
+  PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl_o
+  (c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
+   *obj, real_T u)
+{
+  real_T csum;
+  real_T cumRevIndex;
+  real_T y;
+  real_T z;
+  int32_T k;
+  csum = obj->pCumSum + u;
+  z = obj->pCumSumRev[(int32_T)obj->pCumRevIndex - 1] + csum;
+  obj->pCumSumRev[(int32_T)obj->pCumRevIndex - 1] = u;
+  if (obj->pCumRevIndex != 3999.0) {
+    cumRevIndex = obj->pCumRevIndex + 1.0;
+  } else {
+    cumRevIndex = 1.0;
+    csum = 0.0;
+    for (k = 3997; k >= 0; k--) {
+      obj->pCumSumRev[k] += obj->pCumSumRev[k + 1];
+    }
+  }
+
+  y = z / 4000.0;
+  obj->pCumSum = csum;
+  obj->pCumRevIndex = cumRevIndex;
+  return y;
+}
+
 /* Model output function */
 void PIDcontroller4CoreCentralizedTestReadyMotor_output
   (RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T *const
@@ -4606,12 +6766,10 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   /* local block i/o variables */
   real_T rtb_Gain1[4];
   real_T rtb_Gain[4];
-  real_T rtb_Gain2;
-  real_T rtb_Gain3_a;
   real_T rtb_Derivative[3];
   real_T rtb_Derivative1[3];
   real_T rtb_avg_g;
-  real_T rtb_pitch_e;
+  real_T rtb_pitch_j;
   real_T rtb_roll;
   real_T rtb_Switch1_m;
   real_T rtb_Switch;
@@ -4641,27 +6799,38 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   real_T rtb_Switch1_cv;
   real_T rtb_Switch1_i;
   real_T rtb_Switch1_ab;
+  real_T rtb_error;
+  real_T rtb_Switch_ph;
+  real_T rtb_Switch_n;
+  real_T rtb_ZeroOrderHold1[12];
+  real_T rtb_ZeroOrderHold[3];
+  real_T rtb_CreateDiagonalMatrix[9];
+  real_T rtb_ZeroOrderHold_b[3];
+  real_T rtb_CreateDiagonalMatrix_g[9];
+  real_T rtb_Switch_cd;
+  real_T rtb_Switch_n4;
   real_T rtb_Switch1_fn;
+  real_T rtb_CreateDiagonalMatrix1[36];
+  real_T rtb_ZeroOrderHold1_k[12];
+  real_T rtb_CreateDiagonalMatrix1_c[36];
   c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
     *obj;
-  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
+  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
     *obj_0;
-  real_T Ss_1[54];
   real_T a__1[54];
+  real_T y_0[54];
   real_T rtb_Add_e[39];
-  real_T rtb_uDLookupTable1[39];
+  real_T rtb_uDLookupTable1_gs[39];
   real_T A_0[36];
-  real_T A_1[36];
-  real_T Ss_0[36];
-  real_T rtb_CreateDiagonalMatrix1[36];
+  real_T y[36];
   real_T rtb_Flip[30];
-  real_T rtb_Flip_a[30];
+  real_T rtb_Flip_d[30];
   real_T rtb_Flip_l[30];
-  real_T rtb_Flip_p[30];
-  real_T rtb_uDLookupTable2[30];
-  real_T rtb_uDLookupTable2_bq[30];
-  real_T rtb_uDLookupTable2_e5[30];
+  real_T rtb_Flip_n[30];
+  real_T rtb_uDLookupTable2_bl[30];
+  real_T rtb_uDLookupTable2_c[30];
   real_T rtb_uDLookupTable2_j[30];
+  real_T rtb_uDLookupTable2_p[30];
   real_T C_0[18];
   real_T K[18];
   real_T b_C[18];
@@ -4670,9 +6839,8 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   real_T R[9];
   real_T Ss[9];
   real_T V[9];
-  real_T rtb_CreateDiagonalMatrix[9];
+  real_T rtb_CreateDiagonalMatrix2[9];
   real_T imvec[6];
-  real_T rtb_TmpSignalConversionAtCreateDiagonalMatrix1Inport1[6];
   real_T zz[4];
   real_T C[3];
   real_T X[3];
@@ -4684,95 +6852,87 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   real_T fractions_2[2];
   real_T fractions_3[2];
   real_T fractions_4[2];
-  real_T rtb_Add1;
-  real_T rtb_Add1_k;
+  real_T F1;
+  real_T F3;
+  real_T rtb_Add1_d;
+  real_T rtb_Add1_f;
   real_T rtb_Add1_n;
-  real_T rtb_Add2;
-  real_T rtb_Add2_m;
-  real_T rtb_Add3;
+  real_T rtb_Add2_c;
+  real_T rtb_Add2_h;
+  real_T rtb_Add3_l;
   real_T rtb_Add_l;
-  real_T rtb_DeadZone_c;
-  real_T rtb_DeadZone_f;
-  real_T rtb_DeadZone_fg;
-  real_T rtb_DeadZone_m;
-  real_T rtb_DiscreteTimeIntegrator1_f;
-  real_T rtb_DiscreteTimeIntegrator1_g;
-  real_T rtb_DiscreteTimeIntegrator1_j;
+  real_T rtb_DeadZone;
+  real_T rtb_DiscreteTimeIntegrator1_c;
+  real_T rtb_DiscreteTimeIntegrator1_il;
+  real_T rtb_DiscreteTimeIntegrator1_o;
   real_T rtb_DiscreteTimeIntegrator1_o2;
   real_T rtb_DiscreteTimeIntegrator_c;
-  real_T rtb_DiscreteTimeIntegrator_d;
-  real_T rtb_DiscreteTimeIntegrator_e2;
-  real_T rtb_DiscreteTimeIntegrator_ov;
-  real_T rtb_Divide;
-  real_T rtb_Divide1;
+  real_T rtb_DiscreteTimeIntegrator_j2;
+  real_T rtb_DiscreteTimeIntegrator_lo;
+  real_T rtb_DiscreteTimeIntegrator_o1;
+  real_T rtb_DiscreteTimeIntegrator_p;
+  real_T rtb_Divide1_k;
   real_T rtb_Divide_k;
-  real_T rtb_F_array_idx_0;
-  real_T rtb_F_array_idx_1;
-  real_T rtb_F_array_idx_2;
-  real_T rtb_F_array_idx_3;
-  real_T rtb_Gain_mn;
-  real_T rtb_Gain_no;
+  real_T rtb_Gain_do;
+  real_T rtb_Gain_m;
   real_T rtb_IProdOut;
-  real_T rtb_IProdOut_c2;
-  real_T rtb_IProdOut_cg;
-  real_T rtb_IProdOut_g;
-  real_T rtb_IProdOut_hj;
+  real_T rtb_IProdOut_h;
   real_T rtb_IProdOut_k;
-  real_T rtb_IProdOut_m;
-  real_T rtb_Saturation;
-  real_T rtb_Saturation_gd;
-  real_T rtb_Saturation_gj;
-  real_T rtb_Saturation_k_idx_0;
-  real_T rtb_Saturation_k_idx_2;
+  real_T rtb_Product_idx_0;
+  real_T rtb_Product_idx_1;
+  real_T rtb_Product_idx_2;
+  real_T rtb_Product_idx_3;
   real_T rtb_Subtract2_f;
-  real_T rtb_Subtract_c;
+  real_T rtb_Subtract_idx_0;
+  real_T rtb_Subtract_idx_1;
+  real_T rtb_Subtract_idx_2;
+  real_T rtb_Subtract_idx_3;
   real_T rtb_Sum;
-  real_T rtb_Sum1;
-  real_T rtb_Sum_a4;
-  real_T rtb_Sum_ac;
+  real_T rtb_Sum1_g;
+  real_T rtb_Sum_fi;
   real_T rtb_Sum_gy;
   real_T rtb_Sum_h;
-  real_T rtb_Sum_ih;
-  real_T rtb_Sum_oi;
+  real_T rtb_Sum_l;
+  real_T rtb_Sum_p;
   real_T rtb_Sum_pc;
   real_T rtb_Switch1;
   real_T rtb_Switch1_d;
-  real_T rtb_Switch1_j1_idx_0;
-  real_T rtb_Switch1_j1_idx_1;
+  real_T rtb_Switch1_o;
   real_T rtb_Switch2_idx_0;
   real_T rtb_Switch2_idx_1;
   real_T rtb_Switch2_idx_2;
-  real_T rtb_Switch_ds;
-  real_T rtb_Switch_gn;
-  real_T rtb_Switch_k1;
+  real_T rtb_Switch_gj;
+  real_T rtb_Switch_juh;
   real_T rtb_Switch_k_idx_0;
   real_T rtb_Switch_k_idx_1;
   real_T rtb_Switch_k_idx_2;
   real_T rtb_Switch_k_idx_3;
-  real_T rtb_Switch_od;
-  real_T rtb_Switch_ph;
+  real_T rtb_Switch_ka;
+  real_T rtb_Switch_my;
+  real_T rtb_Switch_pa;
+  real_T rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
   real_T rtb_TrigonometricFunction;
-  real_T rtb_ZeroCurrentForces_idx_3;
-  real_T rtb_error;
+  real_T rtb_ZeroOrderHold4_idx_0;
+  real_T rtb_ZeroOrderHold4_idx_1;
+  real_T rtb_ZeroOrderHold4_idx_2;
   real_T rtb_error_m;
   real_T rtb_out_req_I;
-  real_T rtb_uDLookupTable1_h;
-  real_T rtb_uDLookupTable1_j;
-  real_T rtb_uDLookupTable1_l;
-  real_T rtb_uDLookupTable1_os;
-  real_T rtb_uDLookupTable1_p;
-  real_T rtb_uDLookupTable2_cw;
+  real_T rtb_uDLookupTable1;
+  real_T rtb_uDLookupTable1_c;
+  real_T rtb_uDLookupTable1_e;
+  real_T rtb_uDLookupTable1_m;
+  real_T rtb_uDLookupTable1_n;
+  real_T rtb_uDLookupTable2;
   real_T rtb_uDLookupTable3;
   real_T rtb_uDLookupTable4;
   real_T rtb_z_out_idx_0;
   real_T rtb_z_out_idx_1;
   real_T rtb_z_out_idx_2;
   real_T rtb_z_out_idx_3;
+  real_T tol;
   real_T tol_tmp;
   real_T tol_tmp_0;
   real_T tol_tmp_1;
-  real_T tol_tmp_2;
-  real_T tol_tmp_3;
   real_T tol_tmp_tmp;
   int32_T jpvt[3];
   int32_T aoffset;
@@ -4787,8 +6947,14 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   uint32_T bpIndices_2[2];
   uint32_T bpIndices_3[2];
   uint32_T bpIndices_4[2];
-  boolean_T p;
-  boolean_T tmp;
+  boolean_T p_tmp;
+
+  /* RelationalOperator: '<Root>/Equal' incorporates:
+   *  Constant: '<Root>/Constant4'
+   *  Constant: '<Root>/Constant5'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal = (boolean_T)
+    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->OperatingMode == 2.0);
 
   /* Gain: '<Root>/Gain1' incorporates:
    *  Inport: '<Root>/I_A_m'
@@ -4805,44 +6971,57 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   rtb_Gain1[3] = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Polarity *
     PIDcontroller4CoreCentralizedTestReadyMotor_U->I_D_m;
 
-  /* Product: '<S33>/Divide' incorporates:
-   *  Constant: '<S33>/Constant'
-   *  Constant: '<S33>/Constant1'
+  /* Outport: '<Root>/G_Factor' incorporates:
+   *  Constant: '<S31>/Constant'
+   *  Constant: '<S31>/Constant1'
+   *  Product: '<S31>/Divide'
    */
-  rtb_Divide = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass /
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->G_Factor =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass /
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ReferenceMass;
 
-  /* RelationalOperator: '<S16>/Equal' incorporates:
-   *  Constant: '<S16>/Constant14'
-   *  Delay: '<S16>/Delay1'
+  /* Logic: '<S70>/AND' incorporates:
+   *  Constant: '<S70>/Constant'
+   *  Constant: '<S70>/Constant2'
+   *  Delay: '<S70>/Delay'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal = (boolean_T)
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->AND = (boolean_T)
+    ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->LowAirgapPropellingSwitch
+      != 0.0) &&
+     (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn != 0.0) &&
+     ((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_g));
+
+  /* RelationalOperator: '<S20>/Equal' incorporates:
+   *  Constant: '<S20>/Constant14'
+   *  Delay: '<S20>/Delay1'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c = (boolean_T)
     (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE == 2.0);
 
-  /* DiscreteIntegrator: '<S513>/Integrator' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+  /* DiscreteIntegrator: '<S530>/Integrator' */
+  p_tmp = (boolean_T)!(int32_T)
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState
-        <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
-                   ((int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState
-                    == 1))) {
+        <= 0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState
+        == 1))) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE = 0.0;
   }
 
-  /* SampleTimeMath: '<S508>/Tsamp' incorporates:
-   *  Gain: '<S505>/Derivative Gain'
+  /* SampleTimeMath: '<S525>/Tsamp' incorporates:
+   *  Gain: '<S522>/Derivative Gain'
    *
-   * About '<S508>/Tsamp':
+   * About '<S525>/Tsamp':
    *  y = u * K where K = 1 / ( w * Ts )
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp = 0.0;
 
-  /* Delay: '<S506>/UD' */
+  /* Delay: '<S523>/UD' */
   if ((((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE == 1)
-       != (int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+       != (int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
       ((int32_T)
        PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE != 3))
   {
@@ -4850,41 +7029,43 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   }
 
   PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE =
-    (ZCSigState)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    (ZCSigState)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
-  /* Sum: '<S522>/Sum' incorporates:
-   *  Delay: '<S506>/UD'
-   *  DiscreteIntegrator: '<S513>/Integrator'
-   *  Sum: '<S506>/Diff'
+  /* Sum: '<S539>/Sum' incorporates:
+   *  Delay: '<S523>/UD'
+   *  DiscreteIntegrator: '<S530>/Integrator'
+   *  Sum: '<S523>/Diff'
    */
   rtb_Sum = (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp -
              PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE) +
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE;
 
-  /* DiscreteIntegrator: '<S463>/Integrator' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+  /* DiscreteIntegrator: '<S480>/Integrator' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
+   */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_b
-        <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
-                   ((int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_b
-                    == 1))) {
+        <= 0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_b
+        == 1))) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_j = 0.0;
   }
 
-  /* SampleTimeMath: '<S458>/Tsamp' incorporates:
-   *  Gain: '<S455>/Derivative Gain'
+  /* SampleTimeMath: '<S475>/Tsamp' incorporates:
+   *  Gain: '<S472>/Derivative Gain'
    *
-   * About '<S458>/Tsamp':
+   * About '<S475>/Tsamp':
    *  y = u * K where K = 1 / ( w * Ts )
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_b = 0.0;
 
-  /* Delay: '<S456>/UD' */
+  /* Delay: '<S473>/UD' incorporates:
+   *  Delay: '<S523>/UD'
+   */
   if ((((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_g == 1)
-       != (int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+       != (int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
       ((int32_T)
        PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_g != 3))
   {
@@ -4892,24 +7073,24 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   }
 
   PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_g =
-    (ZCSigState)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    (ZCSigState)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
-  /* Sum: '<S472>/Sum' incorporates:
-   *  Delay: '<S456>/UD'
-   *  DiscreteIntegrator: '<S463>/Integrator'
-   *  Sum: '<S456>/Diff'
+  /* Sum: '<S489>/Sum' incorporates:
+   *  Delay: '<S473>/UD'
+   *  DiscreteIntegrator: '<S480>/Integrator'
+   *  Sum: '<S473>/Diff'
    */
   rtb_Sum_pc = (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_b -
                 PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_p) +
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_j;
 
-  /* Switch: '<S16>/Switch1' incorporates:
-   *  Constant: '<S16>/Constant1'
-   *  Constant: '<S16>/Constant13'
-   *  Constant: '<S16>/Constant3'
-   *  Sum: '<S16>/Add1'
-   *  Sum: '<S16>/Subtract3'
-   *  Switch: '<S16>/Switch6'
+  /* Switch: '<S20>/Switch1' incorporates:
+   *  Constant: '<S20>/Constant1'
+   *  Constant: '<S20>/Constant13'
+   *  Constant: '<S20>/Constant3'
+   *  Sum: '<S20>/Add1'
+   *  Sum: '<S20>/Subtract3'
+   *  Switch: '<S20>/Switch6'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->OperatingMode != 0.0) {
     rtb_Switch1 =
@@ -4917,11 +7098,11 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   } else if ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->StartupTime +
               PIDcontroller4CoreCentralizedTestReadyMotor_InstP->RunTime) -
              rtb_Sum_pc > 0.0) {
-    /* Switch: '<S16>/Switch' incorporates:
-     *  Constant: '<S16>/Constant2'
-     *  Constant: '<S16>/Constant3'
-     *  Sum: '<S16>/Subtract'
-     *  Switch: '<S16>/Switch6'
+    /* Switch: '<S20>/Switch' incorporates:
+     *  Constant: '<S20>/Constant2'
+     *  Constant: '<S20>/Constant3'
+     *  Sum: '<S20>/Subtract'
+     *  Switch: '<S20>/Switch6'
      */
     if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->StartupTime - rtb_Sum
         > 0.0) {
@@ -4931,30 +7112,31 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       rtb_Switch1 = 1.0;
     }
 
-    /* End of Switch: '<S16>/Switch' */
+    /* End of Switch: '<S20>/Switch' */
   } else {
-    /* Switch: '<S16>/Switch6' incorporates:
-     *  Constant: '<S16>/Constant12'
+    /* Switch: '<S20>/Switch6' incorporates:
+     *  Constant: '<S20>/Constant12'
      */
     rtb_Switch1 = 3.0;
   }
 
-  /* End of Switch: '<S16>/Switch1' */
+  /* End of Switch: '<S20>/Switch1' */
 
-  /* DiscreteIntegrator: '<S16>/Discrete-Time Integrator' */
-  if ((!(int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
-      ((int32_T)
+  /* DiscreteIntegrator: '<S20>/Discrete-Time Integrator' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
+   */
+  if (((int32_T)p_tmp) && ((int32_T)
        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState
        == 1)) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE
       = 0.0;
   }
 
-  /* Switch: '<S16>/Switch2' incorporates:
-   *  Constant: '<S16>/Constant4'
-   *  DiscreteIntegrator: '<S16>/Discrete-Time Integrator'
-   *  Sum: '<S16>/Subtract1'
-   *  Switch: '<S16>/Switch4'
+  /* Switch: '<S20>/Switch2' incorporates:
+   *  Constant: '<S20>/Constant4'
+   *  DiscreteIntegrator: '<S20>/Discrete-Time Integrator'
+   *  Sum: '<S20>/Subtract1'
+   *  Switch: '<S20>/Switch4'
    */
   if (rtb_Switch1 - 3.0 != 0.0) {
     /* Outport: '<Root>/Mode' */
@@ -4962,22 +7144,22 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   } else if
       (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE
        > PIDcontroller4CoreCentralizedTestReadyMotor_InstP->LandingTime) {
-    /* Switch: '<S16>/Switch4' incorporates:
-     *  Constant: '<S16>/Constant7'
+    /* Switch: '<S20>/Switch4' incorporates:
+     *  Constant: '<S20>/Constant7'
      *  Outport: '<Root>/Mode'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode = 2.0;
   } else {
     /* Outport: '<Root>/Mode' incorporates:
-     *  Constant: '<S16>/Constant6'
-     *  Switch: '<S16>/Switch4'
+     *  Constant: '<S20>/Constant6'
+     *  Switch: '<S20>/Switch4'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode = 3.0;
   }
 
-  /* End of Switch: '<S16>/Switch2' */
+  /* End of Switch: '<S20>/Switch2' */
 
-  /* DiscretePulseGenerator: '<S32>/Pulse Generator' */
+  /* DiscretePulseGenerator: '<S30>/Pulse Generator' */
   rtb_PulseGenerator = ((real_T)
                         PIDcontroller4CoreCentralizedTestReadyMotor_DW->clockTickCounter
                         <
@@ -4993,53 +7175,37 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->clockTickCounter++;
   }
 
-  /* End of DiscretePulseGenerator: '<S32>/Pulse Generator' */
+  /* End of DiscretePulseGenerator: '<S30>/Pulse Generator' */
 
-  /* Product: '<S32>/Product1' incorporates:
-   *  Constant: '<S32>/Constant6'
-   *  Constant: '<S32>/Constant9'
-   *  Sum: '<S32>/Subtract7'
+  /* Product: '<S30>/Product1' incorporates:
+   *  Constant: '<S30>/Constant6'
+   *  Constant: '<S30>/Constant9'
+   *  Sum: '<S30>/Subtract7'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Product1 = ((real_T)
     rtb_PulseGenerator - 1.0) *
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BeamOffsets;
 
-  /* Abs: '<S71>/Abs' incorporates:
-   *  Delay: '<S71>/Delay'
-   */
-  rtb_ZeroCurrentForces_idx_3 = fabs
-    (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE);
-
-  /* Saturate: '<S71>/Saturation' */
-  if (rtb_ZeroCurrentForces_idx_3 > 5.0) {
-    rtb_Saturation = 5.0;
-  } else {
-    rtb_Saturation = rtb_ZeroCurrentForces_idx_3;
-  }
-
-  /* End of Saturate: '<S71>/Saturation' */
-
-  /* Switch: '<S48>/Switch1' incorporates:
-   *  Constant: '<S48>/Constant4'
+  /* Switch: '<S46>/Switch1' incorporates:
+   *  Constant: '<S46>/Constant4'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
       [4] != 0.0) {
-    /* Switch: '<S48>/Switch1' incorporates:
-     *  Lookup_n-D: '<S48>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
+    /* Switch: '<S46>/Switch1' incorporates:
+     *  Lookup_n-D: '<S46>/n-D Lookup Table'
      */
-    rtb_Switch1_m = look1_binlxpw(rtb_Saturation,
+    rtb_Switch1_m = look1_binlxpw(0.0,
       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
-    /* Switch: '<S48>/Switch1' incorporates:
-     *  Constant: '<S48>/Constant'
+    /* Switch: '<S46>/Switch1' incorporates:
+     *  Constant: '<S46>/Constant'
      */
     rtb_Switch1_m =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
   }
 
-  /* End of Switch: '<S48>/Switch1' */
+  /* End of Switch: '<S46>/Switch1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
     (PIDcontroller4CoreCentralizedTestReadyMotor_B->Product1, rtb_Switch1_m,
      &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1,
@@ -5050,47 +7216,46 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
      &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_p,
      &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_p);
 
-  /* Switch: '<S40>/Switch' incorporates:
-   *  Constant: '<S40>/Constant1'
+  /* Switch: '<S38>/Switch' incorporates:
+   *  Constant: '<S38>/Constant1'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    /* Switch: '<S40>/Switch' */
+    /* Switch: '<S38>/Switch' */
     rtb_Switch =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_p.MovingAverage;
   } else {
-    /* Switch: '<S40>/Switch' */
+    /* Switch: '<S38>/Switch' */
     rtb_Switch =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1.MovingAverage;
   }
 
-  /* End of Switch: '<S40>/Switch' */
+  /* End of Switch: '<S38>/Switch' */
 
-  /* Gain: '<S32>/Gain' */
+  /* Gain: '<S30>/Gain' */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain =
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BeamOffsetsFactor *
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Product1;
 
-  /* Switch: '<S49>/Switch1' incorporates:
-   *  Constant: '<S49>/Constant4'
+  /* Switch: '<S47>/Switch1' incorporates:
+   *  Constant: '<S47>/Constant4'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
       [4] != 0.0) {
-    /* Switch: '<S49>/Switch1' incorporates:
-     *  Lookup_n-D: '<S49>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
+    /* Switch: '<S47>/Switch1' incorporates:
+     *  Lookup_n-D: '<S47>/n-D Lookup Table'
      */
-    rtb_Switch1_e = look1_binlxpw(rtb_Saturation,
+    rtb_Switch1_e = look1_binlxpw(0.0,
       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
-    /* Switch: '<S49>/Switch1' incorporates:
-     *  Constant: '<S49>/Constant'
+    /* Switch: '<S47>/Switch1' incorporates:
+     *  Constant: '<S47>/Constant'
      */
     rtb_Switch1_e =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
   }
 
-  /* End of Switch: '<S49>/Switch1' */
+  /* End of Switch: '<S47>/Switch1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
     (PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain, rtb_Switch1_e,
      &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_p,
@@ -5101,59 +7266,58 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
      &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pn,
      &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pn);
 
-  /* Switch: '<S41>/Switch' incorporates:
-   *  Constant: '<S41>/Constant1'
+  /* Switch: '<S39>/Switch' incorporates:
+   *  Constant: '<S39>/Constant1'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    /* Switch: '<S41>/Switch' */
+    /* Switch: '<S39>/Switch' */
     rtb_Switch_e =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pn.MovingAverage;
   } else {
-    /* Switch: '<S41>/Switch' */
+    /* Switch: '<S39>/Switch' */
     rtb_Switch_e =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_p.MovingAverage;
   }
 
-  /* End of Switch: '<S41>/Switch' */
+  /* End of Switch: '<S39>/Switch' */
 
-  /* Switch: '<S32>/Switch7' incorporates:
-   *  Constant: '<S32>/Constant4'
+  /* Switch: '<S30>/Switch7' incorporates:
+   *  Constant: '<S30>/Constant4'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BeamOffsetsBackDelay >
       0.0) {
-    /* Switch: '<S32>/Switch7' incorporates:
-     *  Delay: '<S32>/Delay1'
+    /* Switch: '<S30>/Switch7' incorporates:
+     *  Delay: '<S30>/Delay1'
      */
     rtb_Switch7 =
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_e[0];
   } else {
-    /* Switch: '<S32>/Switch7' */
+    /* Switch: '<S30>/Switch7' */
     rtb_Switch7 = PIDcontroller4CoreCentralizedTestReadyMotor_B->Product1;
   }
 
-  /* End of Switch: '<S32>/Switch7' */
+  /* End of Switch: '<S30>/Switch7' */
 
-  /* Switch: '<S50>/Switch1' incorporates:
-   *  Constant: '<S50>/Constant4'
+  /* Switch: '<S48>/Switch1' incorporates:
+   *  Constant: '<S48>/Constant4'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
       [4] != 0.0) {
-    /* Switch: '<S50>/Switch1' incorporates:
-     *  Lookup_n-D: '<S50>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
+    /* Switch: '<S48>/Switch1' incorporates:
+     *  Lookup_n-D: '<S48>/n-D Lookup Table'
      */
-    rtb_Switch1_p = look1_binlxpw(rtb_Saturation,
+    rtb_Switch1_p = look1_binlxpw(0.0,
       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
-    /* Switch: '<S50>/Switch1' incorporates:
-     *  Constant: '<S50>/Constant'
+    /* Switch: '<S48>/Switch1' incorporates:
+     *  Constant: '<S48>/Constant'
      */
     rtb_Switch1_p =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
   }
 
-  /* End of Switch: '<S50>/Switch1' */
+  /* End of Switch: '<S48>/Switch1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_Switch7,
     rtb_Switch1_p,
     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pn,
@@ -5164,59 +7328,58 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
      &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pna,
      &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pna);
 
-  /* Switch: '<S42>/Switch' incorporates:
-   *  Constant: '<S42>/Constant1'
+  /* Switch: '<S40>/Switch' incorporates:
+   *  Constant: '<S40>/Constant1'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    /* Switch: '<S42>/Switch' */
+    /* Switch: '<S40>/Switch' */
     rtb_Switch_b =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pna.MovingAverage;
   } else {
-    /* Switch: '<S42>/Switch' */
+    /* Switch: '<S40>/Switch' */
     rtb_Switch_b =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pn.MovingAverage;
   }
 
-  /* End of Switch: '<S42>/Switch' */
+  /* End of Switch: '<S40>/Switch' */
 
-  /* Switch: '<S32>/Switch' incorporates:
-   *  Constant: '<S32>/Constant4'
+  /* Switch: '<S30>/Switch' incorporates:
+   *  Constant: '<S30>/Constant4'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BeamOffsetsBackDelay >
       0.0) {
-    /* Switch: '<S32>/Switch' incorporates:
-     *  Delay: '<S32>/Delay'
+    /* Switch: '<S30>/Switch' incorporates:
+     *  Delay: '<S30>/Delay'
      */
-    rtb_Switch_i =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[0];
+    rtb_Switch_i = PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE
+      [0];
   } else {
-    /* Switch: '<S32>/Switch' */
+    /* Switch: '<S30>/Switch' */
     rtb_Switch_i = PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain;
   }
 
-  /* End of Switch: '<S32>/Switch' */
+  /* End of Switch: '<S30>/Switch' */
 
-  /* Switch: '<S51>/Switch1' incorporates:
-   *  Constant: '<S51>/Constant4'
+  /* Switch: '<S49>/Switch1' incorporates:
+   *  Constant: '<S49>/Constant4'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
       [4] != 0.0) {
-    /* Switch: '<S51>/Switch1' incorporates:
-     *  Lookup_n-D: '<S51>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
+    /* Switch: '<S49>/Switch1' incorporates:
+     *  Lookup_n-D: '<S49>/n-D Lookup Table'
      */
-    rtb_Switch1_j = look1_binlxpw(rtb_Saturation,
+    rtb_Switch1_j = look1_binlxpw(0.0,
       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
-    /* Switch: '<S51>/Switch1' incorporates:
-     *  Constant: '<S51>/Constant'
+    /* Switch: '<S49>/Switch1' incorporates:
+     *  Constant: '<S49>/Constant'
      */
     rtb_Switch1_j =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
   }
 
-  /* End of Switch: '<S51>/Switch1' */
+  /* End of Switch: '<S49>/Switch1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_Switch_i,
     rtb_Switch1_j,
     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pna,
@@ -5227,29 +7390,81 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
      &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnae,
      &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnae);
 
-  /* Switch: '<S43>/Switch' incorporates:
-   *  Constant: '<S43>/Constant1'
+  /* Switch: '<S41>/Switch' incorporates:
+   *  Constant: '<S41>/Constant1'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    /* Switch: '<S43>/Switch' */
+    /* Switch: '<S41>/Switch' */
     rtb_Switch_j =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnae.MovingAverage;
   } else {
-    /* Switch: '<S43>/Switch' */
+    /* Switch: '<S41>/Switch' */
     rtb_Switch_j =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pna.MovingAverage;
   }
 
-  /* End of Switch: '<S43>/Switch' */
+  /* End of Switch: '<S41>/Switch' */
 
-  /* MATLAB Function: '<S38>/FindCoordinates' incorporates:
-   *  Constant: '<S38>/Constant'
-   *  Constant: '<S38>/Constant1'
-   *  Constant: '<S38>/Constant2'
+  /* MATLAB Function: '<S36>/FindCoordinates' incorporates:
+   *  Constant: '<S36>/Constant'
+   *  Constant: '<S36>/Constant1'
+   *  Constant: '<S36>/Constant2'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_FindCoordinates(rtb_Switch,
     rtb_Switch_e, rtb_Switch_b, rtb_Switch_j, 0.465, 0.392, 0.1596,
     &PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates);
+
+  /* Switch: '<S50>/Switch1' incorporates:
+   *  Constant: '<S50>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S50>/Switch1' incorporates:
+     *  Lookup_n-D: '<S50>/n-D Lookup Table'
+     */
+    rtb_Switch1_c = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S50>/Switch1' incorporates:
+     *  Constant: '<S50>/Constant'
+     */
+    rtb_Switch1_c =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorAirgap;
+  }
+
+  /* End of Switch: '<S50>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates.avg_g,
+     rtb_Switch1_c,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaev,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaev);
+
+  /* Switch: '<S51>/Switch1' incorporates:
+   *  Constant: '<S51>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S51>/Switch1' incorporates:
+     *  Lookup_n-D: '<S51>/n-D Lookup Table'
+     */
+    rtb_Switch1_f = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S51>/Switch1' incorporates:
+     *  Constant: '<S51>/Constant'
+     */
+    rtb_Switch1_f =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorPitch;
+  }
+
+  /* End of Switch: '<S51>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates.pitch,
+     rtb_Switch1_f,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevv,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevv);
 
   /* Switch: '<S52>/Switch1' incorporates:
    *  Constant: '<S52>/Constant4'
@@ -5258,84 +7473,135 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       [4] != 0.0) {
     /* Switch: '<S52>/Switch1' incorporates:
      *  Lookup_n-D: '<S52>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
      */
-    rtb_Switch1_c = look1_binlxpw(rtb_Saturation,
+    rtb_Switch1_k = look1_binlxpw(0.0,
       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
     /* Switch: '<S52>/Switch1' incorporates:
      *  Constant: '<S52>/Constant'
      */
-    rtb_Switch1_c =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorAirgap;
-  }
-
-  /* End of Switch: '<S52>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates.avg_g,
-     rtb_Switch1_c,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaev,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaev);
-
-  /* Switch: '<S53>/Switch1' incorporates:
-   *  Constant: '<S53>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S53>/Switch1' incorporates:
-     *  Lookup_n-D: '<S53>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    rtb_Switch1_f = look1_binlxpw(rtb_Saturation,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S53>/Switch1' incorporates:
-     *  Constant: '<S53>/Constant'
-     */
-    rtb_Switch1_f =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorPitch;
-  }
-
-  /* End of Switch: '<S53>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates.pitch,
-     rtb_Switch1_f,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevv,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevv);
-
-  /* Switch: '<S54>/Switch1' incorporates:
-   *  Constant: '<S54>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S54>/Switch1' incorporates:
-     *  Lookup_n-D: '<S54>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    rtb_Switch1_k = look1_binlxpw(rtb_Saturation,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S54>/Switch1' incorporates:
-     *  Constant: '<S54>/Constant'
-     */
     rtb_Switch1_k =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorRoll;
   }
 
-  /* End of Switch: '<S54>/Switch1' */
+  /* End of Switch: '<S52>/Switch1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
     (PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates.roll,
      rtb_Switch1_k,
      &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvf,
      &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvf);
 
-  /* Sin: '<S32>/Sine Wave4' */
+  /* Sin: '<S30>/Sine Wave4' */
   rtb_SineWave4 = sin((real_T)
                       PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter *
                       2.0 * 3.1415926535897931 / floor
+                      (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SineTime
+                       / 0.00025)) *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BeamOffsets;
+
+  /* Switch: '<S61>/Switch1' incorporates:
+   *  Constant: '<S61>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S61>/Switch1' incorporates:
+     *  Lookup_n-D: '<S61>/n-D Lookup Table'
+     */
+    rtb_Switch1_js = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S61>/Switch1' incorporates:
+     *  Constant: '<S61>/Constant'
+     */
+    rtb_Switch1_js =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
+  }
+
+  /* End of Switch: '<S61>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_SineWave4,
+    rtb_Switch1_js,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnae,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnae);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnae.MovingAverage,
+     rtb_Switch1_js,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfp,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfp);
+
+  /* Switch: '<S53>/Switch' incorporates:
+   *  Constant: '<S53>/Constant1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
+    /* Switch: '<S53>/Switch' */
+    rtb_Switch_o =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfp.MovingAverage;
+  } else {
+    /* Switch: '<S53>/Switch' */
+    rtb_Switch_o =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnae.MovingAverage;
+  }
+
+  /* End of Switch: '<S53>/Switch' */
+
+  /* Sin: '<S30>/Sine Wave5' */
+  rtb_SineWave5 = sin(((real_T)
+                       PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_h
+                       + 1000.0) * 2.0 * 3.1415926535897931 / floor
+                      (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SineTime
+                       / 0.00025)) *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BeamOffsets;
+
+  /* Switch: '<S62>/Switch1' incorporates:
+   *  Constant: '<S62>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S62>/Switch1' incorporates:
+     *  Lookup_n-D: '<S62>/n-D Lookup Table'
+     */
+    rtb_Switch1_em = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S62>/Switch1' incorporates:
+     *  Constant: '<S62>/Constant'
+     */
+    rtb_Switch1_em =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
+  }
+
+  /* End of Switch: '<S62>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_SineWave5,
+    rtb_Switch1_em,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaev,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaev);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaev.MovingAverage,
+     rtb_Switch1_em,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpg,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpg);
+
+  /* Switch: '<S54>/Switch' incorporates:
+   *  Constant: '<S54>/Constant1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
+    /* Switch: '<S54>/Switch' */
+    rtb_Switch_f =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpg.MovingAverage;
+  } else {
+    /* Switch: '<S54>/Switch' */
+    rtb_Switch_f =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaev.MovingAverage;
+  }
+
+  /* End of Switch: '<S54>/Switch' */
+
+  /* Sin: '<S30>/Sine Wave6' */
+  rtb_SineWave6 = sin(((real_T)
+                       PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_o
+                       + 3000.0) * 2.0 * 3.1415926535897931 / floor
                       (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SineTime
                        / 0.00025)) *
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BeamOffsets;
@@ -5347,49 +7613,48 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       [4] != 0.0) {
     /* Switch: '<S63>/Switch1' incorporates:
      *  Lookup_n-D: '<S63>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
      */
-    rtb_Switch1_js = look1_binlxpw(rtb_Saturation,
+    rtb_Switch1_a = look1_binlxpw(0.0,
       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
     /* Switch: '<S63>/Switch1' incorporates:
      *  Constant: '<S63>/Constant'
      */
-    rtb_Switch1_js =
+    rtb_Switch1_a =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
   }
 
   /* End of Switch: '<S63>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_SineWave4,
-    rtb_Switch1_js,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnae,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnae);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_SineWave6,
+    rtb_Switch1_a,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevv,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevv);
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnae.MovingAverage,
-     rtb_Switch1_js,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfp,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfp);
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevv.MovingAverage,
+     rtb_Switch1_a,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh);
 
   /* Switch: '<S55>/Switch' incorporates:
    *  Constant: '<S55>/Constant1'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
     /* Switch: '<S55>/Switch' */
-    rtb_Switch_o =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfp.MovingAverage;
+    rtb_Switch_p =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh.MovingAverage;
   } else {
     /* Switch: '<S55>/Switch' */
-    rtb_Switch_o =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnae.MovingAverage;
+    rtb_Switch_p =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevv.MovingAverage;
   }
 
   /* End of Switch: '<S55>/Switch' */
 
-  /* Sin: '<S32>/Sine Wave5' */
-  rtb_SineWave5 = sin(((real_T)
-                       PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_h
-                       + 1000.0) * 2.0 * 3.1415926535897931 / floor
+  /* Sin: '<S30>/Sine Wave7' */
+  rtb_SineWave7 = sin(((real_T)
+                       PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_a
+                       + 2000.0) * 2.0 * 3.1415926535897931 / floor
                       (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SineTime
                        / 0.00025)) *
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BeamOffsets;
@@ -5401,128 +7666,19 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       [4] != 0.0) {
     /* Switch: '<S64>/Switch1' incorporates:
      *  Lookup_n-D: '<S64>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
      */
-    rtb_Switch1_em = look1_binlxpw(rtb_Saturation,
+    rtb_Switch1_jf = look1_binlxpw(0.0,
       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
     /* Switch: '<S64>/Switch1' incorporates:
      *  Constant: '<S64>/Constant'
      */
-    rtb_Switch1_em =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
-  }
-
-  /* End of Switch: '<S64>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_SineWave5,
-    rtb_Switch1_em,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaev,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaev);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaev.MovingAverage,
-     rtb_Switch1_em,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpg,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpg);
-
-  /* Switch: '<S56>/Switch' incorporates:
-   *  Constant: '<S56>/Constant1'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    /* Switch: '<S56>/Switch' */
-    rtb_Switch_f =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpg.MovingAverage;
-  } else {
-    /* Switch: '<S56>/Switch' */
-    rtb_Switch_f =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaev.MovingAverage;
-  }
-
-  /* End of Switch: '<S56>/Switch' */
-
-  /* Sin: '<S32>/Sine Wave6' */
-  rtb_SineWave6 = sin(((real_T)
-                       PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_o
-                       + 3000.0) * 2.0 * 3.1415926535897931 / floor
-                      (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SineTime
-                       / 0.00025)) *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BeamOffsets;
-
-  /* Switch: '<S65>/Switch1' incorporates:
-   *  Constant: '<S65>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S65>/Switch1' incorporates:
-     *  Lookup_n-D: '<S65>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    rtb_Switch1_a = look1_binlxpw(rtb_Saturation,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S65>/Switch1' incorporates:
-     *  Constant: '<S65>/Constant'
-     */
-    rtb_Switch1_a =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
-  }
-
-  /* End of Switch: '<S65>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_SineWave6,
-    rtb_Switch1_a,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevv,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevv);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevv.MovingAverage,
-     rtb_Switch1_a,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh);
-
-  /* Switch: '<S57>/Switch' incorporates:
-   *  Constant: '<S57>/Constant1'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    /* Switch: '<S57>/Switch' */
-    rtb_Switch_p =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh.MovingAverage;
-  } else {
-    /* Switch: '<S57>/Switch' */
-    rtb_Switch_p =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevv.MovingAverage;
-  }
-
-  /* End of Switch: '<S57>/Switch' */
-
-  /* Sin: '<S32>/Sine Wave7' */
-  rtb_SineWave7 = sin(((real_T)
-                       PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_a
-                       + 2000.0) * 2.0 * 3.1415926535897931 / floor
-                      (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SineTime
-                       / 0.00025)) *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BeamOffsets;
-
-  /* Switch: '<S66>/Switch1' incorporates:
-   *  Constant: '<S66>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S66>/Switch1' incorporates:
-     *  Lookup_n-D: '<S66>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    rtb_Switch1_jf = look1_binlxpw(rtb_Saturation,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S66>/Switch1' incorporates:
-     *  Constant: '<S66>/Constant'
-     */
     rtb_Switch1_jf =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
   }
 
-  /* End of Switch: '<S66>/Switch1' */
+  /* End of Switch: '<S64>/Switch1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_SineWave7,
     rtb_Switch1_jf,
     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvf,
@@ -5533,29 +7689,81 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
      &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5,
      &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5);
 
-  /* Switch: '<S58>/Switch' incorporates:
-   *  Constant: '<S58>/Constant1'
+  /* Switch: '<S56>/Switch' incorporates:
+   *  Constant: '<S56>/Constant1'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    /* Switch: '<S58>/Switch' */
+    /* Switch: '<S56>/Switch' */
     rtb_Switch_iu =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5.MovingAverage;
   } else {
-    /* Switch: '<S58>/Switch' */
+    /* Switch: '<S56>/Switch' */
     rtb_Switch_iu =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvf.MovingAverage;
   }
 
-  /* End of Switch: '<S58>/Switch' */
+  /* End of Switch: '<S56>/Switch' */
 
-  /* MATLAB Function: '<S39>/FindCoordinates' incorporates:
-   *  Constant: '<S39>/Constant'
-   *  Constant: '<S39>/Constant1'
-   *  Constant: '<S39>/Constant2'
+  /* MATLAB Function: '<S37>/FindCoordinates' incorporates:
+   *  Constant: '<S37>/Constant'
+   *  Constant: '<S37>/Constant1'
+   *  Constant: '<S37>/Constant2'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_FindCoordinates(rtb_Switch_o,
     rtb_Switch_f, rtb_Switch_p, rtb_Switch_iu, 0.465, 0.392, 0.1596,
     &PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d);
+
+  /* Switch: '<S65>/Switch1' incorporates:
+   *  Constant: '<S65>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S65>/Switch1' incorporates:
+     *  Lookup_n-D: '<S65>/n-D Lookup Table'
+     */
+    rtb_Switch1_cv = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S65>/Switch1' incorporates:
+     *  Constant: '<S65>/Constant'
+     */
+    rtb_Switch1_cv =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorAirgap;
+  }
+
+  /* End of Switch: '<S65>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d.avg_g,
+     rtb_Switch1_cv,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5z,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5z);
+
+  /* Switch: '<S66>/Switch1' incorporates:
+   *  Constant: '<S66>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S66>/Switch1' incorporates:
+     *  Lookup_n-D: '<S66>/n-D Lookup Table'
+     */
+    rtb_Switch1_i = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S66>/Switch1' incorporates:
+     *  Constant: '<S66>/Constant'
+     */
+    rtb_Switch1_i =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorPitch;
+  }
+
+  /* End of Switch: '<S66>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d.pitch,
+     rtb_Switch1_i,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5zz,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zz);
 
   /* Switch: '<S67>/Switch1' incorporates:
    *  Constant: '<S67>/Constant4'
@@ -5564,101 +7772,46 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       [4] != 0.0) {
     /* Switch: '<S67>/Switch1' incorporates:
      *  Lookup_n-D: '<S67>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
      */
-    rtb_Switch1_cv = look1_binlxpw(rtb_Saturation,
+    rtb_Switch1_ab = look1_binlxpw(0.0,
       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
     /* Switch: '<S67>/Switch1' incorporates:
      *  Constant: '<S67>/Constant'
      */
-    rtb_Switch1_cv =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorAirgap;
-  }
-
-  /* End of Switch: '<S67>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d.avg_g,
-     rtb_Switch1_cv,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5z,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5z);
-
-  /* Switch: '<S68>/Switch1' incorporates:
-   *  Constant: '<S68>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S68>/Switch1' incorporates:
-     *  Lookup_n-D: '<S68>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    rtb_Switch1_i = look1_binlxpw(rtb_Saturation,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S68>/Switch1' incorporates:
-     *  Constant: '<S68>/Constant'
-     */
-    rtb_Switch1_i =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorPitch;
-  }
-
-  /* End of Switch: '<S68>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d.pitch,
-     rtb_Switch1_i,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5zz,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zz);
-
-  /* Switch: '<S69>/Switch1' incorporates:
-   *  Constant: '<S69>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S69>/Switch1' incorporates:
-     *  Lookup_n-D: '<S69>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    rtb_Switch1_ab = look1_binlxpw(rtb_Saturation,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S69>/Switch1' incorporates:
-     *  Constant: '<S69>/Constant'
-     */
     rtb_Switch1_ab =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorRoll;
   }
 
-  /* End of Switch: '<S69>/Switch1' */
+  /* End of Switch: '<S67>/Switch1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
     (PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d.roll,
      rtb_Switch1_ab,
      &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5zzh,
      &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzh);
 
-  /* Switch: '<S32>/Switch2' incorporates:
-   *  Constant: '<S32>/Constant'
-   *  Constant: '<S32>/Constant2'
-   *  Constant: '<S32>/Constant3'
+  /* Switch: '<S30>/Switch2' incorporates:
+   *  Constant: '<S30>/Constant'
+   *  Constant: '<S30>/Constant2'
+   *  Constant: '<S30>/Constant3'
    *  Outport: '<Root>/Mode'
-   *  Sum: '<S32>/Subtract2'
-   *  Switch: '<S32>/Switch3'
+   *  Sum: '<S30>/Subtract2'
+   *  Switch: '<S30>/Switch3'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 7.0 != 0.0) {
-    /* Switch: '<S32>/Switch1' incorporates:
-     *  Constant: '<S32>/Constant1'
-     *  Constant: '<S59>/Constant1'
-     *  Sum: '<S32>/Subtract1'
-     *  Switch: '<S59>/Switch'
+    /* Switch: '<S30>/Switch1' incorporates:
+     *  Constant: '<S30>/Constant1'
+     *  Constant: '<S57>/Constant1'
+     *  Sum: '<S30>/Subtract1'
+     *  Switch: '<S57>/Switch'
      */
     if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 6.0 != 0.0) {
-      /* Switch: '<S32>/Switch4' incorporates:
-       *  Constant: '<S32>/Constant7'
-       *  Constant: '<S44>/Constant1'
-       *  Sum: '<S32>/Subtract6'
-       *  Switch: '<S44>/Switch'
+      /* Switch: '<S30>/Switch4' incorporates:
+       *  Constant: '<S30>/Constant7'
+       *  Constant: '<S42>/Constant1'
+       *  Sum: '<S30>/Subtract6'
+       *  Switch: '<S42>/Switch'
        */
       if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 5.0 != 0.0) {
         rtb_Switch2_idx_0 = 0.0;
@@ -5667,7 +7820,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       } else {
         if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->AirgapFilter !=
             0.0) {
-          /* Switch: '<S44>/Switch' */
+          /* Switch: '<S42>/Switch' */
           rtb_Switch2_idx_0 =
             PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaev.MovingAverage;
         } else {
@@ -5675,9 +7828,9 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
             PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates.avg_g;
         }
 
-        /* Switch: '<S45>/Switch' incorporates:
-         *  Constant: '<S45>/Constant1'
-         *  Switch: '<S44>/Switch'
+        /* Switch: '<S43>/Switch' incorporates:
+         *  Constant: '<S43>/Constant1'
+         *  Switch: '<S42>/Switch'
          */
         if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PitchFilter !=
             0.0) {
@@ -5688,10 +7841,10 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
             PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates.pitch;
         }
 
-        /* End of Switch: '<S45>/Switch' */
+        /* End of Switch: '<S43>/Switch' */
 
-        /* Switch: '<S46>/Switch' incorporates:
-         *  Constant: '<S46>/Constant1'
+        /* Switch: '<S44>/Switch' incorporates:
+         *  Constant: '<S44>/Constant1'
          */
         if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->RollFilter != 0.0)
         {
@@ -5702,14 +7855,14 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
             PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates.roll;
         }
 
-        /* End of Switch: '<S46>/Switch' */
+        /* End of Switch: '<S44>/Switch' */
       }
 
-      /* End of Switch: '<S32>/Switch4' */
+      /* End of Switch: '<S30>/Switch4' */
     } else {
       if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->AirgapFilter != 0.0)
       {
-        /* Switch: '<S59>/Switch' */
+        /* Switch: '<S57>/Switch' */
         rtb_Switch2_idx_0 =
           PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5z.MovingAverage;
       } else {
@@ -5717,9 +7870,9 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
           PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d.avg_g;
       }
 
-      /* Switch: '<S60>/Switch' incorporates:
-       *  Constant: '<S60>/Constant1'
-       *  Switch: '<S59>/Switch'
+      /* Switch: '<S58>/Switch' incorporates:
+       *  Constant: '<S58>/Constant1'
+       *  Switch: '<S57>/Switch'
        */
       if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PitchFilter != 0.0)
       {
@@ -5730,10 +7883,10 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
           PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d.pitch;
       }
 
-      /* End of Switch: '<S60>/Switch' */
+      /* End of Switch: '<S58>/Switch' */
 
-      /* Switch: '<S61>/Switch' incorporates:
-       *  Constant: '<S61>/Constant1'
+      /* Switch: '<S59>/Switch' incorporates:
+       *  Constant: '<S59>/Constant1'
        */
       if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->RollFilter != 0.0)
       {
@@ -5744,15 +7897,15 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
           PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d.roll;
       }
 
-      /* End of Switch: '<S61>/Switch' */
+      /* End of Switch: '<S59>/Switch' */
     }
 
-    /* End of Switch: '<S32>/Switch1' */
+    /* End of Switch: '<S30>/Switch1' */
   } else {
     if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SineSwitches[0] !=
         0.0) {
-      /* Switch: '<S32>/Switch3' incorporates:
-       *  Sin: '<S32>/Sine Wave1'
+      /* Switch: '<S30>/Switch3' incorporates:
+       *  Sin: '<S30>/Sine Wave1'
        */
       rtb_Switch2_idx_0 = sin((real_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_i * 2.0 *
@@ -5763,11 +7916,11 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       rtb_Switch2_idx_0 = 0.0;
     }
 
-    /* Switch: '<S32>/Switch5' incorporates:
-     *  Constant: '<S32>/Constant'
-     *  Constant: '<S32>/Constant3'
-     *  Sin: '<S32>/Sine Wave2'
-     *  Switch: '<S32>/Switch3'
+    /* Switch: '<S30>/Switch5' incorporates:
+     *  Constant: '<S30>/Constant'
+     *  Constant: '<S30>/Constant3'
+     *  Sin: '<S30>/Sine Wave2'
+     *  Switch: '<S30>/Switch3'
      */
     if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SineSwitches[1] !=
         0.0) {
@@ -5781,12 +7934,12 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       rtb_Switch2_idx_1 = 0.0;
     }
 
-    /* End of Switch: '<S32>/Switch5' */
+    /* End of Switch: '<S30>/Switch5' */
 
-    /* Switch: '<S32>/Switch6' incorporates:
-     *  Constant: '<S32>/Constant'
-     *  Constant: '<S32>/Constant3'
-     *  Sin: '<S32>/Sine Wave3'
+    /* Switch: '<S30>/Switch6' incorporates:
+     *  Constant: '<S30>/Constant'
+     *  Constant: '<S30>/Constant3'
+     *  Sin: '<S30>/Sine Wave3'
      */
     if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SineSwitches[2] !=
         0.0) {
@@ -5800,13 +7953,13 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       rtb_Switch2_idx_2 = 0.0;
     }
 
-    /* End of Switch: '<S32>/Switch6' */
+    /* End of Switch: '<S30>/Switch6' */
   }
 
-  /* End of Switch: '<S32>/Switch2' */
+  /* End of Switch: '<S30>/Switch2' */
 
-  /* Sum: '<S74>/Subtract5' incorporates:
-   *  Constant: '<S74>/Constant4'
+  /* Sum: '<S73>/Subtract5' incorporates:
+   *  Constant: '<S73>/Constant4'
    *  Outport: '<Root>/Mode'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5 =
@@ -5868,28 +8021,28 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
     rtb_Switch_k_idx_3 = PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1[3];
   }
 
-  /* Switch: '<S74>/Switch' */
+  /* Switch: '<S73>/Switch' */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5 != 0.0) {
-    /* Switch: '<S74>/Switch' incorporates:
-     *  Constant: '<S74>/Constant1'
+    /* Switch: '<S73>/Switch' incorporates:
+     *  Constant: '<S73>/Constant1'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch = 0.0;
   } else {
-    /* Switch: '<S74>/Switch' incorporates:
-     *  Sum: '<S37>/Sum'
+    /* Switch: '<S73>/Switch' incorporates:
+     *  Sum: '<S35>/Sum'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch = ((rtb_Switch_k_idx_0
       + rtb_Switch_k_idx_1) + rtb_Switch_k_idx_2) + rtb_Switch_k_idx_3;
   }
 
-  /* End of Switch: '<S74>/Switch' */
+  /* End of Switch: '<S73>/Switch' */
 
   /* DiscreteIntegrator: '<S160>/Integrator' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_n
         <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
                    ((int32_T)
                     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_n
                     == 1))) {
@@ -5908,7 +8061,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   /* Delay: '<S153>/UD' */
   if ((((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_a == 1)
-       != (int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+       != (int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
       ((int32_T)
        PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_a != 3))
   {
@@ -5916,7 +8069,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   }
 
   PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_a =
-    (ZCSigState)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    (ZCSigState)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
   /* Sum: '<S169>/Sum' incorporates:
    *  Delay: '<S153>/UD'
@@ -5929,12 +8082,12 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
     + (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_k -
        PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_f);
 
-  /* DiscreteIntegrator: '<S72>/Discrete-Time Integrator1' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+  /* DiscreteIntegrator: '<S71>/Discrete-Time Integrator1' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState
         <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
                    ((int32_T)
                     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState
                     == 1))) {
@@ -5942,20 +8095,20 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       = 0.0;
   }
 
-  /* End of DiscreteIntegrator: '<S72>/Discrete-Time Integrator1' */
+  /* End of DiscreteIntegrator: '<S71>/Discrete-Time Integrator1' */
 
-  /* Sum: '<S72>/Subtract2' incorporates:
-   *  Constant: '<S72>/Constant2'
+  /* Sum: '<S71>/Subtract2' incorporates:
+   *  Constant: '<S71>/Constant2'
    *  Outport: '<Root>/Mode'
    */
   rtb_Subtract2_f = PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 3.0;
 
-  /* DiscreteIntegrator: '<S72>/Discrete-Time Integrator' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+  /* DiscreteIntegrator: '<S71>/Discrete-Time Integrator' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n
         <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
                    ((int32_T)
                     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n
                     == 1))) {
@@ -5963,83 +8116,209 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       = 0.0;
   }
 
-  /* Switch: '<S72>/Switch2' incorporates:
-   *  Constant: '<S72>/Base Ref Airgap1'
-   *  Constant: '<S72>/Constant2'
-   *  DiscreteIntegrator: '<S72>/Discrete-Time Integrator'
-   *  Gain: '<S72>/Gain1'
+  /* Switch: '<S71>/Switch2' incorporates:
+   *  Constant: '<S71>/Constant2'
    *  Outport: '<Root>/Mode'
-   *  Sum: '<S72>/Subtract2'
-   *  Sum: '<S72>/Subtract4'
+   *  Sum: '<S71>/Subtract2'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 3.0 != 0.0) {
-    /* Switch: '<S72>/Switch1' incorporates:
-     *  Constant: '<S72>/Base Ref Airgap'
-     *  Constant: '<S72>/Constant'
-     *  Gain: '<S72>/Gain'
-     *  Product: '<S72>/Product'
-     *  Saturate: '<S72>/Saturation'
-     *  Sum: '<S72>/Subtract'
-     *  Sum: '<S72>/Subtract1'
+    /* Switch: '<S71>/Switch1' incorporates:
+     *  Saturate: '<S71>/Saturation'
      */
     if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode != 0.0) {
+      /* Switch: '<S71>/Switch2' incorporates:
+       *  Constant: '<S71>/Base Ref Airgap'
+       */
       rtb_error =
         PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BaseRefAirgap;
     } else {
       if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE
           > PIDcontroller4CoreCentralizedTestReadyMotor_InstP->StartupTime) {
-        /* Saturate: '<S72>/Saturation' */
-        rtb_Switch1_j1_idx_0 =
+        /* Saturate: '<S71>/Saturation' */
+        rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
           PIDcontroller4CoreCentralizedTestReadyMotor_InstP->StartupTime;
       } else if
           (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE
            < 0.0) {
-        /* Saturate: '<S72>/Saturation' */
-        rtb_Switch1_j1_idx_0 = 0.0;
+        /* Saturate: '<S71>/Saturation' */
+        rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 0.0;
       } else {
-        /* Saturate: '<S72>/Saturation' */
-        rtb_Switch1_j1_idx_0 =
+        /* Saturate: '<S71>/Saturation' */
+        rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
           PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE;
       }
 
+      /* Switch: '<S71>/Switch2' incorporates:
+       *  Constant: '<S71>/Base Ref Airgap'
+       *  Constant: '<S71>/Constant'
+       *  Gain: '<S71>/Gain'
+       *  Product: '<S71>/Product'
+       *  Saturate: '<S71>/Saturation'
+       *  Sum: '<S71>/Subtract'
+       *  Sum: '<S71>/Subtract1'
+       */
       rtb_error = 1.0 /
         PIDcontroller4CoreCentralizedTestReadyMotor_InstP->StartupTime *
-        rtb_Switch1_j1_idx_0 *
+        rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 *
         (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BaseRefAirgap -
          PIDcontroller4CoreCentralizedTestReadyMotor_InstP->StartingAirgap) +
         PIDcontroller4CoreCentralizedTestReadyMotor_InstP->StartingAirgap;
     }
 
-    /* End of Switch: '<S72>/Switch1' */
+    /* End of Switch: '<S71>/Switch1' */
   } else {
+    /* Switch: '<S71>/Switch2' incorporates:
+     *  Constant: '<S71>/Base Ref Airgap1'
+     *  DiscreteIntegrator: '<S71>/Discrete-Time Integrator'
+     *  Gain: '<S71>/Gain1'
+     *  Sum: '<S71>/Subtract4'
+     */
     rtb_error = 1.0 /
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->LandingTime *
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_b
       + PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BaseRefAirgap;
   }
 
-  /* End of Switch: '<S72>/Switch2' */
+  /* End of Switch: '<S71>/Switch2' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_p(rtb_error,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5zzhe,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzhe);
 
-  /* Switch: '<S74>/Switch1' incorporates:
-   *  Constant: '<S74>/Constant'
-   *  Constant: '<S74>/Constant2'
+  /* Switch: '<S70>/Switch' incorporates:
+   *  Constant: '<S73>/Constant'
+   *  Switch: '<S73>/Switch1'
    */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Undo_0current != 0.0) {
-    rtb_Switch1_j1_idx_0 = 0.0;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->AND) {
+    /* Switch: '<S70>/Switch' incorporates:
+     *  Constant: '<S70>/Constant1'
+     */
+    rtb_Switch_ph =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropellingAirgap;
   } else {
-    rtb_Switch1_j1_idx_0 = rtb_Sum_gy;
+    if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Undo_0current != 0.0)
+    {
+      /* Switch: '<S73>/Switch1' incorporates:
+       *  Constant: '<S73>/Constant2'
+       */
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 0.0;
+    } else {
+      /* Switch: '<S73>/Switch1' */
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = rtb_Sum_gy;
+    }
+
+    /* Switch: '<S70>/Switch' incorporates:
+     *  Sum: '<S31>/Add1'
+     *  Sum: '<S31>/Add4'
+     */
+    rtb_Switch_ph =
+      (rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 +
+       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5zzhe.MovingAverage)
+      + rtb_Switch2_idx_0;
   }
 
-  /* End of Switch: '<S74>/Switch1' */
+  /* End of Switch: '<S70>/Switch' */
 
-  /* Outport: '<Root>/ActualReferenceAirgap' incorporates:
-   *  Sum: '<S33>/Add1'
-   *  Sum: '<S33>/Add4'
+  /* DiscreteIntegrator: '<S70>/Discrete-Time Integrator1' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->AND) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
+        <= 0)) || ((!(int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->AND)
+                   && ((int32_T)
+                       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
+                       == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_f
+      = 0.0;
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1(rtb_Switch_ph,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfp,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfp);
+
+  /* Switch: '<S70>/Switch1' incorporates:
+   *  Constant: '<S70>/Constant4'
+   *  DiscreteIntegrator: '<S70>/Discrete-Time Integrator1'
+   *  RelationalOperator: '<S70>/GreaterThan1'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ActualReferenceAirgap =
-    (rtb_Switch1_j1_idx_0 + rtb_error) + rtb_Switch2_idx_0;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_f
+      > PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionRampTime) {
+    /* Outport: '<Root>/ActualReferenceAirgap' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->ActualReferenceAirgap =
+      rtb_Switch_ph;
+  } else {
+    /* Outport: '<Root>/ActualReferenceAirgap' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->ActualReferenceAirgap =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfp.MovingAverage1;
+  }
 
-  /* Gain: '<S15>/Gain' incorporates:
+  /* End of Switch: '<S70>/Switch1' */
+
+  /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nl
+        <= 0)) || ((!(int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+                   ((int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nl
+                    == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_l
+      = 0.0;
+  }
+
+  rtb_DiscreteTimeIntegrator_j2 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_l;
+
+  /* End of DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
+
+  /* Gain: '<S412>/Gain' incorporates:
+   *  Inport: '<Root>/IMU_z'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_l =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->kalman_zdotdot_gain *
+    PIDcontroller4CoreCentralizedTestReadyMotor_U->IMU_z;
+
+  /* ZeroOrderHold: '<S412>/Zero-Order Hold4' incorporates:
+   *  Gain: '<S412>/Gain1'
+   *  Gain: '<S412>/Gain2'
+   *  Inport: '<Root>/IMU_pitch'
+   *  Inport: '<Root>/IMU_roll'
+   */
+  rtb_ZeroOrderHold4_idx_0 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_l;
+  rtb_ZeroOrderHold4_idx_1 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->kalman_rolldot_gain *
+    PIDcontroller4CoreCentralizedTestReadyMotor_U->IMU_roll;
+  rtb_ZeroOrderHold4_idx_2 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->kalman_pitchdot_gain *
+    PIDcontroller4CoreCentralizedTestReadyMotor_U->IMU_pitch;
+
+  /* S-Function (sdspdiag2): '<S412>/Create Diagonal Matrix2' incorporates:
+   *  Constant: '<S412>/Constant1'
+   *  Constant: '<S412>/Constant2'
+   *  Constant: '<S412>/Constant3'
+   *  SignalConversion generated from: '<S412>/Create Diagonal Matrix2'
+   */
+  for (i = 0; i < 9; i++) {
+    rtb_CreateDiagonalMatrix2[i] = 0.0;
+  }
+
+  rtb_CreateDiagonalMatrix2[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_ag_IMU;
+  rtb_CreateDiagonalMatrix2[4] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_roll_IMU;
+  rtb_CreateDiagonalMatrix2[8] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_pitch_IMU;
+
+  /* End of S-Function (sdspdiag2): '<S412>/Create Diagonal Matrix2' */
+
+  /* RelationalOperator: '<S8>/Equal' incorporates:
+   *  Constant: '<S8>/Constant3'
+   *  Outport: '<Root>/Mode'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_f = (boolean_T)
+    (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
+
+  /* Gain: '<S19>/Gain' incorporates:
    *  Inport: '<Root>/G_A'
    *  Inport: '<Root>/G_B'
    *  Inport: '<Root>/G_C'
@@ -6050,198 +8329,190 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   rtb_Gain[2] = 1000.0 * PIDcontroller4CoreCentralizedTestReadyMotor_U->G_C;
   rtb_Gain[3] = 1000.0 * PIDcontroller4CoreCentralizedTestReadyMotor_U->G_D;
 
-  /* Switch: '<S419>/Switch1' incorporates:
-   *  Constant: '<S419>/Constant4'
+  /* Switch: '<S436>/Switch1' incorporates:
+   *  Constant: '<S436>/Constant4'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
       [4] != 0.0) {
-    /* Switch: '<S419>/Switch1' incorporates:
-     *  Lookup_n-D: '<S419>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
+    /* Switch: '<S436>/Switch1' incorporates:
+     *  Lookup_n-D: '<S436>/n-D Lookup Table'
      */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1 = look1_binlxpw
-      (rtb_Saturation,
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
-    /* Switch: '<S419>/Switch1' incorporates:
-     *  Constant: '<S419>/Constant'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
-  }
-
-  /* End of Switch: '<S419>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_Gain[0],
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh.MovingAverage,
-     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_e);
-
-  /* Switch: '<S411>/Switch' incorporates:
-   *  Constant: '<S411>/Constant1'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    rtb_Switch_ph =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage;
-  } else {
-    rtb_Switch_ph =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh.MovingAverage;
-  }
-
-  /* End of Switch: '<S411>/Switch' */
-
-  /* Switch: '<S420>/Switch1' incorporates:
-   *  Constant: '<S420>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S420>/Switch1' incorporates:
-     *  Lookup_n-D: '<S420>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_j = look1_binlxpw
-      (rtb_Saturation,
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S420>/Switch1' incorporates:
-     *  Constant: '<S420>/Constant'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_j =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
-  }
-
-  /* End of Switch: '<S420>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_Gain[1],
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_j,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5.MovingAverage,
-     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_j,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_n,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_n);
-
-  /* Switch: '<S412>/Switch' incorporates:
-   *  Constant: '<S412>/Constant1'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    rtb_Switch_k1 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_n.MovingAverage;
-  } else {
-    rtb_Switch_k1 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5.MovingAverage;
-  }
-
-  /* End of Switch: '<S412>/Switch' */
-
-  /* Switch: '<S421>/Switch1' incorporates:
-   *  Constant: '<S421>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S421>/Switch1' incorporates:
-     *  Lookup_n-D: '<S421>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_e = look1_binlxpw
-      (rtb_Saturation,
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S421>/Switch1' incorporates:
-     *  Constant: '<S421>/Constant'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_e =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
-  }
-
-  /* End of Switch: '<S421>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_Gain[2],
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_e,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5z);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage,
-     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_e,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_f,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_f);
-
-  /* Switch: '<S413>/Switch' incorporates:
-   *  Constant: '<S413>/Constant1'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    rtb_Switch_ds =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_f.MovingAverage;
-  } else {
-    rtb_Switch_ds =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage;
-  }
-
-  /* End of Switch: '<S413>/Switch' */
-
-  /* Switch: '<S422>/Switch1' incorporates:
-   *  Constant: '<S422>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S422>/Switch1' incorporates:
-     *  Lookup_n-D: '<S422>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a = look1_binlxpw
-      (rtb_Saturation,
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S422>/Switch1' incorporates:
-     *  Constant: '<S422>/Constant'
+    /* Switch: '<S436>/Switch1' incorporates:
+     *  Constant: '<S436>/Constant'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
   }
 
-  /* End of Switch: '<S422>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_Gain[3],
+  /* End of Switch: '<S436>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_Gain[0],
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a,
     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zz,
     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zz);
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
     (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zz.MovingAverage,
      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_k,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_k);
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_n,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_n);
 
-  /* Switch: '<S414>/Switch' incorporates:
-   *  Constant: '<S414>/Constant1'
+  /* Switch: '<S428>/Switch' incorporates:
+   *  Constant: '<S428>/Constant1'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
-    rtb_Switch_gn =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_k.MovingAverage;
+    rtb_Switch_juh =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_n.MovingAverage;
   } else {
-    rtb_Switch_gn =
+    rtb_Switch_juh =
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zz.MovingAverage;
   }
 
-  /* End of Switch: '<S414>/Switch' */
+  /* End of Switch: '<S428>/Switch' */
 
-  /* MATLAB Function: '<S410>/FindCoordinates' incorporates:
-   *  Constant: '<S410>/Constant'
-   *  Constant: '<S410>/Constant1'
-   *  Constant: '<S410>/Constant2'
-   *  Constant: '<S410>/Constant4'
-   *  Sum: '<S410>/Add'
+  /* Switch: '<S437>/Switch1' incorporates:
+   *  Constant: '<S437>/Constant4'
    */
-  /* MATLAB Function 'Sensors/Calculate Airgap, linpos, pitch and roll/Subsystem1/FindCoordinates': '<S418>:1' */
-  /* '<S418>:1:5' */
-  /* '<S418>:1:6' */
-  /* '<S418>:1:8' */
-  /* '<S418>:1:11' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S437>/Switch1' incorporates:
+     *  Lookup_n-D: '<S437>/n-D Lookup Table'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_j = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S437>/Switch1' incorporates:
+     *  Constant: '<S437>/Constant'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_j =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
+  }
+
+  /* End of Switch: '<S437>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_Gain[1],
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_j,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zzh,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zzh);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zzh.MovingAverage,
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_j,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_f,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_f);
+
+  /* Switch: '<S429>/Switch' incorporates:
+   *  Constant: '<S429>/Constant1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
+    rtb_Switch_pa =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_f.MovingAverage;
+  } else {
+    rtb_Switch_pa =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zzh.MovingAverage;
+  }
+
+  /* End of Switch: '<S429>/Switch' */
+
+  /* Switch: '<S438>/Switch1' incorporates:
+   *  Constant: '<S438>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S438>/Switch1' incorporates:
+     *  Lookup_n-D: '<S438>/n-D Lookup Table'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_e = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S438>/Switch1' incorporates:
+     *  Constant: '<S438>/Constant'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_e =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
+  }
+
+  /* End of Switch: '<S438>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_Gain[2],
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_e,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zzhe,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zzhe);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zzhe.MovingAverage,
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_e,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_k,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_k);
+
+  /* Switch: '<S430>/Switch' incorporates:
+   *  Constant: '<S430>/Constant1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
+    rtb_Switch_my =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_k.MovingAverage;
+  } else {
+    rtb_Switch_my =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zzhe.MovingAverage;
+  }
+
+  /* End of Switch: '<S430>/Switch' */
+
+  /* Switch: '<S439>/Switch1' incorporates:
+   *  Constant: '<S439>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S439>/Switch1' incorporates:
+     *  Lookup_n-D: '<S439>/n-D Lookup Table'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a4 = look1_binlxpw
+      (0.0, PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S439>/Switch1' incorporates:
+     *  Constant: '<S439>/Constant'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a4 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactor;
+  }
+
+  /* End of Switch: '<S439>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_Gain[3],
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a4,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_g,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_g);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_g.MovingAverage,
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a4,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_h,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_h);
+
+  /* Switch: '<S431>/Switch' incorporates:
+   *  Constant: '<S431>/Constant1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->DoubleFilter != 0.0) {
+    rtb_Switch_ka =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_h.MovingAverage;
+  } else {
+    rtb_Switch_ka =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_g.MovingAverage;
+  }
+
+  /* End of Switch: '<S431>/Switch' */
+
+  /* MATLAB Function: '<S427>/FindCoordinates' incorporates:
+   *  Constant: '<S427>/Constant'
+   *  Constant: '<S427>/Constant1'
+   *  Constant: '<S427>/Constant2'
+   *  Constant: '<S427>/Constant4'
+   *  Sum: '<S427>/Add'
+   */
+  /* MATLAB Function 'Sensors/Calculate Airgap, linpos, pitch and roll/Subsystem1/FindCoordinates': '<S435>:1' */
+  /* '<S435>:1:5' */
+  /* '<S435>:1:6' */
+  /* '<S435>:1:8' */
+  /* '<S435>:1:11' */
   A[0] = 0.465;
   A[4] = -0.392;
   A[8] = 1.0;
@@ -6254,70 +8525,69 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   A[3] = -0.465;
   A[7] = 0.392;
   A[11] = 1.0;
-  PIDcontroller4CoreCentralizedTestReadyMotor_xgeqp3_i(A, X, jpvt);
+  PIDcontroller4CoreCentralizedTestReadyMotor_xgeqp3_m(A, X, jpvt);
   rankA = 0;
-  rtb_ZeroCurrentForces_idx_3 = 8.8817841970012523E-15 * fabs(A[0]);
-  while ((rankA < 3) && (!(fabs(A[(rankA << 2) + rankA]) <=
-           rtb_ZeroCurrentForces_idx_3))) {
+  tol = 8.8817841970012523E-15 * fabs(A[0]);
+  while ((rankA < 3) && (!(fabs(A[(rankA << 2) + rankA]) <= tol))) {
     rankA++;
   }
 
-  zz[0] = (rtb_Switch_ph -
+  zz[0] = (rtb_Switch_juh -
            PIDcontroller4CoreCentralizedTestReadyMotor_InstP->
            HEMS_Plane_Offsets[0]) / 1000.0;
-  zz[2] = (rtb_Switch_k1 -
+  zz[2] = (rtb_Switch_pa -
            PIDcontroller4CoreCentralizedTestReadyMotor_InstP->
            HEMS_Plane_Offsets[1]) / 1000.0;
-  zz[1] = (rtb_Switch_ds -
+  zz[1] = (rtb_Switch_my -
            PIDcontroller4CoreCentralizedTestReadyMotor_InstP->
            HEMS_Plane_Offsets[2]) / 1000.0;
-  zz[3] = (rtb_Switch_gn -
+  zz[3] = (rtb_Switch_ka -
            PIDcontroller4CoreCentralizedTestReadyMotor_InstP->
            HEMS_Plane_Offsets[3]) / 1000.0;
   C[0] = 0.0;
   if (X[0] != 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = zz[0];
+    tol = zz[0];
     for (i = 1; i + 1 < 5; i++) {
-      rtb_ZeroCurrentForces_idx_3 += A[i] * zz[i];
+      tol += A[i] * zz[i];
     }
 
-    rtb_ZeroCurrentForces_idx_3 *= X[0];
-    if (rtb_ZeroCurrentForces_idx_3 != 0.0) {
-      zz[0] -= rtb_ZeroCurrentForces_idx_3;
+    tol *= X[0];
+    if (tol != 0.0) {
+      zz[0] -= tol;
       for (i = 1; i + 1 < 5; i++) {
-        zz[i] -= A[i] * rtb_ZeroCurrentForces_idx_3;
+        zz[i] -= A[i] * tol;
       }
     }
   }
 
   C[1] = 0.0;
   if (X[1] != 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = zz[1];
+    tol = zz[1];
     for (i = 2; i + 1 < 5; i++) {
-      rtb_ZeroCurrentForces_idx_3 += A[i + 4] * zz[i];
+      tol += A[i + 4] * zz[i];
     }
 
-    rtb_ZeroCurrentForces_idx_3 *= X[1];
-    if (rtb_ZeroCurrentForces_idx_3 != 0.0) {
-      zz[1] -= rtb_ZeroCurrentForces_idx_3;
+    tol *= X[1];
+    if (tol != 0.0) {
+      zz[1] -= tol;
       for (i = 2; i + 1 < 5; i++) {
-        zz[i] -= A[i + 4] * rtb_ZeroCurrentForces_idx_3;
+        zz[i] -= A[i + 4] * tol;
       }
     }
   }
 
   C[2] = 0.0;
   if (X[2] != 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = zz[2];
+    tol = zz[2];
     for (i = 3; i + 1 < 5; i++) {
-      rtb_ZeroCurrentForces_idx_3 += A[i + 8] * zz[i];
+      tol += A[i + 8] * zz[i];
     }
 
-    rtb_ZeroCurrentForces_idx_3 *= X[2];
-    if (rtb_ZeroCurrentForces_idx_3 != 0.0) {
-      zz[2] -= rtb_ZeroCurrentForces_idx_3;
+    tol *= X[2];
+    if (tol != 0.0) {
+      zz[2] -= tol;
       for (i = 3; i + 1 < 5; i++) {
-        zz[i] -= A[i + 8] * rtb_ZeroCurrentForces_idx_3;
+        zz[i] -= A[i + 8] * tol;
       }
     }
   }
@@ -6334,1421 +8604,118 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
     }
   }
 
-  /* '<S418>:1:16' */
-  /* '<S418>:1:17' */
-  /* '<S418>:1:18' */
-  /* '<S418>:1:21' */
+  /* '<S435>:1:16' */
+  /* '<S435>:1:17' */
+  /* '<S435>:1:18' */
+  /* '<S435>:1:21' */
   X[0] = 1.0;
   X[1] = 0.0;
   X[2] = C[0];
 
-  /* '<S418>:1:22' */
-  /* '<S418>:1:23' */
+  /* '<S435>:1:22' */
+  /* '<S435>:1:23' */
   Y[0] = 0.0;
   Y[1] = 1.0;
   Y[2] = C[1];
 
-  /* '<S418>:1:24' */
-  /* '<S418>:1:33' */
+  /* '<S435>:1:24' */
+  /* '<S435>:1:33' */
   rtb_z_out_idx_0 = ((C[0] * 0.3054 + C[1] * -0.392) + C[2]) * 1000.0;
   rtb_z_out_idx_1 = ((C[0] * 0.3054 + C[1] * 0.392) + C[2]) * 1000.0;
   rtb_z_out_idx_2 = ((C[0] * -0.3054 + C[1] * -0.392) + C[2]) * 1000.0;
   rtb_z_out_idx_3 = ((C[0] * -0.3054 + C[1] * 0.392) + C[2]) * 1000.0;
 
-  /* '<S418>:1:34' */
-  /* '<S418>:1:43' */
-  /* '<S418>:1:44' */
+  /* '<S435>:1:34' */
+  /* '<S435>:1:43' */
+  /* '<S435>:1:44' */
   rtb_avg_g = (((rtb_z_out_idx_0 + rtb_z_out_idx_1) + rtb_z_out_idx_2) +
                rtb_z_out_idx_3) / 4.0;
   if (-C[0] < 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = -1.0;
+    rtb_Subtract_idx_0 = -1.0;
   } else if (-C[0] > 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 1.0;
+    rtb_Subtract_idx_0 = 1.0;
   } else if (-C[0] == 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
+    rtb_Subtract_idx_0 = 0.0;
   } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
+    rtb_Subtract_idx_0 = (rtNaN);
   }
 
-  rtb_pitch_e = acos(1.0 / PIDcontroller4CoreCentralizedTestReadyMotor_norm_l(X))
-    * rtb_ZeroCurrentForces_idx_3;
+  rtb_pitch_j = acos(1.0 / PIDcontroller4CoreCentralizedTestReadyMotor_norm_c(X))
+    * rtb_Subtract_idx_0;
   if (-C[1] < 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = -1.0;
+    rtb_Subtract_idx_0 = -1.0;
   } else if (-C[1] > 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 1.0;
+    rtb_Subtract_idx_0 = 1.0;
   } else if (-C[1] == 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
+    rtb_Subtract_idx_0 = 0.0;
   } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
+    rtb_Subtract_idx_0 = (rtNaN);
   }
 
-  rtb_roll = acos(-(-1.0 / PIDcontroller4CoreCentralizedTestReadyMotor_norm_l(Y)))
-    * rtb_ZeroCurrentForces_idx_3;
+  rtb_roll = acos(-(-1.0 / PIDcontroller4CoreCentralizedTestReadyMotor_norm_c(Y)))
+    * rtb_Subtract_idx_0;
 
-  /* End of MATLAB Function: '<S410>/FindCoordinates' */
+  /* End of MATLAB Function: '<S427>/FindCoordinates' */
 
-  /* Switch: '<S423>/Switch1' incorporates:
-   *  Constant: '<S423>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S423>/Switch1' incorporates:
-     *  Lookup_n-D: '<S423>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_o = look1_binlxpw
-      (rtb_Saturation,
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S423>/Switch1' incorporates:
-     *  Constant: '<S423>/Constant'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_o =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorAirgap;
-  }
-
-  /* End of Switch: '<S423>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_avg_g,
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_o,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_h,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_h);
-
-  /* Switch: '<S415>/Switch' incorporates:
-   *  Constant: '<S415>/Constant1'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->AirgapFilter != 0.0) {
-    rtb_Switch_od =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_h.MovingAverage;
-  } else {
-    rtb_Switch_od = rtb_avg_g;
-  }
-
-  /* End of Switch: '<S415>/Switch' */
-
-  /* Switch: '<S424>/Switch1' incorporates:
-   *  Constant: '<S424>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S424>/Switch1' incorporates:
-     *  Lookup_n-D: '<S424>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_g = look1_binlxpw
-      (rtb_Saturation,
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S424>/Switch1' incorporates:
-     *  Constant: '<S424>/Constant'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_g =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorPitch;
-  }
-
-  /* End of Switch: '<S424>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_pitch_e,
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_g,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_kw,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kw);
-
-  /* Switch: '<S416>/Switch' incorporates:
-   *  Constant: '<S416>/Constant1'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PitchFilter != 0.0) {
-    /* Switch: '<S416>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_kw.MovingAverage;
-  } else {
-    /* Switch: '<S416>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k = rtb_pitch_e;
-  }
-
-  /* End of Switch: '<S416>/Switch' */
-
-  /* Switch: '<S425>/Switch1' incorporates:
-   *  Constant: '<S425>/Constant4'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [4] != 0.0) {
-    /* Switch: '<S425>/Switch1' incorporates:
-     *  Lookup_n-D: '<S425>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_n = look1_binlxpw
-      (rtb_Saturation,
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
-  } else {
-    /* Switch: '<S425>/Switch1' incorporates:
-     *  Constant: '<S425>/Constant'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_n =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorRoll;
-  }
-
-  /* End of Switch: '<S425>/Switch1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_roll,
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_n,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_ka,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_ka);
-
-  /* Switch: '<S417>/Switch' incorporates:
-   *  Constant: '<S417>/Constant1'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->RollFilter != 0.0) {
-    /* Switch: '<S417>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_ka.MovingAverage;
-  } else {
-    /* Switch: '<S417>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c = rtb_roll;
-  }
-
-  /* End of Switch: '<S417>/Switch' */
-
-  /* Gain: '<S6>/To m' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom = 0.001 * rtb_Switch_od;
-
-  /* S-Function (sdspdiag2): '<S398>/Create Diagonal Matrix' incorporates:
-   *  Constant: '<S398>/Constant1'
-   *  Constant: '<S398>/Constant2'
-   *  Constant: '<S398>/Constant3'
-   *  SignalConversion generated from: '<S398>/Create Diagonal Matrix'
-   */
-  for (i = 0; i < 9; i++) {
-    rtb_CreateDiagonalMatrix[i] = 0.0;
-  }
-
-  rtb_CreateDiagonalMatrix[0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_ag_sens;
-  rtb_CreateDiagonalMatrix[4] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_roll_sens;
-  rtb_CreateDiagonalMatrix[8] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_pitch_sens;
-
-  /* End of S-Function (sdspdiag2): '<S398>/Create Diagonal Matrix' */
-
-  /* Outputs for Enabled SubSystem: '<S399>/Correct1' incorporates:
-   *  EnablePort: '<S400>/Enable'
-   */
-  /* MATLAB Function: '<S400>/Correct' incorporates:
-   *  DataStoreRead: '<S400>/Data Store ReadP'
-   *  DataStoreRead: '<S400>/Data Store ReadX'
-   *  S-Function (sdspdiag2): '<S398>/Create Diagonal Matrix'
-   *  ZeroOrderHold: '<S398>/Zero-Order Hold'
-   */
-  /* MATLAB Function 'Extras/EKFCorrect/Correct': '<S403>:1' */
-  /* '<S403>:1:11' */
-  p = true;
-  for (i = 0; i < 9; i++) {
-    rtb_ZeroCurrentForces_idx_3 = rtb_CreateDiagonalMatrix[i];
-    if (((int32_T)p) && ((!(int32_T)rtIsInf(rtb_ZeroCurrentForces_idx_3)) &&
-                         (!(int32_T)rtIsNaN(rtb_ZeroCurrentForces_idx_3)))) {
-    } else {
-      p = false;
-    }
-  }
-
-  if (p) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_svd(rtb_CreateDiagonalMatrix, Ss,
-      X, V);
-  } else {
-    X[0] = (rtNaN);
-    X[1] = (rtNaN);
-    X[2] = (rtNaN);
-    for (b_j = 0; b_j < 9; b_j++) {
-      V[b_j] = (rtNaN);
-    }
-  }
-
-  for (b_j = 0; b_j < 9; b_j++) {
-    Ss[b_j] = 0.0;
-  }
-
-  Ss[0] = X[0];
-  Ss[4] = X[1];
-  Ss[8] = X[2];
-  for (i = 0; i < 9; i++) {
-    Ss[i] = sqrt(Ss[i]);
-  }
-
-  for (b_j = 0; b_j < 3; b_j++) {
-    for (i = 0; i < 3; i++) {
-      rankA = i + 3 * b_j;
-      R[rankA] = 0.0;
-      R[rankA] += Ss[3 * b_j] * V[i];
-      R[rankA] += Ss[3 * b_j + 1] * V[i + 3];
-      R[rankA] += Ss[3 * b_j + 2] * V[i + 6];
-    }
-  }
-
-  X[0] = PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[1];
-  X[1] = PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[3];
-  X[2] = PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[5];
-  for (b_j = 0; b_j < 6; b_j++) {
-    for (i = 0; i < 6; i++) {
-      imvec[i] = PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[i];
-    }
-
-    rtb_ZeroCurrentForces_idx_3 = 1.4901161193847656E-8 * fabs
-      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[b_j]);
-    if ((1.4901161193847656E-8 > rtb_ZeroCurrentForces_idx_3) || ((int32_T)
-         rtIsNaN(rtb_ZeroCurrentForces_idx_3))) {
-      rtb_ZeroCurrentForces_idx_3 = 1.4901161193847656E-8;
-    }
-
-    imvec[b_j] = PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[b_j] +
-      rtb_ZeroCurrentForces_idx_3;
-    dHdx[3 * b_j] = (imvec[1] - X[0]) / rtb_ZeroCurrentForces_idx_3;
-    dHdx[3 * b_j + 1] = (imvec[3] - X[1]) / rtb_ZeroCurrentForces_idx_3;
-    dHdx[3 * b_j + 2] = (imvec[5] - X[2]) / rtb_ZeroCurrentForces_idx_3;
-  }
-
-  PIDcontroller4CoreCentralizedTestReadyMotor_qrFactor(dHdx,
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->P, R, Ss);
-  for (b_j = 0; b_j < 6; b_j++) {
-    for (i = 0; i < 6; i++) {
-      A_0[i + 6 * b_j] = 0.0;
-    }
-  }
-
-  for (rankA = 0; rankA < 6; rankA++) {
-    for (b_j = 0; b_j < 6; b_j++) {
-      for (i = 0; i < 6; i++) {
-        aoffset = 6 * b_j + i;
-        A_0[aoffset] += PIDcontroller4CoreCentralizedTestReadyMotor_DW->P[6 *
-          rankA + i] * PIDcontroller4CoreCentralizedTestReadyMotor_DW->P[6 *
-          rankA + b_j];
-      }
-    }
-  }
-
-  for (b_j = 0; b_j < 3; b_j++) {
-    for (i = 0; i < 6; i++) {
-      aoffset = b_j + 3 * i;
-      K[aoffset] = 0.0;
-      for (rankA = 0; rankA < 6; rankA++) {
-        K[aoffset] += A_0[6 * rankA + i] * dHdx[3 * rankA + b_j];
-      }
-    }
-  }
-
-  for (b_j = 0; b_j < 6; b_j++) {
-    C_0[3 * b_j] = K[3 * b_j];
-    rankA = 3 * b_j + 1;
-    C_0[rankA] = K[rankA];
-    rankA = 3 * b_j + 2;
-    C_0[rankA] = K[rankA];
-  }
-
-  PIDcontroller4CoreCentralizedTestReadyMotor_trisolve(Ss, C_0);
-  for (b_j = 0; b_j < 6; b_j++) {
-    b_C[3 * b_j] = C_0[3 * b_j];
-    i = 3 * b_j + 1;
-    b_C[i] = C_0[i];
-    i = 3 * b_j + 2;
-    b_C[i] = C_0[i];
-  }
-
-  for (b_j = 0; b_j < 3; b_j++) {
-    V[3 * b_j] = Ss[b_j];
-    V[3 * b_j + 1] = Ss[b_j + 3];
-    V[3 * b_j + 2] = Ss[b_j + 6];
-  }
-
-  PIDcontroller4CoreCentralizedTestReadyMotor_trisolve_e(V, b_C);
-  for (b_j = 0; b_j < 3; b_j++) {
-    for (i = 0; i < 6; i++) {
-      K[i + 6 * b_j] = b_C[3 * i + b_j];
-    }
-  }
-
-  for (b_j = 0; b_j < 18; b_j++) {
-    C_0[b_j] = -K[b_j];
-  }
-
-  for (b_j = 0; b_j < 6; b_j++) {
-    for (i = 0; i < 6; i++) {
-      aoffset = i + 6 * b_j;
-      A_0[aoffset] = 0.0;
-      A_0[aoffset] += dHdx[3 * b_j] * C_0[i];
-      A_0[aoffset] += dHdx[3 * b_j + 1] * C_0[i + 6];
-      A_0[aoffset] += dHdx[3 * b_j + 2] * C_0[i + 12];
-    }
-  }
-
-  for (i = 0; i < 6; i++) {
-    aoffset = 6 * i + i;
-    A_0[aoffset]++;
-  }
-
-  for (b_j = 0; b_j < 6; b_j++) {
-    coffset = b_j * 6;
-    for (i = 0; i < 6; i++) {
-      aoffset = i * 6;
-      rtb_ZeroCurrentForces_idx_3 = 0.0;
-      for (rankA = 0; rankA < 6; rankA++) {
-        rtb_ZeroCurrentForces_idx_3 += A_0[rankA * 6 + b_j] *
-          PIDcontroller4CoreCentralizedTestReadyMotor_DW->P[aoffset + rankA];
-      }
-
-      Ss_0[coffset + i] = rtb_ZeroCurrentForces_idx_3;
-    }
-  }
-
-  for (b_j = 0; b_j < 3; b_j++) {
-    for (i = 0; i < 6; i++) {
-      aoffset = b_j + 3 * i;
-      C_0[aoffset] = 0.0;
-      C_0[aoffset] += R[3 * b_j] * K[i];
-      C_0[aoffset] += R[3 * b_j + 1] * K[i + 6];
-      C_0[aoffset] += R[3 * b_j + 2] * K[i + 12];
-    }
-  }
-
-  for (b_j = 0; b_j < 6; b_j++) {
-    for (i = 0; i < 6; i++) {
-      Ss_1[i + 9 * b_j] = Ss_0[6 * b_j + i];
-    }
-
-    Ss_1[9 * b_j + 6] = C_0[3 * b_j];
-    Ss_1[9 * b_j + 7] = C_0[3 * b_j + 1];
-    Ss_1[9 * b_j + 8] = C_0[3 * b_j + 2];
-  }
-
-  PIDcontroller4CoreCentralizedTestReadyMotor_qr(Ss_1, a__1, A_0);
-
-  /* '<S403>:1:135' */
-  rtb_ZeroCurrentForces_idx_3 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom -
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[1];
-  rtb_Switch1_j1_idx_0 = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c
-    - PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[3];
-  rtb_Switch1_j1_idx_1 = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k
-    - PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[5];
-
-  /* Outputs for Atomic SubSystem: '<S399>/Output' */
-  for (i = 0; i < 6; i++) {
-    /* DataStoreWrite: '<S400>/Data Store WriteP' incorporates:
-     *  MATLAB Function: '<S400>/Correct'
-     */
-    for (b_j = 0; b_j < 6; b_j++) {
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->P[b_j + 6 * i] = A_0[6 *
-        b_j + i];
-    }
-
-    /* End of DataStoreWrite: '<S400>/Data Store WriteP' */
-
-    /* DataStoreWrite: '<S400>/Data Store WriteX' incorporates:
-     *  DataStoreRead: '<S400>/Data Store ReadX'
-     *  MATLAB Function: '<S400>/Correct'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[i] += (K[i + 6] *
-      rtb_Switch1_j1_idx_0 + K[i] * rtb_ZeroCurrentForces_idx_3) + K[i + 12] *
-      rtb_Switch1_j1_idx_1;
-
-    /* DataStoreRead: '<S401>/Data Store Read' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->DataStoreRead[i] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[i];
-  }
-
-  /* End of Outputs for SubSystem: '<S399>/Output' */
-  /* End of Outputs for SubSystem: '<S399>/Correct1' */
-
-  /* Gain: '<S6>/To mm' */
-  /* MATLAB Function 'Extended Kalman Filter/Output/MATLAB Function': '<S404>:1' */
-  /* '<S404>:1:4' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm = 1000.0 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->DataStoreRead[1];
-
-  /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
-  if ((int32_T)
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_o
-      == 1) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o
-      = 0.0;
-  }
-
-  /* Sum: '<S8>/Subtract1' incorporates:
-   *  DiscreteIntegrator: '<S8>/Discrete-Time Integrator'
-   *  Gain: '<S8>/Gain'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract1 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm -
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Kalman_I *
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o;
-
-  /* Switch: '<Root>/Switch1' incorporates:
-   *  Constant: '<Root>/Constant3'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SkipKalman != 0.0) {
-    /* Switch: '<Root>/Switch1' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[0] = rtb_Switch_od;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[1] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[2] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c;
-  } else {
-    /* Switch: '<Root>/Switch1' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[0] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract1;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[1] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->DataStoreRead[5];
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[2] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->DataStoreRead[3];
-  }
-
-  /* End of Switch: '<Root>/Switch1' */
-
-  /* Sum: '<S33>/Sum' incorporates:
-   *  Outport: '<Root>/ActualReferenceAirgap'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->error =
-    PIDcontroller4CoreCentralizedTestReadyMotor_Y->ActualReferenceAirgap -
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[0];
-
-  /* RelationalOperator: '<S73>/Equal' incorporates:
-   *  Constant: '<S73>/Constant2'
-   *  Outport: '<Root>/Mode'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k = (boolean_T)
-    (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
-
-  /* DiscreteIntegrator: '<S108>/Integrator' incorporates:
-   *  DiscreteIntegrator: '<S103>/Filter'
-   */
-  p = (boolean_T)!(int32_T)
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k;
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_o
-        <= 0)) || (((int32_T)p) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_o
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_n = 0.0;
-  }
-
-  /* DiscreteIntegrator: '<S103>/Filter' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState <=
-        0)) || (((int32_T)p) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState ==
-        1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE = 0.0;
-  }
-
-  /* Switch: '<S71>/Switch2' incorporates:
-   *  Constant: '<S71>/Constant3'
-   *  Constant: '<S71>/Constant4'
-   *  Lookup_n-D: '<S71>/n-D Lookup Table1'
-   *  Saturate: '<S71>/Saturation'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [2] != 0.0) {
-    rtb_Switch1_j1_idx_0 = look1_binlxpw(rtb_Saturation,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->GS_breakpoints,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_d_array, 2U);
-  } else {
-    rtb_Switch1_j1_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_d;
-  }
-
-  /* End of Switch: '<S71>/Switch2' */
-
-  /* Switch: '<S125>/Switch1' incorporates:
-   *  Constant: '<S125>/Constant4'
-   *  Constant: '<S125>/N'
-   *  Lookup_n-D: '<S125>/n-D Lookup Table'
-   *  Saturate: '<S71>/Saturation'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [3] != 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = look1_binlxpw(rtb_Saturation,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_Tc_array, 1U);
-  } else {
-    rtb_ZeroCurrentForces_idx_3 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_T_c;
-  }
-
-  /* End of Switch: '<S125>/Switch1' */
-
-  /* Product: '<S111>/NProd Out' incorporates:
-   *  Constant: '<S125>/Constant'
-   *  DiscreteIntegrator: '<S103>/Filter'
-   *  Product: '<S102>/DProd Out'
-   *  Product: '<S125>/Divide'
-   *  Sum: '<S103>/SumD'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->error * rtb_Switch1_j1_idx_0
-     - PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE) *
-    (6.2831853071795862 / rtb_ZeroCurrentForces_idx_3);
-
-  /* Switch: '<S71>/Switch1' incorporates:
-   *  Constant: '<S71>/Constant1'
-   *  Constant: '<S71>/Constant4'
-   *  Lookup_n-D: '<S71>/n-D Lookup Table'
-   *  Saturate: '<S71>/Saturation'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
-      [0] != 0.0) {
-    rtb_Switch1_j1_idx_0 = look1_binlxpw(rtb_Saturation,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->GS_breakpoints,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_p_array, 2U);
-  } else {
-    rtb_Switch1_j1_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_p;
-  }
-
-  /* End of Switch: '<S71>/Switch1' */
-
-  /* Sum: '<S117>/Sum' incorporates:
-   *  DiscreteIntegrator: '<S108>/Integrator'
-   *  Product: '<S113>/PProd Out'
-   */
-  rtb_Sum_h = (PIDcontroller4CoreCentralizedTestReadyMotor_B->error *
-               rtb_Switch1_j1_idx_0 +
-               PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_n)
-    + PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut;
-
-  /* Product: '<S33>/Divide1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Divide1 = rtb_Divide *
-    rtb_Sum_h;
-
-  /* Switch: '<S3>/Switch' incorporates:
-   *  Constant: '<S3>/Constant3'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn != 0.0) {
-    /* Switch: '<S3>/Switch' incorporates:
-     *  Constant: '<S3>/Constant1'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionCurrent;
-  } else {
-    /* Switch: '<S3>/Switch' incorporates:
-     *  Constant: '<S3>/Constant4'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n = 0.0;
-  }
-
-  /* End of Switch: '<S3>/Switch' */
-
-  /* Sum: '<S3>/Subtract' incorporates:
-   *  Constant: '<S3>/Constant'
-   */
-  rtb_Subtract_c = rtb_Switch_od -
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MotorAirgapOffset;
-
-  /* Trigonometry: '<S3>/Trigonometric Function' */
-  rtb_TrigonometricFunction = sin
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k);
-
-  /* Sum: '<S3>/Add' incorporates:
-   *  Constant: '<S3>/Constant2'
-   *  Gain: '<S3>/Gain'
-   *  Product: '<S3>/Product'
-   */
-  for (i = 0; i < 39; i++) {
-    rtb_Add_e[i] = PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled16[i]
-      * rtb_TrigonometricFunction * -1000.0 + rtb_Subtract_c;
-  }
-
-  /* End of Sum: '<S3>/Add' */
-
-  /* Lookup_n-D: '<S3>/1-D Lookup Table1' incorporates:
-   *  Switch: '<S3>/Switch'
-   */
-  bpIndices[0U] = plook_binx
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n,
-     PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.uDLookupTable1_bp01Data,
-     21U, &rtb_ZeroCurrentForces_idx_3);
-  fractions[0U] = rtb_ZeroCurrentForces_idx_3;
-  for (i = 0; i < 39; i++) {
-    bpIndices[1U] = plook_binx(rtb_Add_e[i],
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.uDLookupTable1_bp02Data,
-      54U, &rtb_ZeroCurrentForces_idx_3);
-    fractions[1U] = rtb_ZeroCurrentForces_idx_3;
-    rtb_uDLookupTable1[i] = intrp2d_l_pw(bpIndices, fractions,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.uDLookupTable1_tableData,
-      22U);
-  }
-
-  /* End of Lookup_n-D: '<S3>/1-D Lookup Table1' */
-
-  /* Sum: '<S3>/Sum' */
-  rtb_ZeroCurrentForces_idx_3 = -0.0;
-  for (aoffset = 0; aoffset < 39; aoffset++) {
-    rtb_ZeroCurrentForces_idx_3 += rtb_uDLookupTable1[aoffset];
-  }
-
-  /* Gain: '<S3>/Gain2' incorporates:
-   *  Sum: '<S3>/Sum'
-   */
-  rtb_Gain2 = 0.025641025641025661 * rtb_ZeroCurrentForces_idx_3;
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_p(rtb_Gain2,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfp,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfp);
-
-  /* Switch: '<S396>/Switch1' incorporates:
-   *  Constant: '<S396>/Constant5'
-   *  Constant: '<S396>/Constant7'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->motorforce_on != 0.0) {
-    rtb_Switch1_d =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfp.MovingAverage;
-  } else {
-    rtb_Switch1_d = 0.0;
-  }
-
-  /* End of Switch: '<S396>/Switch1' */
-
-  /* DiscreteIntegrator: '<S23>/Discrete-Time Integrator3' incorporates:
-   *  Constant: '<S23>/Constant'
-   */
-  if (((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ResetArms > 0.0) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_PrevResetState
-        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ResetArms
-                    <= 0.0) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_PrevResetState
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE
-      = 0.0;
-  }
-
-  /* Sum: '<S23>/Add3' incorporates:
-   *  Constant: '<S23>/Constant6'
-   *  DiscreteIntegrator: '<S23>/Discrete-Time Integrator3'
-   */
-  rtb_Add3 = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass -
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE;
-
-  /* Product: '<S3>/Gravity' incorporates:
-   *  Constant: '<S3>/Gravitational constant [m//s^2]'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity = -9.81 * rtb_Add3;
-
-  /* Sum: '<S3>/Sum1' */
-  rtb_Sum1 = rtb_Switch1_d +
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity;
-
-  /* Sum: '<S35>/Add' */
-  rtb_Add_l = (0.0 - PIDcontroller4CoreCentralizedTestReadyMotor_B->Divide1) -
-    rtb_Sum1;
-
-  /* Gain: '<S34>/Gain4' incorporates:
-   *  Constant: '<S34>/2'
-   *  Gain: '<S36>/Gain5'
-   *  Math: '<S34>/Square1'
-   */
-  rtb_Switch1_j1_idx_1 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodHeight *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodHeight *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodHeightFactor;
-
-  /* Gain: '<S34>/Gain' incorporates:
-   *  Constant: '<S34>/3'
-   *  Gain: '<S34>/Gain3'
-   *  Gain: '<S34>/Gain4'
-   *  Math: '<S34>/Square'
-   *  Sum: '<S34>/Sum1'
-   */
-  rtb_Gain_no = (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodLength *
-                 PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodLength *
-                 PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodLengthFactor
-                 + rtb_Switch1_j1_idx_1) *
-    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass / 12.0);
-
-  /* Sum: '<S183>/Subtract5' incorporates:
-   *  Constant: '<S183>/Constant4'
-   *  Outport: '<Root>/Mode'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_o =
-    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - -1.0;
-
-  /* Switch: '<S183>/Switch' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_o != 0.0) {
-    /* Switch: '<S183>/Switch' incorporates:
-     *  Constant: '<S183>/Constant1'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o = 0.0;
-  } else {
-    /* Switch: '<S183>/Switch' incorporates:
-     *  Gain: '<S37>/Gain1'
-     *  Sum: '<S37>/Subtract'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o =
-      -(((rtb_Switch_k_idx_0 + rtb_Switch_k_idx_1) - rtb_Switch_k_idx_2) -
-        rtb_Switch_k_idx_3);
-  }
-
-  /* End of Switch: '<S183>/Switch' */
-
-  /* DiscreteIntegrator: '<S269>/Integrator' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g
-        <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
-                   ((int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g
-                    == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l = 0.0;
-  }
-
-  /* SampleTimeMath: '<S264>/Tsamp' incorporates:
-   *  Gain: '<S261>/Derivative Gain'
-   *
-   * About '<S264>/Tsamp':
-   *  y = u * K where K = 1 / ( w * Ts )
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_m = 0.0 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o * 4000.0;
-
-  /* Delay: '<S262>/UD' */
-  if ((((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_n == 1)
-       != (int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
-      ((int32_T)
-       PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_n != 3))
-  {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o = 0.0;
-  }
-
-  PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_n =
-    (ZCSigState)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
-
-  /* Sum: '<S278>/Sum' incorporates:
-   *  Delay: '<S262>/UD'
-   *  DiscreteIntegrator: '<S269>/Integrator'
-   *  Gain: '<S274>/Proportional Gain'
-   *  Sum: '<S262>/Diff'
-   */
-  rtb_Sum_ac = (0.0 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o +
-                PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l)
-    + (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_m -
-       PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o);
-
-  /* Switch: '<S183>/Switch1' incorporates:
-   *  Constant: '<S183>/Constant'
-   *  Constant: '<S183>/Constant2'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Undo_0current != 0.0) {
-    rtb_Switch1_j1_idx_0 = 0.0;
-  } else {
-    rtb_Switch1_j1_idx_0 = rtb_Sum_ac;
-  }
-
-  /* End of Switch: '<S183>/Switch1' */
-
-  /* Sum: '<S34>/Plus' incorporates:
-   *  Constant: '<S34>/Base Ref Airgap1'
-   *  Gain: '<S177>/Gain1'
-   *  Gain: '<S178>/Gain1'
-   *  Sum: '<S34>/Plus1'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointpitch =
-    (0.017453292519943295 * rtb_Switch1_j1_idx_0 + 0.017453292519943295 *
-     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->RefPitch) +
-    rtb_Switch2_idx_1;
-
-  /* Sum: '<S34>/Subtract' */
-  rtb_error_m = PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointpitch -
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[1];
-
-  /* Gain: '<S34>/Gain2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2 = 952.0 * rtb_error_m;
-
-  /* Abs: '<S179>/Abs' incorporates:
-   *  Delay: '<S179>/Delay'
-   */
-  rtb_ZeroCurrentForces_idx_3 = fabs
-    (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_h);
-
-  /* Saturate: '<S179>/Saturation' */
-  if (rtb_ZeroCurrentForces_idx_3 > 5.0) {
-    rtb_Saturation_gj = 5.0;
-  } else {
-    rtb_Saturation_gj = rtb_ZeroCurrentForces_idx_3;
-  }
-
-  /* End of Saturate: '<S179>/Saturation' */
-
-  /* RelationalOperator: '<S34>/Equal' incorporates:
-   *  Constant: '<S34>/Constant2'
-   *  Outport: '<Root>/Mode'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a = (boolean_T)
-    (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
-
-  /* DiscreteIntegrator: '<S218>/Integrator' incorporates:
-   *  DiscreteIntegrator: '<S213>/Filter'
-   */
-  p = (boolean_T)!(int32_T)
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a;
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g0
-        <= 0)) || (((int32_T)p) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g0
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c = 0.0;
-  }
-
-  /* DiscreteIntegrator: '<S213>/Filter' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_j <=
-        0)) || (((int32_T)p) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_j ==
-        1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i = 0.0;
-  }
-
-  /* Switch: '<S179>/Switch2' incorporates:
-   *  Constant: '<S179>/Constant3'
-   *  Constant: '<S179>/Constant4'
-   *  Lookup_n-D: '<S179>/n-D Lookup Table1'
-   *  Saturate: '<S179>/Saturation'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Pitch_GainSchedulingEnabled
-      [3] != 0.0) {
-    rtb_Switch1_j1_idx_0 = look1_binlxpw(rtb_Saturation_gj,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->GS_breakpoints,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_d_array, 2U);
-  } else {
-    rtb_Switch1_j1_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_d;
-  }
-
-  /* End of Switch: '<S179>/Switch2' */
-
-  /* Switch: '<S184>/Switch1' incorporates:
-   *  Constant: '<S184>/Constant4'
-   *  Constant: '<S184>/N'
-   *  Lookup_n-D: '<S184>/n-D Lookup Table'
-   *  Saturate: '<S179>/Saturation'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Pitch_GainSchedulingEnabled
-      [4] != 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = look1_binlxpw(rtb_Saturation_gj,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_Tc_array, 1U);
-  } else {
-    rtb_ZeroCurrentForces_idx_3 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_T_c;
-  }
-
-  /* End of Switch: '<S184>/Switch1' */
-
-  /* Product: '<S221>/NProd Out' incorporates:
-   *  Constant: '<S184>/Constant'
-   *  DiscreteIntegrator: '<S213>/Filter'
-   *  Product: '<S184>/Divide'
-   *  Product: '<S212>/DProd Out'
-   *  Sum: '<S213>/SumD'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_e =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2 * rtb_Switch1_j1_idx_0
-     - PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i) *
-    (6.2831853071795862 / rtb_ZeroCurrentForces_idx_3);
-
-  /* Switch: '<S179>/Switch1' incorporates:
-   *  Constant: '<S179>/Constant1'
-   *  Constant: '<S179>/Constant4'
-   *  Lookup_n-D: '<S179>/n-D Lookup Table'
-   *  Saturate: '<S179>/Saturation'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Pitch_GainSchedulingEnabled
-      [0] != 0.0) {
-    rtb_Switch1_j1_idx_0 = look1_binlxpw(rtb_Saturation_gj,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->GS_breakpoints,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_p_array, 2U);
-  } else {
-    rtb_Switch1_j1_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_p;
-  }
-
-  /* End of Switch: '<S179>/Switch1' */
-
-  /* Sum: '<S227>/Sum' incorporates:
-   *  DiscreteIntegrator: '<S218>/Integrator'
-   *  Product: '<S223>/PProd Out'
-   */
-  rtb_Sum_ih = (PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2 *
-                rtb_Switch1_j1_idx_0 +
-                PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c)
-    + PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_e;
-
-  /* Product: '<S34>/Product' incorporates:
-   *  Constant: '<S34>/Reference_P_Inertia'
-   *  Gain: '<S34>/Gain1'
-   *  Product: '<S34>/Divide'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product = rtb_Gain_no /
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Reference_P_Inertia *
-    (2.049 * rtb_Sum_ih);
-
-  /* Sum: '<S3>/Sum2' */
-  rtb_ZeroCurrentForces_idx_3 = -0.0;
-  for (aoffset = 0; aoffset < 39; aoffset++) {
-    /* Sum: '<S3>/Sum2' incorporates:
-     *  Constant: '<S3>/Constant6'
-     *  Product: '<S3>/Product2'
-     */
-    rtb_ZeroCurrentForces_idx_3 +=
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled16[aoffset] *
-      rtb_uDLookupTable1[aoffset];
-  }
-
-  /* Gain: '<S3>/Gain3' incorporates:
-   *  Sum: '<S3>/Sum2'
-   */
-  rtb_Gain3_a = 0.025641025641025661 * rtb_ZeroCurrentForces_idx_3;
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_p(rtb_Gain3_a,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5zzhe,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzhe);
-
-  /* Logic: '<S23>/OR' incorporates:
-   *  Constant: '<S23>/Constant'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->OR = (boolean_T)
-    ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ResetArms != 0.0) ||
-     ((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal));
-
-  /* DiscreteIntegrator: '<S23>/Discrete-Time Integrator' incorporates:
-   *  DiscreteIntegrator: '<S23>/Discrete-Time Integrator1'
-   *  DiscreteIntegrator: '<S23>/Discrete-Time Integrator2'
-   */
-  p = (boolean_T)!(int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR;
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_p
-        <= 0)) || (((int32_T)p) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_p
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_p
-      = 0.0;
-  }
-
-  /* Sum: '<S23>/Add2' incorporates:
-   *  Constant: '<S23>/Constant3'
-   *  DiscreteIntegrator: '<S23>/Discrete-Time Integrator'
-   */
-  rtb_Add2 = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->X_Arm_Offset +
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_p;
-
-  /* Gain: '<S3>/Gain1' incorporates:
-   *  Product: '<S3>/Product3'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1 = -(rtb_Add2 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity);
-
-  /* Switch: '<S395>/Switch1' incorporates:
-   *  Constant: '<S395>/Constant5'
-   *  Constant: '<S395>/Constant7'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->motorforce_on != 0.0) {
-    rtb_Switch1_j1_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5zzhe.MovingAverage;
-  } else {
-    rtb_Switch1_j1_idx_0 = 0.0;
-  }
-
-  /* End of Switch: '<S395>/Switch1' */
-
-  /* Sum: '<S3>/Add1' */
-  rtb_Add1 = rtb_Switch1_j1_idx_0 +
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1;
-
-  /* Sum: '<S35>/Add1' */
-  rtb_Add1_k = PIDcontroller4CoreCentralizedTestReadyMotor_B->Product - rtb_Add1;
-
-  /* Product: '<S7>/Divide' incorporates:
-   *  Constant: '<S7>/LongDistance'
-   */
-  rtb_Divide_k = rtb_Add1_k / 0.3054;
-
-  /* Gain: '<S36>/Gain' incorporates:
-   *  Constant: '<S36>/1'
-   *  Gain: '<S36>/Gain4'
-   *  Math: '<S36>/Square'
-   *  Sum: '<S36>/Sum1'
-   */
-  rtb_Gain_mn = (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodWidth *
-                 PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodWidth *
-                 PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodWidthFactor
-                 + rtb_Switch1_j1_idx_1) *
-    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass / 12.0);
-
-  /* Sum: '<S291>/Subtract5' incorporates:
-   *  Constant: '<S291>/Constant4'
-   *  Outport: '<Root>/Mode'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_l =
-    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - -1.0;
-
-  /* Switch: '<S291>/Switch' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_l != 0.0) {
-    /* Switch: '<S291>/Switch' incorporates:
-     *  Constant: '<S291>/Constant1'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p = 0.0;
-  } else {
-    /* Switch: '<S291>/Switch' incorporates:
-     *  Gain: '<S37>/Gain'
-     *  Sum: '<S37>/Subtract1'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p =
-      -(((rtb_Switch_k_idx_1 - rtb_Switch_k_idx_0) - rtb_Switch_k_idx_2) +
-        rtb_Switch_k_idx_3);
-  }
-
-  /* End of Switch: '<S291>/Switch' */
-
-  /* DiscreteIntegrator: '<S377>/Integrator' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_m
-        <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
-                   ((int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_m
-                    == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg = 0.0;
-  }
-
-  /* SampleTimeMath: '<S372>/Tsamp' incorporates:
-   *  Gain: '<S369>/Derivative Gain'
-   *
-   * About '<S372>/Tsamp':
-   *  y = u * K where K = 1 / ( w * Ts )
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_h = 0.0 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p * 4000.0;
-
-  /* Delay: '<S370>/UD' */
-  if ((((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_k == 1)
-       != (int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
-      ((int32_T)
-       PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_k != 3))
-  {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l = 0.0;
-  }
-
-  PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_k =
-    (ZCSigState)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
-
-  /* Sum: '<S386>/Sum' incorporates:
-   *  Delay: '<S370>/UD'
-   *  DiscreteIntegrator: '<S377>/Integrator'
-   *  Gain: '<S382>/Proportional Gain'
-   *  Sum: '<S370>/Diff'
-   */
-  rtb_Sum_a4 = (0.0 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p +
-                PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg)
-    + (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_h -
-       PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l);
-
-  /* Switch: '<S291>/Switch1' incorporates:
-   *  Constant: '<S291>/Constant'
-   *  Constant: '<S291>/Constant2'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Undo_0current != 0.0) {
-    rtb_Switch1_j1_idx_0 = 0.0;
-  } else {
-    rtb_Switch1_j1_idx_0 = rtb_Sum_a4;
-  }
-
-  /* End of Switch: '<S291>/Switch1' */
-
-  /* Sum: '<S36>/Add' incorporates:
-   *  Constant: '<S36>/Base Ref Airgap1'
-   *  Gain: '<S286>/Gain1'
-   *  Gain: '<S287>/Gain1'
-   *  Sum: '<S36>/Add1'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointroll =
-    (0.017453292519943295 *
-     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->RefRoll +
-     0.017453292519943295 * rtb_Switch1_j1_idx_0) + rtb_Switch2_idx_2;
-
-  /* Gain: '<S36>/Gain3' incorporates:
-   *  Sum: '<S36>/Subtract'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain3 =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointroll -
-     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[2]) * 401.61;
-
-  /* Gain: '<S36>/Gain2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_e = 1.02 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain3;
-
-  /* Abs: '<S288>/Abs' incorporates:
-   *  Delay: '<S288>/Delay'
-   */
-  rtb_ZeroCurrentForces_idx_3 = fabs
-    (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_m);
-
-  /* Saturate: '<S288>/Saturation' */
-  if (rtb_ZeroCurrentForces_idx_3 > 5.0) {
-    rtb_Saturation_gd = 5.0;
-  } else {
-    rtb_Saturation_gd = rtb_ZeroCurrentForces_idx_3;
-  }
-
-  /* End of Saturate: '<S288>/Saturation' */
-
-  /* RelationalOperator: '<S36>/Equal' incorporates:
-   *  Constant: '<S36>/Constant2'
-   *  Outport: '<Root>/Mode'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km = (boolean_T)
-    (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
-
-  /* DiscreteIntegrator: '<S326>/Integrator' incorporates:
-   *  DiscreteIntegrator: '<S321>/Filter'
-   */
-  tmp = (boolean_T)!(int32_T)
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km;
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_ns
-        <= 0)) || (((int32_T)tmp) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_ns
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw = 0.0;
-  }
-
-  /* DiscreteIntegrator: '<S321>/Filter' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_k <=
-        0)) || (((int32_T)tmp) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_k ==
-        1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h = 0.0;
-  }
-
-  /* Switch: '<S288>/Switch2' incorporates:
-   *  Constant: '<S288>/Constant3'
-   *  Constant: '<S288>/Constant4'
-   *  Lookup_n-D: '<S288>/n-D Lookup Table1'
-   *  Saturate: '<S288>/Saturation'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Roll_GainSchedulingEnabled
-      [3] != 0.0) {
-    rtb_Switch1_j1_idx_0 = look1_binlxpw(rtb_Saturation_gd,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->GS_breakpoints,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_K_d_array, 2U);
-  } else {
-    rtb_Switch1_j1_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_K_d;
-  }
-
-  /* End of Switch: '<S288>/Switch2' */
-
-  /* Switch: '<S292>/Switch1' incorporates:
-   *  Constant: '<S292>/Constant4'
-   *  Constant: '<S292>/N'
-   *  Lookup_n-D: '<S292>/n-D Lookup Table'
-   *  Saturate: '<S288>/Saturation'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Roll_GainSchedulingEnabled
-      [4] != 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = look1_binlxpw(rtb_Saturation_gd,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_Tc_array, 1U);
-  } else {
-    rtb_ZeroCurrentForces_idx_3 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_T_c;
-  }
-
-  /* End of Switch: '<S292>/Switch1' */
-
-  /* Product: '<S329>/NProd Out' incorporates:
-   *  Constant: '<S292>/Constant'
-   *  DiscreteIntegrator: '<S321>/Filter'
-   *  Product: '<S292>/Divide'
-   *  Product: '<S320>/DProd Out'
-   *  Sum: '<S321>/SumD'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_k =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_e *
-     rtb_Switch1_j1_idx_0 -
-     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h) *
-    (6.2831853071795862 / rtb_ZeroCurrentForces_idx_3);
-
-  /* Switch: '<S288>/Switch1' incorporates:
-   *  Constant: '<S288>/Constant1'
-   *  Constant: '<S288>/Constant4'
-   *  Lookup_n-D: '<S288>/n-D Lookup Table'
-   *  Saturate: '<S288>/Saturation'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Roll_GainSchedulingEnabled
-      [0] != 0.0) {
-    rtb_Switch1_j1_idx_0 = look1_binlxpw(rtb_Saturation_gd,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->GS_breakpoints,
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_K_p_array, 2U);
-  } else {
-    rtb_Switch1_j1_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_K_p;
-  }
-
-  /* End of Switch: '<S288>/Switch1' */
-
-  /* Sum: '<S335>/Sum' incorporates:
-   *  DiscreteIntegrator: '<S326>/Integrator'
-   *  Product: '<S331>/PProd Out'
-   */
-  rtb_Sum_oi = (PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_e *
-                rtb_Switch1_j1_idx_0 +
-                PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw)
-    + PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_k;
-
-  /* Product: '<S36>/Product' incorporates:
-   *  Constant: '<S36>/Reference_R_Inertia'
-   *  Gain: '<S36>/Gain1'
-   *  Product: '<S36>/Divide'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_h = rtb_Gain_mn /
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Reference_R_Inertia *
-    (1.02 * rtb_Sum_oi);
-
-  /* DiscreteIntegrator: '<S23>/Discrete-Time Integrator1' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_h
-        <= 0)) || (((int32_T)p) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_h
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_k
-      = 0.0;
-  }
-
-  /* Sum: '<S23>/Add' incorporates:
-   *  Constant: '<S23>/Constant5'
-   *  DiscreteIntegrator: '<S23>/Discrete-Time Integrator1'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Add =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->EMS_Moment_Arm_Z +
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_k;
-
-  /* DiscreteIntegrator: '<S23>/Discrete-Time Integrator2' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState
-        <= 0)) || (((int32_T)p) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE
-      = 0.0;
-  }
-
-  /* Sum: '<S23>/Add1' incorporates:
-   *  Constant: '<S23>/Constant4'
-   *  DiscreteIntegrator: '<S23>/Discrete-Time Integrator2'
-   */
-  rtb_Add1_n = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Y_Arm_Offset +
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE;
-
-  /* Gain: '<S3>/Gain4' incorporates:
-   *  Product: '<S3>/Product4'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain4 = -(rtb_Add1_n *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity);
-
-  /* Sum: '<S3>/Add2' incorporates:
-   *  Inport: '<Root>/EMS_F_Back'
-   *  Inport: '<Root>/EMS_F_Front'
-   *  Product: '<S3>/Product1'
-   *  Sum: '<S3>/Sum of Elements'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2 =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Add *
-     PIDcontroller4CoreCentralizedTestReadyMotor_U->EMS_F_Front +
-     PIDcontroller4CoreCentralizedTestReadyMotor_B->Add *
-     PIDcontroller4CoreCentralizedTestReadyMotor_U->EMS_F_Back) +
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain4;
-
-  /* Sum: '<S35>/Add2' */
-  rtb_Add2_m = PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_h -
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2;
-
-  /* Product: '<S7>/Divide1' incorporates:
-   *  Constant: '<S7>/LatDistance'
-   */
-  rtb_Divide1 = rtb_Add2_m / 0.392;
-
-  /* Switch: '<S410>/Switch1' incorporates:
-   *  Constant: '<S410>/Constant3'
-   *  Constant: '<S410>/Constant5'
-   *  Sum: '<S410>/Add1'
+  /* Switch: '<S427>/Switch1' incorporates:
+   *  Constant: '<S427>/Constant3'
+   *  Constant: '<S427>/Constant5'
+   *  Sum: '<S427>/Add1'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->LinposOn != 0.0) {
-    rtb_Switch1_j1_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[0] +
-      rtb_z_out_idx_0;
-    rtb_Switch1_j1_idx_1 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[1] +
-      rtb_z_out_idx_1;
-    rtb_z_out_idx_1 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[2] +
-      rtb_z_out_idx_2;
-    rtb_z_out_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[3] +
-      rtb_z_out_idx_3;
+    rtb_z_out_idx_0 +=
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[0];
+    rtb_z_out_idx_1 +=
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[1];
+    rtb_z_out_idx_2 +=
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[2];
+    rtb_z_out_idx_3 +=
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[3];
   } else {
-    rtb_Switch1_j1_idx_0 = rtb_Switch_ph;
-    rtb_Switch1_j1_idx_1 = rtb_Switch_k1;
-    rtb_z_out_idx_1 = rtb_Switch_ds;
-    rtb_z_out_idx_0 = rtb_Switch_gn;
+    rtb_z_out_idx_0 = rtb_Switch_juh;
+    rtb_z_out_idx_1 = rtb_Switch_pa;
+    rtb_z_out_idx_2 = rtb_Switch_my;
+    rtb_z_out_idx_3 = rtb_Switch_ka;
   }
 
-  /* End of Switch: '<S410>/Switch1' */
+  /* End of Switch: '<S427>/Switch1' */
 
-  /* Switch: '<S426>/Switch1' incorporates:
-   *  Constant: '<S426>/Constant4'
+  /* Switch: '<S443>/Switch1' incorporates:
+   *  Constant: '<S443>/Constant4'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
       [4] != 0.0) {
-    /* Switch: '<S426>/Switch1' incorporates:
-     *  Lookup_n-D: '<S426>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
+    /* Switch: '<S443>/Switch1' incorporates:
+     *  Lookup_n-D: '<S443>/n-D Lookup Table'
      */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_h = look1_binlxpw
-      (rtb_Saturation,
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
-       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_h = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
-    /* Switch: '<S426>/Switch1' incorporates:
-     *  Constant: '<S426>/Constant'
+    /* Switch: '<S443>/Switch1' incorporates:
+     *  Constant: '<S443>/Constant'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_h =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorLinpos;
   }
 
-  /* End of Switch: '<S426>/Switch1' */
+  /* End of Switch: '<S443>/Switch1' */
 
-  /* MATLABSystem: '<S409>/Moving Average' incorporates:
-   *  Switch: '<S410>/Switch1'
+  /* MATLABSystem: '<S426>/Moving Average' incorporates:
+   *  Switch: '<S427>/Switch1'
    */
-  rtb_ZeroCurrentForces_idx_3 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i.ForgettingFactor;
-  p = false;
-  if ((rtb_ZeroCurrentForces_idx_3 ==
-       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_h) || (((int32_T)
-        rtIsNaN(rtb_ZeroCurrentForces_idx_3)) && ((int32_T)rtIsNaN
+  tol = PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i.ForgettingFactor;
+  p_tmp = false;
+  if ((tol == PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_h) ||
+      (((int32_T)rtIsNaN(tol)) && ((int32_T)rtIsNaN
         (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_h)))) {
-    p = true;
+    p_tmp = true;
   }
 
-  if (!(int32_T)p) {
-    p = (boolean_T)
+  if (!(int32_T)p_tmp) {
+    p_tmp = (boolean_T)
       (PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i.isInitialized == 1);
-    if (p) {
+    if (p_tmp) {
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i.TunablePropsChanged =
         true;
     }
@@ -7762,8 +8729,8 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i.TunablePropsChanged =
       false;
     obj = PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i.pStatistic;
-    p = (boolean_T)(obj->isInitialized == 1);
-    if (p) {
+    p_tmp = (boolean_T)(obj->isInitialized == 1);
+    if (p_tmp) {
       obj->TunablePropsChanged = true;
     }
 
@@ -7796,1223 +8763,113 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
     obj->plambda = obj->ForgettingFactor;
   }
 
-  rtb_ZeroCurrentForces_idx_3 = obj->pwN;
+  tol = obj->pwN;
   zz[0] = obj->pmN[0];
   zz[1] = obj->pmN[1];
   zz[2] = obj->pmN[2];
   zz[3] = obj->pmN[3];
-  rtb_F_array_idx_1 = obj->plambda;
-  rtb_z_out_idx_3 = 1.0 - 1.0 / rtb_ZeroCurrentForces_idx_3;
-  rtb_z_out_idx_2 = 1.0 / rtb_ZeroCurrentForces_idx_3;
-  zz[0] = rtb_z_out_idx_3 * zz[0] + rtb_z_out_idx_2 * rtb_Switch1_j1_idx_0;
-  zz[1] = rtb_z_out_idx_3 * zz[1] + rtb_z_out_idx_2 * rtb_Switch1_j1_idx_1;
-  zz[2] = rtb_z_out_idx_3 * zz[2] + rtb_z_out_idx_2 * rtb_z_out_idx_1;
-  zz[3] = rtb_z_out_idx_3 * zz[3] + rtb_z_out_idx_2 * rtb_z_out_idx_0;
-  obj->pwN = rtb_F_array_idx_1 * rtb_ZeroCurrentForces_idx_3 + 1.0;
+  F1 = obj->plambda;
+  rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 1.0 - 1.0 / tol;
+  F3 = 1.0 / tol;
+  zz[0] = rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 * zz[0] +
+    F3 * rtb_z_out_idx_0;
+  zz[1] = rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 * zz[1] +
+    F3 * rtb_z_out_idx_1;
+  zz[2] = rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 * zz[2] +
+    F3 * rtb_z_out_idx_2;
+  zz[3] = rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 * zz[3] +
+    F3 * rtb_z_out_idx_3;
+  obj->pwN = F1 * tol + 1.0;
   obj->pmN[0] = zz[0];
   obj->pmN[1] = zz[1];
   obj->pmN[2] = zz[2];
   obj->pmN[3] = zz[3];
 
-  /* Switch: '<S409>/Switch' incorporates:
-   *  Constant: '<S15>/Constant'
-   *  Constant: '<S409>/Constant1'
-   *  MATLABSystem: '<S409>/Moving Average'
-   *  Sum: '<S15>/Subtract'
+  /* Switch: '<S426>/Switch' incorporates:
+   *  Constant: '<S19>/Constant'
+   *  Constant: '<S426>/Constant1'
+   *  MATLABSystem: '<S426>/Moving Average'
+   *  Sum: '<S19>/Subtract'
    */
-  p = (boolean_T)
+  p_tmp = (boolean_T)
     (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->LinposFilter != 0.0);
-  if (p) {
-    rtb_Switch1_j1_idx_0 = zz[0];
+  if (p_tmp) {
+    rtb_z_out_idx_0 = zz[0];
+    rtb_z_out_idx_1 = zz[1];
   }
 
-  /* Sum: '<S15>/Subtract' incorporates:
-   *  Constant: '<S15>/Constant'
+  /* Sum: '<S19>/Subtract' incorporates:
+   *  Constant: '<S19>/Constant'
    */
-  rtb_Switch1_j1_idx_0 +=
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[0];
-
-  /* Saturate: '<S7>/Saturation' */
-  if (rtb_Switch1_j1_idx_0 > 25.0) {
-    rtb_Saturation_k_idx_0 = 25.0;
-  } else if (rtb_Switch1_j1_idx_0 < 5.0) {
-    rtb_Saturation_k_idx_0 = 5.0;
-  } else {
-    rtb_Saturation_k_idx_0 = rtb_Switch1_j1_idx_0;
-  }
-
-  /* Sum: '<S15>/Subtract' */
-  rtb_z_out_idx_3 = rtb_Switch1_j1_idx_0;
-
-  /* Switch: '<S409>/Switch' incorporates:
-   *  Constant: '<S15>/Constant'
-   *  MATLABSystem: '<S409>/Moving Average'
-   *  Sum: '<S15>/Subtract'
-   */
-  if (p) {
-    rtb_Switch1_j1_idx_1 = zz[1];
-  }
-
-  /* Sum: '<S15>/Subtract' incorporates:
-   *  Constant: '<S15>/Constant'
-   */
-  rtb_Switch1_j1_idx_0 =
+  rtb_Subtract_idx_0 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[0] +
+    rtb_z_out_idx_0;
+  rtb_Subtract_idx_1 =
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[1] +
-    rtb_Switch1_j1_idx_1;
-
-  /* Saturate: '<S7>/Saturation' */
-  if (rtb_Switch1_j1_idx_0 > 25.0) {
-    rtb_Switch1_j1_idx_1 = 25.0;
-  } else if (rtb_Switch1_j1_idx_0 < 5.0) {
-    rtb_Switch1_j1_idx_1 = 5.0;
-  } else {
-    rtb_Switch1_j1_idx_1 = rtb_Switch1_j1_idx_0;
-  }
-
-  /* Sum: '<S15>/Subtract' */
-  rtb_z_out_idx_2 = rtb_Switch1_j1_idx_0;
-
-  /* Switch: '<S409>/Switch' incorporates:
-   *  Constant: '<S15>/Constant'
-   *  MATLABSystem: '<S409>/Moving Average'
-   *  Sum: '<S15>/Subtract'
-   */
-  if (p) {
-    rtb_z_out_idx_1 = zz[2];
-  }
-
-  /* Sum: '<S15>/Subtract' incorporates:
-   *  Constant: '<S15>/Constant'
-   */
-  rtb_Switch1_j1_idx_0 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[2] +
     rtb_z_out_idx_1;
 
-  /* Saturate: '<S7>/Saturation' */
-  if (rtb_Switch1_j1_idx_0 > 25.0) {
-    rtb_Saturation_k_idx_2 = 25.0;
-  } else if (rtb_Switch1_j1_idx_0 < 5.0) {
-    rtb_Saturation_k_idx_2 = 5.0;
-  } else {
-    rtb_Saturation_k_idx_2 = rtb_Switch1_j1_idx_0;
+  /* Switch: '<S426>/Switch' incorporates:
+   *  Constant: '<S19>/Constant'
+   *  MATLABSystem: '<S426>/Moving Average'
+   *  Sum: '<S19>/Subtract'
+   */
+  if (p_tmp) {
+    rtb_z_out_idx_2 = zz[2];
+    rtb_z_out_idx_3 = zz[3];
   }
 
-  /* Sum: '<S15>/Subtract' */
-  rtb_z_out_idx_1 = rtb_Switch1_j1_idx_0;
-
-  /* Switch: '<S409>/Switch' incorporates:
-   *  Constant: '<S15>/Constant'
-   *  MATLABSystem: '<S409>/Moving Average'
-   *  Sum: '<S15>/Subtract'
+  /* Sum: '<S19>/Subtract' incorporates:
+   *  Constant: '<S19>/Constant'
    */
-  if (p) {
-    rtb_z_out_idx_0 = zz[3];
-  }
-
-  /* Sum: '<S15>/Subtract' incorporates:
-   *  Constant: '<S15>/Constant'
-   */
-  rtb_Switch1_j1_idx_0 =
+  rtb_Subtract_idx_2 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[2] +
+    rtb_z_out_idx_2;
+  rtb_Subtract_idx_3 =
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->HEMS_Plane_Offsets[3] +
-    rtb_z_out_idx_0;
-
-  /* Lookup_n-D: '<S406>/2-D Lookup Table3' incorporates:
-   *  Constant: '<S406>/Constant'
-   *  Saturate: '<S7>/Saturation'
-   */
-  bpIndices_0[0U] = plook_binxp(0.0,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28, 29U,
-    &rtb_ZeroCurrentForces_idx_3,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache01);
-  fractions_0[0U] = rtb_ZeroCurrentForces_idx_3;
-  bpIndices_0[1U] = plook_binxp(rtb_Saturation_k_idx_0,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29, 350U,
-    &rtb_ZeroCurrentForces_idx_3,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02[0]);
-  fractions_0[1U] = rtb_ZeroCurrentForces_idx_3;
-  rtb_z_out_idx_0 = intrp2d_l_pw(bpIndices_0, fractions_0,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 30U);
-  bpIndices_0[1U] = plook_binxp(rtb_Switch1_j1_idx_1,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29, 350U,
-    &rtb_ZeroCurrentForces_idx_3,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02[1]);
-  fractions_0[1U] = rtb_ZeroCurrentForces_idx_3;
-  rtb_Switch1_j1_idx_1 = intrp2d_l_pw(bpIndices_0, fractions_0,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 30U);
-  bpIndices_0[1U] = plook_binxp(rtb_Saturation_k_idx_2,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29, 350U,
-    &rtb_ZeroCurrentForces_idx_3,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02[2]);
-  fractions_0[1U] = rtb_ZeroCurrentForces_idx_3;
-  rtb_Saturation_k_idx_0 = intrp2d_l_pw(bpIndices_0, fractions_0,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 30U);
-
-  /* Saturate: '<S7>/Saturation' */
-  if (rtb_Switch1_j1_idx_0 > 25.0) {
-    rtb_Saturation_k_idx_2 = 25.0;
-  } else if (rtb_Switch1_j1_idx_0 < 5.0) {
-    rtb_Saturation_k_idx_2 = 5.0;
-  } else {
-    rtb_Saturation_k_idx_2 = rtb_Switch1_j1_idx_0;
-  }
-
-  /* Lookup_n-D: '<S406>/2-D Lookup Table3' */
-  bpIndices_0[1U] = plook_binxp(rtb_Saturation_k_idx_2,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29, 350U,
-    &rtb_ZeroCurrentForces_idx_3,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02[3]);
-  fractions_0[1U] = rtb_ZeroCurrentForces_idx_3;
-  rtb_ZeroCurrentForces_idx_3 = intrp2d_l_pw(bpIndices_0, fractions_0,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 30U);
-
-  /* MATLAB Function: '<S406>/MATLAB Function' incorporates:
-   *  Constant: '<S406>/Constant1'
-   *  Lookup_n-D: '<S406>/2-D Lookup Table3'
-   */
-  /* MATLAB Function 'Force Solver/Force Divider1/MATLAB Function': '<S407>:1' */
-  /* '<S407>:1:2' */
-  /* '<S407>:1:3' */
-  /* '<S407>:1:4' */
-  /* '<S407>:1:5' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MagnetFailure == 0U) {
-    /* '<S407>:1:9' */
-    rtb_Saturation_k_idx_2 = rtb_z_out_idx_0 * rtb_z_out_idx_0;
-    rtb_F_array_idx_1 = rtb_Switch1_j1_idx_1 * rtb_Switch1_j1_idx_1;
-    rtb_F_array_idx_2 = rtb_Saturation_k_idx_2 * 2.0;
-    rtb_F_array_idx_3 = rtb_F_array_idx_2 * rtb_F_array_idx_1;
-    rtb_F_array_idx_0 = rtb_Saturation_k_idx_2 * rtb_F_array_idx_1;
-    tol_tmp = rtb_F_array_idx_0 * rtb_ZeroCurrentForces_idx_3;
-    tol_tmp_0 = rtb_Saturation_k_idx_0 * rtb_Saturation_k_idx_0;
-    rtb_Saturation_k_idx_2 *= tol_tmp_0;
-    tol_tmp_1 = rtb_Saturation_k_idx_2 * rtb_ZeroCurrentForces_idx_3;
-    tol_tmp_tmp = rtb_F_array_idx_1 * tol_tmp_0;
-    tol_tmp_2 = tol_tmp_tmp * rtb_ZeroCurrentForces_idx_3;
-    tol_tmp_3 = rtb_ZeroCurrentForces_idx_3 * rtb_ZeroCurrentForces_idx_3;
-    rtb_ZeroCurrentForces_idx_3 = (((((((((rtb_F_array_idx_3 * tol_tmp_0 -
-      rtb_F_array_idx_3 * rtb_Saturation_k_idx_0 * rtb_ZeroCurrentForces_idx_3)
-      + tol_tmp * rtb_Add_l) - tol_tmp * rtb_Divide_k) - rtb_F_array_idx_2 *
-      rtb_Switch1_j1_idx_1 * tol_tmp_0 * rtb_ZeroCurrentForces_idx_3) +
-      tol_tmp_1 * rtb_Add_l) + tol_tmp_1 * rtb_Divide1) + 2.0 * rtb_z_out_idx_0 *
-      rtb_F_array_idx_1 * tol_tmp_0 * rtb_ZeroCurrentForces_idx_3) - tol_tmp_2 *
-      rtb_Divide_k) + tol_tmp_2 * rtb_Divide1) * rtb_ZeroCurrentForces_idx_3 /
-      ((((rtb_F_array_idx_0 * tol_tmp_0 + rtb_F_array_idx_0 * tol_tmp_3) +
-         rtb_Saturation_k_idx_2 * tol_tmp_3) + tol_tmp_tmp * tol_tmp_3) * 2.0);
-  } else {
-    /* '<S407>:1:7' */
-  }
-
-  /* '<S407>:1:11' */
-  /* '<S407>:1:12' */
-  /* '<S407>:1:13' */
-  /* '<S407>:1:14' */
-  rtb_F_array_idx_0 = (rtb_Divide_k - rtb_Divide1) / 2.0 +
-    rtb_ZeroCurrentForces_idx_3;
-  rtb_F_array_idx_1 = (rtb_Divide1 + rtb_Add_l) / 2.0 -
-    rtb_ZeroCurrentForces_idx_3;
-  rtb_F_array_idx_2 = (rtb_Add_l - rtb_Divide_k) / 2.0 -
-    rtb_ZeroCurrentForces_idx_3;
-  rtb_F_array_idx_3 = rtb_ZeroCurrentForces_idx_3;
-
-  /* End of MATLAB Function: '<S406>/MATLAB Function' */
-
-  /* DSPFlip: '<S27>/Flip1' incorporates:
-   *  Constant: '<S27>/Constant20'
-   */
-  for (i = 0; i < 15; i++) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1[i] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[29 - i];
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1[29 - i] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[i];
-  }
-
-  /* End of DSPFlip: '<S27>/Flip1' */
-
-  /* Saturate: '<S1>/Saturation1' */
-  if (rtb_z_out_idx_3 > 25.0) {
-    rtb_Saturation_k_idx_2 = 25.0;
-  } else if (rtb_z_out_idx_3 < 5.0) {
-    rtb_Saturation_k_idx_2 = 5.0;
-  } else {
-    rtb_Saturation_k_idx_2 = rtb_z_out_idx_3;
-  }
-
-  if (rtb_z_out_idx_2 > 25.0) {
-    rtb_z_out_idx_0 = 25.0;
-  } else if (rtb_z_out_idx_2 < 5.0) {
-    rtb_z_out_idx_0 = 5.0;
-  } else {
-    rtb_z_out_idx_0 = rtb_z_out_idx_2;
-  }
-
-  if (rtb_z_out_idx_1 > 25.0) {
-    rtb_Switch1_j1_idx_1 = 25.0;
-  } else if (rtb_z_out_idx_1 < 5.0) {
-    rtb_Switch1_j1_idx_1 = 5.0;
-  } else {
-    rtb_Switch1_j1_idx_1 = rtb_z_out_idx_1;
-  }
-
-  if (rtb_Switch1_j1_idx_0 > 25.0) {
-    rtb_Saturation_k_idx_0 = 25.0;
-  } else if (rtb_Switch1_j1_idx_0 < 5.0) {
-    rtb_Saturation_k_idx_0 = 5.0;
-  } else {
-    rtb_Saturation_k_idx_0 = rtb_Switch1_j1_idx_0;
-  }
-
-  /* End of Saturate: '<S1>/Saturation1' */
-
-  /* Lookup_n-D: '<S27>/2-D Lookup Table2' incorporates:
-   *  Constant: '<S27>/Constant'
-   */
-  bpIndices_1[1U] = plook_binxp(rtb_Saturation_k_idx_2,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29, 350U,
-    &rtb_ZeroCurrentForces_idx_3,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02_p);
-  fractions_1[1U] = rtb_ZeroCurrentForces_idx_3;
-  for (i = 0; i < 30; i++) {
-    bpIndices_1[0U] = plook_binxp
-      (PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[i],
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28, 29U,
-       &rtb_ZeroCurrentForces_idx_3,
-       &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache01_m[i]);
-    fractions_1[0U] = rtb_ZeroCurrentForces_idx_3;
-    rtb_uDLookupTable2[i] = intrp2d_l_pw(bpIndices_1, fractions_1,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 30U);
-  }
-
-  /* End of Lookup_n-D: '<S27>/2-D Lookup Table2' */
-
-  /* DSPFlip: '<S27>/Flip' */
-  for (i = 0; i < 15; i++) {
-    rtb_Flip[i] = rtb_uDLookupTable2[29 - i];
-    rtb_Flip[29 - i] = rtb_uDLookupTable2[i];
-  }
-
-  /* End of DSPFlip: '<S27>/Flip' */
-
-  /* Lookup_n-D: '<S27>/2-D Lookup Table1' incorporates:
-   *  Gain: '<S27>/Gain'
-   */
-  rtb_uDLookupTable1_l = look1_pbinlxpw
-    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->M_f * rtb_F_array_idx_0,
-     rtb_Flip, PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_fj, 29U);
-
-  /* MinMax: '<S27>/Max' incorporates:
-   *  Delay: '<S27>/Delay2'
-   *  Delay: '<S27>/Delay3'
-   */
-  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE >
-       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE) ||
-      ((int32_T)rtIsNaN
-       (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE))) {
-    /* MinMax: '<S27>/Max' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE;
-  } else {
-    /* MinMax: '<S27>/Max' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE;
-  }
-
-  /* End of MinMax: '<S27>/Max' */
-
-  /* Sum: '<S27>/Subtract4' incorporates:
-   *  Constant: '<S27>/Constant7'
-   *  Outport: '<Root>/Mode'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 2.0;
-
-  /* Switch: '<S27>/Switch2' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4 != 0.0) {
-    /* Switch: '<S27>/Switch' incorporates:
-     *  Saturate: '<S27>/Saturation1'
-     */
-    if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Max != 0.0) {
-      /* Saturate: '<S27>/Saturation1' */
-      if (rtb_uDLookupTable1_l > 9.0) {
-        rtb_ZeroCurrentForces_idx_3 = 9.0;
-      } else if (rtb_uDLookupTable1_l < -9.0) {
-        rtb_ZeroCurrentForces_idx_3 = -9.0;
-      } else {
-        rtb_ZeroCurrentForces_idx_3 = rtb_uDLookupTable1_l;
-      }
-
-      /* Saturate: '<S27>/Saturation' */
-      if (rtb_ZeroCurrentForces_idx_3 > 5.6) {
-        /* Switch: '<S27>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = 5.6;
-      } else if (rtb_ZeroCurrentForces_idx_3 < -5.6) {
-        /* Switch: '<S27>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = -5.6;
-      } else {
-        /* Switch: '<S27>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i =
-          rtb_ZeroCurrentForces_idx_3;
-      }
-
-      /* End of Saturate: '<S27>/Saturation' */
-    } else if (rtb_uDLookupTable1_l > 9.0) {
-      /* Saturate: '<S27>/Saturation1' incorporates:
-       *  Switch: '<S27>/Switch2'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = 9.0;
-    } else if (rtb_uDLookupTable1_l < -9.0) {
-      /* Saturate: '<S27>/Saturation1' incorporates:
-       *  Switch: '<S27>/Switch2'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = -9.0;
-    } else {
-      /* Switch: '<S27>/Switch2' incorporates:
-       *  Saturate: '<S27>/Saturation1'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i =
-        rtb_uDLookupTable1_l;
-    }
-
-    /* End of Switch: '<S27>/Switch' */
-  } else {
-    /* Switch: '<S27>/Switch2' incorporates:
-     *  Constant: '<S27>/Constant6'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = 0.0;
-  }
-
-  /* End of Switch: '<S27>/Switch2' */
-
-  /* MATLAB Function: '<S22>/Cap requested current' incorporates:
-   *  Constant: '<S22>/Ampere'
-   */
-  /* MATLAB Function 'Subsystem5/Cap requested current': '<S742>:1' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i - rtb_Gain1[0] >
-      3.0) {
-    /* '<S742>:1:4' */
-    /* '<S742>:1:5' */
-    rtb_out_req_I = rtb_Gain1[0] + 3.0;
-  } else if (rtb_Gain1[0] -
-             PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i > 3.0) {
-    /* '<S742>:1:6' */
-    /* '<S742>:1:7' */
-    rtb_out_req_I = rtb_Gain1[0] - 3.0;
-  } else {
-    /* '<S742>:1:9' */
-    rtb_out_req_I = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i;
-  }
-
-  /* End of MATLAB Function: '<S22>/Cap requested current' */
-
-  /* DSPFlip: '<S28>/Flip1' incorporates:
-   *  Constant: '<S28>/Constant20'
-   */
-  for (i = 0; i < 15; i++) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_g[i] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[29 - i];
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_g[29 - i] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[i];
-  }
-
-  /* End of DSPFlip: '<S28>/Flip1' */
-
-  /* Lookup_n-D: '<S28>/2-D Lookup Table2' incorporates:
-   *  Constant: '<S28>/Constant'
-   */
-  bpIndices_2[1U] = plook_binxp(rtb_z_out_idx_0,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29, 350U,
-    &rtb_ZeroCurrentForces_idx_3,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02_i);
-  fractions_2[1U] = rtb_ZeroCurrentForces_idx_3;
-  for (i = 0; i < 30; i++) {
-    bpIndices_2[0U] = plook_binxp
-      (PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[i],
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28, 29U,
-       &rtb_ZeroCurrentForces_idx_3,
-       &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache01_b[i]);
-    fractions_2[0U] = rtb_ZeroCurrentForces_idx_3;
-    rtb_uDLookupTable2_e5[i] = intrp2d_l_pw(bpIndices_2, fractions_2,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 30U);
-  }
-
-  /* End of Lookup_n-D: '<S28>/2-D Lookup Table2' */
-
-  /* DSPFlip: '<S28>/Flip' */
-  for (i = 0; i < 15; i++) {
-    rtb_Flip_a[i] = rtb_uDLookupTable2_e5[29 - i];
-    rtb_Flip_a[29 - i] = rtb_uDLookupTable2_e5[i];
-  }
-
-  /* End of DSPFlip: '<S28>/Flip' */
-
-  /* Lookup_n-D: '<S28>/2-D Lookup Table1' incorporates:
-   *  Gain: '<S28>/Gain'
-   */
-  rtb_uDLookupTable1_h = look1_pbinlxpw
-    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->M_f * rtb_F_array_idx_1,
-     rtb_Flip_a, PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_g,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_gr, 29U);
-
-  /* MinMax: '<S28>/Max' incorporates:
-   *  Delay: '<S28>/Delay2'
-   *  Delay: '<S28>/Delay3'
-   */
-  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_g >
-       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l) ||
-      ((int32_T)rtIsNaN
-       (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l))) {
-    /* MinMax: '<S28>/Max' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_l =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_g;
-  } else {
-    /* MinMax: '<S28>/Max' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_l =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l;
-  }
-
-  /* End of MinMax: '<S28>/Max' */
-
-  /* Sum: '<S28>/Subtract4' incorporates:
-   *  Constant: '<S27>/Constant7'
-   *  Outport: '<Root>/Mode'
-   *  Sum: '<S27>/Subtract4'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_i =
-    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 2.0;
-
-  /* Switch: '<S28>/Switch2' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_i != 0.0) {
-    /* Switch: '<S28>/Switch' incorporates:
-     *  Saturate: '<S28>/Saturation1'
-     */
-    if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_l != 0.0) {
-      /* Saturate: '<S28>/Saturation1' */
-      if (rtb_uDLookupTable1_h > 9.0) {
-        rtb_ZeroCurrentForces_idx_3 = 9.0;
-      } else if (rtb_uDLookupTable1_h < -9.0) {
-        rtb_ZeroCurrentForces_idx_3 = -9.0;
-      } else {
-        rtb_ZeroCurrentForces_idx_3 = rtb_uDLookupTable1_h;
-      }
-
-      /* Saturate: '<S28>/Saturation' */
-      if (rtb_ZeroCurrentForces_idx_3 > 5.6) {
-        /* Switch: '<S28>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n = 5.6;
-      } else if (rtb_ZeroCurrentForces_idx_3 < -5.6) {
-        /* Switch: '<S28>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n = -5.6;
-      } else {
-        /* Switch: '<S28>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n =
-          rtb_ZeroCurrentForces_idx_3;
-      }
-
-      /* End of Saturate: '<S28>/Saturation' */
-    } else if (rtb_uDLookupTable1_h > 9.0) {
-      /* Saturate: '<S28>/Saturation1' incorporates:
-       *  Switch: '<S28>/Switch2'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n = 9.0;
-    } else if (rtb_uDLookupTable1_h < -9.0) {
-      /* Saturate: '<S28>/Saturation1' incorporates:
-       *  Switch: '<S28>/Switch2'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n = -9.0;
-    } else {
-      /* Switch: '<S28>/Switch2' incorporates:
-       *  Saturate: '<S28>/Saturation1'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n =
-        rtb_uDLookupTable1_h;
-    }
-
-    /* End of Switch: '<S28>/Switch' */
-  } else {
-    /* Switch: '<S28>/Switch2' incorporates:
-     *  Constant: '<S28>/Constant6'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n = 0.0;
-  }
-
-  /* End of Switch: '<S28>/Switch2' */
-
-  /* MATLAB Function: '<S22>/Cap requested current1' incorporates:
-   *  Constant: '<S22>/Ampere'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1(rtb_Gain1[1],
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n, 3.0,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent1);
-
-  /* DSPFlip: '<S29>/Flip1' incorporates:
-   *  Constant: '<S29>/Constant20'
-   */
-  for (i = 0; i < 15; i++) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_k[i] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[29 - i];
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_k[29 - i] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[i];
-  }
-
-  /* End of DSPFlip: '<S29>/Flip1' */
-
-  /* Lookup_n-D: '<S29>/2-D Lookup Table2' incorporates:
-   *  Constant: '<S29>/Constant'
-   */
-  bpIndices_3[1U] = plook_binxp(rtb_Switch1_j1_idx_1,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29, 350U,
-    &rtb_ZeroCurrentForces_idx_3,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02_j);
-  fractions_3[1U] = rtb_ZeroCurrentForces_idx_3;
-  for (i = 0; i < 30; i++) {
-    bpIndices_3[0U] = plook_binxp
-      (PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[i],
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28, 29U,
-       &rtb_ZeroCurrentForces_idx_3,
-       &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache01_n[i]);
-    fractions_3[0U] = rtb_ZeroCurrentForces_idx_3;
-    rtb_uDLookupTable2_bq[i] = intrp2d_l_pw(bpIndices_3, fractions_3,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 30U);
-  }
-
-  /* End of Lookup_n-D: '<S29>/2-D Lookup Table2' */
-
-  /* DSPFlip: '<S29>/Flip' */
-  for (i = 0; i < 15; i++) {
-    rtb_Flip_l[i] = rtb_uDLookupTable2_bq[29 - i];
-    rtb_Flip_l[29 - i] = rtb_uDLookupTable2_bq[i];
-  }
-
-  /* End of DSPFlip: '<S29>/Flip' */
-
-  /* Lookup_n-D: '<S29>/2-D Lookup Table1' incorporates:
-   *  Gain: '<S29>/Gain'
-   */
-  rtb_uDLookupTable1_j = look1_pbinlxpw
-    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->M_f * rtb_F_array_idx_2,
-     rtb_Flip_l, PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_k,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_h, 29U);
-
-  /* MinMax: '<S29>/Max' incorporates:
-   *  Delay: '<S29>/Delay2'
-   *  Delay: '<S29>/Delay3'
-   */
-  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_p >
-       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g) ||
-      ((int32_T)rtIsNaN
-       (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g))) {
-    /* MinMax: '<S29>/Max' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_e =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_p;
-  } else {
-    /* MinMax: '<S29>/Max' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_e =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g;
-  }
-
-  /* End of MinMax: '<S29>/Max' */
-
-  /* Sum: '<S29>/Subtract4' incorporates:
-   *  Constant: '<S27>/Constant7'
-   *  Outport: '<Root>/Mode'
-   *  Sum: '<S27>/Subtract4'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_a =
-    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 2.0;
-
-  /* Switch: '<S29>/Switch2' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_a != 0.0) {
-    /* Switch: '<S29>/Switch' incorporates:
-     *  Saturate: '<S29>/Saturation1'
-     */
-    if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_e != 0.0) {
-      /* Saturate: '<S29>/Saturation1' */
-      if (rtb_uDLookupTable1_j > 9.0) {
-        rtb_ZeroCurrentForces_idx_3 = 9.0;
-      } else if (rtb_uDLookupTable1_j < -9.0) {
-        rtb_ZeroCurrentForces_idx_3 = -9.0;
-      } else {
-        rtb_ZeroCurrentForces_idx_3 = rtb_uDLookupTable1_j;
-      }
-
-      /* Saturate: '<S29>/Saturation' */
-      if (rtb_ZeroCurrentForces_idx_3 > 5.6) {
-        /* Switch: '<S29>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h = 5.6;
-      } else if (rtb_ZeroCurrentForces_idx_3 < -5.6) {
-        /* Switch: '<S29>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h = -5.6;
-      } else {
-        /* Switch: '<S29>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h =
-          rtb_ZeroCurrentForces_idx_3;
-      }
-
-      /* End of Saturate: '<S29>/Saturation' */
-    } else if (rtb_uDLookupTable1_j > 9.0) {
-      /* Saturate: '<S29>/Saturation1' incorporates:
-       *  Switch: '<S29>/Switch2'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h = 9.0;
-    } else if (rtb_uDLookupTable1_j < -9.0) {
-      /* Saturate: '<S29>/Saturation1' incorporates:
-       *  Switch: '<S29>/Switch2'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h = -9.0;
-    } else {
-      /* Switch: '<S29>/Switch2' incorporates:
-       *  Saturate: '<S29>/Saturation1'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h =
-        rtb_uDLookupTable1_j;
-    }
-
-    /* End of Switch: '<S29>/Switch' */
-  } else {
-    /* Switch: '<S29>/Switch2' incorporates:
-     *  Constant: '<S29>/Constant6'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h = 0.0;
-  }
-
-  /* End of Switch: '<S29>/Switch2' */
-
-  /* MATLAB Function: '<S22>/Cap requested current2' incorporates:
-   *  Constant: '<S22>/Ampere'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1(rtb_Gain1[2],
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h, 3.0,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent2);
-
-  /* DSPFlip: '<S30>/Flip1' incorporates:
-   *  Constant: '<S30>/Constant20'
-   */
-  for (i = 0; i < 15; i++) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_h[i] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[29 - i];
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_h[29 - i] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[i];
-  }
-
-  /* End of DSPFlip: '<S30>/Flip1' */
-
-  /* Lookup_n-D: '<S30>/2-D Lookup Table2' incorporates:
-   *  Constant: '<S30>/Constant'
-   */
-  bpIndices_4[1U] = plook_binxp(rtb_Saturation_k_idx_0,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29, 350U,
-    &rtb_ZeroCurrentForces_idx_3,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02_o);
-  fractions_4[1U] = rtb_ZeroCurrentForces_idx_3;
-  for (i = 0; i < 30; i++) {
-    bpIndices_4[0U] = plook_binxp
-      (PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28[i],
-       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28, 29U,
-       &rtb_ZeroCurrentForces_idx_3,
-       &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache01_f[i]);
-    fractions_4[0U] = rtb_ZeroCurrentForces_idx_3;
-    rtb_uDLookupTable2_j[i] = intrp2d_l_pw(bpIndices_4, fractions_4,
-      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 30U);
-  }
-
-  /* End of Lookup_n-D: '<S30>/2-D Lookup Table2' */
-
-  /* DSPFlip: '<S30>/Flip' */
-  for (i = 0; i < 15; i++) {
-    rtb_Flip_p[i] = rtb_uDLookupTable2_j[29 - i];
-    rtb_Flip_p[29 - i] = rtb_uDLookupTable2_j[i];
-  }
-
-  /* End of DSPFlip: '<S30>/Flip' */
-
-  /* Lookup_n-D: '<S30>/2-D Lookup Table1' incorporates:
-   *  Gain: '<S30>/Gain'
-   */
-  rtb_uDLookupTable1_p = look1_pbinlxpw
-    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->M_f * rtb_F_array_idx_3,
-     rtb_Flip_p, PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_h,
-     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_ep, 29U);
-
-  /* MinMax: '<S30>/Max' incorporates:
-   *  Delay: '<S30>/Delay2'
-   *  Delay: '<S30>/Delay3'
-   */
-  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_k >
-       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_f) ||
-      ((int32_T)rtIsNaN
-       (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_f))) {
-    /* MinMax: '<S30>/Max' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_j =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_k;
-  } else {
-    /* MinMax: '<S30>/Max' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_j =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_f;
-  }
-
-  /* End of MinMax: '<S30>/Max' */
-
-  /* Sum: '<S30>/Subtract4' incorporates:
-   *  Constant: '<S27>/Constant7'
-   *  Outport: '<Root>/Mode'
-   *  Sum: '<S27>/Subtract4'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_e =
-    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 2.0;
-
-  /* Switch: '<S30>/Switch2' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_e != 0.0) {
-    /* Switch: '<S30>/Switch' incorporates:
-     *  Saturate: '<S30>/Saturation1'
-     */
-    if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_j != 0.0) {
-      /* Saturate: '<S30>/Saturation1' */
-      if (rtb_uDLookupTable1_p > 9.0) {
-        rtb_ZeroCurrentForces_idx_3 = 9.0;
-      } else if (rtb_uDLookupTable1_p < -9.0) {
-        rtb_ZeroCurrentForces_idx_3 = -9.0;
-      } else {
-        rtb_ZeroCurrentForces_idx_3 = rtb_uDLookupTable1_p;
-      }
-
-      /* Saturate: '<S30>/Saturation' */
-      if (rtb_ZeroCurrentForces_idx_3 > 5.6) {
-        /* Switch: '<S30>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e = 5.6;
-      } else if (rtb_ZeroCurrentForces_idx_3 < -5.6) {
-        /* Switch: '<S30>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e = -5.6;
-      } else {
-        /* Switch: '<S30>/Switch2' */
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e =
-          rtb_ZeroCurrentForces_idx_3;
-      }
-
-      /* End of Saturate: '<S30>/Saturation' */
-    } else if (rtb_uDLookupTable1_p > 9.0) {
-      /* Saturate: '<S30>/Saturation1' incorporates:
-       *  Switch: '<S30>/Switch2'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e = 9.0;
-    } else if (rtb_uDLookupTable1_p < -9.0) {
-      /* Saturate: '<S30>/Saturation1' incorporates:
-       *  Switch: '<S30>/Switch2'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e = -9.0;
-    } else {
-      /* Switch: '<S30>/Switch2' incorporates:
-       *  Saturate: '<S30>/Saturation1'
-       */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e =
-        rtb_uDLookupTable1_p;
-    }
-
-    /* End of Switch: '<S30>/Switch' */
-  } else {
-    /* Switch: '<S30>/Switch2' incorporates:
-     *  Constant: '<S30>/Constant6'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e = 0.0;
-  }
-
-  /* End of Switch: '<S30>/Switch2' */
-
-  /* MATLAB Function: '<S22>/Cap requested current3' incorporates:
-   *  Constant: '<S22>/Ampere'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1(rtb_Gain1[3],
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e, 3.0,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent3);
-
-  /* Gain: '<Root>/Gain' */
-  rtb_ZeroCurrentForces_idx_3 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Polarity * rtb_out_req_I;
-  rtb_F_array_idx_2 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Polarity *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent1.out_req_I;
-  rtb_F_array_idx_3 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Polarity *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent2.out_req_I;
-  rtb_F_array_idx_0 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Polarity *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent3.out_req_I;
-
-  /* Sum: '<S17>/Subtract2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2 = 0.0 -
-    rtb_ZeroCurrentForces_idx_3;
-
-  /* SampleTimeMath: '<S561>/Tsamp' incorporates:
-   *  Constant: '<S17>/Constant3'
-   *  Product: '<S558>/DProd Out'
-   *
-   * About '<S561>/Tsamp':
-   *  y = u * K where K = 1 / ( w * Ts )
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_kb =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_d * 4000.0;
-
-  /* Sum: '<S575>/Sum' incorporates:
-   *  Constant: '<S17>/Constant1'
-   *  Delay: '<S559>/UD'
-   *  DiscreteIntegrator: '<S566>/Integrator'
-   *  Product: '<S571>/PProd Out'
-   *  Sum: '<S559>/Diff'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2 *
-     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_p +
-     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_h) +
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_kb -
-     PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_g);
-
-  /* Outport: '<Root>/I_A' incorporates:
-   *  Sum: '<S17>/Subtract3'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_A =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum +
-    rtb_ZeroCurrentForces_idx_3;
-
-  /* Outport: '<Root>/Airgap' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Airgap =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[0];
-
-  /* Derivative: '<Root>/Derivative' incorporates:
-   *  Derivative: '<Root>/Derivative1'
-   */
-  rtb_ZeroCurrentForces_idx_3 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_M->Timing.t[0];
-  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA >=
-       rtb_ZeroCurrentForces_idx_3) &&
-      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB >=
-       rtb_ZeroCurrentForces_idx_3)) {
-    /* Derivative: '<Root>/Derivative' */
-    rtb_Derivative[0] = 0.0;
-    rtb_Derivative[1] = 0.0;
-    rtb_Derivative[2] = 0.0;
-  } else {
-    rtb_F_array_idx_1 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA;
-    lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeA;
-    if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA <
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB) {
-      if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB <
-          rtb_ZeroCurrentForces_idx_3) {
-        rtb_F_array_idx_1 =
-          PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB;
-        lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeB;
-      }
-    } else if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA >=
-               rtb_ZeroCurrentForces_idx_3) {
-      rtb_F_array_idx_1 =
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB;
-      lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeB;
-    }
-
-    rtb_F_array_idx_1 = rtb_ZeroCurrentForces_idx_3 - rtb_F_array_idx_1;
-
-    /* Derivative: '<Root>/Derivative' */
-    rtb_Derivative[0] =
-      (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[0] - (*lastU)[0])
-      / rtb_F_array_idx_1;
-    rtb_Derivative[1] =
-      (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[1] - (*lastU)[1])
-      / rtb_F_array_idx_1;
-    rtb_Derivative[2] =
-      (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[2] - (*lastU)[2])
-      / rtb_F_array_idx_1;
-  }
-
-  /* End of Derivative: '<Root>/Derivative' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_pn(rtb_Derivative,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_c,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_c);
-
-  /* Derivative: '<Root>/Derivative1' */
-  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA_l >=
-       rtb_ZeroCurrentForces_idx_3) &&
-      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b >=
-       rtb_ZeroCurrentForces_idx_3)) {
-    /* Derivative: '<Root>/Derivative1' */
-    rtb_Derivative1[0] = 0.0;
-    rtb_Derivative1[1] = 0.0;
-    rtb_Derivative1[2] = 0.0;
-  } else {
-    rtb_F_array_idx_1 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA_l;
-    lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeA_g;
-    if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA_l <
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b) {
-      if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b <
-          rtb_ZeroCurrentForces_idx_3) {
-        rtb_F_array_idx_1 =
-          PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b;
-        lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeB_l;
-      }
-    } else if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA_l >=
-               rtb_ZeroCurrentForces_idx_3) {
-      rtb_F_array_idx_1 =
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b;
-      lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeB_l;
-    }
-
-    rtb_F_array_idx_1 = rtb_ZeroCurrentForces_idx_3 - rtb_F_array_idx_1;
-
-    /* Derivative: '<Root>/Derivative1' incorporates:
-     *  MATLABSystem: '<Root>/Moving Average'
-     */
-    rtb_Derivative1[0] =
-      (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_c.MovingAverage
-       [0] - (*lastU)[0]) / rtb_F_array_idx_1;
-    rtb_Derivative1[1] =
-      (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_c.MovingAverage
-       [1] - (*lastU)[1]) / rtb_F_array_idx_1;
-    rtb_Derivative1[2] =
-      (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_c.MovingAverage
-       [2] - (*lastU)[2]) / rtb_F_array_idx_1;
-  }
-
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_pn(rtb_Derivative1,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg,
-    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpg);
-
-  /* Outport: '<Root>/Acceleration' incorporates:
-   *  MATLABSystem: '<Root>/Moving Average1'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Acceleration[0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-    [0];
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Acceleration[1] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-    [1];
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Acceleration[2] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-    [2];
-
-  /* Outport: '<Root>/Calculated Force' incorporates:
-   *  Constant: '<Root>/Constant'
-   *  MATLABSystem: '<Root>/Moving Average1'
-   *  Product: '<Root>/Product'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedForce[0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-    [0] * PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedForce[1] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-    [1] * PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedForce[2] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-    [2] * PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
-
-  /* Outport: '<Root>/Speed' incorporates:
-   *  MATLABSystem: '<Root>/Moving Average'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Speed[0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->
-    MovingAverage_c.MovingAverage[0];
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Speed[1] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->
-    MovingAverage_c.MovingAverage[1];
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Speed[2] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->
-    MovingAverage_c.MovingAverage[2];
-
-  /* Sum: '<S18>/Subtract2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_e = 0.0 -
-    rtb_F_array_idx_2;
-
-  /* SampleTimeMath: '<S614>/Tsamp' incorporates:
-   *  Constant: '<S18>/Constant3'
-   *  Product: '<S611>/DProd Out'
-   *
-   * About '<S614>/Tsamp':
-   *  y = u * K where K = 1 / ( w * Ts )
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_k0 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_e *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_d * 4000.0;
-
-  /* Sum: '<S628>/Sum' incorporates:
-   *  Constant: '<S18>/Constant1'
-   *  Delay: '<S612>/UD'
-   *  DiscreteIntegrator: '<S619>/Integrator'
-   *  Product: '<S624>/PProd Out'
-   *  Sum: '<S612>/Diff'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_d =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_e *
-     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_p +
-     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_d) +
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_k0 -
-     PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_e);
-
-  /* Outport: '<Root>/I_B' incorporates:
-   *  Sum: '<S18>/Subtract3'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_B =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_d + rtb_F_array_idx_2;
-
-  /* Sum: '<S20>/Subtract2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_f = 0.0 -
-    rtb_F_array_idx_3;
-
-  /* SampleTimeMath: '<S720>/Tsamp' incorporates:
-   *  Constant: '<S20>/Constant3'
-   *  Product: '<S717>/DProd Out'
-   *
-   * About '<S720>/Tsamp':
-   *  y = u * K where K = 1 / ( w * Ts )
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_o =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_f *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_d * 4000.0;
-
-  /* Sum: '<S734>/Sum' incorporates:
-   *  Constant: '<S20>/Constant1'
-   *  Delay: '<S718>/UD'
-   *  DiscreteIntegrator: '<S725>/Integrator'
-   *  Product: '<S730>/PProd Out'
-   *  Sum: '<S718>/Diff'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_b =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_f *
-     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_p +
-     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_p) +
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_o -
-     PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_h);
-
-  /* Outport: '<Root>/I_C' incorporates:
-   *  Sum: '<S20>/Subtract3'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_C =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_b + rtb_F_array_idx_3;
-
-  /* Sum: '<S19>/Subtract2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_c = 0.0 -
-    rtb_F_array_idx_0;
-
-  /* SampleTimeMath: '<S667>/Tsamp' incorporates:
-   *  Constant: '<S19>/Constant3'
-   *  Product: '<S664>/DProd Out'
-   *
-   * About '<S667>/Tsamp':
-   *  y = u * K where K = 1 / ( w * Ts )
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_g =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_c *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_d * 4000.0;
-
-  /* Sum: '<S681>/Sum' incorporates:
-   *  Constant: '<S19>/Constant1'
-   *  Delay: '<S665>/UD'
-   *  DiscreteIntegrator: '<S672>/Integrator'
-   *  Product: '<S677>/PProd Out'
-   *  Sum: '<S665>/Diff'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_c =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_c *
-     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_p +
-     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_m) +
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_g -
-     PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_ei);
-
-  /* Outport: '<Root>/I_D' incorporates:
-   *  Sum: '<S19>/Subtract3'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_D =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_c + rtb_F_array_idx_0;
-
-  /* Outport: '<Root>/Pitch' incorporates:
-   *  Gain: '<S9>/Gain'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Pitch = 57.295779513082323 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[1];
-
-  /* Outport: '<Root>/Roll' incorporates:
-   *  Gain: '<S10>/Gain'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Roll = 57.295779513082323 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[2];
-
-  /* Outport: '<Root>/Linpos' incorporates:
-   *  Sum: '<S15>/Subtract'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Linpos[0] = rtb_z_out_idx_3;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Linpos[1] = rtb_z_out_idx_2;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Linpos[2] = rtb_z_out_idx_1;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Linpos[3] =
-    rtb_Switch1_j1_idx_0;
-
-  /* Outport: '<Root>/PitchError' incorporates:
-   *  Gain: '<S181>/Gain'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->PitchError = 57.295779513082323
-    * rtb_error_m;
-
-  /* Outport: '<Root>/BeamErrorOutput' incorporates:
-   *  Gain: '<S11>/Gain'
-   *  Gain: '<S12>/Gain'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->BeamErrorOutput[0] =
-    rtb_Switch2_idx_0;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->BeamErrorOutput[1] =
-    57.295779513082323 * rtb_Switch2_idx_1;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->BeamErrorOutput[2] =
-    57.295779513082323 * rtb_Switch2_idx_2;
-
-  /* Outport: '<Root>/Control SIgnals' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ControlSIgnals[0] = rtb_Add_l;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ControlSIgnals[1] = rtb_Add1_k;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ControlSIgnals[2] = rtb_Add2_m;
-
-  /* Outport: '<Root>/External Forces' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ExternalForces[0] = rtb_Sum1;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ExternalForces[1] = rtb_Add1;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ExternalForces[2] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2;
+    rtb_z_out_idx_3;
 
   /* Lookup_n-D: '<S21>/2-D Lookup Table2' */
-  rtb_uDLookupTable2_cw = look2_pbinlxpw(rtb_Switch_k_idx_0, rtb_z_out_idx_3,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29,
+  rtb_uDLookupTable2 = look2_pbinlxpw(rtb_Switch_k_idx_0, rtb_Subtract_idx_0,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26,
     PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27,
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_k,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled37, 30U);
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25,
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled40, 30U);
 
   /* Delay: '<Root>/Delay2' */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[0];
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[0];
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[1];
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[1];
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[2];
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[2];
 
   /* Lookup_n-D: '<S21>/2-D Lookup Table1' */
-  rtb_uDLookupTable1_os = look2_pbinlxpw(rtb_Switch_k_idx_1, rtb_z_out_idx_2,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29,
+  rtb_uDLookupTable1 = look2_pbinlxpw(rtb_Switch_k_idx_1, rtb_Subtract_idx_1,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26,
     PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25,
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_a,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled37, 30U);
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled40, 30U);
 
   /* Lookup_n-D: '<S21>/2-D Lookup Table3' */
-  rtb_uDLookupTable3 = look2_pbinlxpw(rtb_Switch_k_idx_2, rtb_z_out_idx_1,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29,
+  rtb_uDLookupTable3 = look2_pbinlxpw(rtb_Switch_k_idx_2, rtb_Subtract_idx_2,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26,
     PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25,
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_c,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled37, 30U);
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled40, 30U);
 
   /* Lookup_n-D: '<S21>/2-D Lookup Table4' */
-  rtb_uDLookupTable4 = look2_pbinlxpw(rtb_Switch_k_idx_3, rtb_Switch1_j1_idx_0,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled28,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled29,
+  rtb_uDLookupTable4 = look2_pbinlxpw(rtb_Switch_k_idx_3, rtb_Subtract_idx_3,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26,
     PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25,
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_j,
-    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled37, 30U);
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled40, 30U);
 
   /* Gain: '<S21>/Gain' */
-  rtb_ZeroCurrentForces_idx_3 = 1.0 /
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->M_f;
+  tol = 1.0 / PIDcontroller4CoreCentralizedTestReadyMotor_InstP->M_f;
 
   /* Product: '<S21>/Product' incorporates:
    *  Gain: '<S21>/Gain'
@@ -9025,93 +8882,2683 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
    *  Sum: '<S21>/Add6'
    *  Sum: '<S21>/Add7'
    */
-  rtb_Switch_k_idx_0 = ((rtb_uDLookupTable2_cw +
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1]) -
-                        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2])
-    * rtb_ZeroCurrentForces_idx_3 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0];
-  rtb_Switch_k_idx_1 = ((rtb_uDLookupTable1_os +
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1]) +
-                        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2])
-    * rtb_ZeroCurrentForces_idx_3 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0];
-  rtb_Switch_k_idx_2 = ((rtb_uDLookupTable3 -
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1]) -
-                        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2])
-    * rtb_ZeroCurrentForces_idx_3 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0];
-  rtb_Switch_k_idx_3 = ((rtb_uDLookupTable4 -
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1]) +
-                        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2])
-    * rtb_ZeroCurrentForces_idx_3 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0];
+  rtb_Product_idx_0 = ((rtb_uDLookupTable2 +
+                        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1])
+                       - PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2])
+    * tol * PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0];
+  rtb_Product_idx_1 = ((rtb_uDLookupTable1 +
+                        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1])
+                       + PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2])
+    * tol * PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0];
+  rtb_Product_idx_2 = ((rtb_uDLookupTable3 -
+                        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1])
+                       - PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2])
+    * tol * PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0];
+  rtb_Product_idx_3 = ((rtb_uDLookupTable4 -
+                        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1])
+                       + PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2])
+    * tol * PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0];
 
-  /* Switch: '<S24>/Switch1' incorporates:
-   *  Constant: '<S24>/Constant3'
+  /* Switch: '<S23>/Switch2' incorporates:
+   *  Constant: '<S23>/Constant2'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MismatchedHEMSKalman >
+      0.0) {
+    rtb_z_out_idx_0 = rtb_Product_idx_0;
+    rtb_z_out_idx_1 = rtb_Product_idx_1;
+    rtb_z_out_idx_2 = rtb_Product_idx_2;
+    rtb_z_out_idx_3 = rtb_Product_idx_3;
+  } else {
+    rtb_z_out_idx_0 = rtb_uDLookupTable2;
+    rtb_z_out_idx_1 = rtb_uDLookupTable1;
+    rtb_z_out_idx_2 = rtb_uDLookupTable3;
+    rtb_z_out_idx_3 = rtb_uDLookupTable4;
+  }
+
+  /* End of Switch: '<S23>/Switch2' */
+
+  /* Switch: '<S8>/Switch' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_f) {
+    /* Switch: '<S8>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[0] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[1] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[2] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[3] = 0.0;
+  } else {
+    /* Switch: '<S8>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[0] = rtb_z_out_idx_0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[1] = rtb_z_out_idx_1;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[2] = rtb_z_out_idx_2;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[3] = rtb_z_out_idx_3;
+  }
+
+  /* End of Switch: '<S8>/Switch' */
+
+  /* Gain: '<S34>/Gain5' incorporates:
+   *  Constant: '<S34>/2'
+   *  Gain: '<S32>/Gain4'
+   *  Math: '<S34>/Square1'
+   */
+  tol = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodHeight *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodHeight *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodHeightFactor;
+
+  /* Gain: '<S34>/Gain' incorporates:
+   *  Constant: '<S34>/1'
+   *  Gain: '<S34>/Gain4'
+   *  Gain: '<S34>/Gain5'
+   *  Math: '<S34>/Square'
+   *  Sum: '<S34>/Sum1'
+   */
+  rtb_Gain_do = (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodWidth *
+                 PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodWidth *
+                 PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodWidthFactor
+                 + tol) *
+    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass / 12.0);
+
+  /* Gain: '<S32>/Gain' incorporates:
+   *  Constant: '<S32>/3'
+   *  Gain: '<S32>/Gain3'
+   *  Math: '<S32>/Square'
+   *  Sum: '<S32>/Sum1'
+   */
+  rtb_Gain_m = (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodLength *
+                PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodLength *
+                PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PodLengthFactor
+                + tol) *
+    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass / 12.0);
+
+  /* Gain: '<S8>/Gain' incorporates:
+   *  Constant: '<S8>/Constant9'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_h = 9.81 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
+
+  /* RelationalOperator: '<S8>/Equal1' incorporates:
+   *  Constant: '<S8>/Constant5'
+   *  Outport: '<Root>/Mode'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal1 = (boolean_T)
+    (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
+
+  /* Switch: '<S3>/Switch' incorporates:
+   *  Constant: '<S3>/Constant3'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn != 0.0) {
+    /* Switch: '<S3>/Switch' incorporates:
+     *  Constant: '<S3>/Constant1'
+     */
+    rtb_Switch_n =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionCurrent;
+  } else {
+    /* Switch: '<S3>/Switch' incorporates:
+     *  Constant: '<S3>/Constant4'
+     */
+    rtb_Switch_n = 0.0;
+  }
+
+  /* End of Switch: '<S3>/Switch' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1(rtb_Switch_n,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage2,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage2);
+
+  /* DiscreteIntegrator: '<S5>/Discrete-Time Integrator3' incorporates:
+   *  Constant: '<S5>/Constant'
+   */
+  if (((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ResetArms > 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_PrevResetState
+        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ResetArms
+                    <= 0.0) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_PrevResetState
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE
+      = 0.0;
+  }
+
+  /* Outport: '<Root>/MotorAGAdjust' incorporates:
+   *  DiscreteIntegrator: '<S5>/Discrete-Time Integrator3'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->MotorAGAdjust =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE;
+
+  /* Switch: '<S440>/Switch1' incorporates:
+   *  Constant: '<S440>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S440>/Switch1' incorporates:
+     *  Lookup_n-D: '<S440>/n-D Lookup Table'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_o = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S440>/Switch1' incorporates:
+     *  Constant: '<S440>/Constant'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_o =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorAirgap;
+  }
+
+  /* End of Switch: '<S440>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_avg_g,
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_o,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_kw,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kw);
+
+  /* Switch: '<S432>/Switch' incorporates:
+   *  Constant: '<S432>/Constant1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->AirgapFilter != 0.0) {
+    rtb_Switch_gj =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_kw.MovingAverage;
+  } else {
+    rtb_Switch_gj = rtb_avg_g;
+  }
+
+  /* End of Switch: '<S432>/Switch' */
+
+  /* Sum: '<S3>/Add3' incorporates:
+   *  Constant: '<S3>/Constant'
+   *  Outport: '<Root>/MotorAGAdjust'
+   *  Sum: '<S3>/Subtract'
+   */
+  rtb_Add3_l = (rtb_Switch_gj -
+                PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MotorAirgapOffset)
+    - PIDcontroller4CoreCentralizedTestReadyMotor_Y->MotorAGAdjust;
+
+  /* Switch: '<S441>/Switch1' incorporates:
+   *  Constant: '<S441>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S441>/Switch1' incorporates:
+     *  Lookup_n-D: '<S441>/n-D Lookup Table'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_g = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S441>/Switch1' incorporates:
+     *  Constant: '<S441>/Constant'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_g =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorPitch;
+  }
+
+  /* End of Switch: '<S441>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_pitch_j,
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_g,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_ka,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_ka);
+
+  /* Switch: '<S433>/Switch' incorporates:
+   *  Constant: '<S433>/Constant1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PitchFilter != 0.0) {
+    /* Switch: '<S433>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_ka.MovingAverage;
+  } else {
+    /* Switch: '<S433>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k = rtb_pitch_j;
+  }
+
+  /* End of Switch: '<S433>/Switch' */
+
+  /* Trigonometry: '<S3>/Trigonometric Function' */
+  rtb_TrigonometricFunction = sin
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k);
+
+  /* Sum: '<S3>/Add' incorporates:
+   *  Constant: '<S3>/Constant2'
+   *  Gain: '<S3>/Gain'
+   *  Product: '<S3>/Product'
+   */
+  for (i = 0; i < 39; i++) {
+    rtb_Add_e[i] = PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled17[i]
+      * rtb_TrigonometricFunction * -1000.0 + rtb_Add3_l;
+  }
+
+  /* End of Sum: '<S3>/Add' */
+
+  /* Lookup_n-D: '<S3>/1-D Lookup Table1' incorporates:
+   *  MATLABSystem: '<S3>/Moving Average2'
+   */
+  bpIndices[0U] = plook_binx
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage2.MovingAverage1,
+     PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.uDLookupTable1_bp01Data,
+     16U, &tol);
+  fractions[0U] = tol;
+  for (i = 0; i < 39; i++) {
+    bpIndices[1U] = plook_binx(rtb_Add_e[i],
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.uDLookupTable1_bp02Data,
+      54U, &tol);
+    fractions[1U] = tol;
+    rtb_uDLookupTable1_gs[i] = intrp2d_l_pw(bpIndices, fractions,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.uDLookupTable1_tableData,
+      17U);
+  }
+
+  /* End of Lookup_n-D: '<S3>/1-D Lookup Table1' */
+
+  /* Switch: '<S401>/Switch1' incorporates:
+   *  Constant: '<S401>/Constant5'
+   *  Constant: '<S401>/Constant7'
+   *  Gain: '<S3>/Gain2'
+   *  Sum: '<S3>/Sum'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->motorforce_on != 0.0) {
+    /* Sum: '<S3>/Sum' */
+    tol = -0.0;
+    for (aoffset = 0; aoffset < 39; aoffset++) {
+      tol += rtb_uDLookupTable1_gs[aoffset];
+    }
+
+    rtb_Switch1_d = 0.025641025641025633 * tol;
+  } else {
+    rtb_Switch1_d = 0.0;
+  }
+
+  /* End of Switch: '<S401>/Switch1' */
+
+  /* Switch: '<S8>/Switch1' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal1) {
+    /* Switch: '<S8>/Switch1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_d =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_h;
+  } else {
+    /* Switch: '<S8>/Switch1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_d = rtb_Switch1_d;
+  }
+
+  /* End of Switch: '<S8>/Switch1' */
+
+  /* RelationalOperator: '<S8>/Equal2' incorporates:
+   *  Constant: '<S8>/Constant7'
+   *  Outport: '<Root>/Mode'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal2 = (boolean_T)
+    (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
+
+  /* Switch: '<S400>/Switch1' incorporates:
+   *  Constant: '<S400>/Constant5'
+   *  Constant: '<S400>/Constant7'
+   *  Gain: '<S3>/Gain3'
+   *  Sum: '<S3>/Sum2'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->motorforce_on != 0.0) {
+    /* Sum: '<S3>/Sum2' */
+    tol = -0.0;
+    for (aoffset = 0; aoffset < 39; aoffset++) {
+      /* Sum: '<S3>/Sum2' incorporates:
+       *  Constant: '<S3>/Constant6'
+       *  Product: '<S3>/Product2'
+       */
+      tol += PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled17[aoffset]
+        * rtb_uDLookupTable1_gs[aoffset];
+    }
+
+    rtb_Switch1_o = 0.025641025641025633 * tol;
+  } else {
+    rtb_Switch1_o = 0.0;
+  }
+
+  /* End of Switch: '<S400>/Switch1' */
+
+  /* Logic: '<S5>/OR' incorporates:
+   *  Constant: '<S5>/Constant'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->OR = (boolean_T)
+    ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ResetArms != 0.0) ||
+     ((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c));
+
+  /* DiscreteIntegrator: '<S5>/Discrete-Time Integrator' incorporates:
+   *  DiscreteIntegrator: '<S5>/Discrete-Time Integrator1'
+   *  DiscreteIntegrator: '<S5>/Discrete-Time Integrator2'
+   */
+  p_tmp = (boolean_T)!(int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR;
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_p
+        <= 0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_p
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_p
+      = 0.0;
+  }
+
+  /* Sum: '<S5>/Add2' incorporates:
+   *  Constant: '<S5>/Constant3'
+   *  DiscreteIntegrator: '<S5>/Discrete-Time Integrator'
+   */
+  rtb_Add2_c = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->X_Arm_Offset +
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_p;
+
+  /* Product: '<S3>/Gravity' incorporates:
+   *  Constant: '<S3>/Gravitational constant [m//s^2]'
+   *  Constant: '<S3>/Mass [kg]'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity = -9.81 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
+
+  /* Gain: '<S3>/Gain1' incorporates:
+   *  Product: '<S3>/Product3'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1 = -(rtb_Add2_c *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity);
+
+  /* Sum: '<S3>/Add1' */
+  rtb_Add1_d = rtb_Switch1_o +
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1;
+
+  /* Switch: '<S8>/Switch2' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal2) {
+    /* Switch: '<S8>/Switch2' incorporates:
+     *  Constant: '<S8>/Constant8'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_o = 0.0;
+  } else {
+    /* Switch: '<S8>/Switch2' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_o = rtb_Add1_d;
+  }
+
+  /* End of Switch: '<S8>/Switch2' */
+
+  /* DiscreteIntegrator: '<S5>/Discrete-Time Integrator1' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_h
+        <= 0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_h
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_k
+      = 0.0;
+  }
+
+  /* Sum: '<S5>/Add' incorporates:
+   *  Constant: '<S5>/Constant5'
+   *  DiscreteIntegrator: '<S5>/Discrete-Time Integrator1'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Add =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->EMS_Moment_Arm_Z +
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_k;
+
+  /* DiscreteIntegrator: '<S5>/Discrete-Time Integrator2' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState
+        <= 0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE
+      = 0.0;
+  }
+
+  /* Sum: '<S5>/Add1' incorporates:
+   *  Constant: '<S5>/Constant4'
+   *  DiscreteIntegrator: '<S5>/Discrete-Time Integrator2'
+   */
+  rtb_Add1_n = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Y_Arm_Offset +
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE;
+
+  /* Gain: '<S3>/Gain4' incorporates:
+   *  Product: '<S3>/Product4'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain4 = -(rtb_Add1_n *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity);
+
+  /* Sum: '<S3>/Add2' incorporates:
+   *  Inport: '<Root>/EMS_F_Back'
+   *  Inport: '<Root>/EMS_F_Front'
+   *  Product: '<S3>/Product1'
+   *  Sum: '<S3>/Sum of Elements'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2 =
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Add *
+     PIDcontroller4CoreCentralizedTestReadyMotor_U->EMS_F_Front +
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Add *
+     PIDcontroller4CoreCentralizedTestReadyMotor_U->EMS_F_Back) +
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain4;
+
+  /* ZeroOrderHold: '<S412>/Zero-Order Hold1' incorporates:
+   *  Constant: '<S8>/Constant'
+   *  Constant: '<S8>/Constant1'
+   *  Constant: '<S8>/Constant2'
+   */
+  rtb_ZeroOrderHold1[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[0];
+  rtb_ZeroOrderHold1[1] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[1];
+  rtb_ZeroOrderHold1[2] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[2];
+  rtb_ZeroOrderHold1[3] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[3];
+  rtb_ZeroOrderHold1[4] = rtb_Gain_do;
+  rtb_ZeroOrderHold1[5] = rtb_Gain_m;
+  rtb_ZeroOrderHold1[6] = 0.392;
+  rtb_ZeroOrderHold1[7] = 0.3054;
+  rtb_ZeroOrderHold1[8] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
+  rtb_ZeroOrderHold1[9] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_d;
+  rtb_ZeroOrderHold1[10] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_o;
+  rtb_ZeroOrderHold1[11] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2;
+
+  /* Gain: '<S8>/To m' incorporates:
+   *  Gain: '<S7>/To m'
+   */
+  rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 0.001 *
+    rtb_Switch_gj;
+
+  /* Gain: '<S8>/To m' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom =
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
+
+  /* Switch: '<S442>/Switch1' incorporates:
+   *  Constant: '<S442>/Constant4'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
+      [4] != 0.0) {
+    /* Switch: '<S442>/Switch1' incorporates:
+     *  Lookup_n-D: '<S442>/n-D Lookup Table'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_n = look1_binlxpw(0.0,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
+  } else {
+    /* Switch: '<S442>/Switch1' incorporates:
+     *  Constant: '<S442>/Constant'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_n =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorRoll;
+  }
+
+  /* End of Switch: '<S442>/Switch1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(rtb_roll,
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_n,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_kaa,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kaa);
+
+  /* Switch: '<S434>/Switch' incorporates:
+   *  Constant: '<S434>/Constant1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->RollFilter != 0.0) {
+    /* Switch: '<S434>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_kaa.MovingAverage;
+  } else {
+    /* Switch: '<S434>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c = rtb_roll;
+  }
+
+  /* End of Switch: '<S434>/Switch' */
+
+  /* ZeroOrderHold: '<S412>/Zero-Order Hold' */
+  rtb_ZeroOrderHold[0] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom;
+  rtb_ZeroOrderHold[1] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c;
+  rtb_ZeroOrderHold[2] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k;
+
+  /* Switch: '<S413>/Switch1' incorporates:
+   *  Inport: '<Root>/LS_mode'
+   *  Switch: '<S413>/Switch2'
+   *  Switch: '<S413>/Switch3'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    /* SignalConversion generated from: '<S412>/Create Diagonal Matrix' incorporates:
+     *  Constant: '<S413>/Constant1'
+     *  Constant: '<S413>/Constant2'
+     *  Constant: '<S413>/Constant3'
+     */
+    tol = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_ag_sens_LS;
+    F1 = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_roll_sens_LS;
+    F3 = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_pitch_sens_LS;
+  } else {
+    /* SignalConversion generated from: '<S412>/Create Diagonal Matrix' incorporates:
+     *  Constant: '<S413>/Constant7'
+     *  Constant: '<S413>/Constant8'
+     *  Constant: '<S413>/Constant9'
+     */
+    tol = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_ag_sens;
+    F1 = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_roll_sens;
+    F3 = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_pitch_sens;
+  }
+
+  /* End of Switch: '<S413>/Switch1' */
+
+  /* S-Function (sdspdiag2): '<S412>/Create Diagonal Matrix' */
+  for (i = 0; i < 9; i++) {
+    rtb_CreateDiagonalMatrix[i] = 0.0;
+  }
+
+  rtb_CreateDiagonalMatrix[0] = tol;
+  rtb_CreateDiagonalMatrix[4] = F1;
+  rtb_CreateDiagonalMatrix[8] = F3;
+
+  /* End of S-Function (sdspdiag2): '<S412>/Create Diagonal Matrix' */
+
+  /* Outputs for Enabled SubSystem: '<S414>/Correct1' */
+  /* Constant: '<S414>/Enable1' incorporates:
+   *  Constant: '<S414>/BlockOrdering'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Correct1(true, rtb_ZeroOrderHold,
+    rtb_CreateDiagonalMatrix, true,
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->P_h,
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->Correct1_l);
+
+  /* End of Outputs for SubSystem: '<S414>/Correct1' */
+
+  /* Outputs for Enabled SubSystem: '<S414>/Correct2' incorporates:
+   *  EnablePort: '<S416>/Enable'
+   */
+  /* MATLAB Function: '<S416>/Correct' incorporates:
+   *  DataStoreRead: '<S416>/Data Store ReadP'
+   *  DataStoreRead: '<S416>/Data Store ReadX'
+   *  S-Function (sdspdiag2): '<S412>/Create Diagonal Matrix2'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->blockOrdering =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Correct1_l.blockOrdering;
+
+  /* MATLAB Function 'Extras/EKFCorrect/Correct': '<S420>:1' */
+  /* '<S420>:1:11' */
+  p_tmp = true;
+  for (i = 0; i < 9; i++) {
+    tol = rtb_CreateDiagonalMatrix2[i];
+    if (((int32_T)p_tmp) && ((!(int32_T)rtIsInf(tol)) && (!(int32_T)rtIsNaN(tol))))
+    {
+    } else {
+      p_tmp = false;
+    }
+  }
+
+  if (p_tmp) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_svd_i(rtb_CreateDiagonalMatrix2,
+      Ss, X, V);
+  } else {
+    X[0] = (rtNaN);
+    X[1] = (rtNaN);
+    X[2] = (rtNaN);
+    for (i = 0; i < 9; i++) {
+      V[i] = (rtNaN);
+    }
+  }
+
+  for (i = 0; i < 9; i++) {
+    Ss[i] = 0.0;
+  }
+
+  Ss[0] = X[0];
+  Ss[4] = X[1];
+  Ss[8] = X[2];
+  for (i = 0; i < 9; i++) {
+    Ss[i] = sqrt(Ss[i]);
+  }
+
+  for (i = 0; i < 3; i++) {
+    for (b_j = 0; b_j < 3; b_j++) {
+      rankA = b_j + 3 * i;
+      R[rankA] = 0.0;
+      R[rankA] += Ss[3 * i] * V[b_j];
+      R[rankA] += Ss[3 * i + 1] * V[b_j + 3];
+      R[rankA] += Ss[3 * i + 2] * V[b_j + 6];
+    }
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_imu_sensor_vertical_kalman_leo
+    (PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n, rtb_ZeroOrderHold1, X);
+  for (b_j = 0; b_j < 6; b_j++) {
+    for (i = 0; i < 6; i++) {
+      imvec[i] = PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n[i];
+    }
+
+    tol = 1.4901161193847656E-8 * fabs
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n[b_j]);
+    if ((1.4901161193847656E-8 > tol) || ((int32_T)rtIsNaN(tol))) {
+      tol = 1.4901161193847656E-8;
+    }
+
+    imvec[b_j] = PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n[b_j] + tol;
+    PIDcontroller4CoreCentralizedTestReadyMotor_imu_sensor_vertical_kalman_leo
+      (imvec, rtb_ZeroOrderHold1, C);
+    dHdx[3 * b_j] = (C[0] - X[0]) / tol;
+    dHdx[3 * b_j + 1] = (C[1] - X[1]) / tol;
+    dHdx[3 * b_j + 2] = (C[2] - X[2]) / tol;
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_qrFactor_p(dHdx,
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->P_h, R, Ss);
+  for (i = 0; i < 6; i++) {
+    for (b_j = 0; b_j < 6; b_j++) {
+      A_0[b_j + 6 * i] = 0.0;
+    }
+  }
+
+  for (rankA = 0; rankA < 6; rankA++) {
+    for (i = 0; i < 6; i++) {
+      for (b_j = 0; b_j < 6; b_j++) {
+        aoffset = 6 * i + b_j;
+        A_0[aoffset] += PIDcontroller4CoreCentralizedTestReadyMotor_DW->P_h[6 *
+          rankA + b_j] * PIDcontroller4CoreCentralizedTestReadyMotor_DW->P_h[6 *
+          rankA + i];
+      }
+    }
+  }
+
+  for (i = 0; i < 3; i++) {
+    for (b_j = 0; b_j < 6; b_j++) {
+      aoffset = i + 3 * b_j;
+      K[aoffset] = 0.0;
+      for (rankA = 0; rankA < 6; rankA++) {
+        K[aoffset] += A_0[6 * rankA + b_j] * dHdx[3 * rankA + i];
+      }
+    }
+  }
+
+  for (b_j = 0; b_j < 6; b_j++) {
+    C_0[3 * b_j] = K[3 * b_j];
+    rankA = 3 * b_j + 1;
+    C_0[rankA] = K[rankA];
+    rankA = 3 * b_j + 2;
+    C_0[rankA] = K[rankA];
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_trisolve_i(Ss, C_0);
+  for (b_j = 0; b_j < 6; b_j++) {
+    b_C[3 * b_j] = C_0[3 * b_j];
+    i = 3 * b_j + 1;
+    b_C[i] = C_0[i];
+    i = 3 * b_j + 2;
+    b_C[i] = C_0[i];
+  }
+
+  for (i = 0; i < 3; i++) {
+    V[3 * i] = Ss[i];
+    V[3 * i + 1] = Ss[i + 3];
+    V[3 * i + 2] = Ss[i + 6];
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_trisolve_im(V, b_C);
+  for (i = 0; i < 3; i++) {
+    for (b_j = 0; b_j < 6; b_j++) {
+      K[b_j + 6 * i] = b_C[3 * b_j + i];
+    }
+  }
+
+  for (i = 0; i < 18; i++) {
+    C_0[i] = -K[i];
+  }
+
+  for (i = 0; i < 6; i++) {
+    for (b_j = 0; b_j < 6; b_j++) {
+      rankA = b_j + 6 * i;
+      A_0[rankA] = 0.0;
+      A_0[rankA] += dHdx[3 * i] * C_0[b_j];
+      A_0[rankA] += dHdx[3 * i + 1] * C_0[b_j + 6];
+      A_0[rankA] += dHdx[3 * i + 2] * C_0[b_j + 12];
+    }
+  }
+
+  for (i = 0; i < 6; i++) {
+    rankA = 6 * i + i;
+    A_0[rankA]++;
+  }
+
+  for (b_j = 0; b_j < 6; b_j++) {
+    coffset = b_j * 6;
+    for (i = 0; i < 6; i++) {
+      aoffset = i * 6;
+      tol = 0.0;
+      for (rankA = 0; rankA < 6; rankA++) {
+        tol += A_0[rankA * 6 + b_j] *
+          PIDcontroller4CoreCentralizedTestReadyMotor_DW->P_h[aoffset + rankA];
+      }
+
+      y[coffset + i] = tol;
+    }
+  }
+
+  for (i = 0; i < 3; i++) {
+    for (b_j = 0; b_j < 6; b_j++) {
+      aoffset = i + 3 * b_j;
+      C_0[aoffset] = 0.0;
+      C_0[aoffset] += R[3 * i] * K[b_j];
+      C_0[aoffset] += R[3 * i + 1] * K[b_j + 6];
+      C_0[aoffset] += R[3 * i + 2] * K[b_j + 12];
+    }
+  }
+
+  for (i = 0; i < 6; i++) {
+    for (b_j = 0; b_j < 6; b_j++) {
+      y_0[b_j + 9 * i] = y[6 * i + b_j];
+    }
+
+    y_0[9 * i + 6] = C_0[3 * i];
+    y_0[9 * i + 7] = C_0[3 * i + 1];
+    y_0[9 * i + 8] = C_0[3 * i + 2];
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_qr_g(y_0, a__1, A_0);
+
+  /* '<S420>:1:135' */
+  rtb_ZeroOrderHold4_idx_0 -= X[0];
+  rtb_ZeroOrderHold4_idx_1 -= X[1];
+  rtb_ZeroOrderHold4_idx_2 -= X[2];
+  for (i = 0; i < 6; i++) {
+    /* DataStoreWrite: '<S416>/Data Store WriteP' incorporates:
+     *  MATLAB Function: '<S416>/Correct'
+     */
+    for (b_j = 0; b_j < 6; b_j++) {
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->P_h[b_j + 6 * i] = A_0[6 *
+        b_j + i];
+    }
+
+    /* End of DataStoreWrite: '<S416>/Data Store WriteP' */
+
+    /* DataStoreWrite: '<S416>/Data Store WriteX' incorporates:
+     *  DataStoreRead: '<S416>/Data Store ReadX'
+     *  MATLAB Function: '<S416>/Correct'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n[i] += (K[i + 6] *
+      rtb_ZeroOrderHold4_idx_1 + K[i] * rtb_ZeroOrderHold4_idx_0) + K[i + 12] *
+      rtb_ZeroOrderHold4_idx_2;
+  }
+
+  /* End of Outputs for SubSystem: '<S414>/Correct2' */
+
+  /* Outputs for Atomic SubSystem: '<S414>/Output' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Output
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->blockOrdering,
+     PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->Output_n);
+
+  /* End of Outputs for SubSystem: '<S414>/Output' */
+
+  /* Sum: '<S8>/Add1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Add1 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Output_n.DataStoreRead[1] -
+    rtb_DiscreteTimeIntegrator_j2;
+
+  /* Gain: '<S8>/To mm' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm = 1000.0 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Add1;
+
+  /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator1' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_i
+        <= 0)) || ((!(int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+                   ((int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_i
+                    == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_g
+      = 0.0;
+  }
+
+  /* Sum: '<S8>/Add4' incorporates:
+   *  DiscreteIntegrator: '<S8>/Discrete-Time Integrator1'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Add4 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Output_n.DataStoreRead[5] -
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_g;
+
+  /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator2' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState_b
+        <= 0)) || ((!(int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+                   ((int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState_b
+                    == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE_l
+      = 0.0;
+  }
+
+  /* Sum: '<S8>/Add5' incorporates:
+   *  DiscreteIntegrator: '<S8>/Discrete-Time Integrator2'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Add5 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Output_n.DataStoreRead[3] -
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE_l;
+
+  /* Gain: '<S7>/To m' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom_h =
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
+
+  /* ZeroOrderHold: '<S403>/Zero-Order Hold' */
+  rtb_ZeroOrderHold_b[0] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom_h;
+  rtb_ZeroOrderHold_b[1] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c;
+  rtb_ZeroOrderHold_b[2] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k;
+
+  /* Switch: '<S404>/Switch1' incorporates:
+   *  Inport: '<Root>/LS_mode'
+   *  Switch: '<S404>/Switch2'
+   *  Switch: '<S404>/Switch3'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    /* SignalConversion generated from: '<S403>/Create Diagonal Matrix' incorporates:
+     *  Constant: '<S404>/Constant1'
+     *  Constant: '<S404>/Constant2'
+     *  Constant: '<S404>/Constant3'
+     */
+    tol = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_ag_sens_LS;
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_roll_sens_LS;
+    rtb_ZeroOrderHold4_idx_0 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_pitch_sens_LS;
+  } else {
+    /* SignalConversion generated from: '<S403>/Create Diagonal Matrix' incorporates:
+     *  Constant: '<S404>/Constant7'
+     *  Constant: '<S404>/Constant8'
+     *  Constant: '<S404>/Constant9'
+     */
+    tol = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_ag_sens;
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_roll_sens;
+    rtb_ZeroOrderHold4_idx_0 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_pitch_sens;
+  }
+
+  /* End of Switch: '<S404>/Switch1' */
+
+  /* S-Function (sdspdiag2): '<S403>/Create Diagonal Matrix' */
+  for (i = 0; i < 9; i++) {
+    rtb_CreateDiagonalMatrix_g[i] = 0.0;
+  }
+
+  rtb_CreateDiagonalMatrix_g[0] = tol;
+  rtb_CreateDiagonalMatrix_g[4] =
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
+  rtb_CreateDiagonalMatrix_g[8] = rtb_ZeroOrderHold4_idx_0;
+
+  /* End of S-Function (sdspdiag2): '<S403>/Create Diagonal Matrix' */
+
+  /* Outputs for Enabled SubSystem: '<S405>/Correct1' */
+  /* Constant: '<S405>/Enable1' incorporates:
+   *  Constant: '<S405>/BlockOrdering'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Correct1(true, rtb_ZeroOrderHold_b,
+    rtb_CreateDiagonalMatrix_g, true,
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->P,
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->x,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->Correct1);
+
+  /* End of Outputs for SubSystem: '<S405>/Correct1' */
+
+  /* Outputs for Atomic SubSystem: '<S405>/Output' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Output
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Correct1.blockOrdering,
+     PIDcontroller4CoreCentralizedTestReadyMotor_DW->x,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->Output);
+
+  /* End of Outputs for SubSystem: '<S405>/Output' */
+
+  /* Gain: '<S7>/To mm' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm_d = 1000.0 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Output.DataStoreRead[1];
+
+  /* DiscreteIntegrator: '<S10>/Discrete-Time Integrator' */
+  if ((int32_T)
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_o
+      == 1) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o
+      = 0.0;
+  }
+
+  /* Sum: '<S10>/Subtract1' incorporates:
+   *  DiscreteIntegrator: '<S10>/Discrete-Time Integrator'
+   *  Gain: '<S10>/Gain'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract1 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm_d -
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Kalman_I *
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o;
+
+  /* Switch: '<Root>/Switch2' incorporates:
+   *  Constant: '<Root>/Constant2'
+   *  Constant: '<Root>/Constant3'
+   *  Switch: '<Root>/Switch1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->UseIMU > 0.0) {
+    /* Switch: '<Root>/Switch2' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[0] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[1] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Add4;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[2] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Add5;
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SkipKalman !=
+             0.0) {
+    /* Switch: '<Root>/Switch1' incorporates:
+     *  Switch: '<Root>/Switch2'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[0] = rtb_Switch_gj;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[1] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[2] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c;
+  } else {
+    /* Switch: '<Root>/Switch2' incorporates:
+     *  Switch: '<Root>/Switch1'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[0] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract1;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[1] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Output.DataStoreRead[5];
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[2] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Output.DataStoreRead[3];
+  }
+
+  /* End of Switch: '<Root>/Switch2' */
+
+  /* Sum: '<S31>/Sum' incorporates:
+   *  Outport: '<Root>/ActualReferenceAirgap'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->error =
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->ActualReferenceAirgap -
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[0];
+
+  /* RelationalOperator: '<S72>/Equal' incorporates:
+   *  Constant: '<S72>/Constant2'
+   *  Outport: '<Root>/Mode'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k = (boolean_T)
+    (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
+
+  /* DiscreteIntegrator: '<S108>/Integrator' incorporates:
+   *  DiscreteIntegrator: '<S103>/Filter'
+   */
+  p_tmp = (boolean_T)!(int32_T)
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k;
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_o
+        <= 0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_o
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_n = 0.0;
+  }
+
+  /* DiscreteIntegrator: '<S103>/Filter' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState <=
+        0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState ==
+        1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE = 0.0;
+  }
+
+  /* Switch: '<S69>/Switch2' incorporates:
+   *  Constant: '<S69>/Constant3'
+   *  Constant: '<S69>/Constant4'
+   *  Inport: '<Root>/LS_mode'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_d_LS;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_d;
+  }
+
+  /* End of Switch: '<S69>/Switch2' */
+
+  /* Product: '<S111>/NProd Out' incorporates:
+   *  Constant: '<S125>/Constant'
+   *  Constant: '<S125>/N'
+   *  DiscreteIntegrator: '<S103>/Filter'
+   *  Product: '<S102>/DProd Out'
+   *  Product: '<S125>/Divide'
+   *  Sum: '<S103>/SumD'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut =
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->error *
+     rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 -
+     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE) *
+    (6.2831853071795862 /
+     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_T_c);
+
+  /* Switch: '<S69>/Switch1' incorporates:
+   *  Constant: '<S69>/Constant1'
+   *  Constant: '<S69>/Constant5'
+   *  Inport: '<Root>/LS_mode'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_p_LS;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_p;
+  }
+
+  /* End of Switch: '<S69>/Switch1' */
+
+  /* Sum: '<S117>/Sum' incorporates:
+   *  DiscreteIntegrator: '<S108>/Integrator'
+   *  Product: '<S113>/PProd Out'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum =
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->error *
+     rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 +
+     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_n) +
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut;
+
+  /* Gain: '<S74>/Gain' incorporates:
+   *  Inport: '<Root>/IMU_z'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_g =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->kalman_zdotdot_gain *
+    PIDcontroller4CoreCentralizedTestReadyMotor_U->IMU_z;
+
+  /* Memory: '<S177>/Memory' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->x_i1 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Memory_PreviousInput;
+
+  /* Memory: '<S177>/Memory1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->y_i1 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Memory1_PreviousInput;
+
+  /* Gain: '<S177>/Gain10' incorporates:
+   *  Sum: '<S177>/Subtract'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain10 =
+    ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_g -
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->x_i1) +
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->y_i1) *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgetFactor_Highpass_Lat;
+
+  /* Sum: '<S3>/Sum1' */
+  rtb_Sum1_g = rtb_Switch1_d +
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity;
+
+  /* Sum: '<S33>/Add' incorporates:
+   *  Gain: '<S74>/Gain1'
+   *  Outport: '<Root>/G_Factor'
+   *  Product: '<S31>/Divide1'
+   *  Sum: '<S31>/Add'
+   */
+  rtb_Add_l = (0.0 - (-PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_a *
+                      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain10 +
+                      PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum) *
+               PIDcontroller4CoreCentralizedTestReadyMotor_Y->G_Factor) -
+    rtb_Sum1_g;
+
+  /* Logic: '<S184>/AND' incorporates:
+   *  Constant: '<S184>/Constant'
+   *  Constant: '<S184>/Constant2'
+   *  Delay: '<S184>/Delay'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->AND_e = (boolean_T)
+    ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->LowAirgapPropellingSwitch
+      != 0.0) &&
+     (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn != 0.0) &&
+     ((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_o));
+
+  /* Sum: '<S185>/Subtract5' incorporates:
+   *  Constant: '<S185>/Constant4'
+   *  Outport: '<Root>/Mode'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_o =
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - -1.0;
+
+  /* Switch: '<S185>/Switch' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_o != 0.0) {
+    /* Switch: '<S185>/Switch' incorporates:
+     *  Constant: '<S185>/Constant1'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o = 0.0;
+  } else {
+    /* Switch: '<S185>/Switch' incorporates:
+     *  Gain: '<S35>/Gain1'
+     *  Sum: '<S35>/Subtract'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o =
+      -(((rtb_Switch_k_idx_0 + rtb_Switch_k_idx_1) - rtb_Switch_k_idx_2) -
+        rtb_Switch_k_idx_3);
+  }
+
+  /* End of Switch: '<S185>/Switch' */
+
+  /* DiscreteIntegrator: '<S272>/Integrator' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g
+        <= 0)) || ((!(int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+                   ((int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g
+                    == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l = 0.0;
+  }
+
+  /* SampleTimeMath: '<S267>/Tsamp' incorporates:
+   *  Gain: '<S264>/Derivative Gain'
+   *
+   * About '<S267>/Tsamp':
+   *  y = u * K where K = 1 / ( w * Ts )
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_m = 0.0 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o * 4000.0;
+
+  /* Delay: '<S265>/UD' */
+  if ((((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_n == 1)
+       != (int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+      ((int32_T)
+       PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_n != 3))
+  {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o = 0.0;
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_n =
+    (ZCSigState)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
+
+  /* Sum: '<S281>/Sum' incorporates:
+   *  Delay: '<S265>/UD'
+   *  DiscreteIntegrator: '<S272>/Integrator'
+   *  Gain: '<S277>/Proportional Gain'
+   *  Sum: '<S265>/Diff'
+   */
+  rtb_Sum_p = (0.0 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o +
+               PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l)
+    + (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_m -
+       PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o);
+
+  /* Constant: '<S32>/Base Ref Airgap1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_p
+    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->RefPitch,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_g,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_g);
+
+  /* Switch: '<S184>/Switch' incorporates:
+   *  Constant: '<S185>/Constant'
+   *  Switch: '<S185>/Switch1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->AND_e) {
+    /* Switch: '<S184>/Switch' incorporates:
+     *  Constant: '<S184>/Constant1'
+     *  Gain: '<S237>/Gain1'
+     */
+    rtb_Switch_cd = 0.017453292519943295 *
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropellingPitch;
+  } else {
+    if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Undo_0current != 0.0)
+    {
+      /* Switch: '<S185>/Switch1' incorporates:
+       *  Constant: '<S185>/Constant2'
+       */
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 0.0;
+    } else {
+      /* Switch: '<S185>/Switch1' */
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = rtb_Sum_p;
+    }
+
+    /* Switch: '<S184>/Switch' incorporates:
+     *  Gain: '<S178>/Gain1'
+     *  Gain: '<S179>/Gain1'
+     *  Sum: '<S32>/Plus1'
+     */
+    rtb_Switch_cd = 0.017453292519943295 *
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 +
+      0.017453292519943295 *
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_g.MovingAverage;
+  }
+
+  /* End of Switch: '<S184>/Switch' */
+
+  /* DiscreteIntegrator: '<S184>/Discrete-Time Integrator1' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->AND_e) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_k
+        <= 0)) || ((!(int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->AND_e) &&
+                   ((int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_k
+                    == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
+      = 0.0;
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1(rtb_Switch_cd,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpg);
+
+  /* Switch: '<S184>/Switch1' incorporates:
+   *  Constant: '<S184>/Constant4'
+   *  DiscreteIntegrator: '<S184>/Discrete-Time Integrator1'
+   *  RelationalOperator: '<S184>/GreaterThan1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
+      > PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionRampTime) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = rtb_Switch_cd;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage1;
+  }
+
+  /* End of Switch: '<S184>/Switch1' */
+
+  /* Sum: '<S32>/Plus' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointpitch =
+    rtb_Switch2_idx_1 +
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
+
+  /* Sum: '<S32>/Subtract' */
+  rtb_error_m = PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointpitch -
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[1];
+
+  /* Gain: '<S32>/Gain2' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2 = 952.0 * rtb_error_m;
+
+  /* RelationalOperator: '<S32>/Equal' incorporates:
+   *  Constant: '<S32>/Constant2'
+   *  Outport: '<Root>/Mode'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a = (boolean_T)
+    (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
+
+  /* DiscreteIntegrator: '<S220>/Integrator' incorporates:
+   *  DiscreteIntegrator: '<S215>/Filter'
+   */
+  p_tmp = (boolean_T)!(int32_T)
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a;
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g0
+        <= 0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g0
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c = 0.0;
+  }
+
+  /* DiscreteIntegrator: '<S215>/Filter' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_j <=
+        0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_j ==
+        1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i = 0.0;
+  }
+
+  /* Switch: '<S180>/Switch2' incorporates:
+   *  Constant: '<S180>/Constant3'
+   *  Constant: '<S180>/Constant4'
+   *  Inport: '<Root>/LS_mode'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_d_LS;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_d;
+  }
+
+  /* End of Switch: '<S180>/Switch2' */
+
+  /* Product: '<S223>/NProd Out' incorporates:
+   *  Constant: '<S186>/Constant'
+   *  Constant: '<S186>/N'
+   *  DiscreteIntegrator: '<S215>/Filter'
+   *  Product: '<S186>/Divide'
+   *  Product: '<S214>/DProd Out'
+   *  Sum: '<S215>/SumD'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_e =
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2 *
+     rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 -
+     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i) *
+    (6.2831853071795862 /
+     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_T_c);
+
+  /* Switch: '<S180>/Switch1' incorporates:
+   *  Constant: '<S180>/Constant1'
+   *  Constant: '<S180>/Constant5'
+   *  Inport: '<Root>/LS_mode'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_p_LS;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_p;
+  }
+
+  /* End of Switch: '<S180>/Switch1' */
+
+  /* Sum: '<S229>/Sum' incorporates:
+   *  DiscreteIntegrator: '<S220>/Integrator'
+   *  Product: '<S225>/PProd Out'
+   */
+  rtb_Sum_h = (PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2 *
+               rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 +
+               PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c)
+    + PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_e;
+
+  /* Product: '<S32>/Product' incorporates:
+   *  Constant: '<S32>/Reference_P_Inertia'
+   *  Gain: '<S32>/Gain1'
+   *  Product: '<S32>/Divide'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product = rtb_Gain_m /
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Reference_P_Inertia *
+    (2.049 * rtb_Sum_h);
+
+  /* Sum: '<S33>/Add1' */
+  rtb_Add1_f = PIDcontroller4CoreCentralizedTestReadyMotor_B->Product -
+    rtb_Add1_d;
+
+  /* Product: '<S9>/Divide' incorporates:
+   *  Constant: '<S9>/LongDistance'
+   */
+  rtb_Divide_k = rtb_Add1_f / 0.3054;
+
+  /* Logic: '<S294>/AND' incorporates:
+   *  Constant: '<S294>/Constant'
+   *  Constant: '<S294>/Constant2'
+   *  Delay: '<S294>/Delay'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->AND_i = (boolean_T)
+    ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->LowAirgapPropellingSwitch
+      != 0.0) &&
+     (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn != 0.0) &&
+     ((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_m));
+
+  /* Constant: '<S34>/Base Ref Airgap1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_p
+    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->RefRoll,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh);
+
+  /* Sum: '<S295>/Subtract5' incorporates:
+   *  Constant: '<S295>/Constant4'
+   *  Outport: '<Root>/Mode'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_l =
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - -1.0;
+
+  /* Switch: '<S295>/Switch' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_l != 0.0) {
+    /* Switch: '<S295>/Switch' incorporates:
+     *  Constant: '<S295>/Constant1'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p = 0.0;
+  } else {
+    /* Switch: '<S295>/Switch' incorporates:
+     *  Gain: '<S35>/Gain'
+     *  Sum: '<S35>/Subtract1'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p =
+      -(((rtb_Switch_k_idx_1 - rtb_Switch_k_idx_0) - rtb_Switch_k_idx_2) +
+        rtb_Switch_k_idx_3);
+  }
+
+  /* End of Switch: '<S295>/Switch' */
+
+  /* DiscreteIntegrator: '<S382>/Integrator' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_m
+        <= 0)) || ((!(int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+                   ((int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_m
+                    == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg = 0.0;
+  }
+
+  /* SampleTimeMath: '<S377>/Tsamp' incorporates:
+   *  Gain: '<S374>/Derivative Gain'
+   *
+   * About '<S377>/Tsamp':
+   *  y = u * K where K = 1 / ( w * Ts )
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_h = 0.0 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p * 4000.0;
+
+  /* Delay: '<S375>/UD' */
+  if ((((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_k == 1)
+       != (int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
+      ((int32_T)
+       PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_k != 3))
+  {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l = 0.0;
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_PrevZCX->UD_Reset_ZCE_k =
+    (ZCSigState)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
+
+  /* Sum: '<S391>/Sum' incorporates:
+   *  Delay: '<S375>/UD'
+   *  DiscreteIntegrator: '<S382>/Integrator'
+   *  Gain: '<S387>/Proportional Gain'
+   *  Sum: '<S375>/Diff'
+   */
+  rtb_Sum_fi = (0.0 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p +
+                PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg)
+    + (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_h -
+       PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l);
+
+  /* Switch: '<S294>/Switch' incorporates:
+   *  Constant: '<S295>/Constant'
+   *  Switch: '<S295>/Switch1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->AND_i) {
+    /* Switch: '<S294>/Switch' incorporates:
+     *  Constant: '<S294>/Constant1'
+     *  Gain: '<S347>/Gain1'
+     */
+    rtb_Switch_n4 = 0.017453292519943295 *
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropellingRoll;
+  } else {
+    if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Undo_0current != 0.0)
+    {
+      /* Switch: '<S295>/Switch1' incorporates:
+       *  Constant: '<S295>/Constant2'
+       */
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 0.0;
+    } else {
+      /* Switch: '<S295>/Switch1' */
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = rtb_Sum_fi;
+    }
+
+    /* Switch: '<S294>/Switch' incorporates:
+     *  Gain: '<S289>/Gain1'
+     *  Gain: '<S290>/Gain1'
+     *  Sum: '<S34>/Add1'
+     */
+    rtb_Switch_n4 = 0.017453292519943295 *
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh.MovingAverage
+      + 0.017453292519943295 *
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
+  }
+
+  /* End of Switch: '<S294>/Switch' */
+
+  /* DiscreteIntegrator: '<S294>/Discrete-Time Integrator1' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->AND_i) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_g
+        <= 0)) || ((!(int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->AND_i) &&
+                   ((int32_T)
+                    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_g
+                    == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+      = 0.0;
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1(rtb_Switch_n4,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5);
+
+  /* Switch: '<S294>/Switch1' incorporates:
+   *  Constant: '<S294>/Constant4'
+   *  DiscreteIntegrator: '<S294>/Discrete-Time Integrator1'
+   *  RelationalOperator: '<S294>/GreaterThan1'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+      > PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionRampTime) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = rtb_Switch_n4;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5.MovingAverage1;
+  }
+
+  /* End of Switch: '<S294>/Switch1' */
+
+  /* Sum: '<S34>/Add' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointroll =
+    rtb_Switch2_idx_2 +
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
+
+  /* Gain: '<S34>/Gain2' incorporates:
+   *  Gain: '<S34>/Gain3'
+   *  Sum: '<S34>/Subtract'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_e =
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointroll -
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[2]) * 401.61 *
+    1.02;
+
+  /* RelationalOperator: '<S34>/Equal' incorporates:
+   *  Constant: '<S34>/Constant2'
+   *  Outport: '<Root>/Mode'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km = (boolean_T)
+    (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
+
+  /* DiscreteIntegrator: '<S330>/Integrator' incorporates:
+   *  DiscreteIntegrator: '<S325>/Filter'
+   */
+  p_tmp = (boolean_T)!(int32_T)
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km;
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_ns
+        <= 0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_ns
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw = 0.0;
+  }
+
+  /* DiscreteIntegrator: '<S325>/Filter' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_k <=
+        0)) || (((int32_T)p_tmp) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_k ==
+        1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h = 0.0;
+  }
+
+  /* Switch: '<S291>/Switch2' incorporates:
+   *  Constant: '<S291>/Constant3'
+   *  Constant: '<S291>/Constant4'
+   *  Inport: '<Root>/LS_mode'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_K_d_LS;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_K_d;
+  }
+
+  /* End of Switch: '<S291>/Switch2' */
+
+  /* Product: '<S333>/NProd Out' incorporates:
+   *  Constant: '<S296>/Constant'
+   *  Constant: '<S296>/N'
+   *  DiscreteIntegrator: '<S325>/Filter'
+   *  Product: '<S296>/Divide'
+   *  Product: '<S324>/DProd Out'
+   *  Sum: '<S325>/SumD'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_k =
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_e *
+     rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 -
+     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h) *
+    (6.2831853071795862 /
+     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_T_c);
+
+  /* Switch: '<S291>/Switch1' incorporates:
+   *  Constant: '<S291>/Constant1'
+   *  Constant: '<S291>/Constant5'
+   *  Inport: '<Root>/LS_mode'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_K_p_LS;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 170.0;
+  }
+
+  /* End of Switch: '<S291>/Switch1' */
+
+  /* Sum: '<S339>/Sum' incorporates:
+   *  DiscreteIntegrator: '<S330>/Integrator'
+   *  Product: '<S335>/PProd Out'
+   */
+  rtb_Sum_l = (PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_e *
+               rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 +
+               PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw)
+    + PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_k;
+
+  /* Product: '<S34>/Product' incorporates:
+   *  Constant: '<S34>/Reference_R_Inertia'
+   *  Gain: '<S34>/Gain1'
+   *  Product: '<S34>/Divide'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_h = rtb_Gain_do /
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Reference_R_Inertia *
+    (1.02 * rtb_Sum_l);
+
+  /* Sum: '<S33>/Add2' */
+  rtb_Add2_h = PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_h -
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2;
+
+  /* Product: '<S9>/Divide1' incorporates:
+   *  Constant: '<S9>/LatDistance'
+   */
+  rtb_Divide1_k = rtb_Add2_h / 0.392;
+
+  /* Lookup_n-D: '<S423>/2-D Lookup Table3' incorporates:
+   *  Constant: '<S423>/Constant'
+   */
+  bpIndices_0[0U] = plook_binxp(0.0,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26, 29U, &tol,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache01);
+  fractions_0[0U] = tol;
+
+  /* Saturate: '<S9>/Saturation' */
+  if (rtb_Subtract_idx_0 > 25.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 25.0;
+  } else if (rtb_Subtract_idx_0 < 5.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 5.0;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      rtb_Subtract_idx_0;
+  }
+
+  /* Lookup_n-D: '<S423>/2-D Lookup Table3' */
+  bpIndices_0[1U] = plook_binxp
+    (rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1,
+     PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 350U, &tol,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02[0]);
+  fractions_0[1U] = tol;
+  rtb_Switch_k_idx_0 = intrp2d_l_pw(bpIndices_0, fractions_0,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25, 30U);
+
+  /* Saturate: '<S9>/Saturation' */
+  if (rtb_Subtract_idx_1 > 25.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 25.0;
+  } else if (rtb_Subtract_idx_1 < 5.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 5.0;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      rtb_Subtract_idx_1;
+  }
+
+  /* Lookup_n-D: '<S423>/2-D Lookup Table3' */
+  bpIndices_0[1U] = plook_binxp
+    (rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1,
+     PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 350U, &tol,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02[1]);
+  fractions_0[1U] = tol;
+  rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = intrp2d_l_pw
+    (bpIndices_0, fractions_0,
+     PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25, 30U);
+
+  /* Saturate: '<S9>/Saturation' */
+  if (rtb_Subtract_idx_2 > 25.0) {
+    rtb_Switch_k_idx_1 = 25.0;
+  } else if (rtb_Subtract_idx_2 < 5.0) {
+    rtb_Switch_k_idx_1 = 5.0;
+  } else {
+    rtb_Switch_k_idx_1 = rtb_Subtract_idx_2;
+  }
+
+  /* Lookup_n-D: '<S423>/2-D Lookup Table3' */
+  bpIndices_0[1U] = plook_binxp(rtb_Switch_k_idx_1,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 350U, &tol,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02[2]);
+  fractions_0[1U] = tol;
+  rtb_Switch_k_idx_1 = intrp2d_l_pw(bpIndices_0, fractions_0,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25, 30U);
+
+  /* Saturate: '<S9>/Saturation' */
+  if (rtb_Subtract_idx_3 > 25.0) {
+    rtb_Switch_k_idx_2 = 25.0;
+  } else if (rtb_Subtract_idx_3 < 5.0) {
+    rtb_Switch_k_idx_2 = 5.0;
+  } else {
+    rtb_Switch_k_idx_2 = rtb_Subtract_idx_3;
+  }
+
+  /* Lookup_n-D: '<S423>/2-D Lookup Table3' */
+  bpIndices_0[1U] = plook_binxp(rtb_Switch_k_idx_2,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 350U, &tol,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02[3]);
+  fractions_0[1U] = tol;
+  tol = intrp2d_l_pw(bpIndices_0, fractions_0,
+                     PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25,
+                     30U);
+
+  /* MATLAB Function: '<S423>/MATLAB Function' incorporates:
+   *  Constant: '<S423>/Constant1'
+   *  Lookup_n-D: '<S423>/2-D Lookup Table3'
+   */
+  /* MATLAB Function 'Force Solver/Force Divider1/MATLAB Function': '<S424>:1' */
+  /* '<S424>:1:2' */
+  /* '<S424>:1:3' */
+  /* '<S424>:1:4' */
+  /* '<S424>:1:5' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MagnetFailure != 0U) {
+    /* '<S424>:1:7' */
+    /* '<S424>:1:8' */
+    tol = (rtb_Divide1_k + rtb_Add_l) / 2.0 -
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
+
+    /* '<S424>:1:9' */
+    F1 = (rtb_Divide_k - rtb_Divide1_k) / 2.0 + tol;
+
+    /* '<S424>:1:10' */
+    F3 = (rtb_Add_l - rtb_Divide_k) / 2.0 - tol;
+  } else {
+    /* '<S424>:1:12' */
+    rtb_Switch_k_idx_2 = rtb_Switch_k_idx_0 * rtb_Switch_k_idx_0;
+    rtb_Switch_k_idx_3 =
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 *
+      rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
+    rtb_ZeroOrderHold4_idx_0 = rtb_Switch_k_idx_2 * 2.0;
+    rtb_ZeroOrderHold4_idx_1 = rtb_ZeroOrderHold4_idx_0 * rtb_Switch_k_idx_3;
+    rtb_ZeroOrderHold4_idx_2 = rtb_Switch_k_idx_2 * rtb_Switch_k_idx_3;
+    F1 = rtb_ZeroOrderHold4_idx_2 * tol;
+    F3 = rtb_Switch_k_idx_1 * rtb_Switch_k_idx_1;
+    rtb_Switch_k_idx_2 *= F3;
+    tol_tmp = rtb_Switch_k_idx_2 * tol;
+    tol_tmp_tmp = rtb_Switch_k_idx_3 * F3;
+    tol_tmp_0 = tol_tmp_tmp * tol;
+    tol_tmp_1 = tol * tol;
+    tol = (((((((((rtb_ZeroOrderHold4_idx_1 * F3 - rtb_ZeroOrderHold4_idx_1 *
+                   rtb_Switch_k_idx_1 * tol) + F1 * rtb_Add_l) - F1 *
+                 rtb_Divide_k) - rtb_ZeroOrderHold4_idx_0 *
+                rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 *
+                F3 * tol) + tol_tmp * rtb_Add_l) + tol_tmp * rtb_Divide1_k) +
+             2.0 * rtb_Switch_k_idx_0 * rtb_Switch_k_idx_3 * F3 * tol) -
+            tol_tmp_0 * rtb_Divide_k) + tol_tmp_0 * rtb_Divide1_k) * tol /
+      ((((rtb_ZeroOrderHold4_idx_2 * F3 + rtb_ZeroOrderHold4_idx_2 * tol_tmp_1)
+         + rtb_Switch_k_idx_2 * tol_tmp_1) + tol_tmp_tmp * tol_tmp_1) * 2.0);
+
+    /* '<S424>:1:13' */
+    F1 = (rtb_Divide_k - rtb_Divide1_k) / 2.0 + tol;
+
+    /* '<S424>:1:14' */
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      (rtb_Divide1_k + rtb_Add_l) / 2.0 - tol;
+
+    /* '<S424>:1:15' */
+    F3 = (rtb_Add_l - rtb_Divide_k) / 2.0 - tol;
+  }
+
+  /* '<S424>:1:18' */
+  rtb_ZeroOrderHold4_idx_1 = tol;
+
+  /* DSPFlip: '<S25>/Flip1' incorporates:
+   *  Constant: '<S25>/Constant20'
+   */
+  for (i = 0; i < 15; i++) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1[i] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[29 - i];
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1[29 - i] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[i];
+  }
+
+  /* End of DSPFlip: '<S25>/Flip1' */
+
+  /* Saturate: '<S1>/Saturation1' */
+  if (rtb_Subtract_idx_0 > 25.0) {
+    rtb_Switch_k_idx_3 = 25.0;
+  } else if (rtb_Subtract_idx_0 < 5.0) {
+    rtb_Switch_k_idx_3 = 5.0;
+  } else {
+    rtb_Switch_k_idx_3 = rtb_Subtract_idx_0;
+  }
+
+  if (rtb_Subtract_idx_1 > 25.0) {
+    rtb_Switch_k_idx_0 = 25.0;
+  } else if (rtb_Subtract_idx_1 < 5.0) {
+    rtb_Switch_k_idx_0 = 5.0;
+  } else {
+    rtb_Switch_k_idx_0 = rtb_Subtract_idx_1;
+  }
+
+  if (rtb_Subtract_idx_2 > 25.0) {
+    rtb_Switch_k_idx_1 = 25.0;
+  } else if (rtb_Subtract_idx_2 < 5.0) {
+    rtb_Switch_k_idx_1 = 5.0;
+  } else {
+    rtb_Switch_k_idx_1 = rtb_Subtract_idx_2;
+  }
+
+  if (rtb_Subtract_idx_3 > 25.0) {
+    rtb_Switch_k_idx_2 = 25.0;
+  } else if (rtb_Subtract_idx_3 < 5.0) {
+    rtb_Switch_k_idx_2 = 5.0;
+  } else {
+    rtb_Switch_k_idx_2 = rtb_Subtract_idx_3;
+  }
+
+  /* End of Saturate: '<S1>/Saturation1' */
+
+  /* Lookup_n-D: '<S25>/2-D Lookup Table2' incorporates:
+   *  Constant: '<S25>/Constant'
+   */
+  bpIndices_1[1U] = plook_binxp(rtb_Switch_k_idx_3,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 350U, &tol,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02_p);
+  fractions_1[1U] = tol;
+  for (i = 0; i < 30; i++) {
+    bpIndices_1[0U] = plook_binxp
+      (PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[i],
+       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26, 29U, &tol,
+       &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache01_m[i]);
+    fractions_1[0U] = tol;
+    rtb_uDLookupTable2_p[i] = intrp2d_l_pw(bpIndices_1, fractions_1,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25, 30U);
+  }
+
+  /* End of Lookup_n-D: '<S25>/2-D Lookup Table2' */
+
+  /* DSPFlip: '<S25>/Flip' */
+  for (i = 0; i < 15; i++) {
+    rtb_Flip[i] = rtb_uDLookupTable2_p[29 - i];
+    rtb_Flip[29 - i] = rtb_uDLookupTable2_p[i];
+  }
+
+  /* End of DSPFlip: '<S25>/Flip' */
+
+  /* Lookup_n-D: '<S25>/2-D Lookup Table1' incorporates:
+   *  Gain: '<S25>/Gain'
+   *  MATLAB Function: '<S423>/MATLAB Function'
+   */
+  rtb_uDLookupTable1_n = look1_pbinlxpw
+    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->M_f * F1, rtb_Flip,
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_fj, 29U);
+
+  /* MinMax: '<S25>/Max' incorporates:
+   *  Delay: '<S25>/Delay2'
+   *  Delay: '<S25>/Delay3'
+   */
+  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE >
+       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l) ||
+      ((int32_T)rtIsNaN
+       (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l))) {
+    /* MinMax: '<S25>/Max' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max =
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE;
+  } else {
+    /* MinMax: '<S25>/Max' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max =
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l;
+  }
+
+  /* End of MinMax: '<S25>/Max' */
+
+  /* Sum: '<S25>/Subtract4' incorporates:
+   *  Constant: '<S25>/Constant7'
+   *  Outport: '<Root>/Mode'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 2.0;
+
+  /* Switch: '<S25>/Switch2' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4 != 0.0) {
+    /* Switch: '<S25>/Switch' incorporates:
+     *  Saturate: '<S25>/Saturation1'
+     */
+    if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Max != 0.0) {
+      /* Saturate: '<S25>/Saturation1' */
+      if (rtb_uDLookupTable1_n > 9.0) {
+        rtb_ZeroOrderHold4_idx_0 = 9.0;
+      } else if (rtb_uDLookupTable1_n < -9.0) {
+        rtb_ZeroOrderHold4_idx_0 = -9.0;
+      } else {
+        rtb_ZeroOrderHold4_idx_0 = rtb_uDLookupTable1_n;
+      }
+
+      /* Saturate: '<S25>/Saturation' */
+      if (rtb_ZeroOrderHold4_idx_0 > 5.6) {
+        /* Switch: '<S25>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = 5.6;
+      } else if (rtb_ZeroOrderHold4_idx_0 < -5.6) {
+        /* Switch: '<S25>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = -5.6;
+      } else {
+        /* Switch: '<S25>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i =
+          rtb_ZeroOrderHold4_idx_0;
+      }
+
+      /* End of Saturate: '<S25>/Saturation' */
+    } else if (rtb_uDLookupTable1_n > 9.0) {
+      /* Saturate: '<S25>/Saturation1' incorporates:
+       *  Switch: '<S25>/Switch2'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = 9.0;
+    } else if (rtb_uDLookupTable1_n < -9.0) {
+      /* Saturate: '<S25>/Saturation1' incorporates:
+       *  Switch: '<S25>/Switch2'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = -9.0;
+    } else {
+      /* Switch: '<S25>/Switch2' incorporates:
+       *  Saturate: '<S25>/Saturation1'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i =
+        rtb_uDLookupTable1_n;
+    }
+
+    /* End of Switch: '<S25>/Switch' */
+  } else {
+    /* Switch: '<S25>/Switch2' incorporates:
+     *  Constant: '<S25>/Constant6'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = 0.0;
+  }
+
+  /* End of Switch: '<S25>/Switch2' */
+
+  /* MATLAB Function: '<S22>/Cap requested current' incorporates:
+   *  Constant: '<S22>/Ampere'
+   */
+  /* MATLAB Function 'Subsystem5/Cap requested current': '<S547>:1' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i - rtb_Gain1[0] >
+      3.0) {
+    /* '<S547>:1:4' */
+    /* '<S547>:1:5' */
+    rtb_out_req_I = rtb_Gain1[0] + 3.0;
+  } else if (rtb_Gain1[0] -
+             PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i > 3.0) {
+    /* '<S547>:1:6' */
+    /* '<S547>:1:7' */
+    rtb_out_req_I = rtb_Gain1[0] - 3.0;
+  } else {
+    /* '<S547>:1:9' */
+    rtb_out_req_I = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i;
+  }
+
+  /* End of MATLAB Function: '<S22>/Cap requested current' */
+
+  /* DSPFlip: '<S26>/Flip1' incorporates:
+   *  Constant: '<S26>/Constant20'
+   */
+  for (i = 0; i < 15; i++) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_c[i] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[29 - i];
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_c[29 - i] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[i];
+  }
+
+  /* End of DSPFlip: '<S26>/Flip1' */
+
+  /* Lookup_n-D: '<S26>/2-D Lookup Table2' incorporates:
+   *  Constant: '<S26>/Constant'
+   */
+  bpIndices_2[1U] = plook_binxp(rtb_Switch_k_idx_0,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 350U, &tol,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02_m);
+  fractions_2[1U] = tol;
+  for (i = 0; i < 30; i++) {
+    bpIndices_2[0U] = plook_binxp
+      (PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[i],
+       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26, 29U, &tol,
+       &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache01_l[i]);
+    fractions_2[0U] = tol;
+    rtb_uDLookupTable2_bl[i] = intrp2d_l_pw(bpIndices_2, fractions_2,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25, 30U);
+  }
+
+  /* End of Lookup_n-D: '<S26>/2-D Lookup Table2' */
+
+  /* DSPFlip: '<S26>/Flip' */
+  for (i = 0; i < 15; i++) {
+    rtb_Flip_n[i] = rtb_uDLookupTable2_bl[29 - i];
+    rtb_Flip_n[29 - i] = rtb_uDLookupTable2_bl[i];
+  }
+
+  /* End of DSPFlip: '<S26>/Flip' */
+
+  /* Lookup_n-D: '<S26>/2-D Lookup Table1' incorporates:
+   *  Gain: '<S26>/Gain'
+   *  MATLAB Function: '<S423>/MATLAB Function'
+   */
+  rtb_uDLookupTable1_c = look1_pbinlxpw
+    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->M_f *
+     rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1, rtb_Flip_n,
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_c,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_g, 29U);
+
+  /* MinMax: '<S26>/Max' incorporates:
+   *  Delay: '<S26>/Delay2'
+   *  Delay: '<S26>/Delay3'
+   */
+  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_m >
+       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_b) ||
+      ((int32_T)rtIsNaN
+       (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_b))) {
+    /* MinMax: '<S26>/Max' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_j =
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_m;
+  } else {
+    /* MinMax: '<S26>/Max' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_j =
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_b;
+  }
+
+  /* End of MinMax: '<S26>/Max' */
+
+  /* Sum: '<S26>/Subtract4' incorporates:
+   *  Constant: '<S25>/Constant7'
+   *  Outport: '<Root>/Mode'
+   *  Sum: '<S25>/Subtract4'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_d =
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 2.0;
+
+  /* Switch: '<S26>/Switch2' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_d != 0.0) {
+    /* Switch: '<S26>/Switch' incorporates:
+     *  Saturate: '<S26>/Saturation1'
+     */
+    if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_j != 0.0) {
+      /* Saturate: '<S26>/Saturation1' */
+      if (rtb_uDLookupTable1_c > 9.0) {
+        rtb_ZeroOrderHold4_idx_0 = 9.0;
+      } else if (rtb_uDLookupTable1_c < -9.0) {
+        rtb_ZeroOrderHold4_idx_0 = -9.0;
+      } else {
+        rtb_ZeroOrderHold4_idx_0 = rtb_uDLookupTable1_c;
+      }
+
+      /* Saturate: '<S26>/Saturation' */
+      if (rtb_ZeroOrderHold4_idx_0 > 5.6) {
+        /* Switch: '<S26>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot = 5.6;
+      } else if (rtb_ZeroOrderHold4_idx_0 < -5.6) {
+        /* Switch: '<S26>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot = -5.6;
+      } else {
+        /* Switch: '<S26>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot =
+          rtb_ZeroOrderHold4_idx_0;
+      }
+
+      /* End of Saturate: '<S26>/Saturation' */
+    } else if (rtb_uDLookupTable1_c > 9.0) {
+      /* Saturate: '<S26>/Saturation1' incorporates:
+       *  Switch: '<S26>/Switch2'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot = 9.0;
+    } else if (rtb_uDLookupTable1_c < -9.0) {
+      /* Saturate: '<S26>/Saturation1' incorporates:
+       *  Switch: '<S26>/Switch2'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot = -9.0;
+    } else {
+      /* Switch: '<S26>/Switch2' incorporates:
+       *  Saturate: '<S26>/Saturation1'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot =
+        rtb_uDLookupTable1_c;
+    }
+
+    /* End of Switch: '<S26>/Switch' */
+  } else {
+    /* Switch: '<S26>/Switch2' incorporates:
+     *  Constant: '<S26>/Constant6'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot = 0.0;
+  }
+
+  /* End of Switch: '<S26>/Switch2' */
+
+  /* MATLAB Function: '<S22>/Cap requested current1' incorporates:
+   *  Constant: '<S22>/Ampere'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1(rtb_Gain1[1],
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot, 3.0,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent1);
+
+  /* DSPFlip: '<S27>/Flip1' incorporates:
+   *  Constant: '<S27>/Constant20'
+   */
+  for (i = 0; i < 15; i++) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_p[i] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[29 - i];
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_p[29 - i] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[i];
+  }
+
+  /* End of DSPFlip: '<S27>/Flip1' */
+
+  /* Lookup_n-D: '<S27>/2-D Lookup Table2' incorporates:
+   *  Constant: '<S27>/Constant'
+   */
+  bpIndices_3[1U] = plook_binxp(rtb_Switch_k_idx_1,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 350U, &tol,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02_i);
+  fractions_3[1U] = tol;
+  for (i = 0; i < 30; i++) {
+    bpIndices_3[0U] = plook_binxp
+      (PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[i],
+       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26, 29U, &tol,
+       &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache01_f[i]);
+    fractions_3[0U] = tol;
+    rtb_uDLookupTable2_j[i] = intrp2d_l_pw(bpIndices_3, fractions_3,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25, 30U);
+  }
+
+  /* End of Lookup_n-D: '<S27>/2-D Lookup Table2' */
+
+  /* DSPFlip: '<S27>/Flip' */
+  for (i = 0; i < 15; i++) {
+    rtb_Flip_l[i] = rtb_uDLookupTable2_j[29 - i];
+    rtb_Flip_l[29 - i] = rtb_uDLookupTable2_j[i];
+  }
+
+  /* End of DSPFlip: '<S27>/Flip' */
+
+  /* Lookup_n-D: '<S27>/2-D Lookup Table1' incorporates:
+   *  Gain: '<S27>/Gain'
+   *  MATLAB Function: '<S423>/MATLAB Function'
+   */
+  rtb_uDLookupTable1_e = look1_pbinlxpw
+    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->M_f * F3, rtb_Flip_l,
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_p,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_m, 29U);
+
+  /* MinMax: '<S27>/Max' incorporates:
+   *  Delay: '<S27>/Delay2'
+   *  Delay: '<S27>/Delay3'
+   */
+  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_i >
+       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g) ||
+      ((int32_T)rtIsNaN
+       (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g))) {
+    /* MinMax: '<S27>/Max' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_b =
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_i;
+  } else {
+    /* MinMax: '<S27>/Max' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_b =
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g;
+  }
+
+  /* End of MinMax: '<S27>/Max' */
+
+  /* Sum: '<S27>/Subtract4' incorporates:
+   *  Constant: '<S25>/Constant7'
+   *  Outport: '<Root>/Mode'
+   *  Sum: '<S25>/Subtract4'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_a =
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 2.0;
+
+  /* Switch: '<S27>/Switch2' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_a != 0.0) {
+    /* Switch: '<S27>/Switch' incorporates:
+     *  Saturate: '<S27>/Saturation1'
+     */
+    if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_b != 0.0) {
+      /* Saturate: '<S27>/Saturation1' */
+      if (rtb_uDLookupTable1_e > 9.0) {
+        rtb_ZeroOrderHold4_idx_0 = 9.0;
+      } else if (rtb_uDLookupTable1_e < -9.0) {
+        rtb_ZeroOrderHold4_idx_0 = -9.0;
+      } else {
+        rtb_ZeroOrderHold4_idx_0 = rtb_uDLookupTable1_e;
+      }
+
+      /* Saturate: '<S27>/Saturation' */
+      if (rtb_ZeroOrderHold4_idx_0 > 5.6) {
+        /* Switch: '<S27>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c = 5.6;
+      } else if (rtb_ZeroOrderHold4_idx_0 < -5.6) {
+        /* Switch: '<S27>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c = -5.6;
+      } else {
+        /* Switch: '<S27>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c =
+          rtb_ZeroOrderHold4_idx_0;
+      }
+
+      /* End of Saturate: '<S27>/Saturation' */
+    } else if (rtb_uDLookupTable1_e > 9.0) {
+      /* Saturate: '<S27>/Saturation1' incorporates:
+       *  Switch: '<S27>/Switch2'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c = 9.0;
+    } else if (rtb_uDLookupTable1_e < -9.0) {
+      /* Saturate: '<S27>/Saturation1' incorporates:
+       *  Switch: '<S27>/Switch2'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c = -9.0;
+    } else {
+      /* Switch: '<S27>/Switch2' incorporates:
+       *  Saturate: '<S27>/Saturation1'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c =
+        rtb_uDLookupTable1_e;
+    }
+
+    /* End of Switch: '<S27>/Switch' */
+  } else {
+    /* Switch: '<S27>/Switch2' incorporates:
+     *  Constant: '<S27>/Constant6'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c = 0.0;
+  }
+
+  /* End of Switch: '<S27>/Switch2' */
+
+  /* MATLAB Function: '<S22>/Cap requested current2' incorporates:
+   *  Constant: '<S22>/Ampere'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1(rtb_Gain1[2],
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c, 3.0,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent2);
+
+  /* DSPFlip: '<S28>/Flip1' incorporates:
+   *  Constant: '<S28>/Constant20'
+   */
+  for (i = 0; i < 15; i++) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_o[i] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[29 - i];
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_o[29 - i] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[i];
+  }
+
+  /* End of DSPFlip: '<S28>/Flip1' */
+
+  /* Lookup_n-D: '<S28>/2-D Lookup Table2' incorporates:
+   *  Constant: '<S28>/Constant'
+   */
+  bpIndices_4[1U] = plook_binxp(rtb_Switch_k_idx_2,
+    PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled27, 350U, &tol,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache02_k);
+  fractions_4[1U] = tol;
+  for (i = 0; i < 30; i++) {
+    bpIndices_4[0U] = plook_binxp
+      (PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26[i],
+       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled26, 29U, &tol,
+       &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_Cache01_o[i]);
+    fractions_4[0U] = tol;
+    rtb_uDLookupTable2_c[i] = intrp2d_l_pw(bpIndices_4, fractions_4,
+      PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled25, 30U);
+  }
+
+  /* End of Lookup_n-D: '<S28>/2-D Lookup Table2' */
+
+  /* DSPFlip: '<S28>/Flip' */
+  for (i = 0; i < 15; i++) {
+    rtb_Flip_d[i] = rtb_uDLookupTable2_c[29 - i];
+    rtb_Flip_d[29 - i] = rtb_uDLookupTable2_c[i];
+  }
+
+  /* End of DSPFlip: '<S28>/Flip' */
+
+  /* Lookup_n-D: '<S28>/2-D Lookup Table1' incorporates:
+   *  Gain: '<S28>/Gain'
+   */
+  rtb_uDLookupTable1_m = look1_pbinlxpw
+    (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->M_f *
+     rtb_ZeroOrderHold4_idx_1, rtb_Flip_d,
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_o,
+     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->m_bpIndex_e, 29U);
+
+  /* MinMax: '<S28>/Max' incorporates:
+   *  Delay: '<S28>/Delay2'
+   *  Delay: '<S28>/Delay3'
+   */
+  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_o >
+       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_bo) ||
+      ((int32_T)rtIsNaN
+       (PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_bo))) {
+    /* MinMax: '<S28>/Max' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_i =
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_o;
+  } else {
+    /* MinMax: '<S28>/Max' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_i =
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_bo;
+  }
+
+  /* End of MinMax: '<S28>/Max' */
+
+  /* Sum: '<S28>/Subtract4' incorporates:
+   *  Constant: '<S25>/Constant7'
+   *  Outport: '<Root>/Mode'
+   *  Sum: '<S25>/Subtract4'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_n =
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode - 2.0;
+
+  /* Switch: '<S28>/Switch2' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_n != 0.0) {
+    /* Switch: '<S28>/Switch' incorporates:
+     *  Saturate: '<S28>/Saturation1'
+     */
+    if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_i != 0.0) {
+      /* Saturate: '<S28>/Saturation1' */
+      if (rtb_uDLookupTable1_m > 9.0) {
+        rtb_ZeroOrderHold4_idx_0 = 9.0;
+      } else if (rtb_uDLookupTable1_m < -9.0) {
+        rtb_ZeroOrderHold4_idx_0 = -9.0;
+      } else {
+        rtb_ZeroOrderHold4_idx_0 = rtb_uDLookupTable1_m;
+      }
+
+      /* Saturate: '<S28>/Saturation' */
+      if (rtb_ZeroOrderHold4_idx_0 > 5.6) {
+        /* Switch: '<S28>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a = 5.6;
+      } else if (rtb_ZeroOrderHold4_idx_0 < -5.6) {
+        /* Switch: '<S28>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a = -5.6;
+      } else {
+        /* Switch: '<S28>/Switch2' */
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a =
+          rtb_ZeroOrderHold4_idx_0;
+      }
+
+      /* End of Saturate: '<S28>/Saturation' */
+    } else if (rtb_uDLookupTable1_m > 9.0) {
+      /* Saturate: '<S28>/Saturation1' incorporates:
+       *  Switch: '<S28>/Switch2'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a = 9.0;
+    } else if (rtb_uDLookupTable1_m < -9.0) {
+      /* Saturate: '<S28>/Saturation1' incorporates:
+       *  Switch: '<S28>/Switch2'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a = -9.0;
+    } else {
+      /* Switch: '<S28>/Switch2' incorporates:
+       *  Saturate: '<S28>/Saturation1'
+       */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a =
+        rtb_uDLookupTable1_m;
+    }
+
+    /* End of Switch: '<S28>/Switch' */
+  } else {
+    /* Switch: '<S28>/Switch2' incorporates:
+     *  Constant: '<S28>/Constant6'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a = 0.0;
+  }
+
+  /* End of Switch: '<S28>/Switch2' */
+
+  /* MATLAB Function: '<S22>/Cap requested current3' incorporates:
+   *  Constant: '<S22>/Ampere'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1(rtb_Gain1[3],
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a, 3.0,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent3);
+
+  /* Switch: '<Root>/Switch3' incorporates:
+   *  Gain: '<Root>/Gain'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) {
+    /* Outport: '<Root>/I_A' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_A = 0.0;
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 0.0;
+    rtb_ZeroOrderHold4_idx_0 = 0.0;
+    rtb_ZeroOrderHold4_idx_1 = 0.0;
+  } else {
+    /* Outport: '<Root>/I_A' incorporates:
+     *  Gain: '<Root>/Gain'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_A =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Polarity *
+      rtb_out_req_I;
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Polarity *
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent1.out_req_I;
+    rtb_ZeroOrderHold4_idx_0 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Polarity *
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent2.out_req_I;
+    rtb_ZeroOrderHold4_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Polarity *
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent3.out_req_I;
+  }
+
+  /* End of Switch: '<Root>/Switch3' */
+
+  /* Outport: '<Root>/Airgap' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Airgap =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[0];
+
+  /* Derivative: '<Root>/Derivative' incorporates:
+   *  Derivative: '<Root>/Derivative1'
+   */
+  tol = PIDcontroller4CoreCentralizedTestReadyMotor_M->Timing.t[0];
+  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA >= tol) &&
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB >= tol)) {
+    /* Derivative: '<Root>/Derivative' */
+    rtb_Derivative[0] = 0.0;
+    rtb_Derivative[1] = 0.0;
+    rtb_Derivative[2] = 0.0;
+  } else {
+    F1 = PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA;
+    lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeA;
+    if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA <
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB) {
+      if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB < tol) {
+        F1 = PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB;
+        lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeB;
+      }
+    } else if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA >= tol)
+    {
+      F1 = PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB;
+      lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeB;
+    }
+
+    F1 = tol - F1;
+
+    /* Derivative: '<Root>/Derivative' */
+    rtb_Derivative[0] =
+      (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[0] - (*lastU)[0])
+      / F1;
+    rtb_Derivative[1] =
+      (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[1] - (*lastU)[1])
+      / F1;
+    rtb_Derivative[2] =
+      (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[2] - (*lastU)[2])
+      / F1;
+  }
+
+  /* End of Derivative: '<Root>/Derivative' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_pn(rtb_Derivative,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_e);
+
+  /* Derivative: '<Root>/Derivative1' */
+  if ((PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA_l >= tol) &&
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b >= tol)) {
+    /* Derivative: '<Root>/Derivative1' */
+    rtb_Derivative1[0] = 0.0;
+    rtb_Derivative1[1] = 0.0;
+    rtb_Derivative1[2] = 0.0;
+  } else {
+    F1 = PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA_l;
+    lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeA_g;
+    if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA_l <
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b) {
+      if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b < tol) {
+        F1 = PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b;
+        lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeB_l;
+      }
+    } else if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA_l >=
+               tol) {
+      F1 = PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b;
+      lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeB_l;
+    }
+
+    F1 = tol - F1;
+
+    /* Derivative: '<Root>/Derivative1' incorporates:
+     *  MATLABSystem: '<Root>/Moving Average'
+     */
+    rtb_Derivative1[0] =
+      (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+       [0] - (*lastU)[0]) / F1;
+    rtb_Derivative1[1] =
+      (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+       [1] - (*lastU)[1]) / F1;
+    rtb_Derivative1[2] =
+      (PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+       [2] - (*lastU)[2]) / F1;
+  }
+
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_pn(rtb_Derivative1,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z,
+    &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5z);
+
+  /* Outport: '<Root>/Acceleration' incorporates:
+   *  MATLABSystem: '<Root>/Moving Average1'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Acceleration[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+    [0];
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Acceleration[1] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+    [1];
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Acceleration[2] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+    [2];
+
+  /* Outport: '<Root>/Calculated Force' incorporates:
+   *  Constant: '<Root>/Constant'
+   *  MATLABSystem: '<Root>/Moving Average1'
+   *  Product: '<Root>/Product'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedForce[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+    [0] * PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedForce[1] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+    [1] * PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedForce[2] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+    [2] * PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
+
+  /* Outport: '<Root>/Speed' incorporates:
+   *  MATLABSystem: '<Root>/Moving Average'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Speed[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->
+    MovingAverage_e.MovingAverage[0];
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Speed[1] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->
+    MovingAverage_e.MovingAverage[1];
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Speed[2] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->
+    MovingAverage_e.MovingAverage[2];
+
+  /* Outport: '<Root>/I_B' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_B =
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
+
+  /* Outport: '<Root>/I_C' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_C = rtb_ZeroOrderHold4_idx_0;
+
+  /* Outport: '<Root>/I_D' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_D = rtb_ZeroOrderHold4_idx_1;
+
+  /* Outport: '<Root>/Pitch' incorporates:
+   *  Gain: '<S11>/Gain'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Pitch = 57.295779513082323 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[1];
+
+  /* Outport: '<Root>/Roll' incorporates:
+   *  Gain: '<S12>/Gain'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Roll = 57.295779513082323 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[2];
+
+  /* Outport: '<Root>/Linpos' incorporates:
+   *  Sum: '<S19>/Subtract'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Linpos[0] = rtb_Subtract_idx_0;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Linpos[1] = rtb_Subtract_idx_1;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Linpos[2] = rtb_Subtract_idx_2;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Linpos[3] = rtb_Subtract_idx_3;
+
+  /* Outport: '<Root>/PitchError' incorporates:
+   *  Gain: '<S182>/Gain'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->PitchError = 57.295779513082323
+    * rtb_error_m;
+
+  /* Outport: '<Root>/BeamErrorOutput' incorporates:
+   *  Gain: '<S13>/Gain'
+   *  Gain: '<S14>/Gain'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->BeamErrorOutput[0] =
+    rtb_Switch2_idx_0;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->BeamErrorOutput[1] =
+    57.295779513082323 * rtb_Switch2_idx_1;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->BeamErrorOutput[2] =
+    57.295779513082323 * rtb_Switch2_idx_2;
+
+  /* Outport: '<Root>/Control SIgnals' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ControlSIgnals[0] = rtb_Add_l;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ControlSIgnals[1] = rtb_Add1_f;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ControlSIgnals[2] = rtb_Add2_h;
+
+  /* Outport: '<Root>/External Forces' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ExternalForces[0] = rtb_Sum1_g;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ExternalForces[1] = rtb_Add1_d;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->ExternalForces[2] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2;
+
+  /* Switch: '<S23>/Switch1' incorporates:
+   *  Constant: '<S23>/Constant3'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MismatchedHEMSLateral >
       0.0) {
     /* Outport: '<Root>/HEMSForces' */
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->HEMSForces[0] =
-      rtb_Switch_k_idx_0;
+      rtb_Product_idx_0;
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->HEMSForces[1] =
-      rtb_Switch_k_idx_1;
+      rtb_Product_idx_1;
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->HEMSForces[2] =
-      rtb_Switch_k_idx_2;
+      rtb_Product_idx_2;
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->HEMSForces[3] =
-      rtb_Switch_k_idx_3;
+      rtb_Product_idx_3;
   } else {
     /* Outport: '<Root>/HEMSForces' */
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->HEMSForces[0] =
-      rtb_uDLookupTable4;
+      rtb_uDLookupTable2;
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->HEMSForces[1] =
-      rtb_uDLookupTable3;
+      rtb_uDLookupTable1;
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->HEMSForces[2] =
-      rtb_uDLookupTable1_os;
+      rtb_uDLookupTable3;
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->HEMSForces[3] =
-      rtb_uDLookupTable2_cw;
+      rtb_uDLookupTable4;
   }
 
-  /* End of Switch: '<S24>/Switch1' */
+  /* End of Switch: '<S23>/Switch1' */
 
   /* MATLAB Function: '<S3>/MATLAB Function' */
-  /* MATLAB Function 'Calculate External Force/MATLAB Function': '<S394>:1' */
-  /* '<S394>:1:4' */
-  /* '<S394>:1:5' */
-  /* '<S394>:1:7' */
-  rtb_ZeroCurrentForces_idx_3 = rtb_uDLookupTable1[0];
+  /* MATLAB Function 'Calculate External Force/MATLAB Function': '<S399>:1' */
+  /* '<S399>:1:4' */
+  /* '<S399>:1:5' */
+  /* '<S399>:1:7' */
+  tol = rtb_uDLookupTable1_gs[0];
 
-  /* '<S394>:1:8' */
-  rtb_F_array_idx_1 = rtb_uDLookupTable1[20];
+  /* '<S399>:1:8' */
+  F1 = rtb_uDLookupTable1_gs[20];
   for (i = 0; i < 18; i++) {
-    rtb_ZeroCurrentForces_idx_3 += rtb_uDLookupTable1[i + 1];
-    rtb_F_array_idx_1 += rtb_uDLookupTable1[i + 21];
+    tol += rtb_uDLookupTable1_gs[i + 1];
+    F1 += rtb_uDLookupTable1_gs[i + 21];
   }
 
   /* Outport: '<Root>/motorfrontback' incorporates:
    *  MATLAB Function: '<S3>/MATLAB Function'
    */
-  /* '<S394>:1:10' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->motorfrontback[0] =
-    rtb_ZeroCurrentForces_idx_3 / 19.0 / 2.0;
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->motorfrontback[1] =
-    rtb_F_array_idx_1 / 19.0 / 2.0;
+  /* '<S399>:1:10' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->motorfrontback[0] = tol / 19.0 /
+    2.0;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->motorfrontback[1] = F1 / 19.0 /
+    2.0;
 
   /* Outport: '<Root>/DataBeforeKalman' incorporates:
-   *  Gain: '<S13>/Gain'
-   *  Gain: '<S14>/Gain'
+   *  Gain: '<S15>/Gain'
+   *  Gain: '<S16>/Gain'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->DataBeforeKalman[0] =
-    rtb_Switch_od;
+    rtb_Switch_gj;
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->DataBeforeKalman[1] =
     57.295779513082323 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k;
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->DataBeforeKalman[2] =
     57.295779513082323 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c;
 
-  /* Sum: '<S397>/Sum1' incorporates:
+  /* Sum: '<S402>/Sum1' incorporates:
    *  Abs: '<Root>/Abs'
-   *  Abs: '<S397>/Abs'
-   *  Gain: '<S397>/Gain1'
+   *  Abs: '<S402>/Abs'
+   *  Gain: '<S402>/Gain1'
    *  Inport: '<Root>/Vr1'
    *  Inport: '<Root>/Vr2'
    *  Inport: '<Root>/Vr3'
@@ -9120,7 +11567,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
    *  Inport: '<Root>/Vt2'
    *  Inport: '<Root>/Vt3'
    *  Inport: '<Root>/Vt4'
-   *  Product: '<S397>/Product'
+   *  Product: '<S402>/Product'
    *  Sum: '<Root>/Subtract2'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum1 = ((fabs
@@ -9139,7 +11586,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->Power =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum1;
 
-  /* MATLABSystem: '<S397>/Moving Average' */
+  /* MATLABSystem: '<S402>/Moving Average' */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj.TunablePropsChanged) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj.TunablePropsChanged =
       false;
@@ -9165,18 +11612,18 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   }
 
   /* Outport: '<Root>/Power_avg' incorporates:
-   *  MATLABSystem: '<S397>/Moving Average'
+   *  MATLABSystem: '<S402>/Moving Average'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->Power_avg =
-    PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl
+    PIDcontroller4CoreCentralizedTestReadyMotor_SlidingWindowAverageCG_stepImpl_o
     (obj_0, PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum1);
 
-  /* DiscreteIntegrator: '<S397>/Discrete-Time Integrator' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+  /* DiscreteIntegrator: '<S402>/Discrete-Time Integrator' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_j
         <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
                    ((int32_T)
                     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_j
                     == 1))) {
@@ -9185,51 +11632,61 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   }
 
   /* Outport: '<Root>/Energy' incorporates:
-   *  DiscreteIntegrator: '<S397>/Discrete-Time Integrator'
+   *  DiscreteIntegrator: '<S402>/Discrete-Time Integrator'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->Energy =
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_i;
 
   /* Sum: '<S4>/Add' */
-  rtb_Switch2_idx_0 = ((rtb_uDLookupTable4 + rtb_uDLookupTable3) +
-                       rtb_uDLookupTable1_os) + rtb_uDLookupTable2_cw;
+  tol = ((rtb_uDLookupTable2 + rtb_uDLookupTable1) + rtb_uDLookupTable3) +
+    rtb_uDLookupTable4;
 
   /* Sum: '<S4>/Sum' incorporates:
    *  Constant: '<S4>/LongDistance'
    *  Product: '<S4>/Product'
    */
-  rtb_Switch2_idx_1 = ((rtb_uDLookupTable4 * 0.3054 + rtb_uDLookupTable3 *
-                        0.3054) + rtb_uDLookupTable1_os *
+  rtb_Switch2_idx_0 = ((rtb_uDLookupTable2 * 0.3054 + rtb_uDLookupTable1 *
+                        0.3054) + rtb_uDLookupTable3 *
                        PIDcontroller4CoreCentralizedTestReadyMotor_ConstB.Gain)
-    + rtb_uDLookupTable2_cw *
+    + rtb_uDLookupTable4 *
     PIDcontroller4CoreCentralizedTestReadyMotor_ConstB.Gain;
 
   /* Sum: '<S4>/Sum1' incorporates:
    *  Constant: '<S4>/LatDistance'
    *  Product: '<S4>/Product1'
    */
-  rtb_Switch2_idx_2 = ((PIDcontroller4CoreCentralizedTestReadyMotor_ConstB.Gain1
-                        * rtb_uDLookupTable4 + 0.392 * rtb_uDLookupTable3) +
+  rtb_Switch2_idx_1 = ((PIDcontroller4CoreCentralizedTestReadyMotor_ConstB.Gain1
+                        * rtb_uDLookupTable2 + 0.392 * rtb_uDLookupTable1) +
                        PIDcontroller4CoreCentralizedTestReadyMotor_ConstB.Gain1 *
-                       rtb_uDLookupTable1_os) + 0.392 * rtb_uDLookupTable2_cw;
+                       rtb_uDLookupTable3) + 0.392 * rtb_uDLookupTable4;
 
   /* Outport: '<Root>/CalculatedTPR' incorporates:
    *  Sum: '<S4>/Add'
    *  Sum: '<S4>/Sum'
    *  Sum: '<S4>/Sum1'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedTPR[0] =
-    rtb_Switch2_idx_0;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedTPR[0] = tol;
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedTPR[1] =
-    rtb_Switch2_idx_1;
+    rtb_Switch2_idx_0;
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedTPR[2] =
-    rtb_Switch2_idx_2;
+    rtb_Switch2_idx_1;
 
-  /* Delay: '<S27>/Delay1' */
+  /* Outport: '<Root>/IMU_kalman_output' incorporates:
+   *  Gain: '<S17>/Gain'
+   *  Gain: '<S18>/Gain'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->IMU_kalman_output[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->IMU_kalman_output[1] =
+    57.295779513082323 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Add4;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->IMU_kalman_output[2] =
+    57.295779513082323 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Add5;
+
+  /* Delay: '<S25>/Delay1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_i =
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_c;
 
-  /* DiscreteIntegrator: '<S27>/Discrete-Time Integrator' */
+  /* DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
   if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_i > 0.0) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_g
@@ -9241,15 +11698,26 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       = 0.0;
   }
 
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g
+      >= 1.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g
+      = 1.0;
+  } else if
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g
+       <= 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g
+      = 0.0;
+  }
+
   rtb_DiscreteTimeIntegrator_c =
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g;
 
-  /* End of DiscreteIntegrator: '<S27>/Discrete-Time Integrator' */
-  /* Delay: '<S27>/Delay' */
+  /* End of DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
+  /* Delay: '<S25>/Delay' */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay =
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_d[0];
 
-  /* DiscreteIntegrator: '<S27>/Discrete-Time Integrator1' */
+  /* DiscreteIntegrator: '<S25>/Discrete-Time Integrator1' */
   if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay > 0.0) && ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_l
         <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay <= 0.0)
@@ -9263,25 +11731,296 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   rtb_DiscreteTimeIntegrator1_o2 =
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_c;
 
+  /* End of DiscreteIntegrator: '<S25>/Discrete-Time Integrator1' */
+  /* Switch: '<S25>/Switch4' incorporates:
+   *  Constant: '<S25>/Constant11'
+   *  Sum: '<S25>/Subtract6'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4 = (real_T)
+    (rtb_DiscreteTimeIntegrator_c - 1.0 >= 0.0);
+
+  /* Switch: '<S25>/Switch6' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4 != 0.0) {
+    /* Switch: '<S25>/Switch6' incorporates:
+     *  Constant: '<S25>/Constant8'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6 = 0.0;
+  } else {
+    /* Switch: '<S25>/Switch6' incorporates:
+     *  Constant: '<S25>/Constant17'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6 = -1.0;
+  }
+
+  /* End of Switch: '<S25>/Switch6' */
+
+  /* Switch: '<S25>/Switch3' incorporates:
+   *  Abs: '<S25>/Abs3'
+   *  Constant: '<S25>/Constant9'
+   *  Inport: '<Root>/I_A_m'
+   *  Sum: '<S25>/Subtract5'
+   */
+  if (fabs(PIDcontroller4CoreCentralizedTestReadyMotor_U->I_A_m) - 5.6 > 0.0) {
+    /* Switch: '<S25>/Switch3' incorporates:
+     *  Constant: '<S25>/Constant1'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3 = 1.0;
+  } else {
+    /* Switch: '<S25>/Switch3' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6;
+  }
+
+  /* End of Switch: '<S25>/Switch3' */
+
+  /* Switch: '<S25>/Switch5' incorporates:
+   *  Constant: '<S25>/Constant12'
+   *  Sum: '<S25>/Subtract7'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5 = (real_T)
+    (rtb_DiscreteTimeIntegrator1_o2 - 1.0 >= 0.0);
+
+  /* Switch: '<S25>/Switch7' incorporates:
+   *  Outport: '<Root>/Mode'
+   *  Sum: '<S25>/Subtract8'
+   *  Sum: '<S25>/Subtract9'
+   *  Switch: '<S25>/Switch8'
+   *  Switch: '<S25>/Switch9'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode != 0.0) {
+    rtb_Switch2_idx_2 = (real_T)!(13.0 - rtb_Switch_k_idx_3 > 0.0);
+    rtb_Subtract_idx_0 = (real_T)!(rtb_Switch_k_idx_3 - 17.0 > 0.0);
+
+    /* MinMax: '<S25>/Max1' incorporates:
+     *  Sum: '<S25>/Subtract8'
+     *  Sum: '<S25>/Subtract9'
+     *  Switch: '<S25>/Switch8'
+     *  Switch: '<S25>/Switch9'
+     */
+    if (rtb_Switch2_idx_2 < rtb_Subtract_idx_0) {
+      /* Switch: '<S25>/Switch7' */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7 = rtb_Switch2_idx_2;
+    } else {
+      /* Switch: '<S25>/Switch7' */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7 =
+        rtb_Subtract_idx_0;
+    }
+
+    /* End of MinMax: '<S25>/Max1' */
+  } else {
+    /* Switch: '<S25>/Switch7' incorporates:
+     *  Constant: '<S25>/Constant5'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7 = 0.0;
+  }
+
+  /* End of Switch: '<S25>/Switch7' */
+
+  /* Delay: '<S26>/Delay1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_b =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_a;
+
+  /* DiscreteIntegrator: '<S26>/Discrete-Time Integrator' */
+  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_b > 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n2
+        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_b <=
+                    0.0) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n2
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+      = 0.0;
+  }
+
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+      >= 1.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+      = 1.0;
+  } else if
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+       <= 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+      = 0.0;
+  }
+
+  rtb_DiscreteTimeIntegrator_o1 =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h;
+
+  /* End of DiscreteIntegrator: '<S26>/Discrete-Time Integrator' */
+  /* Delay: '<S26>/Delay' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_o =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[0];
+
+  /* DiscreteIntegrator: '<S26>/Discrete-Time Integrator1' */
+  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_o > 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_f
+        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_o <=
+                    0.0) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_f
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_d
+      = 0.0;
+  }
+
+  rtb_DiscreteTimeIntegrator1_il =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_d;
+
+  /* End of DiscreteIntegrator: '<S26>/Discrete-Time Integrator1' */
+  /* Switch: '<S26>/Switch4' incorporates:
+   *  Constant: '<S26>/Constant11'
+   *  Sum: '<S26>/Subtract6'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_g = (real_T)
+    (rtb_DiscreteTimeIntegrator_o1 - 1.0 >= 0.0);
+
+  /* Switch: '<S26>/Switch6' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_g != 0.0) {
+    /* Switch: '<S26>/Switch6' incorporates:
+     *  Constant: '<S26>/Constant8'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_a = 0.0;
+  } else {
+    /* Switch: '<S26>/Switch6' incorporates:
+     *  Constant: '<S26>/Constant17'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_a = -1.0;
+  }
+
+  /* End of Switch: '<S26>/Switch6' */
+
+  /* Switch: '<S26>/Switch3' incorporates:
+   *  Abs: '<S26>/Abs3'
+   *  Constant: '<S26>/Constant9'
+   *  Inport: '<Root>/I_B_m'
+   *  Sum: '<S26>/Subtract5'
+   */
+  if (fabs(PIDcontroller4CoreCentralizedTestReadyMotor_U->I_B_m) - 5.6 > 0.0) {
+    /* Switch: '<S26>/Switch3' incorporates:
+     *  Constant: '<S26>/Constant1'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h = 1.0;
+  } else {
+    /* Switch: '<S26>/Switch3' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_a;
+  }
+
+  /* End of Switch: '<S26>/Switch3' */
+
+  /* Switch: '<S26>/Switch5' incorporates:
+   *  Constant: '<S26>/Constant12'
+   *  Sum: '<S26>/Subtract7'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_c = (real_T)
+    (rtb_DiscreteTimeIntegrator1_il - 1.0 >= 0.0);
+
+  /* Switch: '<S26>/Switch7' incorporates:
+   *  Outport: '<Root>/Mode'
+   *  Sum: '<S26>/Subtract8'
+   *  Sum: '<S26>/Subtract9'
+   *  Switch: '<S26>/Switch8'
+   *  Switch: '<S26>/Switch9'
+   */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode != 0.0) {
+    rtb_Switch2_idx_2 = (real_T)!(13.0 - rtb_Switch_k_idx_0 > 0.0);
+    rtb_Subtract_idx_0 = (real_T)!(rtb_Switch_k_idx_0 - 17.0 > 0.0);
+
+    /* MinMax: '<S26>/Max1' incorporates:
+     *  Sum: '<S26>/Subtract8'
+     *  Sum: '<S26>/Subtract9'
+     *  Switch: '<S26>/Switch8'
+     *  Switch: '<S26>/Switch9'
+     */
+    if (rtb_Switch2_idx_2 < rtb_Subtract_idx_0) {
+      /* Switch: '<S26>/Switch7' */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_h =
+        rtb_Switch2_idx_2;
+    } else {
+      /* Switch: '<S26>/Switch7' */
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_h =
+        rtb_Subtract_idx_0;
+    }
+
+    /* End of MinMax: '<S26>/Max1' */
+  } else {
+    /* Switch: '<S26>/Switch7' incorporates:
+     *  Constant: '<S26>/Constant5'
+     */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_h = 0.0;
+  }
+
+  /* End of Switch: '<S26>/Switch7' */
+
+  /* Delay: '<S27>/Delay1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_h =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_l;
+
+  /* DiscreteIntegrator: '<S27>/Discrete-Time Integrator' */
+  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_h > 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_h
+        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_h <=
+                    0.0) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_h
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+      = 0.0;
+  }
+
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+      >= 1.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+      = 1.0;
+  } else if
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+       <= 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+      = 0.0;
+  }
+
+  rtb_DiscreteTimeIntegrator_lo =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr;
+
+  /* End of DiscreteIntegrator: '<S27>/Discrete-Time Integrator' */
+  /* Delay: '<S27>/Delay' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_g =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_i[0];
+
+  /* DiscreteIntegrator: '<S27>/Discrete-Time Integrator1' */
+  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_g > 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_d
+        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_g <=
+                    0.0) && ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_d
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_e
+      = 0.0;
+  }
+
+  rtb_DiscreteTimeIntegrator1_c =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_e;
+
   /* End of DiscreteIntegrator: '<S27>/Discrete-Time Integrator1' */
   /* Switch: '<S27>/Switch4' incorporates:
    *  Constant: '<S27>/Constant11'
    *  Sum: '<S27>/Subtract6'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4 = (real_T)
-    (rtb_DiscreteTimeIntegrator_c - 1.0 >= 0.0);
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_n = (real_T)
+    (rtb_DiscreteTimeIntegrator_lo - 1.0 >= 0.0);
 
   /* Switch: '<S27>/Switch6' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4 != 0.0) {
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_n != 0.0) {
     /* Switch: '<S27>/Switch6' incorporates:
      *  Constant: '<S27>/Constant8'
      */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6 = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_j = 0.0;
   } else {
     /* Switch: '<S27>/Switch6' incorporates:
      *  Constant: '<S27>/Constant17'
      */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6 = -1.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_j = -1.0;
   }
 
   /* End of Switch: '<S27>/Switch6' */
@@ -9289,18 +12028,18 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   /* Switch: '<S27>/Switch3' incorporates:
    *  Abs: '<S27>/Abs3'
    *  Constant: '<S27>/Constant9'
-   *  Inport: '<Root>/I_A_m'
+   *  Inport: '<Root>/I_C_m'
    *  Sum: '<S27>/Subtract5'
    */
-  if (fabs(PIDcontroller4CoreCentralizedTestReadyMotor_U->I_A_m) - 5.6 > 0.0) {
+  if (fabs(PIDcontroller4CoreCentralizedTestReadyMotor_U->I_C_m) - 5.6 > 0.0) {
     /* Switch: '<S27>/Switch3' incorporates:
      *  Constant: '<S27>/Constant1'
      */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3 = 1.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_m = 1.0;
   } else {
     /* Switch: '<S27>/Switch3' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_m =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_j;
   }
 
   /* End of Switch: '<S27>/Switch3' */
@@ -9309,8 +12048,8 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
    *  Constant: '<S27>/Constant12'
    *  Sum: '<S27>/Subtract7'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5 = (real_T)
-    (rtb_DiscreteTimeIntegrator1_o2 - 1.0 >= 0.0);
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_d = (real_T)
+    (rtb_DiscreteTimeIntegrator1_c - 1.0 >= 0.0);
 
   /* Switch: '<S27>/Switch7' incorporates:
    *  Outport: '<Root>/Mode'
@@ -9320,8 +12059,8 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
    *  Switch: '<S27>/Switch9'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode != 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = (real_T)!(13.0 - rtb_Saturation_k_idx_2 > 0.0);
-    rtb_Switch1_j1_idx_0 = (real_T)!(rtb_Saturation_k_idx_2 - 17.0 > 0.0);
+    rtb_Switch2_idx_2 = (real_T)!(13.0 - rtb_Switch_k_idx_1 > 0.0);
+    rtb_Subtract_idx_0 = (real_T)!(rtb_Switch_k_idx_1 - 17.0 > 0.0);
 
     /* MinMax: '<S27>/Max1' incorporates:
      *  Sum: '<S27>/Subtract8'
@@ -9329,14 +12068,14 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
      *  Switch: '<S27>/Switch8'
      *  Switch: '<S27>/Switch9'
      */
-    if (rtb_ZeroCurrentForces_idx_3 < rtb_Switch1_j1_idx_0) {
+    if (rtb_Switch2_idx_2 < rtb_Subtract_idx_0) {
       /* Switch: '<S27>/Switch7' */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7 =
-        rtb_ZeroCurrentForces_idx_3;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e =
+        rtb_Switch2_idx_2;
     } else {
       /* Switch: '<S27>/Switch7' */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7 =
-        rtb_Switch1_j1_idx_0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e =
+        rtb_Subtract_idx_0;
     }
 
     /* End of MinMax: '<S27>/Max1' */
@@ -9344,69 +12083,80 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
     /* Switch: '<S27>/Switch7' incorporates:
      *  Constant: '<S27>/Constant5'
      */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7 = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e = 0.0;
   }
 
   /* End of Switch: '<S27>/Switch7' */
 
   /* Delay: '<S28>/Delay1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_e =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_c5;
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_n =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_g;
 
   /* DiscreteIntegrator: '<S28>/Discrete-Time Integrator' */
-  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_e > 0.0) &&
+  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_n > 0.0) &&
        ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_h
-        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_e <=
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_b
+        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_n <=
                     0.0) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_h
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_b
         == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_m
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
       = 0.0;
   }
 
-  rtb_DiscreteTimeIntegrator_e2 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_m;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
+      >= 1.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
+      = 1.0;
+  } else if
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
+       <= 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
+      = 0.0;
+  }
+
+  rtb_DiscreteTimeIntegrator_p =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op;
 
   /* End of DiscreteIntegrator: '<S28>/Discrete-Time Integrator' */
   /* Delay: '<S28>/Delay' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_p =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_a[0];
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_f =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[0];
 
   /* DiscreteIntegrator: '<S28>/Discrete-Time Integrator1' */
-  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_p > 0.0) &&
+  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_f > 0.0) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_m
-        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_p <=
+        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_f <=
                     0.0) && ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_m
         == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_p
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_h
       = 0.0;
   }
 
-  rtb_DiscreteTimeIntegrator1_j =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_p;
+  rtb_DiscreteTimeIntegrator1_o =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_h;
 
   /* End of DiscreteIntegrator: '<S28>/Discrete-Time Integrator1' */
   /* Switch: '<S28>/Switch4' incorporates:
    *  Constant: '<S28>/Constant11'
    *  Sum: '<S28>/Subtract6'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_c = (real_T)
-    (rtb_DiscreteTimeIntegrator_e2 - 1.0 >= 0.0);
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_f = (real_T)
+    (rtb_DiscreteTimeIntegrator_p - 1.0 >= 0.0);
 
   /* Switch: '<S28>/Switch6' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_c != 0.0) {
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_f != 0.0) {
     /* Switch: '<S28>/Switch6' incorporates:
      *  Constant: '<S28>/Constant8'
      */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_e = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_b = 0.0;
   } else {
     /* Switch: '<S28>/Switch6' incorporates:
      *  Constant: '<S28>/Constant17'
      */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_e = -1.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_b = -1.0;
   }
 
   /* End of Switch: '<S28>/Switch6' */
@@ -9414,18 +12164,18 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
   /* Switch: '<S28>/Switch3' incorporates:
    *  Abs: '<S28>/Abs3'
    *  Constant: '<S28>/Constant9'
-   *  Inport: '<Root>/I_B_m'
+   *  Inport: '<Root>/I_D_m'
    *  Sum: '<S28>/Subtract5'
    */
-  if (fabs(PIDcontroller4CoreCentralizedTestReadyMotor_U->I_B_m) - 5.6 > 0.0) {
+  if (fabs(PIDcontroller4CoreCentralizedTestReadyMotor_U->I_D_m) - 5.6 > 0.0) {
     /* Switch: '<S28>/Switch3' incorporates:
      *  Constant: '<S28>/Constant1'
      */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_m = 1.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_p = 1.0;
   } else {
     /* Switch: '<S28>/Switch3' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_m =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_e;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_p =
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_b;
   }
 
   /* End of Switch: '<S28>/Switch3' */
@@ -9435,7 +12185,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
    *  Sum: '<S28>/Subtract7'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_g = (real_T)
-    (rtb_DiscreteTimeIntegrator1_j - 1.0 >= 0.0);
+    (rtb_DiscreteTimeIntegrator1_o - 1.0 >= 0.0);
 
   /* Switch: '<S28>/Switch7' incorporates:
    *  Outport: '<Root>/Mode'
@@ -9445,8 +12195,8 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
    *  Switch: '<S28>/Switch9'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode != 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = (real_T)!(13.0 - rtb_z_out_idx_0 > 0.0);
-    rtb_Switch1_j1_idx_0 = (real_T)!(rtb_z_out_idx_0 - 17.0 > 0.0);
+    rtb_Switch2_idx_2 = (real_T)!(13.0 - rtb_Switch_k_idx_2 > 0.0);
+    rtb_Subtract_idx_0 = (real_T)!(rtb_Switch_k_idx_2 - 17.0 > 0.0);
 
     /* MinMax: '<S28>/Max1' incorporates:
      *  Sum: '<S28>/Subtract8'
@@ -9454,14 +12204,14 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
      *  Switch: '<S28>/Switch8'
      *  Switch: '<S28>/Switch9'
      */
-    if (rtb_ZeroCurrentForces_idx_3 < rtb_Switch1_j1_idx_0) {
+    if (rtb_Switch2_idx_2 < rtb_Subtract_idx_0) {
       /* Switch: '<S28>/Switch7' */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e =
-        rtb_ZeroCurrentForces_idx_3;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_p =
+        rtb_Switch2_idx_2;
     } else {
       /* Switch: '<S28>/Switch7' */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e =
-        rtb_Switch1_j1_idx_0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_p =
+        rtb_Subtract_idx_0;
     }
 
     /* End of MinMax: '<S28>/Max1' */
@@ -9469,329 +12219,120 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
     /* Switch: '<S28>/Switch7' incorporates:
      *  Constant: '<S28>/Constant5'
      */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_p = 0.0;
   }
 
   /* End of Switch: '<S28>/Switch7' */
 
-  /* Delay: '<S29>/Delay1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_o =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_b;
-
-  /* DiscreteIntegrator: '<S29>/Discrete-Time Integrator' */
-  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_o > 0.0) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_m
-        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_o <=
-                    0.0) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_m
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_d
-      = 0.0;
-  }
-
-  rtb_DiscreteTimeIntegrator_d =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_d;
-
-  /* End of DiscreteIntegrator: '<S29>/Discrete-Time Integrator' */
-  /* Delay: '<S29>/Delay' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pt =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[0];
-
-  /* DiscreteIntegrator: '<S29>/Discrete-Time Integrator1' */
-  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pt > 0.0) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
-        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pt <=
-                    0.0) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
-      = 0.0;
-  }
-
-  rtb_DiscreteTimeIntegrator1_f =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b;
-
-  /* End of DiscreteIntegrator: '<S29>/Discrete-Time Integrator1' */
-  /* Switch: '<S29>/Switch4' incorporates:
-   *  Constant: '<S29>/Constant11'
-   *  Sum: '<S29>/Subtract6'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_g = (real_T)
-    (rtb_DiscreteTimeIntegrator_d - 1.0 >= 0.0);
-
-  /* Switch: '<S29>/Switch6' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_g != 0.0) {
-    /* Switch: '<S29>/Switch6' incorporates:
-     *  Constant: '<S29>/Constant8'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_l = 0.0;
-  } else {
-    /* Switch: '<S29>/Switch6' incorporates:
-     *  Constant: '<S29>/Constant17'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_l = -1.0;
-  }
-
-  /* End of Switch: '<S29>/Switch6' */
-
-  /* Switch: '<S29>/Switch3' incorporates:
-   *  Abs: '<S29>/Abs3'
-   *  Constant: '<S29>/Constant9'
-   *  Inport: '<Root>/I_C_m'
-   *  Sum: '<S29>/Subtract5'
-   */
-  if (fabs(PIDcontroller4CoreCentralizedTestReadyMotor_U->I_C_m) - 5.6 > 0.0) {
-    /* Switch: '<S29>/Switch3' incorporates:
-     *  Constant: '<S29>/Constant1'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_a = 1.0;
-  } else {
-    /* Switch: '<S29>/Switch3' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_a =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_l;
-  }
-
-  /* End of Switch: '<S29>/Switch3' */
-
-  /* Switch: '<S29>/Switch5' incorporates:
-   *  Constant: '<S29>/Constant12'
-   *  Sum: '<S29>/Subtract7'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_a = (real_T)
-    (rtb_DiscreteTimeIntegrator1_f - 1.0 >= 0.0);
-
-  /* Switch: '<S29>/Switch7' incorporates:
-   *  Outport: '<Root>/Mode'
-   *  Sum: '<S29>/Subtract8'
-   *  Sum: '<S29>/Subtract9'
-   *  Switch: '<S29>/Switch8'
-   *  Switch: '<S29>/Switch9'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode != 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = (real_T)!(13.0 - rtb_Switch1_j1_idx_1 > 0.0);
-    rtb_Switch1_j1_idx_0 = (real_T)!(rtb_Switch1_j1_idx_1 - 17.0 > 0.0);
-
-    /* MinMax: '<S29>/Max1' incorporates:
-     *  Sum: '<S29>/Subtract8'
-     *  Sum: '<S29>/Subtract9'
-     *  Switch: '<S29>/Switch8'
-     *  Switch: '<S29>/Switch9'
-     */
-    if (rtb_ZeroCurrentForces_idx_3 < rtb_Switch1_j1_idx_0) {
-      /* Switch: '<S29>/Switch7' */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_d =
-        rtb_ZeroCurrentForces_idx_3;
-    } else {
-      /* Switch: '<S29>/Switch7' */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_d =
-        rtb_Switch1_j1_idx_0;
-    }
-
-    /* End of MinMax: '<S29>/Max1' */
-  } else {
-    /* Switch: '<S29>/Switch7' incorporates:
-     *  Constant: '<S29>/Constant5'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_d = 0.0;
-  }
-
-  /* End of Switch: '<S29>/Switch7' */
-
-  /* Delay: '<S30>/Delay1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_g =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_g;
-
-  /* DiscreteIntegrator: '<S30>/Discrete-Time Integrator' */
-  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_g > 0.0) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_d
-        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_g <=
-                    0.0) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_d
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_a
-      = 0.0;
-  }
-
-  rtb_DiscreteTimeIntegrator_ov =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_a;
-
-  /* End of DiscreteIntegrator: '<S30>/Discrete-Time Integrator' */
-  /* Delay: '<S30>/Delay' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pj =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k1[0];
-
-  /* DiscreteIntegrator: '<S30>/Discrete-Time Integrator1' */
-  if (((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pj > 0.0) &&
-       ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_e
-        <= 0)) || ((PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pj <=
-                    0.0) && ((int32_T)
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_e
-        == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_m
-      = 0.0;
-  }
-
-  rtb_DiscreteTimeIntegrator1_g =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_m;
-
-  /* End of DiscreteIntegrator: '<S30>/Discrete-Time Integrator1' */
-  /* Switch: '<S30>/Switch4' incorporates:
-   *  Constant: '<S30>/Constant11'
-   *  Sum: '<S30>/Subtract6'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_k = (real_T)
-    (rtb_DiscreteTimeIntegrator_ov - 1.0 >= 0.0);
-
-  /* Switch: '<S30>/Switch6' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_k != 0.0) {
-    /* Switch: '<S30>/Switch6' incorporates:
-     *  Constant: '<S30>/Constant8'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_n = 0.0;
-  } else {
-    /* Switch: '<S30>/Switch6' incorporates:
-     *  Constant: '<S30>/Constant17'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_n = -1.0;
-  }
-
-  /* End of Switch: '<S30>/Switch6' */
-
-  /* Switch: '<S30>/Switch3' incorporates:
-   *  Abs: '<S30>/Abs3'
-   *  Constant: '<S30>/Constant9'
-   *  Inport: '<Root>/I_D_m'
-   *  Sum: '<S30>/Subtract5'
-   */
-  if (fabs(PIDcontroller4CoreCentralizedTestReadyMotor_U->I_D_m) - 5.6 > 0.0) {
-    /* Switch: '<S30>/Switch3' incorporates:
-     *  Constant: '<S30>/Constant1'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_p = 1.0;
-  } else {
-    /* Switch: '<S30>/Switch3' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_p =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_n;
-  }
-
-  /* End of Switch: '<S30>/Switch3' */
-
-  /* Switch: '<S30>/Switch5' incorporates:
-   *  Constant: '<S30>/Constant12'
-   *  Sum: '<S30>/Subtract7'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_c = (real_T)
-    (rtb_DiscreteTimeIntegrator1_g - 1.0 >= 0.0);
-
-  /* Switch: '<S30>/Switch7' incorporates:
-   *  Outport: '<Root>/Mode'
-   *  Sum: '<S30>/Subtract8'
-   *  Sum: '<S30>/Subtract9'
-   *  Switch: '<S30>/Switch8'
-   *  Switch: '<S30>/Switch9'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode != 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = (real_T)!(13.0 - rtb_Saturation_k_idx_0 > 0.0);
-    rtb_Switch1_j1_idx_0 = (real_T)!(rtb_Saturation_k_idx_0 - 17.0 > 0.0);
-
-    /* MinMax: '<S30>/Max1' incorporates:
-     *  Sum: '<S30>/Subtract8'
-     *  Sum: '<S30>/Subtract9'
-     *  Switch: '<S30>/Switch8'
-     *  Switch: '<S30>/Switch9'
-     */
-    if (rtb_ZeroCurrentForces_idx_3 < rtb_Switch1_j1_idx_0) {
-      /* Switch: '<S30>/Switch7' */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_a =
-        rtb_ZeroCurrentForces_idx_3;
-    } else {
-      /* Switch: '<S30>/Switch7' */
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_a =
-        rtb_Switch1_j1_idx_0;
-    }
-
-    /* End of MinMax: '<S30>/Max1' */
-  } else {
-    /* Switch: '<S30>/Switch7' incorporates:
-     *  Constant: '<S30>/Constant5'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_a = 0.0;
-  }
-
-  /* End of Switch: '<S30>/Switch7' */
-
-  /* Switch: '<S31>/Switch1' incorporates:
-   *  Constant: '<S31>/Constant4'
+  /* Switch: '<S29>/Switch1' incorporates:
+   *  Constant: '<S29>/Constant4'
    */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Airgap_GainSchedulingEnabled
       [4] != 0.0) {
-    /* Switch: '<S31>/Switch1' incorporates:
-     *  Lookup_n-D: '<S31>/n-D Lookup Table'
-     *  Saturate: '<S71>/Saturation'
+    /* Switch: '<S29>/Switch1' incorporates:
+     *  Lookup_n-D: '<S29>/n-D Lookup Table'
      */
-    rtb_Switch1_fn = look1_binlxpw(rtb_Saturation,
+    rtb_Switch1_fn = look1_binlxpw(0.0,
       PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled4,
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->F_array, 1U);
   } else {
-    /* Switch: '<S31>/Switch1' incorporates:
-     *  Constant: '<S31>/Constant'
+    /* Switch: '<S29>/Switch1' incorporates:
+     *  Constant: '<S29>/Constant'
      */
     rtb_Switch1_fn =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->ForgettingFactorLinpos;
   }
 
-  /* End of Switch: '<S31>/Switch1' */
+  /* End of Switch: '<S29>/Switch1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage(0.0, rtb_Switch1_fn,
     &PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage,
     &PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage);
 
-  /* Product: '<S105>/IProd Out' incorporates:
-   *  Constant: '<S71>/Constant2'
+  /* DeadZone: '<S101>/DeadZone' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum >= (rtMinusInf)) {
+    rtb_DeadZone = 0.0;
+  } else {
+    rtb_DeadZone = PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum -
+      (rtMinusInf);
+  }
+
+  /* End of DeadZone: '<S101>/DeadZone' */
+
+  /* Switch: '<S69>/Switch3' incorporates:
+   *  Constant: '<S69>/Constant2'
+   *  Constant: '<S69>/Constant6'
+   *  Inport: '<Root>/LS_mode'
    */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_i_LS;
+  } else {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_i;
+  }
+
+  /* End of Switch: '<S69>/Switch3' */
+
+  /* Product: '<S105>/IProd Out' */
   rtb_IProdOut = PIDcontroller4CoreCentralizedTestReadyMotor_B->error *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->G_K_i;
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
+
+  /* Signum: '<S99>/SignPreSat' */
+  if (rtb_DeadZone > 0.0) {
+    rtb_ZeroOrderHold4_idx_0 = 1.0;
+  } else if (rtb_DeadZone == 0.0) {
+    rtb_ZeroOrderHold4_idx_0 = 0.0;
+  } else {
+    rtb_ZeroOrderHold4_idx_0 = (rtNaN);
+  }
+
+  /* End of Signum: '<S99>/SignPreSat' */
+
+  /* DataTypeConversion: '<S99>/DataTypeConv1' */
+  if (rtb_ZeroOrderHold4_idx_0 < 4.503599627370496E+15) {
+    if (rtb_ZeroOrderHold4_idx_0 >= 0.5) {
+      rtb_ZeroOrderHold4_idx_0 = floor(rtb_ZeroOrderHold4_idx_0 + 0.5);
+    } else {
+      rtb_ZeroOrderHold4_idx_0 *= 0.0;
+    }
+  }
 
   /* Signum: '<S99>/SignPreIntegrator' */
   if (rtb_IProdOut < 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = -1.0;
+    rtb_Switch2_idx_2 = -1.0;
   } else if (rtb_IProdOut > 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 1.0;
+    rtb_Switch2_idx_2 = 1.0;
   } else if (rtb_IProdOut == 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
+    rtb_Switch2_idx_2 = 0.0;
   } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
+    rtb_Switch2_idx_2 = (rtNaN);
   }
 
   /* End of Signum: '<S99>/SignPreIntegrator' */
 
   /* DataTypeConversion: '<S99>/DataTypeConv2' */
-  rtb_Switch1_j1_idx_0 = fabs(rtb_ZeroCurrentForces_idx_3);
-  if (rtb_Switch1_j1_idx_0 < 4.503599627370496E+15) {
-    if (rtb_Switch1_j1_idx_0 >= 0.5) {
-      rtb_ZeroCurrentForces_idx_3 = floor(rtb_ZeroCurrentForces_idx_3 + 0.5);
+  rtb_Subtract_idx_0 = fabs(rtb_Switch2_idx_2);
+  if (rtb_Subtract_idx_0 < 4.503599627370496E+15) {
+    if (rtb_Subtract_idx_0 >= 0.5) {
+      rtb_Switch2_idx_2 = floor(rtb_Switch2_idx_2 + 0.5);
     } else {
-      rtb_ZeroCurrentForces_idx_3 *= 0.0;
+      rtb_Switch2_idx_2 *= 0.0;
     }
   }
 
-  if (rtIsNaN(rtb_ZeroCurrentForces_idx_3)) {
-    rtb_Switch1_j1_idx_0 = 0.0;
+  if (rtIsNaN(rtb_Switch2_idx_2)) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 0.0;
   } else {
-    rtb_Switch1_j1_idx_0 = fmod(rtb_ZeroCurrentForces_idx_3, 256.0);
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = fmod
+      (rtb_Switch2_idx_2, 256.0);
   }
 
-  /* DeadZone: '<S101>/DeadZone' */
-  if (rtb_Sum_h >= (rtMinusInf)) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
+  /* DataTypeConversion: '<S99>/DataTypeConv1' */
+  if (rtIsNaN(rtb_ZeroOrderHold4_idx_0)) {
+    rtb_Switch2_idx_2 = 0.0;
   } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
+    rtb_Switch2_idx_2 = fmod(rtb_ZeroOrderHold4_idx_0, 256.0);
   }
-
-  /* End of DeadZone: '<S101>/DeadZone' */
 
   /* Switch: '<S99>/Switch' incorporates:
    *  DataTypeConversion: '<S99>/DataTypeConv1'
@@ -9801,10 +12342,13 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
    *  RelationalOperator: '<S99>/Equal1'
    *  RelationalOperator: '<S99>/NotEqual'
    */
-  if ((0.0 * rtb_Sum_h != rtb_ZeroCurrentForces_idx_3) && ((rtb_Switch1_j1_idx_0
-        < 0.0 ? (int32_T)(int8_T)-(int32_T)(int8_T)(uint8_T)
-        -rtb_Switch1_j1_idx_0 : (int32_T)(int8_T)(uint8_T)rtb_Switch1_j1_idx_0) ==
-       0)) {
+  if ((0.0 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum != rtb_DeadZone)
+      && ((rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 < 0.0 ?
+           (int32_T)(int8_T)-(int32_T)(int8_T)(uint8_T)
+           -rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 :
+           (int32_T)(int8_T)(uint8_T)
+           rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1) ==
+          (int32_T)(int8_T)(uint8_T)rtb_Switch2_idx_2)) {
     /* Switch: '<S99>/Switch' incorporates:
      *  Constant: '<S99>/Constant1'
      */
@@ -9816,24 +12360,47 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
 
   /* End of Switch: '<S99>/Switch' */
 
-  /* Switch: '<S72>/Switch3' */
+  /* DiscreteIntegrator: '<S70>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S70>/Constant2'
+   */
+  if (((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn > 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_l
+        <= 0)) ||
+      ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn <= 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_l
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_it
+      = 0.0;
+  }
+
+  /* RelationalOperator: '<S70>/GreaterThan' incorporates:
+   *  Constant: '<S70>/Constant3'
+   *  DiscreteIntegrator: '<S70>/Discrete-Time Integrator'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->GreaterThan = (boolean_T)
+    (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_it
+     > PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropellingTime);
+
+  /* Switch: '<S71>/Switch3' */
   if (rtb_Subtract2_f != 0.0) {
-    /* Switch: '<S72>/Switch3' incorporates:
-     *  Constant: '<S72>/Constant5'
+    /* Switch: '<S71>/Switch3' incorporates:
+     *  Constant: '<S71>/Constant5'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->error_h = 0.0;
   } else {
-    /* Switch: '<S72>/Switch3' incorporates:
-     *  Constant: '<S72>/Base Ref Airgap1'
-     *  Constant: '<S72>/Constant3'
-     *  Sum: '<S72>/Subtract3'
+    /* Switch: '<S71>/Switch3' incorporates:
+     *  Constant: '<S71>/Base Ref Airgap1'
+     *  Constant: '<S71>/Constant3'
+     *  Sum: '<S71>/Subtract3'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->error_h =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->LandingAirgap -
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->BaseRefAirgap;
   }
 
-  /* End of Switch: '<S72>/Switch3' */
+  /* End of Switch: '<S71>/Switch3' */
 
   /* Sum: '<S151>/SumI4' incorporates:
    *  Gain: '<S151>/Kb'
@@ -9845,416 +12412,469 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CurrentIntegralAG *
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch;
 
-  /* Switch: '<S179>/Switch' incorporates:
-   *  Constant: '<S179>/Constant2'
-   *  Gain: '<S179>/Gain'
-   *  Outport: '<Root>/Mode'
+  /* Switch: '<S180>/Switch3' incorporates:
+   *  Constant: '<S180>/Constant2'
+   *  Constant: '<S180>/Constant6'
+   *  Inport: '<Root>/LS_mode'
    */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode != 0.0) {
-    rtb_Switch1_j1_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_i;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_i_LS;
   } else {
-    rtb_Switch1_j1_idx_0 = 0.05 *
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->P_K_i;
   }
 
-  /* End of Switch: '<S179>/Switch' */
+  /* End of Switch: '<S180>/Switch3' */
 
-  /* Product: '<S215>/IProd Out' */
-  rtb_IProdOut_hj = PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2 *
-    rtb_Switch1_j1_idx_0;
+  /* Product: '<S217>/IProd Out' */
+  rtb_IProdOut_k = PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2 *
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
 
-  /* Signum: '<S209>/SignPreIntegrator' */
-  if (rtb_IProdOut_hj < 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = -1.0;
-  } else if (rtb_IProdOut_hj > 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 1.0;
-  } else if (rtb_IProdOut_hj == 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
+  /* Signum: '<S211>/SignPreIntegrator' */
+  if (rtb_IProdOut_k < 0.0) {
+    rtb_ZeroOrderHold4_idx_0 = -1.0;
+  } else if (rtb_IProdOut_k > 0.0) {
+    rtb_ZeroOrderHold4_idx_0 = 1.0;
+  } else if (rtb_IProdOut_k == 0.0) {
+    rtb_ZeroOrderHold4_idx_0 = 0.0;
   } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
+    rtb_ZeroOrderHold4_idx_0 = (rtNaN);
   }
 
-  /* End of Signum: '<S209>/SignPreIntegrator' */
+  /* End of Signum: '<S211>/SignPreIntegrator' */
 
-  /* DataTypeConversion: '<S209>/DataTypeConv2' */
-  rtb_Switch1_j1_idx_0 = fabs(rtb_ZeroCurrentForces_idx_3);
-  if (rtb_Switch1_j1_idx_0 < 4.503599627370496E+15) {
-    if (rtb_Switch1_j1_idx_0 >= 0.5) {
-      rtb_ZeroCurrentForces_idx_3 = floor(rtb_ZeroCurrentForces_idx_3 + 0.5);
+  /* DataTypeConversion: '<S211>/DataTypeConv2' */
+  rtb_Subtract_idx_0 = fabs(rtb_ZeroOrderHold4_idx_0);
+  if (rtb_Subtract_idx_0 < 4.503599627370496E+15) {
+    if (rtb_Subtract_idx_0 >= 0.5) {
+      rtb_ZeroOrderHold4_idx_0 = floor(rtb_ZeroOrderHold4_idx_0 + 0.5);
     } else {
-      rtb_ZeroCurrentForces_idx_3 *= 0.0;
+      rtb_ZeroOrderHold4_idx_0 *= 0.0;
     }
   }
 
-  if (rtIsNaN(rtb_ZeroCurrentForces_idx_3)) {
-    rtb_Switch1_j1_idx_0 = 0.0;
+  if (rtIsNaN(rtb_ZeroOrderHold4_idx_0)) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 0.0;
   } else {
-    rtb_Switch1_j1_idx_0 = fmod(rtb_ZeroCurrentForces_idx_3, 256.0);
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = fmod
+      (rtb_ZeroOrderHold4_idx_0, 256.0);
   }
 
-  /* DeadZone: '<S211>/DeadZone' */
-  if (rtb_Sum_ih >= (rtMinusInf)) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
+  /* DeadZone: '<S213>/DeadZone' */
+  if (rtb_Sum_h >= (rtMinusInf)) {
+    rtb_Switch2_idx_2 = 0.0;
   } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
+    rtb_Switch2_idx_2 = (rtNaN);
   }
 
-  /* End of DeadZone: '<S211>/DeadZone' */
+  /* End of DeadZone: '<S213>/DeadZone' */
 
-  /* Switch: '<S209>/Switch' incorporates:
-   *  DataTypeConversion: '<S209>/DataTypeConv1'
-   *  DataTypeConversion: '<S209>/DataTypeConv2'
-   *  Gain: '<S209>/ZeroGain'
-   *  Logic: '<S209>/AND3'
-   *  RelationalOperator: '<S209>/Equal1'
-   *  RelationalOperator: '<S209>/NotEqual'
+  /* Switch: '<S211>/Switch' incorporates:
+   *  DataTypeConversion: '<S211>/DataTypeConv1'
+   *  DataTypeConversion: '<S211>/DataTypeConv2'
+   *  Gain: '<S211>/ZeroGain'
+   *  Logic: '<S211>/AND3'
+   *  RelationalOperator: '<S211>/Equal1'
+   *  RelationalOperator: '<S211>/NotEqual'
    */
-  if ((0.0 * rtb_Sum_ih != rtb_ZeroCurrentForces_idx_3) &&
-      ((rtb_Switch1_j1_idx_0 < 0.0 ? (int32_T)(int8_T)-(int32_T)(int8_T)(uint8_T)
-        -rtb_Switch1_j1_idx_0 : (int32_T)(int8_T)(uint8_T)rtb_Switch1_j1_idx_0) ==
-       0)) {
-    /* Switch: '<S209>/Switch' incorporates:
-     *  Constant: '<S209>/Constant1'
+  if ((0.0 * rtb_Sum_h != rtb_Switch2_idx_2) &&
+      ((rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 < 0.0 ?
+        (int32_T)(int8_T)-(int32_T)(int8_T)(uint8_T)
+        -rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 : (int32_T)
+        (int8_T)(uint8_T)
+        rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1) == 0)) {
+    /* Switch: '<S211>/Switch' incorporates:
+     *  Constant: '<S211>/Constant1'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_j = 0.0;
   } else {
-    /* Switch: '<S209>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_j = rtb_IProdOut_hj;
+    /* Switch: '<S211>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_j = rtb_IProdOut_k;
   }
 
-  /* End of Switch: '<S209>/Switch' */
+  /* End of Switch: '<S211>/Switch' */
 
-  /* Sum: '<S260>/SumI4' incorporates:
-   *  Gain: '<S260>/Kb'
-   *  Gain: '<S266>/Integral Gain'
-   *  Sum: '<S260>/SumI2'
+  /* DiscreteIntegrator: '<S184>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S184>/Constant2'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_c = (rtb_Sum_ac -
-    rtb_Sum_ac) * 0.01 +
+  if (((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn > 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nr
+        <= 0)) ||
+      ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn <= 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nr
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_j
+      = 0.0;
+  }
+
+  /* RelationalOperator: '<S184>/GreaterThan' incorporates:
+   *  Constant: '<S184>/Constant3'
+   *  DiscreteIntegrator: '<S184>/Discrete-Time Integrator'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->GreaterThan_n = (boolean_T)
+    (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_j
+     > PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropellingTime);
+
+  /* Sum: '<S263>/SumI4' incorporates:
+   *  Gain: '<S263>/Kb'
+   *  Gain: '<S269>/Integral Gain'
+   *  Sum: '<S263>/SumI2'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_c = (rtb_Sum_p -
+    rtb_Sum_p) * 0.01 +
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CurrentIntegralP *
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o;
 
-  /* Switch: '<S288>/Switch' incorporates:
-   *  Constant: '<S288>/Constant2'
-   *  Gain: '<S288>/Gain'
-   *  Outport: '<Root>/Mode'
+  /* Switch: '<S291>/Switch3' incorporates:
+   *  Constant: '<S291>/Constant2'
+   *  Constant: '<S291>/Constant6'
+   *  Inport: '<Root>/LS_mode'
    */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode != 0.0) {
-    rtb_Switch1_j1_idx_0 =
-      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_K_i;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode != 0.0) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
+      PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_K_i_LS;
   } else {
-    rtb_Switch1_j1_idx_0 = 0.05 *
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 =
       PIDcontroller4CoreCentralizedTestReadyMotor_InstP->R_K_i;
   }
 
-  /* End of Switch: '<S288>/Switch' */
+  /* End of Switch: '<S291>/Switch3' */
 
-  /* Product: '<S323>/IProd Out' */
-  rtb_IProdOut_g = PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_e *
-    rtb_Switch1_j1_idx_0;
+  /* Product: '<S327>/IProd Out' */
+  rtb_IProdOut_h = PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_e *
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1;
 
-  /* Signum: '<S317>/SignPreIntegrator' */
-  if (rtb_IProdOut_g < 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = -1.0;
-  } else if (rtb_IProdOut_g > 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 1.0;
-  } else if (rtb_IProdOut_g == 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
+  /* Signum: '<S321>/SignPreIntegrator' */
+  if (rtb_IProdOut_h < 0.0) {
+    rtb_ZeroOrderHold4_idx_0 = -1.0;
+  } else if (rtb_IProdOut_h > 0.0) {
+    rtb_ZeroOrderHold4_idx_0 = 1.0;
+  } else if (rtb_IProdOut_h == 0.0) {
+    rtb_ZeroOrderHold4_idx_0 = 0.0;
   } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
+    rtb_ZeroOrderHold4_idx_0 = (rtNaN);
   }
 
-  /* End of Signum: '<S317>/SignPreIntegrator' */
+  /* End of Signum: '<S321>/SignPreIntegrator' */
 
-  /* DataTypeConversion: '<S317>/DataTypeConv2' */
-  rtb_Switch1_j1_idx_0 = fabs(rtb_ZeroCurrentForces_idx_3);
-  if (rtb_Switch1_j1_idx_0 < 4.503599627370496E+15) {
-    if (rtb_Switch1_j1_idx_0 >= 0.5) {
-      rtb_ZeroCurrentForces_idx_3 = floor(rtb_ZeroCurrentForces_idx_3 + 0.5);
+  /* DataTypeConversion: '<S321>/DataTypeConv2' */
+  rtb_Subtract_idx_0 = fabs(rtb_ZeroOrderHold4_idx_0);
+  if (rtb_Subtract_idx_0 < 4.503599627370496E+15) {
+    if (rtb_Subtract_idx_0 >= 0.5) {
+      rtb_ZeroOrderHold4_idx_0 = floor(rtb_ZeroOrderHold4_idx_0 + 0.5);
     } else {
-      rtb_ZeroCurrentForces_idx_3 *= 0.0;
+      rtb_ZeroOrderHold4_idx_0 *= 0.0;
     }
   }
 
-  if (rtIsNaN(rtb_ZeroCurrentForces_idx_3)) {
-    rtb_Switch1_j1_idx_0 = 0.0;
+  if (rtIsNaN(rtb_ZeroOrderHold4_idx_0)) {
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = 0.0;
   } else {
-    rtb_Switch1_j1_idx_0 = fmod(rtb_ZeroCurrentForces_idx_3, 256.0);
+    rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 = fmod
+      (rtb_ZeroOrderHold4_idx_0, 256.0);
   }
 
-  /* DeadZone: '<S319>/DeadZone' */
-  if (rtb_Sum_oi >= (rtMinusInf)) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
+  /* DeadZone: '<S323>/DeadZone' */
+  if (rtb_Sum_l >= (rtMinusInf)) {
+    rtb_Switch2_idx_2 = 0.0;
   } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
+    rtb_Switch2_idx_2 = (rtNaN);
   }
 
-  /* End of DeadZone: '<S319>/DeadZone' */
+  /* End of DeadZone: '<S323>/DeadZone' */
 
-  /* Switch: '<S317>/Switch' incorporates:
-   *  DataTypeConversion: '<S317>/DataTypeConv1'
-   *  DataTypeConversion: '<S317>/DataTypeConv2'
-   *  Gain: '<S317>/ZeroGain'
-   *  Logic: '<S317>/AND3'
-   *  RelationalOperator: '<S317>/Equal1'
-   *  RelationalOperator: '<S317>/NotEqual'
+  /* Switch: '<S321>/Switch' incorporates:
+   *  DataTypeConversion: '<S321>/DataTypeConv1'
+   *  DataTypeConversion: '<S321>/DataTypeConv2'
+   *  Gain: '<S321>/ZeroGain'
+   *  Logic: '<S321>/AND3'
+   *  RelationalOperator: '<S321>/Equal1'
+   *  RelationalOperator: '<S321>/NotEqual'
    */
-  if ((0.0 * rtb_Sum_oi != rtb_ZeroCurrentForces_idx_3) &&
-      ((rtb_Switch1_j1_idx_0 < 0.0 ? (int32_T)(int8_T)-(int32_T)(int8_T)(uint8_T)
-        -rtb_Switch1_j1_idx_0 : (int32_T)(int8_T)(uint8_T)rtb_Switch1_j1_idx_0) ==
-       0)) {
-    /* Switch: '<S317>/Switch' incorporates:
-     *  Constant: '<S317>/Constant1'
+  if ((0.0 * rtb_Sum_l != rtb_Switch2_idx_2) &&
+      ((rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 < 0.0 ?
+        (int32_T)(int8_T)-(int32_T)(int8_T)(uint8_T)
+        -rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1 : (int32_T)
+        (int8_T)(uint8_T)
+        rtb_TmpSignalConversionAtCreateDiagonalMatrixInport1_c_idx_1) == 0)) {
+    /* Switch: '<S321>/Switch' incorporates:
+     *  Constant: '<S321>/Constant1'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_d = 0.0;
   } else {
-    /* Switch: '<S317>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_d = rtb_IProdOut_g;
+    /* Switch: '<S321>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_d = rtb_IProdOut_h;
   }
 
-  /* End of Switch: '<S317>/Switch' */
+  /* End of Switch: '<S321>/Switch' */
 
-  /* Sum: '<S368>/SumI4' incorporates:
-   *  Gain: '<S368>/Kb'
-   *  Gain: '<S374>/Integral Gain'
-   *  Sum: '<S368>/SumI2'
+  /* DiscreteIntegrator: '<S294>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S294>/Constant2'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_o = (rtb_Sum_a4 -
-    rtb_Sum_a4) * 0.01 +
+  if (((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn > 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_ns
+        <= 0)) ||
+      ((PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn <= 0.0) &&
+       ((int32_T)
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_ns
+        == 1))) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_in
+      = 0.0;
+  }
+
+  /* RelationalOperator: '<S294>/GreaterThan' incorporates:
+   *  Constant: '<S294>/Constant3'
+   *  DiscreteIntegrator: '<S294>/Discrete-Time Integrator'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->GreaterThan_f = (boolean_T)
+    (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_in
+     > PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropellingTime);
+
+  /* Sum: '<S373>/SumI4' incorporates:
+   *  Gain: '<S373>/Kb'
+   *  Gain: '<S379>/Integral Gain'
+   *  Sum: '<S373>/SumI2'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_o = (rtb_Sum_fi -
+    rtb_Sum_fi) * 0.01 +
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CurrentIntegralR *
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p;
 
-  /* RelationalOperator: '<S6>/Equal' incorporates:
-   *  Constant: '<S6>/Constant3'
+  /* RelationalOperator: '<S7>/Equal' incorporates:
+   *  Constant: '<S7>/Constant3'
    *  Outport: '<Root>/Mode'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_l = (boolean_T)
     (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
 
-  /* RelationalOperator: '<S6>/Equal1' incorporates:
-   *  Constant: '<S6>/Constant5'
+  /* RelationalOperator: '<S7>/Equal1' incorporates:
+   *  Constant: '<S7>/Constant5'
    *  Outport: '<Root>/Mode'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal1 = (boolean_T)
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal1_p = (boolean_T)
     (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
 
-  /* RelationalOperator: '<S6>/Equal2' incorporates:
-   *  Constant: '<S6>/Constant7'
+  /* RelationalOperator: '<S7>/Equal2' incorporates:
+   *  Constant: '<S7>/Constant7'
    *  Outport: '<Root>/Mode'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal2 = (boolean_T)
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal2_g = (boolean_T)
     (PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode == 2.0);
 
-  /* Gain: '<S6>/Gain' incorporates:
-   *  Constant: '<S6>/Constant9'
+  /* Gain: '<S7>/Gain' incorporates:
+   *  Constant: '<S7>/Constant9'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_g = 9.81 *
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_gj = 9.81 *
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
 
-  /* SignalConversion generated from: '<S398>/Create Diagonal Matrix1' incorporates:
-   *  Constant: '<S398>/Constant4'
-   *  Constant: '<S398>/Constant5'
-   *  Constant: '<S398>/Constant6'
-   *  Constant: '<S398>/Constant7'
-   *  Constant: '<S398>/Constant8'
-   *  Constant: '<S398>/Constant9'
+  /* SignalConversion generated from: '<S403>/Create Diagonal Matrix1' incorporates:
+   *  Constant: '<S403>/Constant4'
+   *  Constant: '<S403>/Constant5'
+   *  Constant: '<S403>/Constant6'
+   *  Constant: '<S403>/Constant7'
+   *  Constant: '<S403>/Constant8'
+   *  Constant: '<S403>/Constant9'
+   *  SignalConversion generated from: '<S412>/Create Diagonal Matrix1'
    */
-  rtb_TmpSignalConversionAtCreateDiagonalMatrix1Inport1[0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_ag_dot;
-  rtb_TmpSignalConversionAtCreateDiagonalMatrix1Inport1[1] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_ag_proc;
-  rtb_TmpSignalConversionAtCreateDiagonalMatrix1Inport1[2] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_roll_dot;
-  rtb_TmpSignalConversionAtCreateDiagonalMatrix1Inport1[3] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_roll_proc;
-  rtb_TmpSignalConversionAtCreateDiagonalMatrix1Inport1[4] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_pitch_dot;
-  rtb_TmpSignalConversionAtCreateDiagonalMatrix1Inport1[5] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_pitch_proc;
+  imvec[0] = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_ag_dot;
+  imvec[1] = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_ag_proc;
+  imvec[2] = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_roll_dot;
+  imvec[3] = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_roll_proc;
+  imvec[4] = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_pitch_dot;
+  imvec[5] = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->var_pitch_proc;
 
-  /* S-Function (sdspdiag2): '<S398>/Create Diagonal Matrix1' */
+  /* S-Function (sdspdiag2): '<S403>/Create Diagonal Matrix1' incorporates:
+   *  SignalConversion generated from: '<S403>/Create Diagonal Matrix1'
+   */
   for (i = 0; i < 36; i++) {
     rtb_CreateDiagonalMatrix1[i] = 0.0;
   }
 
   for (i = 0; i < 6; i++) {
-    rtb_CreateDiagonalMatrix1[i * 7] =
-      rtb_TmpSignalConversionAtCreateDiagonalMatrix1Inport1[i];
+    rtb_CreateDiagonalMatrix1[i * 7] = imvec[i];
   }
 
-  /* End of S-Function (sdspdiag2): '<S398>/Create Diagonal Matrix1' */
+  /* End of S-Function (sdspdiag2): '<S403>/Create Diagonal Matrix1' */
 
-  /* Switch: '<S6>/Switch' incorporates:
-   *  Constant: '<S24>/Constant2'
-   *  Switch: '<S24>/Switch2'
-   */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_l) {
-    /* Switch: '<S6>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[0] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[1] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[2] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[3] = 0.0;
-  } else if
-      (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MismatchedHEMSKalman >
-       0.0) {
-    /* Switch: '<S24>/Switch2' incorporates:
-     *  Switch: '<S6>/Switch'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[0] =
-      rtb_Switch_k_idx_0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[1] =
-      rtb_Switch_k_idx_1;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[2] =
-      rtb_Switch_k_idx_2;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[3] =
-      rtb_Switch_k_idx_3;
-  } else {
-    /* Switch: '<S6>/Switch' incorporates:
-     *  Switch: '<S24>/Switch2'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[0] =
-      rtb_uDLookupTable4;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[1] =
-      rtb_uDLookupTable3;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[2] =
-      rtb_uDLookupTable1_os;
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[3] =
-      rtb_uDLookupTable2_cw;
-  }
-
-  /* End of Switch: '<S6>/Switch' */
-
-  /* Switch: '<S6>/Switch1' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal1) {
-    /* Switch: '<S6>/Switch1' */
+  /* Switch: '<S7>/Switch1' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal1_p) {
+    /* Switch: '<S7>/Switch1' */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_eg =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_g;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_gj;
   } else {
-    /* Switch: '<S6>/Switch1' */
+    /* Switch: '<S7>/Switch1' */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_eg = rtb_Switch1_d;
   }
 
-  /* End of Switch: '<S6>/Switch1' */
+  /* End of Switch: '<S7>/Switch1' */
 
-  /* Switch: '<S6>/Switch2' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal2) {
-    /* Switch: '<S6>/Switch2' incorporates:
-     *  Constant: '<S6>/Constant8'
+  /* Switch: '<S7>/Switch2' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal2_g) {
+    /* Switch: '<S7>/Switch2' incorporates:
+     *  Constant: '<S7>/Constant8'
      */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_k = 0.0;
   } else {
-    /* Switch: '<S6>/Switch2' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_k = rtb_Add1;
+    /* Switch: '<S7>/Switch2' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_k = rtb_Add1_d;
   }
 
-  /* End of Switch: '<S6>/Switch2' */
+  /* End of Switch: '<S7>/Switch2' */
 
-  /* Outputs for Atomic SubSystem: '<S399>/Predict' */
-  /* MATLAB Function: '<S402>/Predict' incorporates:
-   *  S-Function (sdspdiag2): '<S398>/Create Diagonal Matrix1'
-   */
-  /* MATLAB Function 'Extended Kalman Filter/Predict/Predict': '<S405>:1' */
-  /* '<S405>:1:11' */
-  p = true;
-  for (i = 0; i < 36; i++) {
-    rtb_Switch_k_idx_0 = rtb_CreateDiagonalMatrix1[i];
-    if (((int32_T)p) && ((!(int32_T)rtIsInf(rtb_Switch_k_idx_0)) && (!(int32_T)
-          rtIsNaN(rtb_Switch_k_idx_0)))) {
-    } else {
-      p = false;
-    }
-  }
-
-  if (p) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_svd_a(rtb_CreateDiagonalMatrix1,
-      Ss_0, imvec, A_0);
+  /* Switch: '<S7>/Switch' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_l) {
+    /* Switch: '<S7>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[0] = 0.0;
   } else {
-    for (i = 0; i < 6; i++) {
-      imvec[i] = (rtNaN);
-    }
-
-    for (b_j = 0; b_j < 36; b_j++) {
-      A_0[b_j] = (rtNaN);
-    }
+    /* Switch: '<S7>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[0] = rtb_z_out_idx_0;
   }
 
-  for (b_j = 0; b_j < 36; b_j++) {
-    Ss_0[b_j] = 0.0;
+  /* ZeroOrderHold: '<S403>/Zero-Order Hold1' */
+  rtb_ZeroOrderHold1_k[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[0];
+
+  /* Switch: '<S7>/Switch' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_l) {
+    /* Switch: '<S7>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[1] = 0.0;
+  } else {
+    /* Switch: '<S7>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[1] = rtb_z_out_idx_1;
+  }
+
+  /* ZeroOrderHold: '<S403>/Zero-Order Hold1' */
+  rtb_ZeroOrderHold1_k[1] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[1];
+
+  /* Switch: '<S7>/Switch' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_l) {
+    /* Switch: '<S7>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[2] = 0.0;
+  } else {
+    /* Switch: '<S7>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[2] = rtb_z_out_idx_2;
+  }
+
+  /* ZeroOrderHold: '<S403>/Zero-Order Hold1' */
+  rtb_ZeroOrderHold1_k[2] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[2];
+
+  /* Switch: '<S7>/Switch' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_l) {
+    /* Switch: '<S7>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[3] = 0.0;
+  } else {
+    /* Switch: '<S7>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[3] = rtb_z_out_idx_3;
+  }
+
+  /* ZeroOrderHold: '<S403>/Zero-Order Hold1' incorporates:
+   *  Constant: '<S7>/Constant'
+   *  Constant: '<S7>/Constant1'
+   *  Constant: '<S7>/Constant2'
+   */
+  rtb_ZeroOrderHold1_k[3] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[3];
+  rtb_ZeroOrderHold1_k[4] = rtb_Gain_do;
+  rtb_ZeroOrderHold1_k[5] = rtb_Gain_m;
+  rtb_ZeroOrderHold1_k[6] = 0.392;
+  rtb_ZeroOrderHold1_k[7] = 0.3054;
+  rtb_ZeroOrderHold1_k[8] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
+  rtb_ZeroOrderHold1_k[9] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_eg;
+  rtb_ZeroOrderHold1_k[10] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_k;
+  rtb_ZeroOrderHold1_k[11] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2;
+
+  /* Outputs for Atomic SubSystem: '<S405>/Predict' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Predict(rtb_CreateDiagonalMatrix1,
+    rtb_ZeroOrderHold1_k, PIDcontroller4CoreCentralizedTestReadyMotor_DW->P,
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->x);
+
+  /* End of Outputs for SubSystem: '<S405>/Predict' */
+
+  /* Delay: '<S8>/Delay' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_m =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_c;
+
+  /* Delay: '<S8>/Delay1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_j =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_n;
+
+  /* Delay: '<S8>/Delay2' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2_n =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_c;
+
+  /* Gain: '<S8>/Gain1' incorporates:
+   *  Sum: '<S8>/Add3'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1_k =
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2_n -
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c) *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->IMU_integration_gain;
+
+  /* Gain: '<S8>/Gain2' incorporates:
+   *  Sum: '<S8>/Add2'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_d =
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_j -
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k) *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->IMU_integration_gain;
+
+  /* Gain: '<S8>/Gain3' incorporates:
+   *  Sum: '<S8>/Add'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain3 =
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_m -
+     PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom) *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->IMU_integration_gain;
+
+  /* S-Function (sdspdiag2): '<S412>/Create Diagonal Matrix1' incorporates:
+   *  SignalConversion generated from: '<S412>/Create Diagonal Matrix1'
+   */
+  for (i = 0; i < 36; i++) {
+    rtb_CreateDiagonalMatrix1_c[i] = 0.0;
   }
 
   for (i = 0; i < 6; i++) {
-    Ss_0[i + 6 * i] = imvec[i];
+    rtb_CreateDiagonalMatrix1_c[i * 7] = imvec[i];
   }
 
-  for (i = 0; i < 36; i++) {
-    Ss_0[i] = sqrt(Ss_0[i]);
-  }
+  /* End of S-Function (sdspdiag2): '<S412>/Create Diagonal Matrix1' */
 
-  for (b_j = 0; b_j < 6; b_j++) {
-    for (i = 0; i < 6; i++) {
-      A_1[i + 6 * b_j] = 0.0;
-    }
+  /* Outputs for Atomic SubSystem: '<S414>/Predict' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Predict
+    (rtb_CreateDiagonalMatrix1_c, rtb_ZeroOrderHold1,
+     PIDcontroller4CoreCentralizedTestReadyMotor_DW->P_h,
+     PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n);
 
-    for (rankA = 0; rankA < 6; rankA++) {
-      for (i = 0; i < 6; i++) {
-        aoffset = 6 * b_j + i;
-        A_1[aoffset] += A_0[6 * rankA + i] * Ss_0[6 * b_j + rankA];
-      }
-    }
-  }
+  /* End of Outputs for SubSystem: '<S414>/Predict' */
 
-  /* End of Outputs for SubSystem: '<S399>/Predict' */
-
-  /* ZeroOrderHold: '<S398>/Zero-Order Hold1' incorporates:
-   *  Constant: '<S6>/Constant'
-   *  Constant: '<S6>/Constant1'
-   *  Constant: '<S6>/Constant2'
-   */
-  A[0] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[0];
-  A[1] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[1];
-  A[2] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[2];
-  A[3] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[3];
-  A[4] = rtb_Gain_mn;
-  A[5] = rtb_Gain_no;
-  A[6] = 0.392;
-  A[7] = 0.3054;
-  A[8] = PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
-  A[9] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_eg;
-  A[10] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_k;
-  A[11] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2;
-
-  /* Outputs for Atomic SubSystem: '<S399>/Predict' */
-  /* DataStoreWrite: '<S402>/Data Store WriteX' incorporates:
-   *  DataStoreWrite: '<S402>/Data Store WriteP'
-   *  MATLAB Function: '<S402>/Predict'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_EKFPredictorAdditive_predict(A_1,
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->x,
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->P, A);
-
-  /* End of Outputs for SubSystem: '<S399>/Predict' */
-
-  /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator1' */
-  /* '<S405>:1:123' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+  /* DiscreteIntegrator: '<S10>/Discrete-Time Integrator1' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_o
         <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
                    ((int32_T)
                     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_o
                     == 1))) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_ll
       = 0.0;
   }
 
-  /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator3' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+  /* DiscreteIntegrator: '<S10>/Discrete-Time Integrator3' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_PrevResetState_f
         <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
                    ((int32_T)
                     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_PrevResetState_f
                     == 1))) {
@@ -10262,12 +12882,12 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       = 0.0;
   }
 
-  /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator4' */
-  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+  /* DiscreteIntegrator: '<S10>/Discrete-Time Integrator4' */
+  if ((((int32_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
        ((int32_T)
         PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator4_PrevResetState
         <= 0)) || ((!(int32_T)
-                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal) &&
+                    PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c) &&
                    ((int32_T)
                     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator4_PrevResetState
                     == 1))) {
@@ -10275,472 +12895,88 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
       = 0.0;
   }
 
-  /* Saturate: '<S8>/Saturation' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm > 40.0) {
-    /* Saturate: '<S8>/Saturation' */
+  /* Saturate: '<S10>/Saturation' */
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm_d > 40.0) {
+    /* Saturate: '<S10>/Saturation' */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Saturation = 40.0;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm < 1.0) {
-    /* Saturate: '<S8>/Saturation' */
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm_d < 1.0) {
+    /* Saturate: '<S10>/Saturation' */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Saturation = 1.0;
   } else {
-    /* Saturate: '<S8>/Saturation' */
+    /* Saturate: '<S10>/Saturation' */
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Saturation =
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm_d;
   }
 
-  /* End of Saturate: '<S8>/Saturation' */
+  /* End of Saturate: '<S10>/Saturation' */
 
-  /* Saturate: '<S8>/Saturation1' */
-  if (rtb_Switch_od > 40.0) {
-    rtb_Switch_k_idx_0 = 40.0;
-  } else if (rtb_Switch_od < 1.0) {
-    rtb_Switch_k_idx_0 = 1.0;
+  /* Saturate: '<S10>/Saturation1' */
+  if (rtb_Switch_gj > 40.0) {
+    rtb_Switch2_idx_2 = 40.0;
+  } else if (rtb_Switch_gj < 1.0) {
+    rtb_Switch2_idx_2 = 1.0;
   } else {
-    rtb_Switch_k_idx_0 = rtb_Switch_od;
+    rtb_Switch2_idx_2 = rtb_Switch_gj;
   }
 
-  /* End of Saturate: '<S8>/Saturation1' */
+  /* End of Saturate: '<S10>/Saturation1' */
 
-  /* Gain: '<S8>/Gain2' incorporates:
-   *  Constant: '<S8>/Constant'
-   *  Gain: '<S8>/Gain1'
-   *  Product: '<S8>/Divide'
-   *  Sum: '<S8>/Subtract2'
+  /* Gain: '<S10>/Gain2' incorporates:
+   *  Constant: '<S10>/Constant'
+   *  Gain: '<S10>/Gain1'
+   *  Product: '<S10>/Divide'
+   *  Sum: '<S10>/Subtract2'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_c =
     (PIDcontroller4CoreCentralizedTestReadyMotor_B->Saturation /
-     rtb_Switch_k_idx_0 - 1.0) *
+     rtb_Switch2_idx_2 - 1.0) *
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Kalman_F *
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MismatchingKalmanAGPR[0];
 
-  /* Gain: '<S8>/Gain5' incorporates:
-   *  Gain: '<S8>/Gain3'
-   *  Sum: '<S8>/Add3'
+  /* Gain: '<S10>/Gain5' incorporates:
+   *  Gain: '<S10>/Gain3'
+   *  Sum: '<S10>/Add3'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain5 =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->DataStoreRead[5] -
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Output.DataStoreRead[5] -
      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k) *
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Kalman_P *
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MismatchingKalmanAGPR[1];
 
-  /* Gain: '<S8>/Gain6' incorporates:
-   *  Gain: '<S8>/Gain4'
-   *  Sum: '<S8>/Add2'
+  /* Gain: '<S10>/Gain6' incorporates:
+   *  Gain: '<S10>/Gain4'
+   *  Sum: '<S10>/Add2'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain6 =
-    (PIDcontroller4CoreCentralizedTestReadyMotor_B->DataStoreRead[3] -
+    (PIDcontroller4CoreCentralizedTestReadyMotor_B->Output.DataStoreRead[3] -
      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c) *
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Kalman_R *
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MismatchingKalmanAGPR[2];
 
-  /* Sum: '<S8>/Subtract' */
+  /* Sum: '<S10>/Subtract' */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm - rtb_Switch_od;
-
-  /* DeadZone: '<S557>/DeadZone' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum >= (rtMinusInf)) {
-    rtb_DeadZone_m = 0.0;
-  } else {
-    rtb_DeadZone_m = PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum -
-      (rtMinusInf);
-  }
-
-  /* End of DeadZone: '<S557>/DeadZone' */
-
-  /* Product: '<S563>/IProd Out' incorporates:
-   *  Constant: '<S17>/Constant2'
-   */
-  rtb_IProdOut_m = PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_i;
-
-  /* Signum: '<S555>/SignPreSat' */
-  if (rtb_DeadZone_m > 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 1.0;
-  } else if (rtb_DeadZone_m == 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
-  } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
-  }
-
-  /* End of Signum: '<S555>/SignPreSat' */
-
-  /* DataTypeConversion: '<S555>/DataTypeConv1' */
-  if (rtb_ZeroCurrentForces_idx_3 < 4.503599627370496E+15) {
-    if (rtb_ZeroCurrentForces_idx_3 >= 0.5) {
-      rtb_ZeroCurrentForces_idx_3 = floor(rtb_ZeroCurrentForces_idx_3 + 0.5);
-    } else {
-      rtb_ZeroCurrentForces_idx_3 *= 0.0;
-    }
-  }
-
-  /* Signum: '<S555>/SignPreIntegrator' */
-  if (rtb_IProdOut_m < 0.0) {
-    rtb_Switch_k_idx_0 = -1.0;
-  } else if (rtb_IProdOut_m > 0.0) {
-    rtb_Switch_k_idx_0 = 1.0;
-  } else if (rtb_IProdOut_m == 0.0) {
-    rtb_Switch_k_idx_0 = 0.0;
-  } else {
-    rtb_Switch_k_idx_0 = (rtNaN);
-  }
-
-  /* End of Signum: '<S555>/SignPreIntegrator' */
-
-  /* DataTypeConversion: '<S555>/DataTypeConv2' */
-  rtb_Switch1_j1_idx_0 = fabs(rtb_Switch_k_idx_0);
-  if (rtb_Switch1_j1_idx_0 < 4.503599627370496E+15) {
-    if (rtb_Switch1_j1_idx_0 >= 0.5) {
-      rtb_Switch_k_idx_0 = floor(rtb_Switch_k_idx_0 + 0.5);
-    } else {
-      rtb_Switch_k_idx_0 *= 0.0;
-    }
-  }
-
-  if (rtIsNaN(rtb_Switch_k_idx_0)) {
-    rtb_Switch1_j1_idx_0 = 0.0;
-  } else {
-    rtb_Switch1_j1_idx_0 = fmod(rtb_Switch_k_idx_0, 256.0);
-  }
-
-  /* DataTypeConversion: '<S555>/DataTypeConv1' */
-  if (rtIsNaN(rtb_ZeroCurrentForces_idx_3)) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
-  } else {
-    rtb_ZeroCurrentForces_idx_3 = fmod(rtb_ZeroCurrentForces_idx_3, 256.0);
-  }
-
-  /* Switch: '<S555>/Switch' incorporates:
-   *  DataTypeConversion: '<S555>/DataTypeConv1'
-   *  DataTypeConversion: '<S555>/DataTypeConv2'
-   *  Gain: '<S555>/ZeroGain'
-   *  Logic: '<S555>/AND3'
-   *  RelationalOperator: '<S555>/Equal1'
-   *  RelationalOperator: '<S555>/NotEqual'
-   */
-  if ((0.0 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum !=
-       rtb_DeadZone_m) && ((rtb_Switch1_j1_idx_0 < 0.0 ? (int32_T)(int8_T)
-        -(int32_T)(int8_T)(uint8_T)-rtb_Switch1_j1_idx_0 : (int32_T)(int8_T)
-        (uint8_T)rtb_Switch1_j1_idx_0) == (int32_T)(int8_T)(uint8_T)
-       rtb_ZeroCurrentForces_idx_3)) {
-    /* Switch: '<S555>/Switch' incorporates:
-     *  Constant: '<S555>/Constant1'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_dt = 0.0;
-  } else {
-    /* Switch: '<S555>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_dt = rtb_IProdOut_m;
-  }
-
-  /* End of Switch: '<S555>/Switch' */
-
-  /* DeadZone: '<S610>/DeadZone' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_d >= (rtMinusInf)) {
-    rtb_DeadZone_f = 0.0;
-  } else {
-    rtb_DeadZone_f = PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_d -
-      (rtMinusInf);
-  }
-
-  /* End of DeadZone: '<S610>/DeadZone' */
-
-  /* Product: '<S616>/IProd Out' incorporates:
-   *  Constant: '<S18>/Constant2'
-   */
-  rtb_IProdOut_k = PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_e *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_i;
-
-  /* Signum: '<S608>/SignPreSat' */
-  if (rtb_DeadZone_f > 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 1.0;
-  } else if (rtb_DeadZone_f == 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
-  } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
-  }
-
-  /* End of Signum: '<S608>/SignPreSat' */
-
-  /* DataTypeConversion: '<S608>/DataTypeConv1' */
-  if (rtb_ZeroCurrentForces_idx_3 < 4.503599627370496E+15) {
-    if (rtb_ZeroCurrentForces_idx_3 >= 0.5) {
-      rtb_ZeroCurrentForces_idx_3 = floor(rtb_ZeroCurrentForces_idx_3 + 0.5);
-    } else {
-      rtb_ZeroCurrentForces_idx_3 *= 0.0;
-    }
-  }
-
-  /* Signum: '<S608>/SignPreIntegrator' */
-  if (rtb_IProdOut_k < 0.0) {
-    rtb_Switch_k_idx_0 = -1.0;
-  } else if (rtb_IProdOut_k > 0.0) {
-    rtb_Switch_k_idx_0 = 1.0;
-  } else if (rtb_IProdOut_k == 0.0) {
-    rtb_Switch_k_idx_0 = 0.0;
-  } else {
-    rtb_Switch_k_idx_0 = (rtNaN);
-  }
-
-  /* End of Signum: '<S608>/SignPreIntegrator' */
-
-  /* DataTypeConversion: '<S608>/DataTypeConv2' */
-  rtb_Switch1_j1_idx_0 = fabs(rtb_Switch_k_idx_0);
-  if (rtb_Switch1_j1_idx_0 < 4.503599627370496E+15) {
-    if (rtb_Switch1_j1_idx_0 >= 0.5) {
-      rtb_Switch_k_idx_0 = floor(rtb_Switch_k_idx_0 + 0.5);
-    } else {
-      rtb_Switch_k_idx_0 *= 0.0;
-    }
-  }
-
-  if (rtIsNaN(rtb_Switch_k_idx_0)) {
-    rtb_Switch1_j1_idx_0 = 0.0;
-  } else {
-    rtb_Switch1_j1_idx_0 = fmod(rtb_Switch_k_idx_0, 256.0);
-  }
-
-  /* DataTypeConversion: '<S608>/DataTypeConv1' */
-  if (rtIsNaN(rtb_ZeroCurrentForces_idx_3)) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
-  } else {
-    rtb_ZeroCurrentForces_idx_3 = fmod(rtb_ZeroCurrentForces_idx_3, 256.0);
-  }
-
-  /* Switch: '<S608>/Switch' incorporates:
-   *  DataTypeConversion: '<S608>/DataTypeConv1'
-   *  DataTypeConversion: '<S608>/DataTypeConv2'
-   *  Gain: '<S608>/ZeroGain'
-   *  Logic: '<S608>/AND3'
-   *  RelationalOperator: '<S608>/Equal1'
-   *  RelationalOperator: '<S608>/NotEqual'
-   */
-  if ((0.0 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_d !=
-       rtb_DeadZone_f) && ((rtb_Switch1_j1_idx_0 < 0.0 ? (int32_T)(int8_T)
-        -(int32_T)(int8_T)(uint8_T)-rtb_Switch1_j1_idx_0 : (int32_T)(int8_T)
-        (uint8_T)rtb_Switch1_j1_idx_0) == (int32_T)(int8_T)(uint8_T)
-       rtb_ZeroCurrentForces_idx_3)) {
-    /* Switch: '<S608>/Switch' incorporates:
-     *  Constant: '<S608>/Constant1'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_em = 0.0;
-  } else {
-    /* Switch: '<S608>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_em = rtb_IProdOut_k;
-  }
-
-  /* End of Switch: '<S608>/Switch' */
-
-  /* DeadZone: '<S663>/DeadZone' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_c >= (rtMinusInf)) {
-    rtb_DeadZone_fg = 0.0;
-  } else {
-    rtb_DeadZone_fg = PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_c -
-      (rtMinusInf);
-  }
-
-  /* End of DeadZone: '<S663>/DeadZone' */
-
-  /* Product: '<S669>/IProd Out' incorporates:
-   *  Constant: '<S19>/Constant2'
-   */
-  rtb_IProdOut_c2 = PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_c *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_i;
-
-  /* Signum: '<S661>/SignPreSat' */
-  if (rtb_DeadZone_fg > 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 1.0;
-  } else if (rtb_DeadZone_fg == 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
-  } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
-  }
-
-  /* End of Signum: '<S661>/SignPreSat' */
-
-  /* DataTypeConversion: '<S661>/DataTypeConv1' */
-  if (rtb_ZeroCurrentForces_idx_3 < 4.503599627370496E+15) {
-    if (rtb_ZeroCurrentForces_idx_3 >= 0.5) {
-      rtb_ZeroCurrentForces_idx_3 = floor(rtb_ZeroCurrentForces_idx_3 + 0.5);
-    } else {
-      rtb_ZeroCurrentForces_idx_3 *= 0.0;
-    }
-  }
-
-  /* Signum: '<S661>/SignPreIntegrator' */
-  if (rtb_IProdOut_c2 < 0.0) {
-    rtb_Switch_k_idx_0 = -1.0;
-  } else if (rtb_IProdOut_c2 > 0.0) {
-    rtb_Switch_k_idx_0 = 1.0;
-  } else if (rtb_IProdOut_c2 == 0.0) {
-    rtb_Switch_k_idx_0 = 0.0;
-  } else {
-    rtb_Switch_k_idx_0 = (rtNaN);
-  }
-
-  /* End of Signum: '<S661>/SignPreIntegrator' */
-
-  /* DataTypeConversion: '<S661>/DataTypeConv2' */
-  rtb_Switch1_j1_idx_0 = fabs(rtb_Switch_k_idx_0);
-  if (rtb_Switch1_j1_idx_0 < 4.503599627370496E+15) {
-    if (rtb_Switch1_j1_idx_0 >= 0.5) {
-      rtb_Switch_k_idx_0 = floor(rtb_Switch_k_idx_0 + 0.5);
-    } else {
-      rtb_Switch_k_idx_0 *= 0.0;
-    }
-  }
-
-  if (rtIsNaN(rtb_Switch_k_idx_0)) {
-    rtb_Switch1_j1_idx_0 = 0.0;
-  } else {
-    rtb_Switch1_j1_idx_0 = fmod(rtb_Switch_k_idx_0, 256.0);
-  }
-
-  /* DataTypeConversion: '<S661>/DataTypeConv1' */
-  if (rtIsNaN(rtb_ZeroCurrentForces_idx_3)) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
-  } else {
-    rtb_ZeroCurrentForces_idx_3 = fmod(rtb_ZeroCurrentForces_idx_3, 256.0);
-  }
-
-  /* Switch: '<S661>/Switch' incorporates:
-   *  DataTypeConversion: '<S661>/DataTypeConv1'
-   *  DataTypeConversion: '<S661>/DataTypeConv2'
-   *  Gain: '<S661>/ZeroGain'
-   *  Logic: '<S661>/AND3'
-   *  RelationalOperator: '<S661>/Equal1'
-   *  RelationalOperator: '<S661>/NotEqual'
-   */
-  if ((0.0 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_c !=
-       rtb_DeadZone_fg) && ((rtb_Switch1_j1_idx_0 < 0.0 ? (int32_T)(int8_T)
-        -(int32_T)(int8_T)(uint8_T)-rtb_Switch1_j1_idx_0 : (int32_T)(int8_T)
-        (uint8_T)rtb_Switch1_j1_idx_0) == (int32_T)(int8_T)(uint8_T)
-       rtb_ZeroCurrentForces_idx_3)) {
-    /* Switch: '<S661>/Switch' incorporates:
-     *  Constant: '<S661>/Constant1'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_lx = 0.0;
-  } else {
-    /* Switch: '<S661>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_lx = rtb_IProdOut_c2;
-  }
-
-  /* End of Switch: '<S661>/Switch' */
-
-  /* DeadZone: '<S716>/DeadZone' */
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_b >= (rtMinusInf)) {
-    rtb_DeadZone_c = 0.0;
-  } else {
-    rtb_DeadZone_c = PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_b -
-      (rtMinusInf);
-  }
-
-  /* End of DeadZone: '<S716>/DeadZone' */
-
-  /* Product: '<S722>/IProd Out' incorporates:
-   *  Constant: '<S20>/Constant2'
-   */
-  rtb_IProdOut_cg = PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_f *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->I_K_i;
-
-  /* Signum: '<S714>/SignPreSat' */
-  if (rtb_DeadZone_c > 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 1.0;
-  } else if (rtb_DeadZone_c == 0.0) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
-  } else {
-    rtb_ZeroCurrentForces_idx_3 = (rtNaN);
-  }
-
-  /* End of Signum: '<S714>/SignPreSat' */
-
-  /* DataTypeConversion: '<S714>/DataTypeConv1' */
-  if (rtb_ZeroCurrentForces_idx_3 < 4.503599627370496E+15) {
-    if (rtb_ZeroCurrentForces_idx_3 >= 0.5) {
-      rtb_ZeroCurrentForces_idx_3 = floor(rtb_ZeroCurrentForces_idx_3 + 0.5);
-    } else {
-      rtb_ZeroCurrentForces_idx_3 *= 0.0;
-    }
-  }
-
-  /* Signum: '<S714>/SignPreIntegrator' */
-  if (rtb_IProdOut_cg < 0.0) {
-    rtb_Switch_k_idx_0 = -1.0;
-  } else if (rtb_IProdOut_cg > 0.0) {
-    rtb_Switch_k_idx_0 = 1.0;
-  } else if (rtb_IProdOut_cg == 0.0) {
-    rtb_Switch_k_idx_0 = 0.0;
-  } else {
-    rtb_Switch_k_idx_0 = (rtNaN);
-  }
-
-  /* End of Signum: '<S714>/SignPreIntegrator' */
-
-  /* DataTypeConversion: '<S714>/DataTypeConv2' */
-  rtb_Switch1_j1_idx_0 = fabs(rtb_Switch_k_idx_0);
-  if (rtb_Switch1_j1_idx_0 < 4.503599627370496E+15) {
-    if (rtb_Switch1_j1_idx_0 >= 0.5) {
-      rtb_Switch_k_idx_0 = floor(rtb_Switch_k_idx_0 + 0.5);
-    } else {
-      rtb_Switch_k_idx_0 *= 0.0;
-    }
-  }
-
-  if (rtIsNaN(rtb_Switch_k_idx_0)) {
-    rtb_Switch1_j1_idx_0 = 0.0;
-  } else {
-    rtb_Switch1_j1_idx_0 = fmod(rtb_Switch_k_idx_0, 256.0);
-  }
-
-  /* DataTypeConversion: '<S714>/DataTypeConv1' */
-  if (rtIsNaN(rtb_ZeroCurrentForces_idx_3)) {
-    rtb_ZeroCurrentForces_idx_3 = 0.0;
-  } else {
-    rtb_ZeroCurrentForces_idx_3 = fmod(rtb_ZeroCurrentForces_idx_3, 256.0);
-  }
-
-  /* Switch: '<S714>/Switch' incorporates:
-   *  DataTypeConversion: '<S714>/DataTypeConv1'
-   *  DataTypeConversion: '<S714>/DataTypeConv2'
-   *  Gain: '<S714>/ZeroGain'
-   *  Logic: '<S714>/AND3'
-   *  RelationalOperator: '<S714>/Equal1'
-   *  RelationalOperator: '<S714>/NotEqual'
-   */
-  if ((0.0 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_b !=
-       rtb_DeadZone_c) && ((rtb_Switch1_j1_idx_0 < 0.0 ? (int32_T)(int8_T)
-        -(int32_T)(int8_T)(uint8_T)-rtb_Switch1_j1_idx_0 : (int32_T)(int8_T)
-        (uint8_T)rtb_Switch1_j1_idx_0) == (int32_T)(int8_T)(uint8_T)
-       rtb_ZeroCurrentForces_idx_3)) {
-    /* Switch: '<S714>/Switch' incorporates:
-     *  Constant: '<S714>/Constant1'
-     */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c5 = 0.0;
-  } else {
-    /* Switch: '<S714>/Switch' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c5 = rtb_IProdOut_cg;
-  }
-
-  /* End of Switch: '<S714>/Switch' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm_d - rtb_Switch_gj;
 
   /* SignalConversion generated from: '<Root>/Delay1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay1Inport1
     [0] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i;
   PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay1Inport1
-    [1] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n;
+    [1] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot;
   PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay1Inport1
-    [2] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h;
+    [2] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c;
   PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay1Inport1
-    [3] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e;
+    [3] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a;
 
   /* SignalConversion generated from: '<Root>/Delay2' incorporates:
-   *  Constant: '<S8>/Constant1'
-   *  DiscreteIntegrator: '<S8>/Discrete-Time Integrator1'
-   *  DiscreteIntegrator: '<S8>/Discrete-Time Integrator3'
-   *  DiscreteIntegrator: '<S8>/Discrete-Time Integrator4'
-   *  Sum: '<S8>/Add'
+   *  Constant: '<S10>/Constant1'
+   *  DiscreteIntegrator: '<S10>/Discrete-Time Integrator1'
+   *  DiscreteIntegrator: '<S10>/Discrete-Time Integrator3'
+   *  DiscreteIntegrator: '<S10>/Discrete-Time Integrator4'
+   *  Sum: '<S10>/Add'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay2Inport1
     [0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_ll
     + 1.0;
   PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay2Inport1
     [1] =
@@ -10749,113 +12985,118 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_output
     [2] =
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator4_DSTATE;
 
-  /* Outport: '<Root>/G_Factor' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->G_Factor = rtb_Divide;
-
   /* Outport: '<Root>/P_Factor' incorporates:
-   *  Product: '<S34>/Divide1'
+   *  Product: '<S32>/Divide1'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->P_Factor =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Product / rtb_Sum_ih;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Product / rtb_Sum_h;
 
   /* Outport: '<Root>/R_Factor' incorporates:
-   *  Product: '<S36>/Divide1'
+   *  Product: '<S34>/Divide1'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->R_Factor =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_h / rtb_Sum_oi;
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_h / rtb_Sum_l;
 
   /* Outport: '<Root>/Filtered_Gaps' */
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->Filtered_Gaps[0] =
-    rtb_Switch_ph;
+    rtb_Switch_juh;
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->Filtered_Gaps[1] =
-    rtb_Switch_k1;
+    rtb_Switch_pa;
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->Filtered_Gaps[2] =
-    rtb_Switch_ds;
+    rtb_Switch_my;
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->Filtered_Gaps[3] =
-    rtb_Switch_gn;
+    rtb_Switch_ka;
 
   /* Outport: '<Root>/RefPitchOut' incorporates:
-   *  Gain: '<S182>/Gain'
+   *  Gain: '<S183>/Gain'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->RefPitchOut =
     57.295779513082323 *
     PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointpitch;
 
   /* Outport: '<Root>/RefRollOut' incorporates:
-   *  Gain: '<S290>/Gain'
+   *  Gain: '<S293>/Gain'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->RefRollOut = 57.295779513082323
     * PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointroll;
 
   /* Outport: '<Root>/Arms' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Arms[0] = rtb_Add2;
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->Arms[0] = rtb_Add2_c;
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->Arms[1] = rtb_Add1_n;
   PIDcontroller4CoreCentralizedTestReadyMotor_Y->Arms[2] =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Add;
 
-  /* Outport: '<Root>/CalculatedMass' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedMass = rtb_Add3;
+  /* Outport: '<Root>/CalculatedMass' incorporates:
+   *  Constant: '<S5>/Constant6'
+   *  Sum: '<S5>/Add3'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedMass =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->Mass;
 
-  /* Sum: '<S454>/SumI4' incorporates:
-   *  Gain: '<S454>/Kb'
-   *  Gain: '<S460>/Integral Gain'
-   *  Sum: '<S454>/SumI2'
+  /* Gain: '<S5>/Gain' incorporates:
+   *  Constant: '<S5>/Constant7'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_c =
+    -PIDcontroller4CoreCentralizedTestReadyMotor_InstP->MotorAGIntegrals;
+
+  /* Sum: '<S5>/Subtract' incorporates:
+   *  Sum: '<S4>/Sum1'
+   */
+  rtb_Switch2_idx_1 -= PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2;
+
+  /* Product: '<S5>/Product' incorporates:
+   *  Constant: '<S5>/Constant1'
+   *  Sum: '<S4>/Add'
+   *  Sum: '<S4>/Sum'
+   *  Sum: '<S5>/Subtract'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[0] = (tol -
+    rtb_Sum1_g) *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CoMIntegrals[0];
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[1] =
+    (rtb_Switch2_idx_0 - rtb_Add1_d) *
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CoMIntegrals[1];
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[2] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CoMIntegrals[2] *
+    rtb_Switch2_idx_1;
+
+  /* Product: '<S5>/Product1' incorporates:
+   *  Constant: '<S5>/Constant2'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product1_l =
+    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->EMSRollIntegral *
+    rtb_Switch2_idx_1;
+
+  /* Product: '<S5>/Product2' incorporates:
+   *  Sum: '<S4>/Add'
+   *  Sum: '<S5>/Add4'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product2 = (tol + rtb_Sum1_g) *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_c;
+
+  /* Sum: '<S471>/SumI4' incorporates:
+   *  Gain: '<S471>/Kb'
+   *  Gain: '<S477>/Integral Gain'
+   *  Sum: '<S471>/SumI2'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_g = (rtb_Sum_pc -
     rtb_Sum_pc) * 0.01 +
     PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CurrentIntegralP;
 
-  /* Sum: '<S504>/SumI4' incorporates:
-   *  Gain: '<S504>/Kb'
-   *  Gain: '<S510>/Integral Gain'
-   *  Sum: '<S504>/SumI2'
+  /* Sum: '<S521>/SumI4' incorporates:
+   *  Gain: '<S521>/Kb'
+   *  Gain: '<S527>/Integral Gain'
+   *  Sum: '<S521>/SumI2'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_k = (rtb_Sum - rtb_Sum) *
     0.01 + PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CurrentIntegralP;
 
-  /* Switch: '<S16>/Switch3' incorporates:
-   *  Constant: '<S16>/Constant4'
-   *  Sum: '<S16>/Subtract1'
+  /* Switch: '<S20>/Switch3' incorporates:
+   *  Constant: '<S20>/Constant4'
+   *  Sum: '<S20>/Subtract1'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h = (real_T)
+  PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h5 = (real_T)
     !(rtb_Switch1 - 3.0 != 0.0);
-
-  /* Sum: '<S23>/Subtract' incorporates:
-   *  Sum: '<S4>/Sum1'
-   */
-  rtb_Switch2_idx_2 -= PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2;
-
-  /* Product: '<S23>/Product' incorporates:
-   *  Constant: '<S23>/Constant1'
-   *  Sum: '<S23>/Subtract'
-   *  Sum: '<S4>/Add'
-   *  Sum: '<S4>/Sum'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[0] =
-    (rtb_Switch2_idx_0 - rtb_Sum1) *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CoMIntegrals[0];
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[1] =
-    (rtb_Switch2_idx_1 - rtb_Add1) *
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CoMIntegrals[1];
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[2] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CoMIntegrals[2] *
-    rtb_Switch2_idx_2;
-
-  /* Product: '<S23>/Product1' incorporates:
-   *  Constant: '<S23>/Constant2'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product1_l =
-    PIDcontroller4CoreCentralizedTestReadyMotor_InstP->EMSRollIntegral *
-    rtb_Switch2_idx_2;
-
-  /* Product: '<S23>/Product2' incorporates:
-   *  Constant: '<S23>/Constant1'
-   *  Sum: '<S23>/Add4'
-   *  Sum: '<S4>/Add'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_B->Product2 = (rtb_Switch2_idx_0 +
-    rtb_Sum1) * PIDcontroller4CoreCentralizedTestReadyMotor_InstP->CoMIntegrals
-    [0];
 }
 
 /* Model update function */
@@ -10880,72 +13121,71 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_update
   real_T tmp;
   int_T idxDelay;
 
-  /* Update for Delay: '<S16>/Delay1' incorporates:
+  /* Update for Delay: '<S70>/Delay' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_g =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->GreaterThan;
+
+  /* Update for Delay: '<S20>/Delay1' incorporates:
    *  Outport: '<Root>/Mode'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE =
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->Mode;
 
-  /* Update for DiscreteIntegrator: '<S513>/Integrator' */
+  /* Update for DiscreteIntegrator: '<S530>/Integrator' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE += 0.00025 *
     PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_k;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
-  /* Update for Delay: '<S506>/UD' */
+  /* Update for Delay: '<S523>/UD' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp;
 
-  /* Update for DiscreteIntegrator: '<S463>/Integrator' incorporates:
-   *  DiscreteIntegrator: '<S513>/Integrator'
+  /* Update for DiscreteIntegrator: '<S480>/Integrator' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_j += 0.00025
     * PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_g;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_b =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
-  /* Update for Delay: '<S456>/UD' */
+  /* Update for Delay: '<S473>/UD' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_p =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_b;
 
-  /* Update for DiscreteIntegrator: '<S16>/Discrete-Time Integrator' incorporates:
-   *  DiscreteIntegrator: '<S513>/Integrator'
+  /* Update for DiscreteIntegrator: '<S20>/Discrete-Time Integrator' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE +=
-    0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h;
+    0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h5;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState
-    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
-
-  /* Update for Delay: '<S71>/Delay' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->error;
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
   for (idxDelay = 0; idxDelay < 399; idxDelay++) {
-    /* Update for Delay: '<S32>/Delay1' */
+    /* Update for Delay: '<S30>/Delay1' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_e[idxDelay] =
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_e[idxDelay +
       1];
 
-    /* Update for Delay: '<S32>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[idxDelay] =
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[idxDelay +
-      1];
+    /* Update for Delay: '<S30>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE[idxDelay] =
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE[idxDelay + 1];
   }
 
-  /* Update for Delay: '<S32>/Delay1' */
+  /* Update for Delay: '<S30>/Delay1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_e[399] =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Product1;
 
-  /* Update for Delay: '<S32>/Delay' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[399] =
+  /* Update for Delay: '<S30>/Delay' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE[399] =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain;
 
-  /* Update for Sin: '<S32>/Sine Wave4' incorporates:
-   *  Sin: '<S32>/Sine Wave1'
-   *  Sin: '<S32>/Sine Wave2'
-   *  Sin: '<S32>/Sine Wave3'
-   *  Sin: '<S32>/Sine Wave5'
-   *  Sin: '<S32>/Sine Wave6'
-   *  Sin: '<S32>/Sine Wave7'
+  /* Update for Sin: '<S30>/Sine Wave4' incorporates:
+   *  Sin: '<S30>/Sine Wave1'
+   *  Sin: '<S30>/Sine Wave2'
+   *  Sin: '<S30>/Sine Wave3'
+   *  Sin: '<S30>/Sine Wave5'
+   *  Sin: '<S30>/Sine Wave6'
+   *  Sin: '<S30>/Sine Wave7'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter++;
   tmp = floor(PIDcontroller4CoreCentralizedTestReadyMotor_InstP->SineTime /
@@ -10954,44 +13194,44 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_update
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter = 0;
   }
 
-  /* End of Update for Sin: '<S32>/Sine Wave4' */
+  /* End of Update for Sin: '<S30>/Sine Wave4' */
 
-  /* Update for Sin: '<S32>/Sine Wave5' */
+  /* Update for Sin: '<S30>/Sine Wave5' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_h++;
   if ((real_T)PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_h == tmp)
   {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_h = 0;
   }
 
-  /* Update for Sin: '<S32>/Sine Wave6' */
+  /* Update for Sin: '<S30>/Sine Wave6' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_o++;
   if ((real_T)PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_o == tmp)
   {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_o = 0;
   }
 
-  /* Update for Sin: '<S32>/Sine Wave7' */
+  /* Update for Sin: '<S30>/Sine Wave7' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_a++;
   if ((real_T)PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_a == tmp)
   {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_a = 0;
   }
 
-  /* Update for Sin: '<S32>/Sine Wave1' */
+  /* Update for Sin: '<S30>/Sine Wave1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_i++;
   if ((real_T)PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_i == tmp)
   {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_i = 0;
   }
 
-  /* Update for Sin: '<S32>/Sine Wave2' */
+  /* Update for Sin: '<S30>/Sine Wave2' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_m++;
   if ((real_T)PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_m == tmp)
   {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_m = 0;
   }
 
-  /* Update for Sin: '<S32>/Sine Wave3' */
+  /* Update for Sin: '<S30>/Sine Wave3' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_n++;
   if ((real_T)PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_n == tmp)
   {
@@ -11013,55 +13253,60 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_update
     [3];
 
   /* Update for DiscreteIntegrator: '<S160>/Integrator' incorporates:
-   *  DiscreteIntegrator: '<S513>/Integrator'
+   *  DiscreteIntegrator: '<S530>/Integrator'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_jc +=
     0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_n =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
   /* Update for Delay: '<S153>/UD' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_f =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_k;
 
-  /* Update for DiscreteIntegrator: '<S72>/Discrete-Time Integrator1' incorporates:
-   *  DiscreteIntegrator: '<S513>/Integrator'
+  /* Update for DiscreteIntegrator: '<S71>/Discrete-Time Integrator1' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE
     += 0.00025;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState
-    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
-  /* Update for DiscreteIntegrator: '<S72>/Discrete-Time Integrator' incorporates:
-   *  DiscreteIntegrator: '<S513>/Integrator'
+  /* Update for DiscreteIntegrator: '<S71>/Discrete-Time Integrator' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_b
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->error_h;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n
-    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
-  /* Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o
-    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract;
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_o
-    = (int8_T)0;
+  /* Update for DiscreteIntegrator: '<S70>/Discrete-Time Integrator1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_f
+    += 0.00025;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->AND;
 
-  /* Update for DiscreteIntegrator: '<S108>/Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_n += 0.00025
-    * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_l;
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_o =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k;
-
-  /* Update for DiscreteIntegrator: '<S103>/Filter' incorporates:
-   *  DiscreteIntegrator: '<S108>/Integrator'
+  /* Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
    */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE += 0.00025 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut;
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_l
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain3;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nl
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
-  /* Update for DiscreteIntegrator: '<S23>/Discrete-Time Integrator3' incorporates:
-   *  Constant: '<S23>/Constant'
+  /* Update for Delay: '<Root>/Delay2' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay2Inport1
+    [0];
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[1] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay2Inport1
+    [1];
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[2] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay2Inport1
+    [2];
+
+  /* Update for DiscreteIntegrator: '<S5>/Discrete-Time Integrator3' incorporates:
+   *  Constant: '<S5>/Constant'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Product2;
@@ -11081,129 +13326,177 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_update
       = (int8_T)2;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S23>/Discrete-Time Integrator3' */
+  /* End of Update for DiscreteIntegrator: '<S5>/Discrete-Time Integrator3' */
 
-  /* Update for DiscreteIntegrator: '<S269>/Integrator' incorporates:
-   *  DiscreteIntegrator: '<S513>/Integrator'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l += 0.00025
-    * PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_c;
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
-
-  /* Update for Delay: '<S262>/UD' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_m;
-
-  /* Update for Delay: '<S179>/Delay' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_h =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2;
-
-  /* Update for DiscreteIntegrator: '<S218>/Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c += 0.00025
-    * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_j;
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g0 =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a;
-
-  /* Update for DiscreteIntegrator: '<S213>/Filter' incorporates:
-   *  DiscreteIntegrator: '<S218>/Integrator'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i += 0.00025 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_e;
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_j =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a;
-
-  /* Update for DiscreteIntegrator: '<S23>/Discrete-Time Integrator' */
+  /* Update for DiscreteIntegrator: '<S5>/Discrete-Time Integrator' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_p
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[1];
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_p
     = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR;
 
-  /* Update for DiscreteIntegrator: '<S377>/Integrator' incorporates:
-   *  DiscreteIntegrator: '<S513>/Integrator'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg +=
-    0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_o;
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_m =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
-
-  /* Update for Delay: '<S370>/UD' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_h;
-
-  /* Update for Delay: '<S288>/Delay' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_m =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain3;
-
-  /* Update for DiscreteIntegrator: '<S326>/Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw +=
-    0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_d;
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_ns =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km;
-
-  /* Update for DiscreteIntegrator: '<S321>/Filter' incorporates:
-   *  DiscreteIntegrator: '<S326>/Integrator'
-   */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h += 0.00025 *
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_k;
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_k =
-    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km;
-
-  /* Update for DiscreteIntegrator: '<S23>/Discrete-Time Integrator1' incorporates:
-   *  DiscreteIntegrator: '<S23>/Discrete-Time Integrator'
+  /* Update for DiscreteIntegrator: '<S5>/Discrete-Time Integrator1' incorporates:
+   *  DiscreteIntegrator: '<S5>/Discrete-Time Integrator'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_k
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Product1_l;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_h
     = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR;
 
-  /* Update for DiscreteIntegrator: '<S23>/Discrete-Time Integrator2' incorporates:
-   *  DiscreteIntegrator: '<S23>/Discrete-Time Integrator'
+  /* Update for DiscreteIntegrator: '<S5>/Discrete-Time Integrator2' incorporates:
+   *  DiscreteIntegrator: '<S5>/Discrete-Time Integrator'
    */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[2];
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState
     = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->OR;
 
-  /* Update for Delay: '<S27>/Delay3' */
+  /* Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator1' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_g
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_d;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_i
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
+
+  /* Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator2' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE_l
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1_k;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState_b
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
+
+  /* Update for DiscreteIntegrator: '<S10>/Discrete-Time Integrator' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_o
+    = (int8_T)0;
+
+  /* Update for DiscreteIntegrator: '<S108>/Integrator' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_n += 0.00025
+    * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_l;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_o =
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k;
+
+  /* Update for DiscreteIntegrator: '<S103>/Filter' incorporates:
+   *  DiscreteIntegrator: '<S108>/Integrator'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE += 0.00025 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState =
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_k;
+
+  /* Update for Memory: '<S177>/Memory' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Memory_PreviousInput =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_g;
+
+  /* Update for Memory: '<S177>/Memory1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Memory1_PreviousInput =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain10;
+
+  /* Update for Delay: '<S184>/Delay' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_o =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->GreaterThan_n;
+
+  /* Update for DiscreteIntegrator: '<S272>/Integrator' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l += 0.00025
+    * PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_c;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g =
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
+
+  /* Update for Delay: '<S265>/UD' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_m;
+
+  /* Update for DiscreteIntegrator: '<S184>/Discrete-Time Integrator1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
+    += 0.00025;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_k
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->AND_e;
+
+  /* Update for DiscreteIntegrator: '<S220>/Integrator' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c += 0.00025
+    * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_j;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g0 =
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a;
+
+  /* Update for DiscreteIntegrator: '<S215>/Filter' incorporates:
+   *  DiscreteIntegrator: '<S220>/Integrator'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i += 0.00025 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_e;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_j =
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_a;
+
+  /* Update for Delay: '<S294>/Delay' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_m =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->GreaterThan_f;
+
+  /* Update for DiscreteIntegrator: '<S382>/Integrator' incorporates:
+   *  DiscreteIntegrator: '<S530>/Integrator'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg +=
+    0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_o;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_m =
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
+
+  /* Update for Delay: '<S375>/UD' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_h;
+
+  /* Update for DiscreteIntegrator: '<S294>/Discrete-Time Integrator1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+    += 0.00025;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_g
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->AND_i;
+
+  /* Update for DiscreteIntegrator: '<S330>/Integrator' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw +=
+    0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_d;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_ns =
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km;
+
+  /* Update for DiscreteIntegrator: '<S325>/Filter' incorporates:
+   *  DiscreteIntegrator: '<S330>/Integrator'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h += 0.00025 *
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_k;
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_k =
+    (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_km;
+
+  /* Update for Delay: '<S25>/Delay3' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7;
 
-  /* Update for Delay: '<S27>/Delay2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE =
+  /* Update for Delay: '<S25>/Delay2' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4;
 
-  /* Update for Delay: '<S28>/Delay3' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_g =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e;
+  /* Update for Delay: '<S26>/Delay3' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_m =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_h;
 
-  /* Update for Delay: '<S28>/Delay2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_c;
-
-  /* Update for Delay: '<S29>/Delay3' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_p =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_d;
-
-  /* Update for Delay: '<S29>/Delay2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g =
+  /* Update for Delay: '<S26>/Delay2' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_b =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_g;
 
-  /* Update for Delay: '<S30>/Delay3' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_k =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_a;
+  /* Update for Delay: '<S27>/Delay3' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_i =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e;
 
-  /* Update for Delay: '<S30>/Delay2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_f =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_k;
+  /* Update for Delay: '<S27>/Delay2' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_n;
 
-  /* Update for DiscreteIntegrator: '<S566>/Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_h += 0.00025
-    * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_dt;
+  /* Update for Delay: '<S28>/Delay3' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_o =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_p;
 
-  /* Update for Delay: '<S559>/UD' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_g =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_kb;
+  /* Update for Delay: '<S28>/Delay2' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_bo =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_f;
 
   /* Update for Derivative: '<Root>/Derivative' */
   if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA == (rtInf)) {
@@ -11226,9 +13519,9 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_update
     lastU = &PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeB;
   }
 
-  (*lastU)[0] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[0];
-  (*lastU)[1] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[1];
-  (*lastU)[2] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[2];
+  (*lastU)[0] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[0];
+  (*lastU)[1] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[1];
+  (*lastU)[2] = PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[2];
 
   /* End of Update for Derivative: '<Root>/Derivative' */
 
@@ -11257,64 +13550,40 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_update
 
   (*lastU)[0] =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->
-    MovingAverage_c.MovingAverage[0];
+    MovingAverage_e.MovingAverage[0];
   (*lastU)[1] =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->
-    MovingAverage_c.MovingAverage[1];
+    MovingAverage_e.MovingAverage[1];
   (*lastU)[2] =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->
-    MovingAverage_c.MovingAverage[2];
+    MovingAverage_e.MovingAverage[2];
 
   /* End of Update for Derivative: '<Root>/Derivative1' */
 
-  /* Update for DiscreteIntegrator: '<S619>/Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_d += 0.00025
-    * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_em;
-
-  /* Update for Delay: '<S612>/UD' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_e =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_k0;
-
-  /* Update for DiscreteIntegrator: '<S725>/Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_p += 0.00025
-    * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c5;
-
-  /* Update for Delay: '<S718>/UD' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_h =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_o;
-
-  /* Update for DiscreteIntegrator: '<S672>/Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_m += 0.00025
-    * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_lx;
-
-  /* Update for Delay: '<S665>/UD' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_ei =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_g;
-
-  /* Update for Delay: '<Root>/Delay2' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay2Inport1
-    [0];
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[1] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay2Inport1
-    [1];
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[2] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay2Inport1
-    [2];
-
-  /* Update for DiscreteIntegrator: '<S397>/Discrete-Time Integrator' */
+  /* Update for DiscreteIntegrator: '<S402>/Discrete-Time Integrator' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_i
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum1;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_j
-    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
-  /* Update for Delay: '<S27>/Delay1' */
+  /* Update for Delay: '<S25>/Delay1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_c =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5;
 
-  /* Update for DiscreteIntegrator: '<S27>/Discrete-Time Integrator' */
+  /* Update for DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g
+      >= 1.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g
+      = 1.0;
+  } else if
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g
+       <= 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g
+      = 0.0;
+  }
+
   if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_i > 0.0) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_g
       = (int8_T)1;
@@ -11329,15 +13598,15 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_update
       = (int8_T)2;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S27>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S27>/Delay' */
+  /* Update for Delay: '<S25>/Delay' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_d[0] =
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_d[1];
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_d[1] =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5;
 
-  /* Update for DiscreteIntegrator: '<S27>/Discrete-Time Integrator1' */
+  /* Update for DiscreteIntegrator: '<S25>/Discrete-Time Integrator1' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_c
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4;
   if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay > 0.0) {
@@ -11354,22 +13623,92 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_update
       = (int8_T)2;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S27>/Discrete-Time Integrator1' */
+  /* End of Update for DiscreteIntegrator: '<S25>/Discrete-Time Integrator1' */
 
-  /* Update for Delay: '<S28>/Delay1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_c5 =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_g;
+  /* Update for Delay: '<S26>/Delay1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_a =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_c;
 
-  /* Update for DiscreteIntegrator: '<S28>/Discrete-Time Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_m
+  /* Update for DiscreteIntegrator: '<S26>/Discrete-Time Integrator' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+      >= 1.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+      = 1.0;
+  } else if
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+       <= 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+      = 0.0;
+  }
+
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_b > 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n2
+      = (int8_T)1;
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_b < 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n2
+      = (int8_T)-1;
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_b == 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n2
+      = (int8_T)0;
+  } else {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n2
+      = (int8_T)2;
+  }
+
+  /* End of Update for DiscreteIntegrator: '<S26>/Discrete-Time Integrator' */
+
+  /* Update for Delay: '<S26>/Delay' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[1];
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[1] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_c;
+
+  /* Update for DiscreteIntegrator: '<S26>/Discrete-Time Integrator1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_d
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_g;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_o > 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_f
+      = (int8_T)1;
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_o < 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_f
+      = (int8_T)-1;
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_o == 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_f
+      = (int8_T)0;
+  } else {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_f
+      = (int8_T)2;
+  }
+
+  /* End of Update for DiscreteIntegrator: '<S26>/Discrete-Time Integrator1' */
+
+  /* Update for Delay: '<S27>/Delay1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_l =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_d;
+
+  /* Update for DiscreteIntegrator: '<S27>/Discrete-Time Integrator' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_m;
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_e > 0.0) {
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+      >= 1.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+      = 1.0;
+  } else if
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+       <= 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+      = 0.0;
+  }
+
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_h > 0.0) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_h
       = (int8_T)1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_e < 0.0) {
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_h < 0.0) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_h
       = (int8_T)-1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_e == 0.0) {
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_h == 0.0) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_h
       = (int8_T)0;
   } else {
@@ -11377,24 +13716,83 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_update
       = (int8_T)2;
   }
 
+  /* End of Update for DiscreteIntegrator: '<S27>/Discrete-Time Integrator' */
+
+  /* Update for Delay: '<S27>/Delay' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_i[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_i[1];
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_i[1] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_d;
+
+  /* Update for DiscreteIntegrator: '<S27>/Discrete-Time Integrator1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_e
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_n;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_g > 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_d
+      = (int8_T)1;
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_g < 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_d
+      = (int8_T)-1;
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_g == 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_d
+      = (int8_T)0;
+  } else {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_d
+      = (int8_T)2;
+  }
+
+  /* End of Update for DiscreteIntegrator: '<S27>/Discrete-Time Integrator1' */
+
+  /* Update for Delay: '<S28>/Delay1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_g =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_g;
+
+  /* Update for DiscreteIntegrator: '<S28>/Discrete-Time Integrator' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_p;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
+      >= 1.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
+      = 1.0;
+  } else if
+      (PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
+       <= 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
+      = 0.0;
+  }
+
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_n > 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_b
+      = (int8_T)1;
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_n < 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_b
+      = (int8_T)-1;
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_n == 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_b
+      = (int8_T)0;
+  } else {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_b
+      = (int8_T)2;
+  }
+
   /* End of Update for DiscreteIntegrator: '<S28>/Discrete-Time Integrator' */
 
   /* Update for Delay: '<S28>/Delay' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_a[0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_a[1];
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_a[1] =
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[0] =
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[1];
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[1] =
     PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_g;
 
   /* Update for DiscreteIntegrator: '<S28>/Discrete-Time Integrator1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_p
-    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_c;
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_p > 0.0) {
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_h
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_f;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_f > 0.0) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_m
       = (int8_T)1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_p < 0.0) {
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_f < 0.0) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_m
       = (int8_T)-1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_p == 0.0) {
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_f == 0.0) {
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_m
       = (int8_T)0;
   } else {
@@ -11404,119 +13802,104 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_update
 
   /* End of Update for DiscreteIntegrator: '<S28>/Discrete-Time Integrator1' */
 
-  /* Update for Delay: '<S29>/Delay1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_b =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_a;
-
-  /* Update for DiscreteIntegrator: '<S29>/Discrete-Time Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_d
-    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_a;
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_o > 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_m
+  /* Update for DiscreteIntegrator: '<S70>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S70>/Constant2'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_it
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn > 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_l
       = (int8_T)1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_o < 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_m
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn <
+             0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_l
       = (int8_T)-1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_o == 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_m
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn ==
+             0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_l
       = (int8_T)0;
   } else {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_m
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_l
       = (int8_T)2;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S29>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S70>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S29>/Delay' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[1];
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[1] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_a;
-
-  /* Update for DiscreteIntegrator: '<S29>/Discrete-Time Integrator1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
-    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_g;
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pt > 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
+  /* Update for DiscreteIntegrator: '<S184>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S184>/Constant2'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_j
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn > 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nr
       = (int8_T)1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pt < 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn <
+             0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nr
       = (int8_T)-1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pt == 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn ==
+             0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nr
       = (int8_T)0;
   } else {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nr
       = (int8_T)2;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S29>/Discrete-Time Integrator1' */
+  /* End of Update for DiscreteIntegrator: '<S184>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S30>/Delay1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_g =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_c;
-
-  /* Update for DiscreteIntegrator: '<S30>/Discrete-Time Integrator' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_a
-    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_p;
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_g > 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_d
+  /* Update for DiscreteIntegrator: '<S294>/Discrete-Time Integrator' incorporates:
+   *  Constant: '<S294>/Constant2'
+   */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_in
+    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn;
+  if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn > 0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_ns
       = (int8_T)1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_g < 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_d
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn <
+             0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_ns
       = (int8_T)-1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_g == 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_d
+  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_InstP->PropulsionOn ==
+             0.0) {
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_ns
       = (int8_T)0;
   } else {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_d
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_ns
       = (int8_T)2;
   }
 
-  /* End of Update for DiscreteIntegrator: '<S30>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S294>/Discrete-Time Integrator' */
 
-  /* Update for Delay: '<S30>/Delay' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k1[0] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k1[1];
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k1[1] =
-    PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_c;
+  /* Update for Delay: '<S8>/Delay' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_c =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Add1;
 
-  /* Update for DiscreteIntegrator: '<S30>/Discrete-Time Integrator1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_m
-    += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_k;
-  if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pj > 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_e
-      = (int8_T)1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pj < 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_e
-      = (int8_T)-1;
-  } else if (PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pj == 0.0) {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_e
-      = (int8_T)0;
-  } else {
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_e
-      = (int8_T)2;
-  }
+  /* Update for Delay: '<S8>/Delay1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_n =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Add4;
 
-  /* End of Update for DiscreteIntegrator: '<S30>/Discrete-Time Integrator1' */
+  /* Update for Delay: '<S8>/Delay2' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_c =
+    PIDcontroller4CoreCentralizedTestReadyMotor_B->Add5;
 
-  /* Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator1' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+  /* Update for DiscreteIntegrator: '<S10>/Discrete-Time Integrator1' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_ll
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_c;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_o
-    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
-  /* Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator3' */
+  /* Update for DiscreteIntegrator: '<S10>/Discrete-Time Integrator3' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE_g
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain5;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_PrevResetState_f
-    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
-  /* Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator4' */
+  /* Update for DiscreteIntegrator: '<S10>/Discrete-Time Integrator4' */
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator4_DSTATE
     += 0.00025 * PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain6;
   PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator4_PrevResetState
-    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal;
+    = (int8_T)PIDcontroller4CoreCentralizedTestReadyMotor_B->Equal_c;
 
   /* Update absolute time for base rate */
   /* The "clockTick0" counts the number of times the code of this task has
@@ -11610,34 +13993,28 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_initialize
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zz);
     PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzh);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_e);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_n);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5z);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_f);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_i_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzhe);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfp);
     PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zz);
     PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_n);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zzh);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_f);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zzhe);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_k);
     PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_g);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_h);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kw);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_ka);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_i_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfp);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_i_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzhe);
 
-    /* Start for MATLABSystem: '<S409>/Moving Average' */
+    /* Start for MATLABSystem: '<S426>/Moving Average' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i.matlabCodegenIsDeleted
       = true;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i.isInitialized = 0;
@@ -11647,12 +14024,32 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_initialize
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->objisempty = true;
     PIDcontroller4CoreCentralizedTestReadyMotor_SystemCore_setup_o
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_m_Start
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_c);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_m_Start
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage2);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kw);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_ka);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kaa);
+
+    /* Constant: '<S32>/Base Ref Airgap1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_i_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_g);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Start
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpg);
 
-    /* Start for MATLABSystem: '<S397>/Moving Average' */
+    /* Constant: '<S34>/Base Ref Airgap1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_i_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_m_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_e);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_m_Start
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5z);
+
+    /* Start for MATLABSystem: '<S402>/Moving Average' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj.matlabCodegenIsDeleted =
       true;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj.isInitialized = 0;
@@ -11672,85 +14069,99 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_initialize
     PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Start
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage);
 
-    /* Start for DataStoreMemory: '<S399>/DataStoreMemory - P' */
+    /* Start for DataStoreMemory: '<S405>/DataStoreMemory - P' */
     memcpy(&PIDcontroller4CoreCentralizedTestReadyMotor_DW->P[0],
-           &PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.DataStoreMemoryP_InitialValue
-           [0], 36U * sizeof(real_T));
+           &PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled38[0], 36U *
+           sizeof(real_T));
 
-    /* Start for DataStoreMemory: '<S399>/DataStoreMemory - x' */
+    /* Start for DataStoreMemory: '<S405>/DataStoreMemory - x' */
     for (i = 0; i < 6; i++) {
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->x[i] =
         PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.DataStoreMemoryx_InitialValue
         [i];
     }
 
-    /* End of Start for DataStoreMemory: '<S399>/DataStoreMemory - x' */
+    /* End of Start for DataStoreMemory: '<S405>/DataStoreMemory - x' */
+
+    /* Start for DataStoreMemory: '<S414>/DataStoreMemory - P' */
+    memcpy(&PIDcontroller4CoreCentralizedTestReadyMotor_DW->P_h[0],
+           &PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.pooled38[0], 36U *
+           sizeof(real_T));
+
+    /* Start for DataStoreMemory: '<S414>/DataStoreMemory - x' */
+    for (i = 0; i < 6; i++) {
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n[i] =
+        PIDcontroller4CoreCentralizedTestReadyMotor_ConstP.DataStoreMemoryx_InitialValue_p
+        [i];
+    }
+
+    /* End of Start for DataStoreMemory: '<S414>/DataStoreMemory - x' */
   }
 
   {
     c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
       *obj;
-    c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
+    c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
       *obj_0;
     int32_T i;
 
-    /* InitializeConditions for Delay: '<S16>/Delay1' */
+    /* InitializeConditions for Delay: '<S70>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_g = false;
+
+    /* InitializeConditions for Delay: '<S20>/Delay1' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE = 0.0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S513>/Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S530>/Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState =
       (int8_T)2;
 
-    /* InitializeConditions for Delay: '<S506>/UD' */
+    /* InitializeConditions for Delay: '<S523>/UD' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE = 0.0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S463>/Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S480>/Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_j = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_b =
       (int8_T)2;
 
-    /* InitializeConditions for Delay: '<S456>/UD' */
+    /* InitializeConditions for Delay: '<S473>/UD' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_p = 0.0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S16>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S20>/Discrete-Time Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState
       = (int8_T)2;
 
-    /* InitializeConditions for DiscretePulseGenerator: '<S32>/Pulse Generator' */
+    /* InitializeConditions for DiscretePulseGenerator: '<S30>/Pulse Generator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->clockTickCounter = 0;
-
-    /* InitializeConditions for Delay: '<S71>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE = 0.0;
     for (i = 0; i < 400; i++) {
-      /* InitializeConditions for Delay: '<S32>/Delay1' */
+      /* InitializeConditions for Delay: '<S30>/Delay1' */
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_e[i] = 0.0;
 
-      /* InitializeConditions for Delay: '<S32>/Delay' */
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[i] = 0.0;
+      /* InitializeConditions for Delay: '<S30>/Delay' */
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE[i] = 0.0;
     }
 
-    /* InitializeConditions for Sin: '<S32>/Sine Wave4' */
+    /* InitializeConditions for Sin: '<S30>/Sine Wave4' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter = 0;
 
-    /* InitializeConditions for Sin: '<S32>/Sine Wave5' */
+    /* InitializeConditions for Sin: '<S30>/Sine Wave5' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_h = 0;
 
-    /* InitializeConditions for Sin: '<S32>/Sine Wave6' */
+    /* InitializeConditions for Sin: '<S30>/Sine Wave6' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_o = 0;
 
-    /* InitializeConditions for Sin: '<S32>/Sine Wave7' */
+    /* InitializeConditions for Sin: '<S30>/Sine Wave7' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_a = 0;
 
-    /* InitializeConditions for Sin: '<S32>/Sine Wave1' */
+    /* InitializeConditions for Sin: '<S30>/Sine Wave1' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_i = 0;
 
-    /* InitializeConditions for Sin: '<S32>/Sine Wave2' */
+    /* InitializeConditions for Sin: '<S30>/Sine Wave2' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_m = 0;
 
-    /* InitializeConditions for Sin: '<S32>/Sine Wave3' */
+    /* InitializeConditions for Sin: '<S30>/Sine Wave3' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->counter_n = 0;
 
     /* InitializeConditions for Delay: '<Root>/Delay1' */
@@ -11767,19 +14178,72 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_initialize
     /* InitializeConditions for Delay: '<S153>/UD' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_f = 0.0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S72>/Discrete-Time Integrator1' */
+    /* InitializeConditions for DiscreteIntegrator: '<S71>/Discrete-Time Integrator1' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState
       = (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S72>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S71>/Discrete-Time Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_b
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n
       = (int8_T)2;
 
+    /* InitializeConditions for DiscreteIntegrator: '<S70>/Discrete-Time Integrator1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_f
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
+      = (int8_T)2;
+
     /* InitializeConditions for DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_l
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nl
+      = (int8_T)2;
+
+    /* InitializeConditions for Delay: '<Root>/Delay2' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[0] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[1] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[2] = 0.0;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S5>/Discrete-Time Integrator3' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_PrevResetState
+      = (int8_T)2;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S5>/Discrete-Time Integrator' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_p
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_p
+      = (int8_T)2;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S5>/Discrete-Time Integrator1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_k
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_h
+      = (int8_T)2;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S5>/Discrete-Time Integrator2' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState
+      = (int8_T)2;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S8>/Discrete-Time Integrator1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_g
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_i
+      = (int8_T)2;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S8>/Discrete-Time Integrator2' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE_l
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState_b
+      = (int8_T)2;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S10>/Discrete-Time Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_o
@@ -11795,101 +14259,89 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_initialize
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState =
       (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S23>/Discrete-Time Integrator3' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE
-      = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_PrevResetState
-      = (int8_T)2;
+    /* InitializeConditions for Memory: '<S177>/Memory' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Memory_PreviousInput = 0.0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S269>/Integrator' */
+    /* InitializeConditions for Memory: '<S177>/Memory1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Memory1_PreviousInput = 0.0;
+
+    /* InitializeConditions for Delay: '<S184>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_o = false;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S272>/Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g =
       (int8_T)2;
 
-    /* InitializeConditions for Delay: '<S262>/UD' */
+    /* InitializeConditions for Delay: '<S265>/UD' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o = 0.0;
 
-    /* InitializeConditions for Delay: '<S179>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_h = 0.0;
+    /* InitializeConditions for DiscreteIntegrator: '<S184>/Discrete-Time Integrator1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_k
+      = (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S218>/Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S220>/Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_g0
       = (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S213>/Filter' */
+    /* InitializeConditions for DiscreteIntegrator: '<S215>/Filter' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_j =
       (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S23>/Discrete-Time Integrator' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_p
-      = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_p
-      = (int8_T)2;
+    /* InitializeConditions for Delay: '<S294>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_m = false;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S377>/Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S382>/Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_m =
       (int8_T)2;
 
-    /* InitializeConditions for Delay: '<S370>/UD' */
+    /* InitializeConditions for Delay: '<S375>/UD' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l = 0.0;
 
-    /* InitializeConditions for Delay: '<S288>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_m = 0.0;
+    /* InitializeConditions for DiscreteIntegrator: '<S294>/Discrete-Time Integrator1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_g
+      = (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S326>/Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S330>/Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_PrevResetState_ns
       = (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S321>/Filter' */
+    /* InitializeConditions for DiscreteIntegrator: '<S325>/Filter' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_PrevResetState_k =
       (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S23>/Discrete-Time Integrator1' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_k
-      = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_h
-      = (int8_T)2;
-
-    /* InitializeConditions for DiscreteIntegrator: '<S23>/Discrete-Time Integrator2' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE
-      = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_PrevResetState
-      = (int8_T)2;
-
-    /* InitializeConditions for Delay: '<S27>/Delay3' */
+    /* InitializeConditions for Delay: '<S25>/Delay3' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE = 0.0;
 
-    /* InitializeConditions for Delay: '<S27>/Delay2' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE = 0.0;
-
-    /* InitializeConditions for Delay: '<S28>/Delay3' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_g = 0.0;
-
-    /* InitializeConditions for Delay: '<S28>/Delay2' */
+    /* InitializeConditions for Delay: '<S25>/Delay2' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l = 0.0;
 
-    /* InitializeConditions for Delay: '<S29>/Delay3' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_p = 0.0;
+    /* InitializeConditions for Delay: '<S26>/Delay3' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_m = 0.0;
 
-    /* InitializeConditions for Delay: '<S29>/Delay2' */
+    /* InitializeConditions for Delay: '<S26>/Delay2' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_b = 0.0;
+
+    /* InitializeConditions for Delay: '<S27>/Delay3' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_i = 0.0;
+
+    /* InitializeConditions for Delay: '<S27>/Delay2' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g = 0.0;
 
-    /* InitializeConditions for Delay: '<S30>/Delay3' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_k = 0.0;
+    /* InitializeConditions for Delay: '<S28>/Delay3' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_o = 0.0;
 
-    /* InitializeConditions for Delay: '<S30>/Delay2' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_f = 0.0;
-
-    /* InitializeConditions for DiscreteIntegrator: '<S566>/Integrator' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_h = 0.0;
-
-    /* InitializeConditions for Delay: '<S559>/UD' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_g = 0.0;
+    /* InitializeConditions for Delay: '<S28>/Delay2' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_bo = 0.0;
 
     /* InitializeConditions for Derivative: '<Root>/Derivative' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA = (rtInf);
@@ -11899,132 +14351,136 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_initialize
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA_l = (rtInf);
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampB_b = (rtInf);
 
-    /* InitializeConditions for DiscreteIntegrator: '<S619>/Integrator' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_d = 0.0;
-
-    /* InitializeConditions for Delay: '<S612>/UD' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_e = 0.0;
-
-    /* InitializeConditions for DiscreteIntegrator: '<S725>/Integrator' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_p = 0.0;
-
-    /* InitializeConditions for Delay: '<S718>/UD' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_h = 0.0;
-
-    /* InitializeConditions for DiscreteIntegrator: '<S672>/Integrator' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_m = 0.0;
-
-    /* InitializeConditions for Delay: '<S665>/UD' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_ei = 0.0;
-
-    /* InitializeConditions for Delay: '<Root>/Delay2' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[0] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[1] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[2] = 0.0;
-
-    /* InitializeConditions for DiscreteIntegrator: '<S397>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S402>/Discrete-Time Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_i
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_j
       = (int8_T)2;
 
-    /* InitializeConditions for Delay: '<S27>/Delay1' */
+    /* InitializeConditions for Delay: '<S25>/Delay1' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_c = 0.0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S27>/Discrete-Time Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_g
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_g
       = (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S27>/Discrete-Time Integrator1' */
+    /* InitializeConditions for DiscreteIntegrator: '<S25>/Discrete-Time Integrator1' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_c
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_l
       = (int8_T)2;
 
-    /* InitializeConditions for Delay: '<S28>/Delay1' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_c5 = 0.0;
+    /* InitializeConditions for Delay: '<S26>/Delay1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_a = 0.0;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S28>/Discrete-Time Integrator' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_m
+    /* InitializeConditions for DiscreteIntegrator: '<S26>/Discrete-Time Integrator' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_n2
+      = (int8_T)2;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S26>/Discrete-Time Integrator1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_d
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_f
+      = (int8_T)2;
+
+    /* InitializeConditions for Delay: '<S27>/Delay1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_l = 0.0;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S27>/Discrete-Time Integrator' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_h
       = (int8_T)2;
 
+    /* InitializeConditions for DiscreteIntegrator: '<S27>/Discrete-Time Integrator1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_e
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_d
+      = (int8_T)2;
+
+    /* InitializeConditions for Delay: '<S28>/Delay1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_g = 0.0;
+
+    /* InitializeConditions for DiscreteIntegrator: '<S28>/Discrete-Time Integrator' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_b
+      = (int8_T)2;
+
+    /* InitializeConditions for Delay: '<S25>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_d[0] = 0.0;
+
+    /* InitializeConditions for Delay: '<S26>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[0] = 0.0;
+
+    /* InitializeConditions for Delay: '<S27>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_i[0] = 0.0;
+
+    /* InitializeConditions for Delay: '<S28>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[0] = 0.0;
+
+    /* InitializeConditions for Delay: '<S25>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_d[1] = 0.0;
+
+    /* InitializeConditions for Delay: '<S26>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[1] = 0.0;
+
+    /* InitializeConditions for Delay: '<S27>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_i[1] = 0.0;
+
+    /* InitializeConditions for Delay: '<S28>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[1] = 0.0;
+
     /* InitializeConditions for DiscreteIntegrator: '<S28>/Discrete-Time Integrator1' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_p
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_h
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_m
       = (int8_T)2;
 
-    /* InitializeConditions for Delay: '<S29>/Delay1' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_b = 0.0;
-
-    /* InitializeConditions for DiscreteIntegrator: '<S29>/Discrete-Time Integrator' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_d
+    /* InitializeConditions for DiscreteIntegrator: '<S70>/Discrete-Time Integrator' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_it
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_m
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_l
       = (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S29>/Discrete-Time Integrator1' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
+    /* InitializeConditions for DiscreteIntegrator: '<S184>/Discrete-Time Integrator' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_j
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_n
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_nr
       = (int8_T)2;
 
-    /* InitializeConditions for Delay: '<S30>/Delay1' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_g = 0.0;
-
-    /* InitializeConditions for DiscreteIntegrator: '<S30>/Discrete-Time Integrator' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_a
+    /* InitializeConditions for DiscreteIntegrator: '<S294>/Discrete-Time Integrator' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_in
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_d
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_PrevResetState_ns
       = (int8_T)2;
 
-    /* InitializeConditions for Delay: '<S27>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_d[0] = 0.0;
+    /* InitializeConditions for Delay: '<S8>/Delay' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_c = 0.0;
 
-    /* InitializeConditions for Delay: '<S28>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_a[0] = 0.0;
+    /* InitializeConditions for Delay: '<S8>/Delay1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_n = 0.0;
 
-    /* InitializeConditions for Delay: '<S29>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[0] = 0.0;
+    /* InitializeConditions for Delay: '<S8>/Delay2' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_c = 0.0;
 
-    /* InitializeConditions for Delay: '<S30>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k1[0] = 0.0;
-
-    /* InitializeConditions for Delay: '<S27>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_d[1] = 0.0;
-
-    /* InitializeConditions for Delay: '<S28>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_a[1] = 0.0;
-
-    /* InitializeConditions for Delay: '<S29>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[1] = 0.0;
-
-    /* InitializeConditions for Delay: '<S30>/Delay' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k1[1] = 0.0;
-
-    /* InitializeConditions for DiscreteIntegrator: '<S30>/Discrete-Time Integrator1' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_m
-      = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_e
-      = (int8_T)2;
-
-    /* InitializeConditions for DiscreteIntegrator: '<S8>/Discrete-Time Integrator1' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+    /* InitializeConditions for DiscreteIntegrator: '<S10>/Discrete-Time Integrator1' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_ll
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_PrevResetState_o
       = (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S8>/Discrete-Time Integrator3' */
+    /* InitializeConditions for DiscreteIntegrator: '<S10>/Discrete-Time Integrator3' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE_g
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_PrevResetState_f
       = (int8_T)2;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S8>/Discrete-Time Integrator4' */
+    /* InitializeConditions for DiscreteIntegrator: '<S10>/Discrete-Time Integrator4' */
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator4_DSTATE
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator4_PrevResetState
@@ -12073,34 +14529,28 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_initialize
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zz);
     PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzh);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_e);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_n);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5z);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_f);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_n_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzhe);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfp);
     PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zz);
     PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_n);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zzh);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_f);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zzhe);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_k);
     PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_g);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_h);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kw);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_ka);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_n_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfp);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_n_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzhe);
 
-    /* InitializeConditions for MATLABSystem: '<S409>/Moving Average' */
+    /* InitializeConditions for MATLABSystem: '<S426>/Moving Average' */
     obj = PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i.pStatistic;
     if (obj->isInitialized == 1) {
       obj->pwN = 1.0;
@@ -12110,13 +14560,29 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_initialize
       obj->pmN[3] = 0.0;
     }
 
-    /* End of InitializeConditions for MATLABSystem: '<S409>/Moving Average' */
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_e_Init
-      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_c);
-    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_e_Init
+    /* End of InitializeConditions for MATLABSystem: '<S426>/Moving Average' */
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage2);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kw);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_ka);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kaa);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_n_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_g);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Init
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpg);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_n_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_e_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_e);
+    PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_e_Init
+      (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5z);
 
-    /* InitializeConditions for MATLABSystem: '<S397>/Moving Average' */
+    /* InitializeConditions for MATLABSystem: '<S402>/Moving Average' */
     obj_0 = PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj.pStatistic;
     if (obj_0->isInitialized == 1) {
       obj_0->pCumSum = 0.0;
@@ -12127,7 +14593,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_initialize
       obj_0->pCumRevIndex = 1.0;
     }
 
-    /* End of InitializeConditions for MATLABSystem: '<S397>/Moving Average' */
+    /* End of InitializeConditions for MATLABSystem: '<S402>/Moving Average' */
     PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Init
       (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage);
   }
@@ -12143,7 +14609,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_terminate
     PIDcontroller4CoreCentralizedTestReadyMotor_M->dwork;
   c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
     *obj;
-  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
+  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
     *obj_0;
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
     (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1);
@@ -12189,34 +14655,28 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_terminate
     (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zz);
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
     (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzh);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_e);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_n);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5z);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_f);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_j_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzhe);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfp);
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
     (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zz);
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_n);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zzh);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_f);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5zzhe);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
     (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_k);
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_g);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
     (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_h);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kw);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_ka);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_j_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfp);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_j_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_pnaevvfpgh5zzhe);
 
-  /* Terminate for MATLABSystem: '<S409>/Moving Average' */
+  /* Terminate for MATLABSystem: '<S426>/Moving Average' */
   if (!(int32_T)
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj_i.matlabCodegenIsDeleted)
   {
@@ -12235,13 +14695,29 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_terminate
     }
   }
 
-  /* End of Terminate for MATLABSystem: '<S409>/Moving Average' */
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_l_Term
-    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_c);
-  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_l_Term
+  /* End of Terminate for MATLABSystem: '<S426>/Moving Average' */
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage2);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kw);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_ka);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_kaa);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_j_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_g);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Term
     (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpg);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_j_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_l_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage_e);
+  PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_l_Term
+    (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage1_pnaevvfpgh5z);
 
-  /* Terminate for MATLABSystem: '<S397>/Moving Average' */
+  /* Terminate for MATLABSystem: '<S402>/Moving Average' */
   if (!(int32_T)
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->obj.matlabCodegenIsDeleted)
   {
@@ -12260,7 +14736,7 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_terminate
     }
   }
 
-  /* End of Terminate for MATLABSystem: '<S397>/Moving Average' */
+  /* End of Terminate for MATLABSystem: '<S402>/Moving Average' */
   PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
     (&PIDcontroller4CoreCentralizedTestReadyMotor_DW->MovingAverage);
   rt_FREE(PIDcontroller4CoreCentralizedTestReadyMotor_M->solverInfo);
@@ -12421,19 +14897,25 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
       }
 
       for (i = 0; i < 30; i++) {
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_g[i] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_c[i] = 0.0;
       }
 
       for (i = 0; i < 30; i++) {
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_k[i] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_p[i] = 0.0;
       }
 
       for (i = 0; i < 30; i++) {
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_h[i] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_o[i] = 0.0;
       }
 
       for (i = 0; i < 6; i++) {
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->DataStoreRead[i] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Output_n.DataStoreRead[i]
+          = 0.0;
+      }
+
+      for (i = 0; i < 6; i++) {
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Output.DataStoreRead[i] =
+          0.0;
       }
 
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp = 0.0;
@@ -12447,26 +14929,50 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1[3] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_k = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1 = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_l = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_j = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_e = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a4 = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_h = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[0] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[1] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[2] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[3] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_h = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_o = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_g = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_d = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1 = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_o = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Add = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain4 = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2 = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_n = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Add1 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Add4 = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Add5 = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom_h = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm_d = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract1 = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[0] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[1] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[2] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[0] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[1] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[2] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->error = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Divide1 = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_g = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->x_i1 = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->y_i1 = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain10 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_o = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_m = 0.0;
@@ -12474,46 +14980,25 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_e = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Product = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_l = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_h = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointroll = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain3 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_e = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_k = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_h = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Add = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain4 = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2 = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_h = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Max = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_l = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_i = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_e = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_a = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_j = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_e = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2 = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_kb = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_e = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_k0 = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_d = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_f = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_o = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_b = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_c = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_g = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_c = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_d = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_b = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_a = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_i = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_n = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum1 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_i = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay = 0.0;
@@ -12522,27 +15007,27 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7 = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_e = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_p = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_c = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_e = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_m = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_g = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_o = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pt = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_b = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_o = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_g = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_l = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_a = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_a = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_d = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_g = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pj = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_k = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_n = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_p = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_a = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_c = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_a = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_h = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_h = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_g = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_n = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_j = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_m = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_d = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_n = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_f = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_f = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_b = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_p = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_g = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_p = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_l = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->error_h = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4 = 0.0;
@@ -12550,22 +15035,24 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
       PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_c = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_d = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_o = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_g = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_gj = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[0] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[1] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[2] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[3] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_eg = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_k = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_m = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_j = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2_n = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1_k = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_d = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain3 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Saturation = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_c = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain5 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain6 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_dt = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_em = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_lx = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c5 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay1Inport1
         [0] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay1Inport1
@@ -12580,57 +15067,68 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
         [1] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay2Inport1
         [2] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_g = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_k = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_c = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[0] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[1] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[2] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Product1_l = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->Product2 = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_g = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_k = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h5 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent3.out_req_I
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent2.out_req_I
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent1.out_req_I
         = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_kaa.MovingAverage
+        = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_ka.MovingAverage
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_kw.MovingAverage
         = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_g.MovingAverage
+        = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_h.MovingAverage
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zz.MovingAverage
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zzhe.MovingAverage
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_k.MovingAverage
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zzh.MovingAverage
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_f.MovingAverage
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5.MovingAverage
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zz.MovingAverage
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_n.MovingAverage
         = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+        [0] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+        [1] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+        [2] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+        [0] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+        [1] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+        [2] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage2.MovingAverage1
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5.MovingAverage1
+        = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh.MovingAverage
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage1
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-        [0] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-        [1] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-        [2] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_c.MovingAverage
-        [0] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_c.MovingAverage
-        [1] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_c.MovingAverage
-        [2] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfp.MovingAverage
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_g.MovingAverage
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5zzhe.MovingAverage
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfp.MovingAverage1
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d.avg_g =
         0.0;
@@ -12702,7 +15200,6 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_p = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE = 0.0;
 
     {
       int32_T i;
@@ -12714,7 +15211,7 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
     {
       int32_T i;
       for (i = 0; i < 400; i++) {
-        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[i] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE[i] = 0.0;
       }
     }
 
@@ -12728,47 +15225,49 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_b
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_f
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_n = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_l
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[0] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[1] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[2] = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_h = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_p
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_m = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_k
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE
       = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_g
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE_l
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_n = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_g = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_p = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_m = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_b = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_i = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_k = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_f = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_h = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_g = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_d = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_e = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_p = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_h = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_m = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_ei = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[0] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[1] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[2] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_o = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_bo = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_i
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_c = 0.0;
@@ -12778,33 +15277,44 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_d[1] = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_c
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_c5 = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_m
-      = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_a[0] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_a[1] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_p
-      = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_b = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_d
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_a = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[0] = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[1] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_d
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_l = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_i[0] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_i[1] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_e
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_g = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_a
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k1[0] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k1[1] = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_m
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[0] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[1] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_h
       = 0.0;
-    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_it
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_j
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_in
+      = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_c = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_n = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_c = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_ll
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE_g
       = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator4_DSTATE
       = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Memory_PreviousInput = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_DW->Memory1_PreviousInput = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeA[0] = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeA[1] = 0.0;
@@ -12836,6 +15346,20 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
       }
     }
 
+    {
+      int32_T i;
+      for (i = 0; i < 36; i++) {
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->P_h[i] = 0.0;
+      }
+    }
+
+    {
+      int32_T i;
+      for (i = 0; i < 6; i++) {
+        PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n[i] = 0.0;
+      }
+    }
+
     /* external inputs */
     PIDcontroller4CoreCentralizedTestReadyMotor_U->G_A = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_U->G_B = 0.0;
@@ -12856,6 +15380,10 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
     PIDcontroller4CoreCentralizedTestReadyMotor_U->Vt4 = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_U->EMS_F_Front = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_U->EMS_F_Back = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_U->IMU_z = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_U->IMU_pitch = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_U->IMU_roll = 0.0;
 
     /* external outputs */
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_A = 0.0;
@@ -12918,6 +15446,10 @@ RT_MODEL_PIDcontroller4CoreCentralizedTestReadyMotor_T
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->Arms[1] = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->Arms[2] = 0.0;
     PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedMass = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->MotorAGAdjust = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->IMU_kalman_output[0] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->IMU_kalman_output[1] = 0.0;
+    PIDcontroller4CoreCentralizedTestReadyMotor_Y->IMU_kalman_output[2] = 0.0;
 
     /* previous zero-crossing states */
     {

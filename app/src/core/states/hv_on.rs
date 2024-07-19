@@ -3,6 +3,7 @@ use defmt::warn;
 
 use crate::core::finite_state_machine::*;
 use crate::transit;
+use crate::Command;
 use crate::Event;
 use crate::Info;
 
@@ -15,7 +16,11 @@ impl Fsm {
 
     pub async fn react_hv_on(&mut self, event: Event) {
         match event {
-            Event::TurnOffHVCommand => {
+            Event::HvLevitationBelowBms => {
+                transit!(self, State::EmergencyBraking);
+                self.send_levi_cmd(Command::EmergencyBrake(4)).await;
+            },
+            Event::CygnusesVaryingVoltages | Event::TurnOffHVCommand => {
                 self.peripherals.hv_peripherals.power_hv_off();
                 #[cfg(debug_assertions)]
                 info!("HV Relays turned off");

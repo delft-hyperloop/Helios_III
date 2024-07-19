@@ -1,4 +1,4 @@
-import type {dataConvFun, Procedure} from "$lib/types";
+import {type dataConvFun, type Procedure, STATUS} from "$lib/types";
 import {PlotBuffer} from "$lib/util/PlotBuffer";
 import {detailTabSet} from "$lib";
 import {invoke} from "@tauri-apps/api/tauri";
@@ -17,17 +17,6 @@ const addEntryToChart = (chart: PlotBuffer, data: number, index: number) => {
     return data;
 }
 
-const u64ToDouble = (u64: bigint): number => {
-    const buffer = new ArrayBuffer(8);
-
-    const high = Number(BigInt(u64) / BigInt(2 ** 32));
-    const low = Number(BigInt(u64) % BigInt(2 ** 32));
-
-    buffer.writeUInt32LE(low, 0);
-    buffer.writeUInt32LE(high, 4);
-
-    return buffer.readDoubleLE(0);
-}
 
 const sensorParse = (u64 : bigint) : number =>{
     return u64>MAX_VALUE-100000 ? - (MAX_VALUE-Number(u64)+1)/100 : Number(u64)/100;
@@ -77,7 +66,25 @@ const parseShortCut = async (shortcut:string):Promise<void> => {
     } else if (shortcut === "heartbeat") {
         await invoke('send_command', {cmdName: "FrontendHeartbeat", val: 0});
     }
-
 }
 
-export {tempParse, voltParse, addEntryToChart, u64ToDouble, sensorParse, pressureParse, metersPerMinuteToByte, parseProcedure, parseShortCut};
+function setBitsToBooleans(num: number): boolean[] {
+    const numBits = 6;
+    const float64 = new Float64Array(1);
+    float64[0] = num;
+    const uint32 = new Uint32Array(float64.buffer);
+    const bits = Array(numBits).fill(false);
+
+    for (let i = 0; i < numBits; i++) {
+        const index = Math.floor(i / 32);
+        const bitPos = i % 32;
+
+        if ((uint32[index] & (1 << bitPos)) !== 0) {
+            bits[i] = true;
+        }
+    }
+
+    return bits;
+}
+
+export {tempParse, voltParse, addEntryToChart,  sensorParse, pressureParse, metersPerMinuteToByte, parseProcedure, parseShortCut, setBitsToBooleans};

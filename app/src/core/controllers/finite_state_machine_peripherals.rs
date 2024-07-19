@@ -7,13 +7,15 @@ use embassy_stm32::gpio::Output;
 use embassy_stm32::gpio::Pull;
 use embassy_stm32::gpio::Speed;
 use embassy_stm32::Peripherals;
+use embassy_time::Duration;
+use embassy_time::Instant;
 
+use crate::core::communication::low::tcp::EthernetPins;
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::breaking_controller::BrakingController;
 use crate::core::controllers::can_controller::CanController;
 use crate::core::controllers::can_controller::CanPins;
-use crate::core::controllers::ethernet_controller::EthernetController;
-use crate::core::controllers::ethernet_controller::EthernetPins;
+use crate::core::controllers::external_communication::ExternalController;
 use crate::core::controllers::hv_controller::HVPeripherals;
 use crate::core::controllers::led_controller::LedController;
 use crate::core::controllers::propulsion_controller::PropulsionController;
@@ -23,7 +25,7 @@ use crate::InternalMessaging;
 #[allow(dead_code)]
 pub struct FSMPeripherals {
     pub braking_controller: BrakingController,
-    pub eth_controller: EthernetController,
+    pub eth_controller: ExternalController,
     pub can_controller: CanController,
     pub hv_peripherals: HVPeripherals,
     pub propulsion_controller: PropulsionController,
@@ -61,7 +63,7 @@ impl FSMPeripherals {
 
         debug!("creating ethernet controller");
         // The ethernet controller configures IP and then spawns the ethernet task
-        let eth_controller = EthernetController::new(
+        let eth_controller = ExternalController::new(
             *x,
             i.event_sender,
             i.data_receiver,
@@ -104,15 +106,8 @@ impl FSMPeripherals {
             lv_controller,
         )
         .await;
-        let led_controller = LedController::new(
-            Output::new(p.PE7, Level::Low, Speed::Low),
-            Output::new(p.PE8, Level::Low, Speed::Low),
-            Output::new(p.PE9, Level::Low, Speed::Low),
-            Output::new(p.PE10, Level::Low, Speed::Low),
-            Output::new(p.PE13, Level::Low, Speed::Low),
-            Output::new(p.PE14, Level::Low, Speed::Low),
-        )
-        .await;
+        let led_controller =
+            LedController::new(p.PE7, p.PE8, p.PE9, p.PE10, p.PE11, p.PE13, p.PE14).await;
 
         // the propulsion controller spawns tasks for reading current and voltage, and holds functions for setting the speed through the DAC
         let propulsion_controller = PropulsionController::new(
@@ -140,6 +135,11 @@ impl FSMPeripherals {
                 pin_6: Output::new(p.PG9, Level::Low, Speed::Low),
                 pin_7: Output::new(p.PG10, Level::Low, Speed::Low),
                 dc_dc: Output::new(p.PD2, Level::Low, Speed::Low),
+                pre_charge_start: Instant::now(),
+                pre_charge_min: Duration::from_millis(3500),
+                // pre_charge_timeout: Duration::from_millis(5000),
+                // event_sender: i.event_sender,
+                pre_charge_successful: false,
             },
             red_led: Output::new(p.PB14, Level::Low, Speed::High),
             propulsion_controller,

@@ -5,7 +5,7 @@ use ratatui::symbols::border;
 use ratatui::widgets::block::*;
 use ratatui::widgets::*;
 
-use crate::api::Message;
+use gslib::Message;
 use crate::tui::app::App;
 use crate::tui::timestamp;
 use crate::Command;

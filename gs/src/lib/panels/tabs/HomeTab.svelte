@@ -5,7 +5,6 @@
     import {parseProcedure} from "$lib/util/parsers";
 
     const toastStore = getToastStore();
-
     const handleSuccess = () => {
         toastStore.trigger({
             message: "Server started successfully",
@@ -39,14 +38,14 @@
         </div>
     </div>
     <div>
-        <TauriCommand cmd="start_server" successCallback={handleSuccess} errorCallback={handleFailure} />
+        <TauriCommand cmd="connect_to_pod" successCallback={handleSuccess} errorCallback={handleFailure} />
         <TauriCommand cmd="start_levi" />
         <TauriCommand cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />
         <TauriCommand cmd="quit_levi" />
-        <TauriCommand cmd="quit_server"
-                      hoverContent="This will not kill active connections!"
-                      successCallback={() => serverStatus.set(false)} />
+        <TauriCommand cmd="disconnect" successCallback={() => serverStatus.set(false)} />
+        <TauriCommand cmd="save_logs"/>
+        <TauriCommand cmd="test_route" successCallback={console.log}/>
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
-    <p><kbd class="kbd">0</kbd> - <kbd class="kbd">7</kbd> to browse between the tabs of this panel</p>
+
 </div>

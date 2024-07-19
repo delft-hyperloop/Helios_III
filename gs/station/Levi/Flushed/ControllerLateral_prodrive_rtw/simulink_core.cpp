@@ -166,32 +166,74 @@ namespace PmpInternal
         ControllerLateral_B->NProdOut = 0.0;
         ControllerLateral_B->Tsamp_c = 0.0;
         ControllerLateral_B->NProdOut_k = 0.0;
+        ControllerLateral_B->Delay1 = 0.0;
+        ControllerLateral_B->Delay = 0.0;
+        ControllerLateral_B->Switch4 = 0.0;
+        ControllerLateral_B->Switch3 = 0.0;
+        ControllerLateral_B->Switch5 = 0.0;
+        ControllerLateral_B->Delay1_f = 0.0;
+        ControllerLateral_B->Delay_d = 0.0;
+        ControllerLateral_B->Switch4_b = 0.0;
+        ControllerLateral_B->Switch3_m = 0.0;
+        ControllerLateral_B->Switch5_e = 0.0;
         ControllerLateral_B->Switch = 0.0;
-        ControllerLateral_B->Switch_l = 0.0;
+        ControllerLateral_B->Switch_a = 0.0;
         ControllerLateral_B->SumI4 = 0.0;
         ControllerLateral_B->SumI4_e = 0.0;
+        ControllerLateral_B->Gain3_i = 0.0;
+        ControllerLateral_B->Gain10 = 0.0;
+        ControllerLateral_B->diff2 = 0.0;
+        ControllerLateral_B->FilterCoefficient = 0.0;
+        ControllerLateral_B->Add = 0.0;
+        ControllerLateral_B->diff1 = 0.0;
+        ControllerLateral_B->FilterCoefficient_o = 0.0;
+        ControllerLateral_B->Add1 = 0.0;
+        ControllerLateral_B->FilterCoefficient_n = 0.0;
+        ControllerLateral_B->Gain2 = 0.0;
+        ControllerLateral_B->Gain9 = 0.0;
+        ControllerLateral_B->Gain10_e = 0.0;
+        ControllerLateral_B->Add2 = 0.0;
+        ControllerLateral_B->FilterCoefficient_p = 0.0;
+        ControllerLateral_B->Add6 = 0.0;
+        ControllerLateral_B->Gain10_o = 0.0;
+        ControllerLateral_B->diff2_k = 0.0;
+        ControllerLateral_B->FilterCoefficient_e = 0.0;
+        ControllerLateral_B->Add_c = 0.0;
+        ControllerLateral_B->diff1_k = 0.0;
+        ControllerLateral_B->FilterCoefficient_ow = 0.0;
+        ControllerLateral_B->Add1_b = 0.0;
+        ControllerLateral_B->FilterCoefficient_f = 0.0;
+        ControllerLateral_B->Gain10_ol = 0.0;
+        ControllerLateral_B->Add2_a = 0.0;
+        ControllerLateral_B->FilterCoefficient_k = 0.0;
+        ControllerLateral_B->Add6_g = 0.0;
+        ControllerLateral_B->TmpSignalConversionAtDelay2Inport1[0] = 0.0;
+        ControllerLateral_B->TmpSignalConversionAtDelay2Inport1[1] = 0.0;
         ControllerLateral_B->TmpSignalConversionAtDelay1Inport1[0] = 0.0;
         ControllerLateral_B->TmpSignalConversionAtDelay1Inport1[1] = 0.0;
-        ControllerLateral_B->Switch3 = 0.0;
+        ControllerLateral_B->Gain_k = 0.0;
+        ControllerLateral_B->Switch3_h = 0.0;
+        ControllerLateral_B->MovingAverage1_pnaevvfpg.MovingAverage = 0.0;
+        ControllerLateral_B->MovingAverage_pnaevvfpgh5.MovingAverage = 0.0;
+        ControllerLateral_B->MovingAverage1_pnaevvfp.MovingAverage = 0.0;
+        ControllerLateral_B->MovingAverage_pnaevvfpgh.MovingAverage = 0.0;
         ControllerLateral_B->MovingAverage1_pnaevvf.MovingAverage = 0.0;
         ControllerLateral_B->MovingAverage_pnaevvfpg.MovingAverage = 0.0;
         ControllerLateral_B->MovingAverage1_pnaevv.MovingAverage = 0.0;
         ControllerLateral_B->MovingAverage_pnaevvfp.MovingAverage = 0.0;
-        ControllerLateral_B->MovingAverage1_pnaev.MovingAverage = 0.0;
         ControllerLateral_B->MovingAverage_pnaevvf.MovingAverage = 0.0;
-        ControllerLateral_B->MovingAverage1_pnae.MovingAverage = 0.0;
+        ControllerLateral_B->MovingAverage1_pnaev.MovingAverage1 = 0.0;
         ControllerLateral_B->MovingAverage_pnaevv.MovingAverage = 0.0;
-        ControllerLateral_B->sf_MATLABFunction1.current = 0.0;
-        ControllerLateral_B->sf_MATLABFunction.current = 0.0;
         ControllerLateral_B->MovingAverage_pnaev.MovingAverage = 0.0;
-        ControllerLateral_B->MovingAverage1_pna.MovingAverage = 0.0;
+        ControllerLateral_B->MovingAverage1_pnae.MovingAverage1 = 0.0;
         ControllerLateral_B->MovingAverage_pnae.MovingAverage = 0.0;
-        ControllerLateral_B->MovingAverage1_pn.MovingAverage = 0.0;
+        ControllerLateral_B->MovingAverage1_pna.MovingAverage = 0.0;
         ControllerLateral_B->MovingAverage_pna.MovingAverage = 0.0;
-        ControllerLateral_B->MovingAverage1_p.MovingAverage = 0.0;
+        ControllerLateral_B->MovingAverage1_pn.MovingAverage = 0.0;
         ControllerLateral_B->MovingAverage_pn.MovingAverage = 0.0;
-        ControllerLateral_B->MovingAverage1.MovingAverage = 0.0;
+        ControllerLateral_B->MovingAverage1_p.MovingAverage = 0.0;
         ControllerLateral_B->MovingAverage_p.MovingAverage = 0.0;
+        ControllerLateral_B->MovingAverage1.MovingAverage = 0.0;
         ControllerLateral_B->MovingAverage.MovingAverage = 0.0;
       }
 
@@ -199,8 +241,13 @@ namespace PmpInternal
       (void) ClearDWork((void *)ControllerLateral_DW, 0,
                         sizeof(DW_ControllerLateral_T));
       ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator1_DSTATE = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE_l = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator1_DSTATE_g = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE_d = 0.0;
       ControllerLateral_DW->Delay1_DSTATE[0] = 0.0;
       ControllerLateral_DW->Delay1_DSTATE[1] = 0.0;
+      ControllerLateral_DW->DelayInput1_DSTATE = 0.0;
       ControllerLateral_DW->Integrator_DSTATE = 0.0;
       ControllerLateral_DW->UD_DSTATE = 0.0;
 
@@ -215,14 +262,59 @@ namespace PmpInternal
       ControllerLateral_DW->Filter_DSTATE = 0.0;
       ControllerLateral_DW->Integrator_DSTATE_o = 0.0;
       ControllerLateral_DW->UD_DSTATE_o = 0.0;
-      ControllerLateral_DW->Integrator_DSTATE_k = 0.0;
-      ControllerLateral_DW->Filter_DSTATE_d = 0.0;
+      ControllerLateral_DW->Integrator_DSTATE_m = 0.0;
+      ControllerLateral_DW->Filter_DSTATE_a = 0.0;
+      ControllerLateral_DW->Delay2_DSTATE = 0.0;
+      ControllerLateral_DW->Delay2_DSTATE_i = 0.0;
       ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE_f = 0.0;
+      ControllerLateral_DW->Delay1_DSTATE_f = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE_b = 0.0;
+      ControllerLateral_DW->Delay_DSTATE[0] = 0.0;
+      ControllerLateral_DW->Delay_DSTATE[1] = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator1_DSTATE_b = 0.0;
+      ControllerLateral_DW->Delay1_DSTATE_j = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE_e = 0.0;
+      ControllerLateral_DW->Delay_DSTATE_g[0] = 0.0;
+      ControllerLateral_DW->Delay_DSTATE_g[1] = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator1_DSTATE_n = 0.0;
+      ControllerLateral_DW->Delay2_DSTATE_f[0] = 0.0;
+      ControllerLateral_DW->Delay2_DSTATE_f[1] = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE_n = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE_g = 0.0;
+      ControllerLateral_DW->Integrator_DSTATE_m1 = 0.0;
+      ControllerLateral_DW->Filter_DSTATE_d = 0.0;
+      ControllerLateral_DW->Integrator_DSTATE_ok = 0.0;
+      ControllerLateral_DW->Filter_DSTATE_b = 0.0;
+      ControllerLateral_DW->Integrator_DSTATE_f = 0.0;
+      ControllerLateral_DW->Filter_DSTATE_dy = 0.0;
+      ControllerLateral_DW->Integrator_DSTATE_or = 0.0;
+      ControllerLateral_DW->Filter_DSTATE_g = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE_fq = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE_o = 0.0;
+      ControllerLateral_DW->Integrator_DSTATE_b = 0.0;
+      ControllerLateral_DW->Filter_DSTATE_a1 = 0.0;
+      ControllerLateral_DW->Integrator_DSTATE_a = 0.0;
+      ControllerLateral_DW->Filter_DSTATE_n = 0.0;
+      ControllerLateral_DW->Integrator_DSTATE_p = 0.0;
+      ControllerLateral_DW->Filter_DSTATE_dv = 0.0;
+      ControllerLateral_DW->Integrator_DSTATE_i = 0.0;
+      ControllerLateral_DW->Filter_DSTATE_b5 = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator_DSTATE_ls = 0.0;
+      ControllerLateral_DW->DiscreteTimeIntegrator1_DSTATE_m = 0.0;
+      ControllerLateral_DW->Memory_PreviousInput = 0.0;
+      ControllerLateral_DW->Memory1_PreviousInput = 0.0;
+      ControllerLateral_DW->Memory_PreviousInput_k = 0.0;
+      ControllerLateral_DW->Memory1_PreviousInput_n = 0.0;
+      ControllerLateral_DW->Memory_PreviousInput_d = 0.0;
+      ControllerLateral_DW->Memory1_PreviousInput_g = 0.0;
+      ControllerLateral_DW->Memory_PreviousInput_l = 0.0;
+      ControllerLateral_DW->Memory1_PreviousInput_d = 0.0;
       ControllerLateral_DW->mode_old = 0.0;
       ControllerLateral_DW->t_old = 0.0;
       ControllerLateral_DW->mode_memory_old = 0.0;
 
       /* external inputs */
+      (void)memset(ControllerLateral_U, 0, sizeof(ExtU_ControllerLateral_T));
       ControllerLateral_U->G_A2 = 0.0;
       ControllerLateral_U->G_B2 = 0.0;
       ControllerLateral_U->G_C2 = 0.0;
@@ -240,6 +332,9 @@ namespace PmpInternal
       ControllerLateral_U->VrB = 0.0;
       ControllerLateral_U->VtF = 0.0;
       ControllerLateral_U->VtB = 0.0;
+      ControllerLateral_U->IMU_x = 0.0;
+      ControllerLateral_U->IMU_yaw = 0.0;
+      ControllerLateral_U->IMU_y = 0.0;
 
       /* external outputs */
       ControllerLateral_Y->Mode = 0.0;
@@ -266,6 +361,17 @@ namespace PmpInternal
       ControllerLateral_Y->Energy_Lat = 0.0;
       ControllerLateral_Y->EMS_F_Front = 0.0;
       ControllerLateral_Y->EMS_F_Back = 0.0;
+      ControllerLateral_Y->L_K_i_out[0] = 0.0;
+      ControllerLateral_Y->L_K_i_out[1] = 0.0;
+      ControllerLateral_Y->uncapped_current = 0.0;
+      ControllerLateral_Y->LS_mode_vert = 0.0;
+      ControllerLateral_Y->Complementary_B = 0.0;
+      ControllerLateral_Y->Complementary_D = 0.0;
+      ControllerLateral_Y->x_speed = 0.0;
+      ControllerLateral_Y->x_location = 0.0;
+      ControllerLateral_Y->Complementary_A = 0.0;
+      ControllerLateral_Y->Complementary_C = 0.0;
+      ControllerLateral_Y->Inertia = 0.0;
 
       /* previous zero-crossing states */
       {
@@ -337,7 +443,7 @@ namespace PmpInternal
       return 0;
     }
 
-    static const SNamedSignalInfo inputOffsets[17] = {
+    static const SNamedSignalInfo inputOffsets[21] = {
       { "G_A2", { ESimulinkStructsInput, offsetof(ExtU_ControllerLateral_T, G_A2),
           EDataTypeDouble } },
 
@@ -388,12 +494,24 @@ namespace PmpInternal
 
       { "VtB", { ESimulinkStructsInput, offsetof(ExtU_ControllerLateral_T, VtB),
           EDataTypeDouble } },
+
+      { "IMU_x", { ESimulinkStructsInput, offsetof(ExtU_ControllerLateral_T,
+          IMU_x), EDataTypeDouble } },
+
+      { "IMU_yaw", { ESimulinkStructsInput, offsetof(ExtU_ControllerLateral_T,
+          IMU_yaw), EDataTypeDouble } },
+
+      { "IMU_y", { ESimulinkStructsInput, offsetof(ExtU_ControllerLateral_T,
+          IMU_y), EDataTypeDouble } },
+
+      { "PropulsionOn", { ESimulinkStructsInput, offsetof
+          (ExtU_ControllerLateral_T, PropulsionOn), EDataTypeBool } },
     };
 
     static EResult CSimulinkCoreControllerLateral_GetInputInfo(PmpInternal::
       DynamicLibrary::ISimulink*, const char* name, SSignalInfo& info)
     {
-      for (unsigned int i = 0; i < 17; ++i) {
+      for (unsigned int i = 0; i < 21; ++i) {
         if (strcmp(name, inputOffsets[i].Name) == 0) {
           info = inputOffsets[i].Info;
           return EResultOk;
@@ -403,7 +521,7 @@ namespace PmpInternal
       return EResultNonExistant;
     }
 
-    static const SNamedSignalInfo outputOffsets[24] = {
+    static const SNamedSignalInfo outputOffsets[35] = {
       { "Mode", { ESimulinkStructsOutput, offsetof(ExtY_ControllerLateral_T,
           Mode), EDataTypeDouble } },
 
@@ -483,12 +601,45 @@ namespace PmpInternal
 
       { "EMS_F_Back", { ESimulinkStructsOutput, offsetof
           (ExtY_ControllerLateral_T, EMS_F_Back), EDataTypeDouble } },
+
+      { "L_K_i_out_0", { ESimulinkStructsOutput, offsetof
+          (ExtY_ControllerLateral_T, L_K_i_out[0]), EDataTypeDouble } },
+
+      { "L_K_i_out_1", { ESimulinkStructsOutput, offsetof
+          (ExtY_ControllerLateral_T, L_K_i_out[1]), EDataTypeDouble } },
+
+      { "uncapped_current", { ESimulinkStructsOutput, offsetof
+          (ExtY_ControllerLateral_T, uncapped_current), EDataTypeDouble } },
+
+      { "LS_mode_vert", { ESimulinkStructsOutput, offsetof
+          (ExtY_ControllerLateral_T, LS_mode_vert), EDataTypeDouble } },
+
+      { "Complementary_B", { ESimulinkStructsOutput, offsetof
+          (ExtY_ControllerLateral_T, Complementary_B), EDataTypeDouble } },
+
+      { "Complementary_D", { ESimulinkStructsOutput, offsetof
+          (ExtY_ControllerLateral_T, Complementary_D), EDataTypeDouble } },
+
+      { "x_speed", { ESimulinkStructsOutput, offsetof(ExtY_ControllerLateral_T,
+          x_speed), EDataTypeDouble } },
+
+      { "x_location", { ESimulinkStructsOutput, offsetof
+          (ExtY_ControllerLateral_T, x_location), EDataTypeDouble } },
+
+      { "Complementary_A", { ESimulinkStructsOutput, offsetof
+          (ExtY_ControllerLateral_T, Complementary_A), EDataTypeDouble } },
+
+      { "Complementary_C", { ESimulinkStructsOutput, offsetof
+          (ExtY_ControllerLateral_T, Complementary_C), EDataTypeDouble } },
+
+      { "Inertia", { ESimulinkStructsOutput, offsetof(ExtY_ControllerLateral_T,
+          Inertia), EDataTypeDouble } },
     };
 
     static EResult CSimulinkCoreControllerLateral_GetOutputInfo(PmpInternal::
       DynamicLibrary::ISimulink*, const char* name, SSignalInfo& info)
     {
-      for (unsigned int i = 0; i < 24; ++i) {
+      for (unsigned int i = 0; i < 35; ++i) {
         if (strcmp(name, outputOffsets[i].Name) == 0) {
           info = outputOffsets[i].Info;
           return EResultOk;
@@ -504,7 +655,7 @@ namespace PmpInternal
       return EResultNonExistant;
     }
 
-    static const SNamedSignalInfo parameterOffsets[42] = {
+    static const SNamedSignalInfo parameterOffsets[51] = {
       { "BackGain", { ESimulinkStructsParameter, offsetof
           (InstP_ControllerLateral_T, BackGain), EDataTypeDouble } },
 
@@ -513,6 +664,10 @@ namespace PmpInternal
 
       { "CurrentIntegralLat", { ESimulinkStructsParameter, offsetof
           (InstP_ControllerLateral_T, CurrentIntegralLat), EDataTypeDouble } },
+
+      { "ForgetFactor_Highpass_Lat", { ESimulinkStructsParameter, offsetof
+          (InstP_ControllerLateral_T, ForgetFactor_Highpass_Lat),
+          EDataTypeDouble } },
 
       { "FrontGain", { ESimulinkStructsParameter, offsetof
           (InstP_ControllerLateral_T, FrontGain), EDataTypeDouble } },
@@ -622,6 +777,9 @@ namespace PmpInternal
       { "ReferenceMass", { ESimulinkStructsParameter, offsetof
           (InstP_ControllerLateral_T, ReferenceMass), EDataTypeDouble } },
 
+      { "ResetComplementary", { ESimulinkStructsParameter, offsetof
+          (InstP_ControllerLateral_T, ResetComplementary), EDataTypeDouble } },
+
       { "RunTime", { ESimulinkStructsParameter, offsetof
           (InstP_ControllerLateral_T, RunTime), EDataTypeDouble } },
 
@@ -633,6 +791,27 @@ namespace PmpInternal
 
       { "StartupTime", { ESimulinkStructsParameter, offsetof
           (InstP_ControllerLateral_T, StartupTime), EDataTypeDouble } },
+
+      { "StopDeIntegral", { ESimulinkStructsParameter, offsetof
+          (InstP_ControllerLateral_T, StopDeIntegral), EDataTypeDouble } },
+
+      { "UseBothEMS", { ESimulinkStructsParameter, offsetof
+          (InstP_ControllerLateral_T, UseBothEMS), EDataTypeDouble } },
+
+      { "UseComplementaryBD", { ESimulinkStructsParameter, offsetof
+          (InstP_ControllerLateral_T, UseComplementaryBD), EDataTypeDouble } },
+
+      { "kalman_xdotdot_gain", { ESimulinkStructsParameter, offsetof
+          (InstP_ControllerLateral_T, kalman_xdotdot_gain), EDataTypeDouble } },
+
+      { "kalman_yawdot_gain", { ESimulinkStructsParameter, offsetof
+          (InstP_ControllerLateral_T, kalman_yawdot_gain), EDataTypeDouble } },
+
+      { "kalman_ydotdot_gain", { ESimulinkStructsParameter, offsetof
+          (InstP_ControllerLateral_T, kalman_ydotdot_gain), EDataTypeDouble } },
+
+      { "lat_zero_reset", { ESimulinkStructsParameter, offsetof
+          (InstP_ControllerLateral_T, lat_zero_reset), EDataTypeDouble } },
 
       { "lateral_over_vertical_force_hems", { ESimulinkStructsParameter,
           offsetof(InstP_ControllerLateral_T, lateral_over_vertical_force_hems),
@@ -649,7 +828,7 @@ namespace PmpInternal
     static EResult CSimulinkCoreControllerLateral_GetParameterInfo(PmpInternal::
       DynamicLibrary::ISimulink*, const char* name, SSignalInfo& info)
     {
-      for (unsigned int i = 0; i < 42; ++i) {
+      for (unsigned int i = 0; i < 51; ++i) {
         if (strcmp(name, parameterOffsets[i].Name) == 0) {
           info = parameterOffsets[i].Info;
           return EResultOk;
@@ -694,7 +873,7 @@ namespace PmpInternal
       return 0.00025;
     }
 
-    static const SReflectionInfo reflectionInfo[84] = {
+    static const SReflectionInfo reflectionInfo[108] = {
       { "G_A2", ESimulinkStructsInput },
 
       { "G_B2", ESimulinkStructsInput },
@@ -728,6 +907,14 @@ namespace PmpInternal
       { "VtF", ESimulinkStructsInput },
 
       { "VtB", ESimulinkStructsInput },
+
+      { "IMU_x", ESimulinkStructsInput },
+
+      { "IMU_yaw", ESimulinkStructsInput },
+
+      { "IMU_y", ESimulinkStructsInput },
+
+      { "PropulsionOn", ESimulinkStructsInput },
 
       { "Mode", ESimulinkStructsOutput },
 
@@ -777,11 +964,35 @@ namespace PmpInternal
 
       { "EMS_F_Back", ESimulinkStructsOutput },
 
+      { "L_K_i_out_0", ESimulinkStructsOutput },
+
+      { "L_K_i_out_1", ESimulinkStructsOutput },
+
+      { "uncapped_current", ESimulinkStructsOutput },
+
+      { "LS_mode_vert", ESimulinkStructsOutput },
+
+      { "Complementary_B", ESimulinkStructsOutput },
+
+      { "Complementary_D", ESimulinkStructsOutput },
+
+      { "x_speed", ESimulinkStructsOutput },
+
+      { "x_location", ESimulinkStructsOutput },
+
+      { "Complementary_A", ESimulinkStructsOutput },
+
+      { "Complementary_C", ESimulinkStructsOutput },
+
+      { "Inertia", ESimulinkStructsOutput },
+
       { "BackGain", ESimulinkStructsParameter },
 
       { "BeamErrorTime", ESimulinkStructsParameter },
 
       { "CurrentIntegralLat", ESimulinkStructsParameter },
+
+      { "ForgetFactor_Highpass_Lat", ESimulinkStructsParameter },
 
       { "FrontGain", ESimulinkStructsParameter },
 
@@ -847,6 +1058,8 @@ namespace PmpInternal
 
       { "ReferenceMass", ESimulinkStructsParameter },
 
+      { "ResetComplementary", ESimulinkStructsParameter },
+
       { "RunTime", ESimulinkStructsParameter },
 
       { "SemiCentralized", ESimulinkStructsParameter },
@@ -854,6 +1067,20 @@ namespace PmpInternal
       { "SineTime", ESimulinkStructsParameter },
 
       { "StartupTime", ESimulinkStructsParameter },
+
+      { "StopDeIntegral", ESimulinkStructsParameter },
+
+      { "UseBothEMS", ESimulinkStructsParameter },
+
+      { "UseComplementaryBD", ESimulinkStructsParameter },
+
+      { "kalman_xdotdot_gain", ESimulinkStructsParameter },
+
+      { "kalman_yawdot_gain", ESimulinkStructsParameter },
+
+      { "kalman_ydotdot_gain", ESimulinkStructsParameter },
+
+      { "lat_zero_reset", ESimulinkStructsParameter },
 
       { "lateral_over_vertical_force_hems", ESimulinkStructsParameter },
 

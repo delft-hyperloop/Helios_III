@@ -13,7 +13,7 @@
     import {initProcedures} from "$lib/stores/data";
     import {onDestroy} from "svelte";
     import {listen} from "@tauri-apps/api/event";
-    import {parseShortCut} from "$lib/util/parsers";
+    import {parseShortCut, setBitsToBooleans} from "$lib/util/parsers";
     import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
     import { storePopup } from '@skeletonlabs/skeleton';
 
@@ -81,13 +81,19 @@
     let hvCurrent = new PlotBuffer(500, 60000, [-15, 15], false)
     $chartStore.set('HV Current', hvCurrent)
 
+    let lvTotal = new PlotBuffer(500, 2*60000, [-1, 30], false)
+    $chartStore.set('LV Total', lvTotal)
+
+    let hvTotal = new PlotBuffer(500, 2*60000, [-10, 450], false)
+    $chartStore.set('HV Total', hvTotal)
+
     ///////////////////////////////////////////////////////
     //////////////// BMS REGISTER /////////////////////////
     ///////////////////////////////////////////////////////
 
     let gdd = GrandDataDistributor.getInstance();
-    gdd.stores.registerStore<number>("BatteryEstimatedChargeHigh", 0.0);
-    gdd.stores.registerStore<number>("BatteryEstimatedChargeLow", 0.0);
+    gdd.stores.registerStore<number>("ChargeStateHigh", 0.0);
+    gdd.stores.registerStore<number>("ChargeStateLow", 0.0);
 
     gdd.stores.registerStore<number>("Module1AvgTemperature", 0.0);
     gdd.stores.registerStore<number>("Module1MaxTemperature", 0.0);
@@ -164,6 +170,128 @@
     gdd.stores.registerStore<number>("TotalBatteryVoltageHigh", 0.0)
     gdd.stores.registerStore<number>("TotalBatteryVoltageLow", 0.0)
 
+    gdd.stores.registerStore<number>("SingleCellVoltageLV1", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageLV2", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageLV3", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageLV4", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageLV5", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageLV6", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageLV7", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageLV8", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV1", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV2", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV3", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV4", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV5", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV6", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV7", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV8", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV9", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV10", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV11", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV12", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV13", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV14", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV15", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV16", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV17", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV18", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV19", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV20", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV21", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV22", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV23", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV24", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV25", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV26", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV27", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV28", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV29", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV30", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV31", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV32", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV33", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV34", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV35", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV36", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV37", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV38", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV39", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV40", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV41", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV42", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV43", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV44", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV45", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV46", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV47", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV48", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV49", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV50", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV51", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV52", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV53", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV54", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV55", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV56", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV57", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV58", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV59", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV60", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV61", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV62", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV63", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV64", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV65", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV66", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV67", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV68", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV69", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV70", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV71", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV72", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV73", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV74", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV75", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV76", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV77", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV78", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV79", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV80", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV81", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV82", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV83", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV84", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV85", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV86", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV87", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV88", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV89", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV90", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV91", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV92", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV93", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV94", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV95", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV96", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV97", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV98", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV99", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV100", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV101", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV102", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV103", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV104", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV105", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV106", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV107", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV108", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV109", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV110", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV111", 0.0);
+    gdd.stores.registerStore<number>("SingleCellVoltageHV112", 0.0);
+
+
     gdd.stores.registerStore<number>("BatteryCurrentLow", 0.0, data => {
         const curr = Number(data) / 10;
         lvCurrent.addEntry(1, curr + 150);
@@ -199,6 +327,7 @@
     gdd.stores.registerStore<number>("Acceleration", 0);
     gdd.stores.registerStore<number>("Direction", 0);
 
+    gdd.stores.registerStore<number>("PropulsionTemperature", 0);
     gdd.stores.registerStore<number>("PropulsionCurrent", 0);
     gdd.stores.registerStore<number>("PropulsionSpeed", 0);
     gdd.stores.registerStore<number>("PropulsionVoltage", 0);
@@ -335,6 +464,7 @@
     ///////////////////////////////////////////////////////////////
 
     gdd.stores.registerStore<number>("FSMState", 0);
+    gdd.stores.registerStore<boolean[]>("ConnectionStatus", [false, false, false, false, false, false], setBitsToBooleans)
 
     gdd.start(50);
 

@@ -9,8 +9,8 @@ use embassy_stm32::peripherals::PD0;
 use embassy_stm32::peripherals::PD1;
 use panic_probe as _;
 
-use crate::core::communication::can::can_receiving_handler;
-use crate::core::communication::can::can_transmitter;
+use crate::core::communication::low::can::can_receiving_handler;
+use crate::core::communication::low::can::can_transmitter;
 use crate::core::controllers::battery_controller::BatteryController;
 use crate::core::controllers::battery_controller::GroundFaultDetection;
 use crate::try_spawn;

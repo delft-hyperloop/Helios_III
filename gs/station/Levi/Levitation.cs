@@ -109,7 +109,7 @@ namespace PmpGettingStartedCs
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine("ERROR:axis_error\n");
+                        Console.WriteLine("ERROR:axis_not_turning_on\n");
                     }
                     break;
 
@@ -124,7 +124,7 @@ namespace PmpGettingStartedCs
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine("CRITICAL:axis_error\n");
+                        Console.WriteLine("CRITICAL:axis_not_turning_off\n");
                     }
                     break;
 
@@ -164,7 +164,7 @@ namespace PmpGettingStartedCs
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine("ERROR:mode_error\n");
+                        Console.WriteLine("CRITICAL:mode_error\n");
                     }
                     break;
 
@@ -240,7 +240,7 @@ namespace PmpGettingStartedCs
                         Console.WriteLine("CRITICAL:mode_error\n");
                     }
                     break;
-
+/*
                 case "LeviStartLS":
                     try
                     {
@@ -251,9 +251,9 @@ namespace PmpGettingStartedCs
                     {
                         Console.WriteLine("CRITICAL:mode_error\n");
                     }
-                    break;
+                    break;*/
 
-                case "LeviStopLS":
+/*                case "LeviStopLS":
                     try
                     {
                         this.SetLS_Signal(0);
@@ -264,7 +264,7 @@ namespace PmpGettingStartedCs
                         Console.WriteLine("CRITICAL:mode_error\n");
                     }
                     break;
-
+*/
                 case "vert0_reset":
                     try
                     {
@@ -384,9 +384,27 @@ namespace PmpGettingStartedCs
                     try
                     {
                         Console.WriteLine("INFO:disabling_control_loop\n");
-                        SetVerticalMode(0);
-                        SetLateralMode(0);
+                        SetVerticalMode(2);
+                        SetLateralMode(2);
                         Console.WriteLine("INFO:discharging_HV\n");
+                        Thread.Sleep(500);
+                        EnableAndMove.EnableAxis(this);
+
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("ERROR:not_discharging_HV\n");
+                    }
+                    break;
+
+                case "LeviEmergencyBrake":
+                    try
+                    {
+                        Console.WriteLine("INFO:disabling_control_loop\n");
+                        SetVerticalMode(2);
+                        SetLateralMode(2);
+                        Console.WriteLine("INFO:discharging_HV\n");
+                        Thread.Sleep(500);
                         EnableAndMove.EnableAxis(this);
 
                     }
@@ -400,9 +418,10 @@ namespace PmpGettingStartedCs
                     try
                     {
                         Console.WriteLine("INFO:disabling_control_loop\n");
-                        SetVerticalMode(0);
-                        SetLateralMode(0);
+                        SetVerticalMode(2);
+                        SetLateralMode(2);
                         Console.WriteLine("INFO:discharging_HV\n");
+                        Thread.Sleep(500);
                         EnableAndMove.EnableAxis(this);
 
                     }
@@ -413,7 +432,7 @@ namespace PmpGettingStartedCs
                     break;
 
 
-                case string data_str when data_str.Contains("data:"):
+               /* case string data_str when data_str.Contains("data:"):
                     try
                     {
                         data_str = data_str.Trim();
@@ -435,10 +454,10 @@ namespace PmpGettingStartedCs
                     {
                         Console.WriteLine("WARNING:receive_data_error\n");
                     }
-                    break;
+                    break;*/
 
                 default:
-                    Console.WriteLine("WARNING:invalid\n");
+/*                    Console.WriteLine("WARNING:invalid\n");*/
                     break;
 
             }
@@ -451,6 +470,8 @@ namespace PmpGettingStartedCs
             this.ConfigPath = this.FilePath + "\\levitation_config_file.xml";
             this.CouplerPath = this.FilePath + "\\00000002_044c2c52_0012.xml";
             this.BusPath = this.FilePath + "\\00000002_0c203052_0014.xml";
+            Console.WriteLine(this.ConfigPath.ToString());
+
         }
 
         public void SetSignals()
@@ -504,10 +525,10 @@ namespace PmpGettingStartedCs
             this.Offset_AB = LateralController.Signals["OffsetFront"];
             this.Offset_CD = LateralController.Signals["OffsetBack"];
 
-            this.SenseconLocation = LateralController.Signals["x_location_raw"];
+/*            this.SenseconLocation = LateralController.Signals["x_location_raw"];
             this.LeviLocation = LateralController.Signals["x_location"];
             this.LeviSpeed = LateralController.Signals["x_speed"];
-            this.LS_signal = LateralController.Signals["LS_signal"];
+            this.LS_signal = LateralController.Signals["LS_signal"];*/
             this.PropulsionCurrent = VerticalController.Signals["PropulsionCurrent"];
 
             this.Airgap = VerticalController.Signals["Airgap"];
@@ -642,7 +663,7 @@ namespace PmpGettingStartedCs
 
         public void getVoltages()
         {
-            double[] voltageList = { this.Volt_A.ValueDouble, this.Volt_B.ValueDouble, this.Volt_C.ValueDouble, this.Volt_D.ValueDouble, this.Volt_E.ValueDouble, };
+            double[] voltageList = { this.Volt_A.ValueDouble, this.Volt_B.ValueDouble, this.Volt_C.ValueDouble, this.Volt_D.ValueDouble, this.Volt_E.ValueDouble };
             double[] editedVoltageList = { voltageList.Average(), voltageList.Min(), voltageList.Max() };
             string[] editedVoltageStrings = { "levi_volt_avg", "levi_volt_min", "levi_volt_max" };
             string[] voltageStrings = { "levi_volt_A", "levi_volt_B", "levi_volt_C", "levi_volt_D", "levi_volt_E" };
@@ -747,19 +768,27 @@ namespace PmpGettingStartedCs
 
                     try
                     {
-                        Thread.Sleep(2000);
-                        arcas.getVerticalAirgaps();
-                        arcas.getLateralAirgaps();
-                        arcas.getCurrents();
-                        arcas.getDegreesOfFreedom();
-                        arcas.getVoltages();
-                        arcas.getLocalization();
+                        try
+                        {
+                            arcas.getVoltages();
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("CRITICAL:NO_LEVI_VOlTAGE_DATA");
+                        }
+                        Thread.Sleep(50);
+                        /*                        arcas.getVerticalAirgaps();
+                                                arcas.getLateralAirgaps();
+                                                arcas.getCurrents();
+                                                arcas.getDegreesOfFreedom();*/
+
+                        /*                        arcas.getLocalization();*/
 
                     }
                     catch (Exception)
                     {
 
-                        Console.WriteLine("WARNING:data_error");
+                        Console.WriteLine("WARNING:cant_receive_data");
                     }
                 }
             }

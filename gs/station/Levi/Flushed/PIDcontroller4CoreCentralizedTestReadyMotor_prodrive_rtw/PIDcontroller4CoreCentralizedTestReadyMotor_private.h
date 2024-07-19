@@ -7,9 +7,9 @@
  *
  * Code generation for model "PIDcontroller4CoreCentralizedTestReadyMotor".
  *
- * Model version              : 6.240
+ * Model version              : 6.284
  * Simulink Coder version : 9.5 (R2021a) 14-Nov-2020
- * C source code generated on : Mon May 20 17:30:36 2024
+ * C source code generated on : Fri Jun 28 16:03:05 2024
  *
  * Target selection: pmp.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -61,11 +61,11 @@
 #endif
 
 extern real_T rt_hypotd_snf(real_T u0, real_T u1);
-extern real_T look1_pbinlxpw(real_T u0, const real_T bp0[], const real_T table[],
-  uint32_T prevIndex[], uint32_T maxIndex);
 extern real_T look2_pbinlxpw(real_T u0, real_T u1, const real_T bp0[], const
   real_T bp1[], const real_T table[], uint32_T prevIndex[], const uint32_T
   maxIndex[], uint32_T stride);
+extern real_T look1_pbinlxpw(real_T u0, const real_T bp0[], const real_T table[],
+  uint32_T prevIndex[], uint32_T maxIndex);
 extern real_T look1_binlxpw(real_T u0, const real_T bp0[], const real_T table[],
   uint32_T maxIndex);
 extern uint32_T plook_binx(real_T u, const real_T bp[], uint32_T maxIndex,
@@ -90,6 +90,13 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_FindCoordinates(real_T rtu_z,
   real_T rtu_z_b, real_T rtu_z_l, real_T rtu_z_j, real_T rtu_hl, real_T rtu_hw,
   real_T rtu_l_offset,
   B_FindCoordinates_PIDcontroller4CoreCentralizedTestReadyMotor_T *localB);
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Init
+  (DW_MovingAverage1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localDW);
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Start
+  (DW_MovingAverage1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localDW);
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1(real_T rtu_0,
+  B_MovingAverage1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localB,
+  DW_MovingAverage1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localDW);
 void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_n_Init
   (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_f_T *localDW);
 void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_i_Start
@@ -97,6 +104,15 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_i_Start
 void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_p(real_T rtu_0,
   B_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_c_T *localB,
   DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_f_T *localDW);
+void PIDcontroller4CoreCentralizedTestReadyMotor_Correct1(boolean_T rtu_Enable,
+  const real_T rtu_yMeas[3], const real_T rtu_R[9], boolean_T rtu_uBlockOrdering,
+  real_T rtd_P[36], real_T rtd_x[6],
+  B_Correct1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localB);
+void PIDcontroller4CoreCentralizedTestReadyMotor_Output(boolean_T
+  rtu_uBlockOrdering, const real_T rtd_x[6],
+  B_Output_PIDcontroller4CoreCentralizedTestReadyMotor_T *localB);
+void PIDcontroller4CoreCentralizedTestReadyMotor_Predict(const real_T rtu_Q[36],
+  const real_T rtu_uState[12], real_T rtd_P[36], real_T rtd_x[6]);
 void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_e_Init
   (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_fw_T *localDW);
 void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_m_Start
@@ -111,8 +127,13 @@ void PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1(real_T
 void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_Term
   (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T *localDW);
 void PIDcontroller4CoreCentralizedTestReadyMotor_FindCoordinates_Term(void);
+void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage1_Term
+  (DW_MovingAverage1_PIDcontroller4CoreCentralizedTestReadyMotor_T *localDW);
 void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_j_Term
   (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_f_T *localDW);
+void PIDcontroller4CoreCentralizedTestReadyMotor_Correct1_Term(void);
+void PIDcontroller4CoreCentralizedTestReadyMotor_Output_Term(void);
+void PIDcontroller4CoreCentralizedTestReadyMotor_Predict_Term(void);
 void PIDcontroller4CoreCentralizedTestReadyMotor_MovingAverage_l_Term
   (DW_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_fw_T *localDW);
 void PIDcontroller4CoreCentralizedTestReadyMotor_Caprequestedcurrent1_Term(void);

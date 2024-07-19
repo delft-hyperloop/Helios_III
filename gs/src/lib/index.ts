@@ -35,12 +35,11 @@ import Store from "$lib/components/generic/Store.svelte";
 import {PlotBuffer, StrokePresets} from "$lib/util/PlotBuffer";
 import {GrandDataDistributor} from "$lib/util/GrandDataDistributor";
 import util from "$lib/util/util";
-import {tempParse, voltParse, addEntryToChart, u64ToDouble,pressureParse,sensorParse} from "$lib/util/parsers";
-import {RunConfig} from "$lib/util/RunConfig";
+import {tempParse, voltParse, addEntryToChart,pressureParse,sensorParse} from "$lib/util/parsers";
 
 // Types
 import type {NamedCommand, Log, LogType, IntervalFunction} from "$lib/types";
-import {EventChannel, RunMode, RouteStep} from "$lib/types";
+import {EventChannel, RunMode, type RouteStep} from "$lib/types";
 
 // Stores
 import {detailTabSet, inputSpeed, details_pane, vitals_pane, inputTurn, serverStatus} from "$lib/stores/state";
@@ -50,13 +49,11 @@ export const chartDataStore = new Map<string, uPlot.AlignedData>();
 
 // Export all
 export {
-    RunConfig,
     sensorParse,
     pressureParse,
     tempParse,
     voltParse,
     addEntryToChart,
-    u64ToDouble,
     TauriCommand,
     ToggleCommand,
     inputTurn,
@@ -96,6 +93,6 @@ export {
     SpeedsInput,
     Store,
     RunMode,
-    RouteStep
+    type RouteStep
 }
 export type {NamedCommand, Log, LogType, IntervalFunction}

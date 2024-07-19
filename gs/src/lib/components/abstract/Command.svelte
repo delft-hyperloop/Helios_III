@@ -1,6 +1,6 @@
 <script lang="ts">
     import {invoke} from '@tauri-apps/api/tauri';
-    import {type NamedCommand, util} from "$lib";
+    import {EventChannel, type NamedCommand, util} from "$lib";
 
     export let className: string = '';
     export let cmd: NamedCommand;
@@ -15,6 +15,7 @@
         }).catch((e) => {
             console.error(`Error sending command ${cmd}: ${e}`);
         });
+        util.log(`Command ${cmd} sent`, EventChannel.INFO);
         callback(val);
     };
 </script>

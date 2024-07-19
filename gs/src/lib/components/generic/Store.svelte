@@ -3,8 +3,11 @@
     import {GrandDataDistributor} from "$lib";
 
     export let datatype: NamedDatatype;
-    const store = GrandDataDistributor.getInstance().stores.getStore(datatype);
-    const writable = store.writable;
+    const store = GrandDataDistributor.getInstance().stores.getWritable(datatype);
+
+    $: store;
 </script>
 
-<span class={store.style}>{$writable}</span>
+<span class="text-{$store.style === 'critical' ? 'error' : $store.style}-400">{typeof $store.value === "number" ? $store.value.toFixed(2) : $store.value} {$store.units}</span>
+
+

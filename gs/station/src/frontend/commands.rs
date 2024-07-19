@@ -1,17 +1,22 @@
 use std::path::PathBuf;
 use std::str::FromStr;
 
+use chrono::Local;
 use rand::Rng;
+use tauri::Manager;
 use tauri::State;
 
-use crate::api::Datapoint;
-use crate::api::Message;
-use crate::api::ProcessedData;
+use gslib::{Datapoint, LocationSequence, LocationSpeedMap};
+use gslib::Message;
+use gslib::ProcessedData;
+use gslib::Route;
 use crate::backend::Backend;
+use crate::frontend::app::APP_HANDLE;
 use crate::frontend::BackendState;
 use crate::frontend::BACKEND;
 use crate::Command;
-use crate::Datatype;
+use crate::data::validate::validate_route_internal;
+use gslib::Datatype;
 
 #[macro_export]
 #[allow(unused)]
@@ -77,7 +82,7 @@ pub fn send_command(cmd_name: String, val: u64) {
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn start_server() -> bool {
+pub fn connect_to_pod() -> bool {
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
         backend_mutex.get_mut().unwrap().start_server()
     } else {
@@ -106,9 +111,35 @@ pub fn quit_levi() {
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
-pub fn quit_server() {
+pub fn disconnect() {
     if let Some(backend_mutex) = unsafe { BACKEND.as_mut() } {
         backend_mutex.get_mut().unwrap().quit_server();
+    }
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn save_logs() -> bool {
+    if let Some(backend_mutex) = unsafe { BACKEND.as_ref() } {
+        let log = &backend_mutex.lock().unwrap().log;
+        let now = Local::now().naive_local();
+        let formatted_time = now.format("%d_%m_%Y at %H_%M_%S").to_string();
+        if let Ok(x) = PathBuf::from_str(&format!("../../ehw/logs/log-{}.txt", formatted_time)) {
+            if Backend::save_to_path(log, x).is_ok() {
+                APP_HANDLE
+                    .try_lock()
+                    .map(|x| x.as_ref().map(|y| y.emit_all("a", "b").is_ok()).is_some())
+                    .is_ok()
+                // APP_HANDLE.try_borrow().map(|x| x.emit_all("clear_logs", "kiko").is_ok()).is_ok()
+            } else {
+                false
+            }
+        } else {
+            false
+        }
+    } else {
+        false
     }
 }
 
@@ -161,4 +192,44 @@ pub fn procedures() -> Vec<[String; 6]> {
 #[tauri::command]
 pub fn test_panic() {
     panic!("kill yourself");
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn test_route() -> Route { Route::default() }
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn validate_route(route: Route) -> bool {
+    validate_route_internal(route)
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn speeds_to_u64(speeds: LocationSpeedMap) -> u64 {
+    speeds.into()
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn speeds_from_u64(speeds: u64) -> LocationSpeedMap {
+    speeds.into()
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn positions_to_u64(positions: LocationSequence) -> u64 {
+    positions.into()
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn positions_from_u64(positions: u64) -> LocationSequence {
+    positions.into()
 }

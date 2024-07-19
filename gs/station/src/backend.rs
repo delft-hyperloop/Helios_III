@@ -5,8 +5,11 @@ use anyhow::anyhow;
 use regex::Regex;
 use tokio::task::AbortHandle;
 
-use crate::api::Message;
-use crate::Command;
+use gslib::{Info, Log, Message};
+use gslib::ProcessedData;
+use crate::battery::DataReceiver;
+use crate::battery::DataSender;
+use gslib::Command;
 use crate::CommandReceiver;
 use crate::CommandSender;
 use crate::MessageReceiver;
@@ -29,15 +32,13 @@ pub struct Backend {
     pub message_receiver: MessageReceiver,
     pub command_transmitter: CommandSender,
     pub command_receiver: CommandReceiver,
+    pub processed_data_sender: DataSender,
+    pub processed_data_receiver: DataReceiver,
     pub log: Log,
     pub save_path: PathBuf,
 }
 
-#[derive(serde::Serialize)]
-pub struct Log {
-    messages: Vec<Message>,
-    commands: Vec<Command>,
-}
+
 
 impl Default for Backend {
     fn default() -> Self { Self::new() }
@@ -53,6 +54,9 @@ impl Backend {
             tokio::sync::broadcast::channel::<Message>(128);
         let (command_transmitter, command_receiver) =
             tokio::sync::broadcast::channel::<Command>(128);
+        let (processed_data_sender, processed_data_receiver) =
+            tokio::sync::broadcast::channel::<ProcessedData>(128);
+
         Self {
             server_handle: None,
             levi_handle: None,
@@ -60,6 +64,8 @@ impl Backend {
             message_receiver,
             command_transmitter,
             command_receiver,
+            processed_data_sender,
+            processed_data_receiver,
             log: Log { messages: vec![], commands: vec![] },
             save_path: PathBuf::from_str("/Users/andtsa/Desktop/log.txt").unwrap(),
         }
@@ -72,9 +78,14 @@ impl Backend {
             let m = self.message_transmitter.clone();
             let c = self.command_receiver.resubscribe();
             let t = self.command_transmitter.clone();
+            let s = self.processed_data_sender.clone();
+            let r = self.processed_data_receiver.resubscribe();
             self.server_handle = Some(
-                tokio::spawn(async move { crate::connect::connect_main(m, c, t).await })
-                    .abort_handle(),
+                tokio::spawn(
+                    async move { crate::connect::connect_main(m, c, t, r, s).await.unwrap() },
+                )
+                .abort_handle(), // todo:
+                                 // is unwrap necessary?
             );
             // self.status(crate::api::Status::ServerStarted);
             // self.info(format!("Server handle: {:?}", self.server_handle));
@@ -92,10 +103,11 @@ impl Backend {
                 self.command_transmitter.clone(),
                 self.command_receiver.resubscribe(),
                 self.message_receiver.resubscribe(),
+                self.processed_data_sender.clone(),
             ) {
                 Ok(lh) => {
                     self.levi_handle = Some(lh);
-                    self.status(crate::Info::LeviProgramStarted);
+                    self.status(Info::LeviProgramStarted);
                     self.info("Levi process started".to_string());
                 },
                 Err(e) => {
@@ -127,7 +139,7 @@ impl Backend {
         self.message_transmitter.send(Message::Error(msg)).unwrap();
     }
 
-    pub fn status(&mut self, status: crate::Info) {
+    pub fn status(&mut self, status: Info) {
         self.message_transmitter.send(Message::Status(status)).unwrap();
     }
 

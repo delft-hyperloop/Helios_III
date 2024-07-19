@@ -4,20 +4,20 @@ use std::time::Instant;
 
 use ratatui::Frame;
 
-use crate::api::state_to_string;
-use crate::api::Datapoint;
-use crate::api::LocationSequence;
-use crate::api::Message;
+use gslib::state_to_string;
+use gslib::Datapoint;
+use gslib::LocationSequence;
+use gslib::Message;
 use crate::backend::Backend;
 use crate::tui::render::CmdRow;
 use crate::tui::timestamp;
 use crate::tui::Tui;
 use crate::Command;
-use crate::Datatype;
-use crate::Event;
-use crate::Info;
-use crate::COMMANDS_LIST;
-use crate::HEARTBEAT;
+use gslib::Datatype;
+use gslib::Event;
+use gslib::Info;
+use gslib::COMMANDS_LIST;
+use gslib::HEARTBEAT;
 
 #[allow(dead_code)]
 pub struct App {

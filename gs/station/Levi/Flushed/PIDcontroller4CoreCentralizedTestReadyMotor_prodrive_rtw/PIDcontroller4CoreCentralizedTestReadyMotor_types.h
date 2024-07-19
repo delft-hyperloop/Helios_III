@@ -7,9 +7,9 @@
  *
  * Code generation for model "PIDcontroller4CoreCentralizedTestReadyMotor".
  *
- * Model version              : 6.240
+ * Model version              : 6.284
  * Simulink Coder version : 9.5 (R2021a) 14-Nov-2020
- * C source code generated on : Mon May 20 17:30:36 2024
+ * C source code generated on : Fri Jun 28 16:03:05 2024
  *
  * Target selection: pmp.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -97,33 +97,33 @@ typedef struct tag_wcQblj24YHhNa9ubUPc1MC
 #endif
 /* typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_T */
 
-#ifndef struct_tag_hNgfDFKvMgUGiZRMdXlx7F
-#define struct_tag_hNgfDFKvMgUGiZRMdXlx7F
+#ifndef struct_tag_oNML0yXaLdzzprxo6lWyjD
+#define struct_tag_oNML0yXaLdzzprxo6lWyjD
 
-struct tag_hNgfDFKvMgUGiZRMdXlx7F
+struct tag_oNML0yXaLdzzprxo6lWyjD
 {
   int32_T isInitialized;
   boolean_T isSetupComplete;
   real_T pCumSum;
-  real_T pCumSumRev[49];
+  real_T pCumSumRev[3999];
   real_T pCumRevIndex;
 };
 
-#endif                                 /* struct_tag_hNgfDFKvMgUGiZRMdXlx7F */
+#endif                                 /* struct_tag_oNML0yXaLdzzprxo6lWyjD */
 
 #ifndef typedef_c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
 #define typedef_c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T
 
-typedef struct tag_hNgfDFKvMgUGiZRMdXlx7F
+typedef struct tag_oNML0yXaLdzzprxo6lWyjD
   c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T;
 
 #endif
 /* typedef_c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_T */
 
-#ifndef struct_tag_gLQidXgevcveSM4sRGWV4G
-#define struct_tag_gLQidXgevcveSM4sRGWV4G
+#ifndef struct_tag_kbilpLwfaLlRnpRAwxOaOF
+#define struct_tag_kbilpLwfaLlRnpRAwxOaOF
 
-struct tag_gLQidXgevcveSM4sRGWV4G
+struct tag_kbilpLwfaLlRnpRAwxOaOF
 {
   boolean_T matlabCodegenIsDeleted;
   int32_T isInitialized;
@@ -137,16 +137,67 @@ struct tag_gLQidXgevcveSM4sRGWV4G
     _pobj0;
 };
 
-#endif                                 /* struct_tag_gLQidXgevcveSM4sRGWV4G */
+#endif                                 /* struct_tag_kbilpLwfaLlRnpRAwxOaOF */
 
 #ifndef typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e_T
 #define typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e_T
 
-typedef struct tag_gLQidXgevcveSM4sRGWV4G
+typedef struct tag_kbilpLwfaLlRnpRAwxOaOF
   dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e_T;
 
 #endif
 /* typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e_T */
+
+#ifndef struct_tag_yisOdoARUpGNKHDiLfyTVG
+#define struct_tag_yisOdoARUpGNKHDiLfyTVG
+
+struct tag_yisOdoARUpGNKHDiLfyTVG
+{
+  int32_T isInitialized;
+  boolean_T isSetupComplete;
+  real_T pCumSum;
+  real_T pCumSumRev[999];
+  real_T pCumRevIndex;
+};
+
+#endif                                 /* struct_tag_yisOdoARUpGNKHDiLfyTVG */
+
+#ifndef typedef_c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T
+#define typedef_c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T
+
+typedef struct tag_yisOdoARUpGNKHDiLfyTVG
+  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T;
+
+#endif
+/* typedef_c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T */
+
+#ifndef struct_tag_jWjnTAWDw8p7EyVA8rvPLF
+#define struct_tag_jWjnTAWDw8p7EyVA8rvPLF
+
+struct tag_jWjnTAWDw8p7EyVA8rvPLF
+{
+  boolean_T matlabCodegenIsDeleted;
+  int32_T isInitialized;
+  boolean_T isSetupComplete;
+  boolean_T TunablePropsChanged;
+  cell_wrap_PIDcontroller4CoreCentralizedTestReadyMotor_T inputVarSize;
+  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T
+    *pStatistic;
+  int32_T NumChannels;
+  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_n_T
+    _pobj0;
+};
+
+#endif                                 /* struct_tag_jWjnTAWDw8p7EyVA8rvPLF */
+
+#ifndef typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3_T
+#define typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3_T
+
+typedef struct tag_jWjnTAWDw8p7EyVA8rvPLF
+  dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3_T;
+
+#endif
+/* typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3_T */
 
 #ifndef struct_tag_H13tmzM6XzHD6H2GNsHxeD
 #define struct_tag_H13tmzM6XzHD6H2GNsHxeD
@@ -168,37 +219,14 @@ struct tag_H13tmzM6XzHD6H2GNsHxeD
 
 #endif                                 /* struct_tag_H13tmzM6XzHD6H2GNsHxeD */
 
-#ifndef typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3_T
-#define typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3_T
+#ifndef typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3x_T
+#define typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3x_T
 
 typedef struct tag_H13tmzM6XzHD6H2GNsHxeD
-  dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3_T;
+  dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3x_T;
 
 #endif
-/* typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3_T */
-
-#ifndef struct_tag_oNML0yXaLdzzprxo6lWyjD
-#define struct_tag_oNML0yXaLdzzprxo6lWyjD
-
-struct tag_oNML0yXaLdzzprxo6lWyjD
-{
-  int32_T isInitialized;
-  boolean_T isSetupComplete;
-  real_T pCumSum;
-  real_T pCumSumRev[3999];
-  real_T pCumRevIndex;
-};
-
-#endif                                 /* struct_tag_oNML0yXaLdzzprxo6lWyjD */
-
-#ifndef typedef_c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
-#define typedef_c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
-
-typedef struct tag_oNML0yXaLdzzprxo6lWyjD
-  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T;
-
-#endif
-/* typedef_c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T */
+/* typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_e3x_T */
 
 #ifndef struct_tag_9kf6zCdkeEb92izkAONXwH
 #define struct_tag_9kf6zCdkeEb92izkAONXwH
@@ -225,34 +253,6 @@ typedef struct tag_9kf6zCdkeEb92izkAONXwH
 #endif
 /* typedef_c_dsp_private_ExponentialMovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T */
 
-#ifndef struct_tag_kbilpLwfaLlRnpRAwxOaOF
-#define struct_tag_kbilpLwfaLlRnpRAwxOaOF
-
-struct tag_kbilpLwfaLlRnpRAwxOaOF
-{
-  boolean_T matlabCodegenIsDeleted;
-  int32_T isInitialized;
-  boolean_T isSetupComplete;
-  boolean_T TunablePropsChanged;
-  cell_wrap_PIDcontroller4CoreCentralizedTestReadyMotor_T inputVarSize;
-  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
-    *pStatistic;
-  int32_T NumChannels;
-  c_dsp_private_SlidingWindowAverageCG_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
-    _pobj0;
-};
-
-#endif                                 /* struct_tag_kbilpLwfaLlRnpRAwxOaOF */
-
-#ifndef typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
-#define typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
-
-typedef struct tag_kbilpLwfaLlRnpRAwxOaOF
-  dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T;
-
-#endif
-/* typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T */
-
 #ifndef struct_tag_J1PLg0AH15F0TpD1DWRs5C
 #define struct_tag_J1PLg0AH15F0TpD1DWRs5C
 
@@ -273,14 +273,14 @@ struct tag_J1PLg0AH15F0TpD1DWRs5C
 
 #endif                                 /* struct_tag_J1PLg0AH15F0TpD1DWRs5C */
 
-#ifndef typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o1_T
-#define typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o1_T
+#ifndef typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
+#define typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T
 
 typedef struct tag_J1PLg0AH15F0TpD1DWRs5C
-  dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o1_T;
+  dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T;
 
 #endif
-/* typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o1_T */
+/* typedef_dsp_simulink_MovingAverage_PIDcontroller4CoreCentralizedTestReadyMotor_o_T */
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_PIDcontroller4CoreCentralizedTestReadyMotor_T

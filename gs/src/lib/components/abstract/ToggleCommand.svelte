@@ -1,6 +1,6 @@
 <script lang="ts">
     import {invoke} from '@tauri-apps/api/tauri';
-    import {type NamedCommand} from "$lib";
+    import {EventChannel, type NamedCommand, util} from "$lib";
 
     export let offCmd: NamedCommand;
     export let onCmd: NamedCommand;
@@ -11,18 +11,26 @@
     export let status: boolean = false;
 
     const toggleOff = () => {
-        status = false;  // todo: remove and uncomment below
-        invoke('send_command', {offCmd, val}).then(() => {
-            // status = false;
-            callback(val);
+        invoke('send_command', {cmdName:offCmd, val}).then((r) => {
+            if (r) {
+                status = false;
+                util.log(`send command ${offCmd} worked`, EventChannel.WARNING);
+                callback(val);
+            } else {
+                util.log(`send command ${offCmd} failed`, EventChannel.WARNING);
+            }
         });
     };
 
     const toggleOn = () => {
-        status = true;  // todo: remove and uncomment below
-        invoke('send_command', {onCmd, val}).then(() => {
-            // status = true;
-            callback(val);
+        invoke('send_command', {cmdName:onCmd, val}).then((r) => {
+            if (r) {
+                status = true;
+                util.log(`send command ${offCmd} worked`, EventChannel.WARNING);
+                callback(val);
+            } else {
+                util.log(`send command ${offCmd} failed`, EventChannel.WARNING);
+            }
         });
     };
 </script>

@@ -1,18 +1,23 @@
 use core::cmp::Ordering;
 
 use defmt::*;
+use embassy_executor::Spawner;
 use embassy_time::Instant;
 
-use crate::core::communication::Datapoint;
+use crate::core::communication::data::Datapoint;
 use crate::core::controllers::finite_state_machine_peripherals::FSMPeripherals;
 use crate::core::fsm_status::Location;
 use crate::core::fsm_status::Route;
 use crate::core::fsm_status::RouteUse;
 use crate::core::fsm_status::Status;
+use crate::core::fsm_status::VOLTAGE_OVER_50;
+use crate::pconfig::ticks;
+use crate::Command;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventReceiver;
+use crate::EventSender;
 use crate::Info;
 
 #[macro_export]
@@ -36,6 +41,7 @@ pub enum State {
     EstablishConnection,
     RunConfig,
     Idle,
+    Precharging,
     HVOn,
     Levitating,
     MovingST,
@@ -62,9 +68,11 @@ pub struct Fsm {
     pub state: State,
     pub peripherals: FSMPeripherals,
     pub event_queue: EventReceiver,
+    pub event_sender: EventSender,
     pub data_queue: DataSender,
     pub status: Status,
     pub route: Route,
+    pub fsm_spawner: Spawner,
 }
 
 /// # Finite State Machine (FSM)
@@ -89,14 +97,22 @@ pub struct Fsm {
 /// * the entry() method must not be async to prevent recursive `Future`s
 ///
 impl Fsm {
-    pub fn new(p: FSMPeripherals, pq: EventReceiver, dq: DataSender) -> Self {
+    pub fn new(
+        p: FSMPeripherals,
+        er: EventReceiver,
+        es: EventSender,
+        dq: DataSender,
+        spawner: Spawner,
+    ) -> Self {
         Self {
             state: State::Boot,
             peripherals: p,
-            event_queue: pq,
+            event_queue: er,
             data_queue: dq,
             status: Status::default(),
             route: Route::default(),
+            event_sender: es,
+            fsm_spawner: spawner,
         }
     }
 
@@ -113,68 +129,66 @@ impl Fsm {
         match self.state {
             State::Boot => self.boot_entry(),
             State::EstablishConnection => self.entry_establish_connection(),
-            State::Idle => self.entry_idle(),
             State::RunConfig => self.entry_run_config(),
+            State::Idle => self.entry_idle(),
+            State::Precharging => {
+                self.entry_pre_charge();
+                // timeout_abort_pre_charge(self.event_sender).await;
+            },
             State::HVOn => self.entry_hv_on(),
             State::Levitating => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
 
                 self.entry_levitating();
             },
             State::MovingST => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 self.entry_mv_st()
             },
             State::MovingLSST => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 self.entry_ls_st()
             },
             State::MovingLSCV => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 self.entry_ls_cv()
             },
             State::EndST => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 self.entry_end_st()
             },
             State::EndLS => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 self.entry_end_ls()
             },
             State::EmergencyBraking => {
@@ -189,13 +203,7 @@ impl Fsm {
     pub(crate) async fn react(&mut self, event: Event) {
         info!("[fsm] reacting to {}", event.to_str());
 
-        self.data_queue
-            .send(Datapoint::new(
-                Datatype::FSMEvent,
-                event.to_id() as u64,
-                Instant::now().as_ticks(),
-            ))
-            .await;
+        self.send_data(Datatype::FSMEvent, event.to_id() as u64).await;
 
         match event {
             Event::EmergencyBraking
@@ -204,19 +212,16 @@ impl Fsm {
             | Event::PropulsionErrorEvent
             | Event::PowertrainErrorEvent
             | Event::ConnectionLossEvent
+            | Event::CygnusesVaryingVoltages
             | Event::ValueOutOfBounds => {
                 transit!(self, State::EmergencyBraking);
+                self.send_levi_cmd(Command::LeviEmergencyBrake(4)).await;
+                self.periodic_checks();
                 return;
             },
 
             Event::Heartbeating => {
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::FSMState,
-                        self.state as u64,
-                        Instant::now().as_ticks(),
-                    ))
-                    .await;
+                self.send_data(Datatype::FSMState, self.state as u64).await
             },
 
             Event::ExitEvent => {
@@ -224,13 +229,20 @@ impl Fsm {
                 return;
             },
 
-            Event::DcTurnedOn => {
-                self.peripherals.hv_peripherals.dc_dc.set_high();
+            Event::DcTurnedOn => self.peripherals.hv_peripherals.dc_dc.set_high(),
+
+            Event::DcTurnedOff => self.peripherals.hv_peripherals.dc_dc.set_low(),
+
+            Event::LeviLedOn => {
+                self.peripherals.led_controller.hv_led.set_high();
+                VOLTAGE_OVER_50.store(true, core::sync::atomic::Ordering::Relaxed);
+            },
+            Event::LeviLedOff => {
+                self.peripherals.led_controller.hv_led.set_low();
+                VOLTAGE_OVER_50.store(false, core::sync::atomic::Ordering::Relaxed);
             },
 
-            Event::DcTurnedOff => {
-                self.peripherals.hv_peripherals.dc_dc.set_low();
-            },
+            Event::LeviConnected => self.status.levi_connected = true,
 
             ///////////////////
             // Debugging events
@@ -260,13 +272,12 @@ impl Fsm {
                         transit!(self, State::Exit);
                     },
                 }
-                self.data_queue
-                    .send(Datapoint::new(
-                        Datatype::RoutePlan,
-                        self.route.positions.into(),
-                        self.route.current_position as u64,
-                    ))
-                    .await;
+                self.send_dp(
+                    Datatype::RoutePlan,
+                    self.route.positions.into(),
+                    self.route.current_position as u64,
+                )
+                .await;
                 return;
             },
 
@@ -295,8 +306,9 @@ impl Fsm {
         match self.state {
             State::Boot => self.react_boot(event).await,
             State::EstablishConnection => self.react_establish_connection(event).await,
-            State::Idle => self.react_idle(event).await,
             State::RunConfig => self.react_run_config(event).await,
+            State::Idle => self.react_idle(event).await,
+            State::Precharging => self.react_pre_charge(event).await,
             State::HVOn => self.react_hv_on(event).await,
             State::Levitating => self.react_levitating(event).await,
             State::MovingST => self.react_mv_st(event).await,
@@ -308,12 +320,13 @@ impl Fsm {
             State::EmergencyBraking => self.react_emergency_braking(event).await,
             State::Crashing => self.log(Info::Crashed).await,
         }
+        self.periodic_checks();
     }
 
     /// # Send data to the ground station
     #[allow(unused)]
     pub async fn send_data(&mut self, dtype: Datatype, data: u64) {
-        self.data_queue.send(Datapoint::new(dtype, data, Instant::now().as_ticks())).await;
+        self.data_queue.send(Datapoint::new(dtype, data, ticks())).await;
     }
 
     /// ### Send data to the ground station while also specifying the timestamp
@@ -325,7 +338,7 @@ impl Fsm {
     /// # Send a command to Levi
     /// Send a command to the Levitation controller
     #[allow(unused)]
-    pub async fn send_levi_cmd(&mut self, cmd: crate::Command) {
+    pub async fn send_levi_cmd(&mut self, cmd: Command) {
         self.data_queue
             .send(Datapoint::new(
                 Datatype::LeviInstruction,
@@ -340,7 +353,7 @@ impl Fsm {
     /// from the `enum Info`
     pub async fn log(&self, info: Info) {
         self.data_queue
-            .send(Datapoint::new(Datatype::Info, info.to_idx(), Instant::now().as_ticks()))
+            .send(Datapoint::new(Datatype::Info, info.to_idx(), ticks()))
             .await;
     }
 
@@ -350,7 +363,7 @@ impl Fsm {
             .send(Datapoint::new(
                 Datatype::Info,
                 Info::to_idx(&Info::Safe),
-                Instant::now().as_ticks(),
+                ticks(),
             ))
             .await;
     }
@@ -361,8 +374,9 @@ impl Fsm {
             .send(Datapoint::new(
                 Datatype::Info,
                 Info::to_idx(&Info::Unsafe),
-                Instant::now().as_ticks(),
+                ticks(),
             ))
             .await;
+        VOLTAGE_OVER_50.store(true, core::sync::atomic::Ordering::Relaxed);
     }
 }

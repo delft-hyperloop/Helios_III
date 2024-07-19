@@ -210,19 +210,25 @@ namespace PmpInternal
         }
 
         for (i = 0; i < 30; i++) {
-          PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_g[i] = 0.0;
+          PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_c[i] = 0.0;
         }
 
         for (i = 0; i < 30; i++) {
-          PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_k[i] = 0.0;
+          PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_p[i] = 0.0;
         }
 
         for (i = 0; i < 30; i++) {
-          PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_h[i] = 0.0;
+          PIDcontroller4CoreCentralizedTestReadyMotor_B->Flip1_o[i] = 0.0;
         }
 
         for (i = 0; i < 6; i++) {
-          PIDcontroller4CoreCentralizedTestReadyMotor_B->DataStoreRead[i] = 0.0;
+          PIDcontroller4CoreCentralizedTestReadyMotor_B->
+            Output_n.DataStoreRead[i] = 0.0;
+        }
+
+        for (i = 0; i < 6; i++) {
+          PIDcontroller4CoreCentralizedTestReadyMotor_B->Output.DataStoreRead[i]
+            = 0.0;
         }
 
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp = 0.0;
@@ -236,26 +242,50 @@ namespace PmpInternal
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1[3] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_k = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1 = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_l = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_j = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_e = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_a4 = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_h = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[0] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[1] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[2] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n[3] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_h = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_o = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_g = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_k = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_d = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1 = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_o = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Add = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain4 = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2 = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_n = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Add1 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Add4 = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Add5 = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Tom_h = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Tomm_d = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract1 = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[0] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[1] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_jz[2] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[0] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[1] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_g[2] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->error = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Divide1 = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_n = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gravity = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_g = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->x_i1 = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->y_i1 = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain10 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_o = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_o = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_m = 0.0;
@@ -263,46 +293,25 @@ namespace PmpInternal
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_e = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Product = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract5_l = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_p = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_h = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->setpointroll = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain3 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_e = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->NProdOut_k = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_h = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Add = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain4 = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Add2 = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_h = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Max = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_i = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_l = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_i = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_n = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_e = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_a = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_h = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_j = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_e = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_e = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2 = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_kb = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_e = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_k0 = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_d = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_f = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_o = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_b = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract2_c = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Tsamp_g = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum_c = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[0] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[1] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2[2] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_d = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_ot = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_b = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_a = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_c = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Max_i = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract4_n = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_a = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Sum1 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_i = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay = 0.0;
@@ -311,27 +320,27 @@ namespace PmpInternal
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7 = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_e = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_p = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_c = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_e = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_m = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_g = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_o = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pt = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_b = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_o = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_g = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_l = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_a = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_a = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_d = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_g = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_pj = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_k = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_n = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_p = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_a = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_c = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_a = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_h = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_h = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_g = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_n = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_j = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_m = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_d = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_e = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_n = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_f = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch4_f = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch6_b = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_p = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch5_g = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch7_p = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_l = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->error_h = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4 = 0.0;
@@ -339,22 +348,24 @@ namespace PmpInternal
         PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_c = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_d = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_o = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_g = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_gj = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[0] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[1] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[2] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_e[3] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch1_eg = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch2_k = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay_m = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay1_j = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Delay2_n = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain1_k = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_d = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain3 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Saturation = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain2_c = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain5 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain6 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Subtract = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_dt = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_em = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_lx = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch_c5 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay1Inport1
           [0] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay1Inport1
@@ -369,57 +380,68 @@ namespace PmpInternal
           [1] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->TmpSignalConversionAtDelay2Inport1
           [2] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_g = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_k = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Gain_c = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[0] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[1] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Product_i[2] = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Product1_l = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->Product2 = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_g = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->SumI4_k = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->Switch3_h5 = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent3.out_req_I
           = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent2.out_req_I
           = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_Caprequestedcurrent1.out_req_I
           = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_kaa.MovingAverage
+          = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_ka.MovingAverage
           = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_kw.MovingAverage
           = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_g.MovingAverage
+          = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_h.MovingAverage
           = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zz.MovingAverage
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zzhe.MovingAverage
           = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_k.MovingAverage
           = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zzh.MovingAverage
           = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_f.MovingAverage
           = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5.MovingAverage
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5zz.MovingAverage
           = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_n.MovingAverage
           = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+          [0] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+          [1] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5z.MovingAverage
+          [2] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+          [0] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+          [1] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+          [2] = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage2.MovingAverage1
+          = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh5.MovingAverage1
+          = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpgh.MovingAverage
           = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_e.MovingAverage
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage1
           = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-          [0] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-          [1] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfpg.MovingAverage
-          [2] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_c.MovingAverage
-          [0] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_c.MovingAverage
-          [1] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_c.MovingAverage
-          [2] = 0.0;
-        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfp.MovingAverage
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_g.MovingAverage
           = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage_pnaevvfpgh5zzhe.MovingAverage
+          = 0.0;
+        PIDcontroller4CoreCentralizedTestReadyMotor_B->MovingAverage1_pnaevvfp.MovingAverage1
           = 0.0;
         PIDcontroller4CoreCentralizedTestReadyMotor_B->sf_FindCoordinates_d.avg_g
           = 0.0;
@@ -492,7 +514,6 @@ namespace PmpInternal
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_p = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE = 0.0;
 
       {
         int32_T i;
@@ -505,8 +526,7 @@ namespace PmpInternal
       {
         int32_T i;
         for (i = 0; i < 400; i++) {
-          PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[i] =
-            0.0;
+          PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE[i] = 0.0;
         }
       }
 
@@ -520,47 +540,49 @@ namespace PmpInternal
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_b
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_f
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_n = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_l
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[0] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[1] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE[2] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_h = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_p
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_m = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_k
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE
         = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_g
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator2_DSTATE_l
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_o
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_n = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_l = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_o = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_c = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_i = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lg = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_l = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_lw = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Filter_DSTATE_h = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_g = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_l = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_p = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_m = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_b = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_i = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_g = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_k = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_f = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_h = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_g = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_d = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_e = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_p = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_h = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Integrator_DSTATE_m = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->UD_DSTATE_ei = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[0] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[1] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_d[2] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay3_DSTATE_o = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_bo = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_i
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_c = 0.0;
@@ -570,33 +592,45 @@ namespace PmpInternal
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_d[1] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_c
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_c5 = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_m
-        = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_a[0] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_a[1] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_p
-        = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_b = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_d
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_a = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_h
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[0] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_e[1] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_b
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_d
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_l = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_gr
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_i[0] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_i[1] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_e
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_g = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_a
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_op
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k1[0] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k1[1] = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_m
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[0] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_k[1] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_h
         = 0.0;
-      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_l
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_it
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_j
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator_DSTATE_in
+        = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay_DSTATE_c = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay1_DSTATE_n = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Delay2_DSTATE_c = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator1_DSTATE_ll
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator3_DSTATE_g
         = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->DiscreteTimeIntegrator4_DSTATE
         = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Memory_PreviousInput = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_DW->Memory1_PreviousInput =
+        0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->TimeStampA = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeA[0] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_DW->LastUAtTimeA[1] = 0.0;
@@ -628,6 +662,20 @@ namespace PmpInternal
         }
       }
 
+      {
+        int32_T i;
+        for (i = 0; i < 36; i++) {
+          PIDcontroller4CoreCentralizedTestReadyMotor_DW->P_h[i] = 0.0;
+        }
+      }
+
+      {
+        int32_T i;
+        for (i = 0; i < 6; i++) {
+          PIDcontroller4CoreCentralizedTestReadyMotor_DW->x_n[i] = 0.0;
+        }
+      }
+
       /* external inputs */
       PIDcontroller4CoreCentralizedTestReadyMotor_U->G_A = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_U->G_B = 0.0;
@@ -648,6 +696,10 @@ namespace PmpInternal
       PIDcontroller4CoreCentralizedTestReadyMotor_U->Vt4 = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_U->EMS_F_Front = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_U->EMS_F_Back = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_U->LS_mode = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_U->IMU_z = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_U->IMU_pitch = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_U->IMU_roll = 0.0;
 
       /* external outputs */
       PIDcontroller4CoreCentralizedTestReadyMotor_Y->I_A = 0.0;
@@ -710,6 +762,10 @@ namespace PmpInternal
       PIDcontroller4CoreCentralizedTestReadyMotor_Y->Arms[1] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_Y->Arms[2] = 0.0;
       PIDcontroller4CoreCentralizedTestReadyMotor_Y->CalculatedMass = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_Y->MotorAGAdjust = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_Y->IMU_kalman_output[0] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_Y->IMU_kalman_output[1] = 0.0;
+      PIDcontroller4CoreCentralizedTestReadyMotor_Y->IMU_kalman_output[2] = 0.0;
 
       /* previous zero-crossing states */
       {
@@ -804,7 +860,7 @@ namespace PmpInternal
       return 0;
     }
 
-    static const SNamedSignalInfo inputOffsets[19] = {
+    static const SNamedSignalInfo inputOffsets[23] = {
       { "G_A", { ESimulinkStructsInput, offsetof
           (ExtU_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_A),
           EDataTypeDouble } },
@@ -880,6 +936,22 @@ namespace PmpInternal
       { "EMS_F_Back", { ESimulinkStructsInput, offsetof
           (ExtU_PIDcontroller4CoreCentralizedTestReadyMotor_T, EMS_F_Back),
           EDataTypeDouble } },
+
+      { "LS_mode", { ESimulinkStructsInput, offsetof
+          (ExtU_PIDcontroller4CoreCentralizedTestReadyMotor_T, LS_mode),
+          EDataTypeDouble } },
+
+      { "IMU_z", { ESimulinkStructsInput, offsetof
+          (ExtU_PIDcontroller4CoreCentralizedTestReadyMotor_T, IMU_z),
+          EDataTypeDouble } },
+
+      { "IMU_pitch", { ESimulinkStructsInput, offsetof
+          (ExtU_PIDcontroller4CoreCentralizedTestReadyMotor_T, IMU_pitch),
+          EDataTypeDouble } },
+
+      { "IMU_roll", { ESimulinkStructsInput, offsetof
+          (ExtU_PIDcontroller4CoreCentralizedTestReadyMotor_T, IMU_roll),
+          EDataTypeDouble } },
     };
 
     static EResult
@@ -887,7 +959,7 @@ namespace PmpInternal
       (PmpInternal::DynamicLibrary::ISimulink*, const char* name, SSignalInfo&
        info)
     {
-      for (unsigned int i = 0; i < 19; ++i) {
+      for (unsigned int i = 0; i < 23; ++i) {
         if (strcmp(name, inputOffsets[i].Name) == 0) {
           info = inputOffsets[i].Info;
           return EResultOk;
@@ -897,7 +969,7 @@ namespace PmpInternal
       return EResultNonExistant;
     }
 
-    static const SNamedSignalInfo outputOffsets[60] = {
+    static const SNamedSignalInfo outputOffsets[64] = {
       { "I_A", { ESimulinkStructsOutput, offsetof
           (ExtY_PIDcontroller4CoreCentralizedTestReadyMotor_T, I_A),
           EDataTypeDouble } },
@@ -1137,6 +1209,22 @@ namespace PmpInternal
       { "CalculatedMass", { ESimulinkStructsOutput, offsetof
           (ExtY_PIDcontroller4CoreCentralizedTestReadyMotor_T, CalculatedMass),
           EDataTypeDouble } },
+
+      { "MotorAGAdjust", { ESimulinkStructsOutput, offsetof
+          (ExtY_PIDcontroller4CoreCentralizedTestReadyMotor_T, MotorAGAdjust),
+          EDataTypeDouble } },
+
+      { "IMU_kalman_output_0", { ESimulinkStructsOutput, offsetof
+          (ExtY_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           IMU_kalman_output[0]), EDataTypeDouble } },
+
+      { "IMU_kalman_output_1", { ESimulinkStructsOutput, offsetof
+          (ExtY_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           IMU_kalman_output[1]), EDataTypeDouble } },
+
+      { "IMU_kalman_output_2", { ESimulinkStructsOutput, offsetof
+          (ExtY_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           IMU_kalman_output[2]), EDataTypeDouble } },
     };
 
     static EResult
@@ -1144,7 +1232,7 @@ namespace PmpInternal
       (PmpInternal::DynamicLibrary::ISimulink*, const char* name, SSignalInfo&
        info)
     {
-      for (unsigned int i = 0; i < 60; ++i) {
+      for (unsigned int i = 0; i < 64; ++i) {
         if (strcmp(name, outputOffsets[i].Name) == 0) {
           info = outputOffsets[i].Info;
           return EResultOk;
@@ -1161,7 +1249,7 @@ namespace PmpInternal
       return EResultNonExistant;
     }
 
-    static const SNamedSignalInfo parameterOffsets[136] = {
+    static const SNamedSignalInfo parameterOffsets[126] = {
       { "AirgapFilter", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, AirgapFilter),
           EDataTypeDouble } },
@@ -1250,6 +1338,10 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, F_array[1]),
           EDataTypeDouble } },
 
+      { "ForgetFactor_Highpass_Lat", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           ForgetFactor_Highpass_Lat), EDataTypeDouble } },
+
       { "ForgettingFactor", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, ForgettingFactor),
           EDataTypeDouble } },
@@ -1270,64 +1362,36 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
            ForgettingFactorRoll), EDataTypeDouble } },
 
-      { "GS_breakpoints_0", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, GS_breakpoints[0]),
-          EDataTypeDouble } },
-
-      { "GS_breakpoints_1", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, GS_breakpoints[1]),
-          EDataTypeDouble } },
-
-      { "GS_breakpoints_2", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, GS_breakpoints[2]),
+      { "G_K_a", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_a),
           EDataTypeDouble } },
 
       { "G_K_d", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_d),
           EDataTypeDouble } },
 
-      { "G_K_d_array_0", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_d_array[0]),
-          EDataTypeDouble } },
-
-      { "G_K_d_array_1", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_d_array[1]),
-          EDataTypeDouble } },
-
-      { "G_K_d_array_2", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_d_array[2]),
+      { "G_K_d_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_d_LS),
           EDataTypeDouble } },
 
       { "G_K_i", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_i),
           EDataTypeDouble } },
 
+      { "G_K_i_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_i_LS),
+          EDataTypeDouble } },
+
       { "G_K_p", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_p),
           EDataTypeDouble } },
 
-      { "G_K_p_array_0", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_p_array[0]),
-          EDataTypeDouble } },
-
-      { "G_K_p_array_1", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_p_array[1]),
-          EDataTypeDouble } },
-
-      { "G_K_p_array_2", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_p_array[2]),
+      { "G_K_p_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_K_p_LS),
           EDataTypeDouble } },
 
       { "G_T_c", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_T_c),
-          EDataTypeDouble } },
-
-      { "G_Tc_array_0", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_Tc_array[0]),
-          EDataTypeDouble } },
-
-      { "G_Tc_array_1", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, G_Tc_array[1]),
           EDataTypeDouble } },
 
       { "HEMS_Plane_Offsets_0", { ESimulinkStructsParameter, offsetof
@@ -1346,17 +1410,9 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
            HEMS_Plane_Offsets[3]), EDataTypeDouble } },
 
-      { "I_K_d", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, I_K_d),
-          EDataTypeDouble } },
-
-      { "I_K_i", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, I_K_i),
-          EDataTypeDouble } },
-
-      { "I_K_p", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, I_K_p),
-          EDataTypeDouble } },
+      { "IMU_integration_gain", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           IMU_integration_gain), EDataTypeDouble } },
 
       { "Kalman_F", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, Kalman_F),
@@ -1390,6 +1446,10 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, LinposOn),
           EDataTypeDouble } },
 
+      { "LowAirgapPropellingSwitch", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           LowAirgapPropellingSwitch), EDataTypeDouble } },
+
       { "M_f", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, M_f),
           EDataTypeDouble } },
@@ -1422,6 +1482,10 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
            MismatchingKalmanAGPR[2]), EDataTypeDouble } },
 
+      { "MotorAGIntegrals", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, MotorAGIntegrals),
+          EDataTypeDouble } },
+
       { "MotorAirgapOffset", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
            MotorAirgapOffset), EDataTypeDouble } },
@@ -1434,65 +1498,29 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_d),
           EDataTypeDouble } },
 
-      { "P_K_d_array_0", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_d_array[0]),
-          EDataTypeDouble } },
-
-      { "P_K_d_array_1", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_d_array[1]),
-          EDataTypeDouble } },
-
-      { "P_K_d_array_2", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_d_array[2]),
+      { "P_K_d_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_d_LS),
           EDataTypeDouble } },
 
       { "P_K_i", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_i),
           EDataTypeDouble } },
 
+      { "P_K_i_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_i_LS),
+          EDataTypeDouble } },
+
       { "P_K_p", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_p),
           EDataTypeDouble } },
 
-      { "P_K_p_array_0", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_p_array[0]),
-          EDataTypeDouble } },
-
-      { "P_K_p_array_1", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_p_array[1]),
-          EDataTypeDouble } },
-
-      { "P_K_p_array_2", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_p_array[2]),
-          EDataTypeDouble } },
-
-      { "P_T_c", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_T_c),
+      { "P_K_p_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, P_K_p_LS),
           EDataTypeDouble } },
 
       { "PitchFilter", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, PitchFilter),
           EDataTypeDouble } },
-
-      { "Pitch_GainSchedulingEnabled_0", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
-           Pitch_GainSchedulingEnabled[0]), EDataTypeDouble } },
-
-      { "Pitch_GainSchedulingEnabled_1", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
-           Pitch_GainSchedulingEnabled[1]), EDataTypeDouble } },
-
-      { "Pitch_GainSchedulingEnabled_2", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
-           Pitch_GainSchedulingEnabled[2]), EDataTypeDouble } },
-
-      { "Pitch_GainSchedulingEnabled_3", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
-           Pitch_GainSchedulingEnabled[3]), EDataTypeDouble } },
-
-      { "Pitch_GainSchedulingEnabled_4", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
-           Pitch_GainSchedulingEnabled[4]), EDataTypeDouble } },
 
       { "PodHeight", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, PodHeight),
@@ -1522,6 +1550,22 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, Polarity),
           EDataTypeDouble } },
 
+      { "PropellingAirgap", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, PropellingAirgap),
+          EDataTypeDouble } },
+
+      { "PropellingPitch", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, PropellingPitch),
+          EDataTypeDouble } },
+
+      { "PropellingRoll", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, PropellingRoll),
+          EDataTypeDouble } },
+
+      { "PropellingTime", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, PropellingTime),
+          EDataTypeDouble } },
+
       { "PropulsionCurrent", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
            PropulsionCurrent), EDataTypeDouble } },
@@ -1530,44 +1574,28 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, PropulsionOn),
           EDataTypeDouble } },
 
+      { "PropulsionRampTime", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           PropulsionRampTime), EDataTypeDouble } },
+
       { "R_K_d", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_d),
           EDataTypeDouble } },
 
-      { "R_K_d_array_0", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_d_array[0]),
-          EDataTypeDouble } },
-
-      { "R_K_d_array_1", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_d_array[1]),
-          EDataTypeDouble } },
-
-      { "R_K_d_array_2", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_d_array[2]),
+      { "R_K_d_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_d_LS),
           EDataTypeDouble } },
 
       { "R_K_i", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_i),
           EDataTypeDouble } },
 
-      { "R_K_p", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_p),
+      { "R_K_i_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_i_LS),
           EDataTypeDouble } },
 
-      { "R_K_p_array_0", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_p_array[0]),
-          EDataTypeDouble } },
-
-      { "R_K_p_array_1", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_p_array[1]),
-          EDataTypeDouble } },
-
-      { "R_K_p_array_2", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_p_array[2]),
-          EDataTypeDouble } },
-
-      { "R_T_c", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_T_c),
+      { "R_K_p_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, R_K_p_LS),
           EDataTypeDouble } },
 
       { "RefPitch", { ESimulinkStructsParameter, offsetof
@@ -1597,26 +1625,6 @@ namespace PmpInternal
       { "RollFilter", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, RollFilter),
           EDataTypeDouble } },
-
-      { "Roll_GainSchedulingEnabled_0", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
-           Roll_GainSchedulingEnabled[0]), EDataTypeDouble } },
-
-      { "Roll_GainSchedulingEnabled_1", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
-           Roll_GainSchedulingEnabled[1]), EDataTypeDouble } },
-
-      { "Roll_GainSchedulingEnabled_2", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
-           Roll_GainSchedulingEnabled[2]), EDataTypeDouble } },
-
-      { "Roll_GainSchedulingEnabled_3", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
-           Roll_GainSchedulingEnabled[3]), EDataTypeDouble } },
-
-      { "Roll_GainSchedulingEnabled_4", { ESimulinkStructsParameter, offsetof
-          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
-           Roll_GainSchedulingEnabled[4]), EDataTypeDouble } },
 
       { "RunTime", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, RunTime),
@@ -1654,6 +1662,10 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, Undo_0current),
           EDataTypeDouble } },
 
+      { "UseIMU", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, UseIMU),
+          EDataTypeDouble } },
+
       { "X_Arm_Offset", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, X_Arm_Offset),
           EDataTypeDouble } },
@@ -1662,8 +1674,24 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, Y_Arm_Offset),
           EDataTypeDouble } },
 
+      { "kalman_pitchdot_gain", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           kalman_pitchdot_gain), EDataTypeDouble } },
+
+      { "kalman_rolldot_gain", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           kalman_rolldot_gain), EDataTypeDouble } },
+
+      { "kalman_zdotdot_gain", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           kalman_zdotdot_gain), EDataTypeDouble } },
+
       { "motorforce_on", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, motorforce_on),
+          EDataTypeDouble } },
+
+      { "var_ag_IMU", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, var_ag_IMU),
           EDataTypeDouble } },
 
       { "var_ag_dot", { ESimulinkStructsParameter, offsetof
@@ -1678,6 +1706,14 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, var_ag_sens),
           EDataTypeDouble } },
 
+      { "var_ag_sens_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, var_ag_sens_LS),
+          EDataTypeDouble } },
+
+      { "var_pitch_IMU", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, var_pitch_IMU),
+          EDataTypeDouble } },
+
       { "var_pitch_dot", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, var_pitch_dot),
           EDataTypeDouble } },
@@ -1688,6 +1724,14 @@ namespace PmpInternal
 
       { "var_pitch_sens", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, var_pitch_sens),
+          EDataTypeDouble } },
+
+      { "var_pitch_sens_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T,
+           var_pitch_sens_LS), EDataTypeDouble } },
+
+      { "var_roll_IMU", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, var_roll_IMU),
           EDataTypeDouble } },
 
       { "var_roll_dot", { ESimulinkStructsParameter, offsetof
@@ -1702,6 +1746,10 @@ namespace PmpInternal
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, var_roll_sens),
           EDataTypeDouble } },
 
+      { "var_roll_sens_LS", { ESimulinkStructsParameter, offsetof
+          (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, var_roll_sens_LS),
+          EDataTypeDouble } },
+
       { "MagnetFailure", { ESimulinkStructsParameter, offsetof
           (InstP_PIDcontroller4CoreCentralizedTestReadyMotor_T, MagnetFailure),
           EDataTypeUint32 } },
@@ -1712,7 +1760,7 @@ namespace PmpInternal
       (PmpInternal::DynamicLibrary::ISimulink*, const char* name, SSignalInfo&
        info)
     {
-      for (unsigned int i = 0; i < 136; ++i) {
+      for (unsigned int i = 0; i < 126; ++i) {
         if (strcmp(name, parameterOffsets[i].Name) == 0) {
           info = parameterOffsets[i].Info;
           return EResultOk;
@@ -1761,7 +1809,7 @@ namespace PmpInternal
       return 0.00025;
     }
 
-    static const SReflectionInfo reflectionInfo[216] = {
+    static const SReflectionInfo reflectionInfo[214] = {
       { "G_A", ESimulinkStructsInput },
 
       { "G_B", ESimulinkStructsInput },
@@ -1799,6 +1847,14 @@ namespace PmpInternal
       { "EMS_F_Front", ESimulinkStructsInput },
 
       { "EMS_F_Back", ESimulinkStructsInput },
+
+      { "LS_mode", ESimulinkStructsInput },
+
+      { "IMU_z", ESimulinkStructsInput },
+
+      { "IMU_pitch", ESimulinkStructsInput },
+
+      { "IMU_roll", ESimulinkStructsInput },
 
       { "I_A", ESimulinkStructsOutput },
 
@@ -1920,6 +1976,14 @@ namespace PmpInternal
 
       { "CalculatedMass", ESimulinkStructsOutput },
 
+      { "MotorAGAdjust", ESimulinkStructsOutput },
+
+      { "IMU_kalman_output_0", ESimulinkStructsOutput },
+
+      { "IMU_kalman_output_1", ESimulinkStructsOutput },
+
+      { "IMU_kalman_output_2", ESimulinkStructsOutput },
+
       { "AirgapFilter", ESimulinkStructsParameter },
 
       { "Airgap_GainSchedulingEnabled_0", ESimulinkStructsParameter },
@@ -1964,6 +2028,8 @@ namespace PmpInternal
 
       { "F_array_1", ESimulinkStructsParameter },
 
+      { "ForgetFactor_Highpass_Lat", ESimulinkStructsParameter },
+
       { "ForgettingFactor", ESimulinkStructsParameter },
 
       { "ForgettingFactorAirgap", ESimulinkStructsParameter },
@@ -1974,35 +2040,21 @@ namespace PmpInternal
 
       { "ForgettingFactorRoll", ESimulinkStructsParameter },
 
-      { "GS_breakpoints_0", ESimulinkStructsParameter },
-
-      { "GS_breakpoints_1", ESimulinkStructsParameter },
-
-      { "GS_breakpoints_2", ESimulinkStructsParameter },
+      { "G_K_a", ESimulinkStructsParameter },
 
       { "G_K_d", ESimulinkStructsParameter },
 
-      { "G_K_d_array_0", ESimulinkStructsParameter },
-
-      { "G_K_d_array_1", ESimulinkStructsParameter },
-
-      { "G_K_d_array_2", ESimulinkStructsParameter },
+      { "G_K_d_LS", ESimulinkStructsParameter },
 
       { "G_K_i", ESimulinkStructsParameter },
 
+      { "G_K_i_LS", ESimulinkStructsParameter },
+
       { "G_K_p", ESimulinkStructsParameter },
 
-      { "G_K_p_array_0", ESimulinkStructsParameter },
-
-      { "G_K_p_array_1", ESimulinkStructsParameter },
-
-      { "G_K_p_array_2", ESimulinkStructsParameter },
+      { "G_K_p_LS", ESimulinkStructsParameter },
 
       { "G_T_c", ESimulinkStructsParameter },
-
-      { "G_Tc_array_0", ESimulinkStructsParameter },
-
-      { "G_Tc_array_1", ESimulinkStructsParameter },
 
       { "HEMS_Plane_Offsets_0", ESimulinkStructsParameter },
 
@@ -2012,11 +2064,7 @@ namespace PmpInternal
 
       { "HEMS_Plane_Offsets_3", ESimulinkStructsParameter },
 
-      { "I_K_d", ESimulinkStructsParameter },
-
-      { "I_K_i", ESimulinkStructsParameter },
-
-      { "I_K_p", ESimulinkStructsParameter },
+      { "IMU_integration_gain", ESimulinkStructsParameter },
 
       { "Kalman_F", ESimulinkStructsParameter },
 
@@ -2034,6 +2082,8 @@ namespace PmpInternal
 
       { "LinposOn", ESimulinkStructsParameter },
 
+      { "LowAirgapPropellingSwitch", ESimulinkStructsParameter },
+
       { "M_f", ESimulinkStructsParameter },
 
       { "Mass", ESimulinkStructsParameter },
@@ -2050,41 +2100,25 @@ namespace PmpInternal
 
       { "MismatchingKalmanAGPR_2", ESimulinkStructsParameter },
 
+      { "MotorAGIntegrals", ESimulinkStructsParameter },
+
       { "MotorAirgapOffset", ESimulinkStructsParameter },
 
       { "OperatingMode", ESimulinkStructsParameter },
 
       { "P_K_d", ESimulinkStructsParameter },
 
-      { "P_K_d_array_0", ESimulinkStructsParameter },
-
-      { "P_K_d_array_1", ESimulinkStructsParameter },
-
-      { "P_K_d_array_2", ESimulinkStructsParameter },
+      { "P_K_d_LS", ESimulinkStructsParameter },
 
       { "P_K_i", ESimulinkStructsParameter },
 
+      { "P_K_i_LS", ESimulinkStructsParameter },
+
       { "P_K_p", ESimulinkStructsParameter },
 
-      { "P_K_p_array_0", ESimulinkStructsParameter },
-
-      { "P_K_p_array_1", ESimulinkStructsParameter },
-
-      { "P_K_p_array_2", ESimulinkStructsParameter },
-
-      { "P_T_c", ESimulinkStructsParameter },
+      { "P_K_p_LS", ESimulinkStructsParameter },
 
       { "PitchFilter", ESimulinkStructsParameter },
-
-      { "Pitch_GainSchedulingEnabled_0", ESimulinkStructsParameter },
-
-      { "Pitch_GainSchedulingEnabled_1", ESimulinkStructsParameter },
-
-      { "Pitch_GainSchedulingEnabled_2", ESimulinkStructsParameter },
-
-      { "Pitch_GainSchedulingEnabled_3", ESimulinkStructsParameter },
-
-      { "Pitch_GainSchedulingEnabled_4", ESimulinkStructsParameter },
 
       { "PodHeight", ESimulinkStructsParameter },
 
@@ -2100,29 +2134,29 @@ namespace PmpInternal
 
       { "Polarity", ESimulinkStructsParameter },
 
+      { "PropellingAirgap", ESimulinkStructsParameter },
+
+      { "PropellingPitch", ESimulinkStructsParameter },
+
+      { "PropellingRoll", ESimulinkStructsParameter },
+
+      { "PropellingTime", ESimulinkStructsParameter },
+
       { "PropulsionCurrent", ESimulinkStructsParameter },
 
       { "PropulsionOn", ESimulinkStructsParameter },
 
+      { "PropulsionRampTime", ESimulinkStructsParameter },
+
       { "R_K_d", ESimulinkStructsParameter },
 
-      { "R_K_d_array_0", ESimulinkStructsParameter },
-
-      { "R_K_d_array_1", ESimulinkStructsParameter },
-
-      { "R_K_d_array_2", ESimulinkStructsParameter },
+      { "R_K_d_LS", ESimulinkStructsParameter },
 
       { "R_K_i", ESimulinkStructsParameter },
 
-      { "R_K_p", ESimulinkStructsParameter },
+      { "R_K_i_LS", ESimulinkStructsParameter },
 
-      { "R_K_p_array_0", ESimulinkStructsParameter },
-
-      { "R_K_p_array_1", ESimulinkStructsParameter },
-
-      { "R_K_p_array_2", ESimulinkStructsParameter },
-
-      { "R_T_c", ESimulinkStructsParameter },
+      { "R_K_p_LS", ESimulinkStructsParameter },
 
       { "RefPitch", ESimulinkStructsParameter },
 
@@ -2137,16 +2171,6 @@ namespace PmpInternal
       { "ResetArms", ESimulinkStructsParameter },
 
       { "RollFilter", ESimulinkStructsParameter },
-
-      { "Roll_GainSchedulingEnabled_0", ESimulinkStructsParameter },
-
-      { "Roll_GainSchedulingEnabled_1", ESimulinkStructsParameter },
-
-      { "Roll_GainSchedulingEnabled_2", ESimulinkStructsParameter },
-
-      { "Roll_GainSchedulingEnabled_3", ESimulinkStructsParameter },
-
-      { "Roll_GainSchedulingEnabled_4", ESimulinkStructsParameter },
 
       { "RunTime", ESimulinkStructsParameter },
 
@@ -2166,11 +2190,21 @@ namespace PmpInternal
 
       { "Undo_0current", ESimulinkStructsParameter },
 
+      { "UseIMU", ESimulinkStructsParameter },
+
       { "X_Arm_Offset", ESimulinkStructsParameter },
 
       { "Y_Arm_Offset", ESimulinkStructsParameter },
 
+      { "kalman_pitchdot_gain", ESimulinkStructsParameter },
+
+      { "kalman_rolldot_gain", ESimulinkStructsParameter },
+
+      { "kalman_zdotdot_gain", ESimulinkStructsParameter },
+
       { "motorforce_on", ESimulinkStructsParameter },
+
+      { "var_ag_IMU", ESimulinkStructsParameter },
 
       { "var_ag_dot", ESimulinkStructsParameter },
 
@@ -2178,17 +2212,27 @@ namespace PmpInternal
 
       { "var_ag_sens", ESimulinkStructsParameter },
 
+      { "var_ag_sens_LS", ESimulinkStructsParameter },
+
+      { "var_pitch_IMU", ESimulinkStructsParameter },
+
       { "var_pitch_dot", ESimulinkStructsParameter },
 
       { "var_pitch_proc", ESimulinkStructsParameter },
 
       { "var_pitch_sens", ESimulinkStructsParameter },
 
+      { "var_pitch_sens_LS", ESimulinkStructsParameter },
+
+      { "var_roll_IMU", ESimulinkStructsParameter },
+
       { "var_roll_dot", ESimulinkStructsParameter },
 
       { "var_roll_proc", ESimulinkStructsParameter },
 
       { "var_roll_sens", ESimulinkStructsParameter },
+
+      { "var_roll_sens_LS", ESimulinkStructsParameter },
 
       { "MagnetFailure", ESimulinkStructsParameter },
 
