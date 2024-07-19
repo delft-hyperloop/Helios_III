@@ -199,13 +199,8 @@ lower = {warn = 280, err = 270, brake = 260}
 name = "TotalBatteryVoltageLow"
 id = 0x1A5
 display_units = "V"
-<<<<<<< HEAD
-upper = { warn = 2400, err = 2500, brake = 2500}
-lower = { warn = 1900, brake = 1800}
-=======
 upper = { warn = 2600, err = 2700, brake = 2700}
 lower = { warn = 2100, brake = 2000}
->>>>>>> d5f89fe35f5eb998574b23a56c9f1e367efdc545
 
 [[Datatype]]
 name = "TotalBatteryVoltageHigh"
