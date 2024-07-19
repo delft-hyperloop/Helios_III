@@ -85,7 +85,6 @@ export class GrandDataDistributor {
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
             this.StoreManager.updateStore(datapoint.datatype, new Date().getTime(), datapoint.style, datapoint.units, datapoint.value);
-            // if (get(latestTimestamp) < datapoint.timestamp) latestTimestamp.set(datapoint.timestamp);
         });
     }
 
