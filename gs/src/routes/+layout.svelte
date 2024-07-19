@@ -16,6 +16,7 @@
     import {parseShortCut, setBitsToBooleans} from "$lib/util/parsers";
     import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
     import { storePopup } from '@skeletonlabs/skeleton';
+    import {LOCALISATION_NAME} from "$lib/types";
 
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
@@ -323,7 +324,7 @@
         return curr;
     });
 
-    gdd.stores.registerStore<number>("levi_location", 0, data => {
+    gdd.stores.registerStore<number>(LOCALISATION_NAME, 0, data => {
         const curr = Number(data);
         $chartStore.get("Localisation")!.addEntry(1, curr);
         return curr;

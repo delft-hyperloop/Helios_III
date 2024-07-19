@@ -1,6 +1,6 @@
 <script lang="ts">
     import {Localiser, TileGrid, Tile, Chart, inputTurn, GrandDataDistributor} from "$lib";
-    import {RunMode} from "$lib/types";
+    import {LOCALISATION_NAME, RunMode} from "$lib/types";
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -16,7 +16,7 @@
     ]
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const location = storeManager.getWritable("levi_location");
+    const location = storeManager.getWritable(LOCALISATION_NAME);
 </script>
 
 <div class="p-4">
@@ -32,7 +32,7 @@
             <Chart title="Acceleration" background="bg-surface-900" />
         </Tile>
         <Tile containerClass="col-start-1 col-span-2">
-            <Chart title="levi_location" background="bg-surface-900" />
+            <Chart title="Localisation" background="bg-surface-900" />
         </Tile>
     </TileGrid>
 </div>

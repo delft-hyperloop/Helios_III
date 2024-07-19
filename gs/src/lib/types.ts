@@ -137,6 +137,8 @@ export type RouteConfig = {
     current_position: number
 }
 
+export const LOCALISATION_NAME = "Localisation"; // 'levi_location'
+
 // OLD TYPES
 export type IntervalFunction = () => void;
 export type Segment = 'L1' | 'L2' | 'L3' | 'L4' | 'L5' | 'L6';

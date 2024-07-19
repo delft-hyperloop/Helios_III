@@ -4,7 +4,7 @@
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
     import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
-  import {STATUS} from "$lib/types";
+  import {LOCALISATION_NAME, STATUS} from "$lib/types";
 
     let width: number;
 
@@ -42,7 +42,7 @@
         ["EMS AB", DE.LEVI_EMS_CURRENT_AB, "[-10,10] A", "EMS CD", DE.LEVI_EMS_CURRENT_CD, "[-10,10] A"],
     ]
 
-    const location = storeManager.getWritable("levi_location");
+    const location = storeManager.getWritable(LOCALISATION_NAME);
 
     const toastStore = getToastStore();
 
@@ -92,7 +92,7 @@
                             <p>
                                 Velocity: <Store datatype="Velocity" /> m/s
                                 <br>
-                                Position: <Store datatype="levi_location" /> mm
+                                Position: <Store datatype={LOCALISATION_NAME} /> mm
                                 <br>
                                 Acceleration: <Store datatype="Acceleration" /> m/s²
                             </p>
