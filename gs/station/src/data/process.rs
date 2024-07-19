@@ -7,9 +7,9 @@ use gslib::ValueCheckResult;
 pub fn process(datapoint: &Datapoint) -> ProcessedData {
     let style = match datapoint.datatype.check_bounds(datapoint.value) {
         ValueCheckResult::Fine => "".to_string(),
-        ValueCheckResult::Warn => "warning".to_string(),
-        ValueCheckResult::Error => "error".to_string(),
-        ValueCheckResult::BrakeNow => "critical".to_string(),
+        ValueCheckResult::Warn => "yellow".to_string(),
+        ValueCheckResult::Error => "warning".to_string(),
+        ValueCheckResult::BrakeNow => "error".to_string(),
     };
     let x = datapoint.value as f64;
     let value = match datapoint.datatype {

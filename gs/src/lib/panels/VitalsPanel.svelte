@@ -27,8 +27,8 @@
         ["Up VB", DE.AVERAGE_TEMP_VB_TOP, "[0,70]", "HEMS 1", DE.TEMP_HEMS_1, "[0,80] "],
         ["Low VB", DE.AVERAGE_TEMP_VB_BOTTOM, "[0,70]", "HEMS 2", DE.TEMP_HEMS_2, "[0,80]"],
         ["Ambient", DE.AMBIENT_TEMP, "[0,50]", "HEMS 3", DE.TEMP_HEMS_3, "[0,80]"],
-        ["Propulsion", DE.PROPULSIONTEMPERATURE, "[0,80]", "HEMS 4", DE.TEMP_HEMS_4, "[0,80]"],
-        ["Levitation", DE.LEVITATIONTEMPERATURE, "[0,80]", "EMS 1", DE.TEMP_EMS_1, "[0,80]"],
+        ["Motor Front", "Temp_Motor_1", "[0,80]", "HEMS 4", DE.TEMP_HEMS_4, "[0,80]"],
+        ["Motor Back", "Temp_Motor_2", "[0,80]", "EMS 1", DE.TEMP_EMS_1, "[0,80]"],
         ["Brake", DE.BRAKETEMPERATURE, "[0,100]", "EMS 2", DE.TEMP_EMS_2, "[0,80]"],
     ]
 

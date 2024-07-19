@@ -240,12 +240,13 @@ impl BatteryController {
         } else {
             Datatype::TotalBatteryVoltageLow
         };
-        queue_dp(self.data_sender, battery_voltage_dt, avg_cell_voltage, timestamp).await;
-        queue_dp(self.data_sender, battery_voltage_min, min_cell_voltage, timestamp).await;
-        queue_dp(self.data_sender, battery_voltage_max, max_cell_voltage, timestamp).await;
-        if total_pack_voltage != 0 {
+
+        if total_pack_voltage >= 1000 {
             queue_dp(self.data_sender, total_battery_voltage_dt, total_pack_voltage, timestamp)
-                .await
+                .await;
+            queue_dp(self.data_sender, battery_voltage_dt, avg_cell_voltage, timestamp).await;
+            queue_dp(self.data_sender, battery_voltage_min, min_cell_voltage, timestamp).await;
+            queue_dp(self.data_sender, battery_voltage_max, max_cell_voltage, timestamp).await;
         };
         if !self.high_voltage {
             queue_dp(self.data_sender, Datatype::SingleCellVoltageLV1, avg_cell_voltage, timestamp)
@@ -277,33 +278,33 @@ impl BatteryController {
     }
 
     pub async fn diagnostic_bms(&mut self, data: &[u8], timestamp: u64) {
-        let high_voltage_checks = [
-            (0, 0b1, Info::UndervoltageHvBattery),
-            (0, 0b10, Info::OvervoltageHvBattery),
-            (0, 0b100, Info::DischargeOvercurrentHvBattery),
-            (0, 0b1000, Info::OvercurrentHvBattery),
-            (0, 0b10000, Info::LeakageHvBattery),
-            (0, 0b100000, Info::NoCellComunnicationHvBattery),
-            (2, 0b1000, Info::OverheatHvBattery),
-        ];
-
-        let low_voltage_checks = [
-            (0, 0b1, Info::UndervoltageLvBattery),
-            (0, 0b10, Info::OvervoltageLvBattery),
-            (0, 0b100, Info::DischargeOvercurrentLvBattery),
-            (0, 0b1000, Info::OvercurrentLvBattery),
-            (0, 0b10000, Info::LeakageLvBattery),
-            (0, 0b100000, Info::NoCellComunnicationLvBattery),
-            (2, 0b1000, Info::OverheatLvBattery),
-        ];
-
-        let checks = if self.high_voltage { &high_voltage_checks } else { &low_voltage_checks };
-
-        for &(byte_index, bit_mask, info) in checks {
-            if data[byte_index] & bit_mask != 0 {
-                self.data_sender.send(Datapoint::new(Datatype::Info, info as u64, timestamp)).await
-            }
-        }
+        // let high_voltage_checks = [
+        //     (0, 0b1, Info::UndervoltageHvBattery),
+        //     (0, 0b10, Info::OvervoltageHvBattery),
+        //     (0, 0b100, Info::DischargeOvercurrentHvBattery),
+        //     (0, 0b1000, Info::OvercurrentHvBattery),
+        //     (0, 0b10000, Info::LeakageHvBattery),
+        //     (0, 0b100000, Info::NoCellComunnicationHvBattery),
+        //     (2, 0b1000, Info::OverheatHvBattery),
+        // ];
+        //
+        // let low_voltage_checks = [
+        //     (0, 0b1, Info::UndervoltageLvBattery),
+        //     (0, 0b10, Info::OvervoltageLvBattery),
+        //     (0, 0b100, Info::DischargeOvercurrentLvBattery),
+        //     (0, 0b1000, Info::OvercurrentLvBattery),
+        //     (0, 0b10000, Info::LeakageLvBattery),
+        //     (0, 0b100000, Info::NoCellComunnicationLvBattery),
+        //     (2, 0b1000, Info::OverheatLvBattery),
+        // ];
+        //
+        // let checks = if self.high_voltage { &high_voltage_checks } else { &low_voltage_checks };
+        //
+        // for &(byte_index, bit_mask, info) in checks {
+        //     if data[byte_index] & bit_mask != 0 {
+        //         self.data_sender.send(Datapoint::new(Datatype::Info, info as u64, timestamp)).await
+        //     }
+        // }
     }
 
     pub async fn state_of_charge_bms(&mut self, data: &[u8], timestamp: u64) {
@@ -378,7 +379,7 @@ impl BatteryController {
                 self.data_sender,
                 Self::match_volt(i as u16 + module_id * 14).await,
                 self.module_buffer[i] + 200,
-                i as u64 + module_id as u64 * 14,
+                timestamp,
             )
             .await;
             i += 1;
