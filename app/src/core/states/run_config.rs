@@ -1,4 +1,5 @@
 use core::sync::atomic::Ordering;
+
 use defmt::debug;
 use defmt::info;
 

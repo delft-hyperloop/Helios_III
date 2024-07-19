@@ -1,5 +1,6 @@
 use core::sync::atomic::AtomicBool;
 use core::sync::atomic::Ordering;
+
 use embassy_time::Instant;
 
 use crate::core::finite_state_machine::Fsm;
@@ -36,7 +37,6 @@ pub static DISABLE_BRAKE_MOVING_NO_LOCALISATION: AtomicBool = AtomicBool::new(fa
 pub static POD_IS_MOVING: AtomicBool = AtomicBool::new(false);
 
 pub static mut LOCALISATION_LAST_SEEN: Instant = Instant::from_millis(0);
-
 
 #[derive(Debug, Default)]
 pub struct Status {
@@ -101,7 +101,8 @@ impl Overrides {
         DISABLE_BRAKING_COMMUNICATION
             .store(self.prevent_braking_communication(), Ordering::Relaxed);
         OUT_OF_RANGE_DISABLED.store(self.out_of_range_disabled(), Ordering::Relaxed);
-        DISABLE_BRAKE_MOVING_NO_LOCALISATION.store(self.disable_brake_moving_without_location(), Ordering::Relaxed);
+        DISABLE_BRAKE_MOVING_NO_LOCALISATION
+            .store(self.disable_brake_moving_without_location(), Ordering::Relaxed);
     }
 
     /// Allow propulsion to start while not levitating
@@ -118,6 +119,7 @@ impl Overrides {
     pub fn hv_without_levi(&self) -> bool { self.values & 0b10000 != 0 }
 
     pub fn out_of_range_disabled(&self) -> bool { self.values & 0b100000 != 0 }
+
     pub fn disable_brake_moving_without_location(&self) -> bool { self.values & 0b1000000 != 0 }
 }
 

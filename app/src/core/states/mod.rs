@@ -16,10 +16,12 @@ mod run_config;
 /// Helper functions to the route planning moving states.
 mod moving {
     use core::sync::atomic::Ordering;
+
     use crate::core::finite_state_machine::Fsm;
     use crate::core::finite_state_machine::State;
-    use crate::core::fsm_status::{IN_A_LANE_SWITCH, Location};
+    use crate::core::fsm_status::Location;
     use crate::core::fsm_status::RouteUse;
+    use crate::core::fsm_status::IN_A_LANE_SWITCH;
     use crate::transit;
     use crate::Command;
     use crate::Datatype;
@@ -61,7 +63,7 @@ mod moving {
                 Location::LaneSwitchCurved => {
                     self.send_levi_cmd(Command::ls2(0)).await;
                     IN_A_LANE_SWITCH.store(true, Ordering::Relaxed);
-                }
+                },
                 _ => self.send_levi_cmd(Command::ls0(0)).await,
             }
         }

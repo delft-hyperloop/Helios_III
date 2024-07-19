@@ -269,3 +269,12 @@ colour = "yellow"
 label = "PrechargeFinished"
 colour = "green"
 
+
+[[Info]]
+label = "HvBmsTimedOut"
+colour = "red"
+
+[[Info]]
+label = "LvBmsTimedOut"
+colour = "red"
+

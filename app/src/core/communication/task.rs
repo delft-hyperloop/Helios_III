@@ -1,6 +1,7 @@
 use core::sync::atomic::Ordering;
 
-use defmt::{error, warn};
+use defmt::error;
+use defmt::warn;
 use embassy_time::Timer;
 
 use crate::core::communication::CommunicationLayer;

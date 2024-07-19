@@ -1,12 +1,14 @@
 use core::sync::atomic::Ordering;
+
 use defmt::error;
 use defmt::info;
 use defmt::warn;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::core::fsm_status::{Location, POD_IS_MOVING};
+use crate::core::fsm_status::Location;
 use crate::core::fsm_status::RouteUse;
+use crate::core::fsm_status::POD_IS_MOVING;
 use crate::transit;
 use crate::Command;
 use crate::Event;

@@ -1,9 +1,11 @@
 use core::sync::atomic::Ordering;
+
 use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::core::fsm_status::{BRAKE, POD_IS_MOVING};
+use crate::core::fsm_status::BRAKE;
+use crate::core::fsm_status::POD_IS_MOVING;
 use crate::transit;
 use crate::Datatype;
 use crate::Event;

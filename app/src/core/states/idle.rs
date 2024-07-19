@@ -4,7 +4,8 @@ use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
-use crate::core::fsm_status::{BRAKES_EXTENDED, POD_IS_MOVING};
+use crate::core::fsm_status::BRAKES_EXTENDED;
+use crate::core::fsm_status::POD_IS_MOVING;
 use crate::transit;
 use crate::Event;
 use crate::Info;

@@ -19,11 +19,16 @@ use crate::core::data::sources::HV_BMS_DATA;
 use crate::core::data::sources::LV_BMS_DATA;
 use crate::core::data::sources::PROPULSION_DATA;
 use crate::core::data::sources::SENSOR_HUB_DATA;
-use crate::core::fsm_status::{DISABLE_BRAKE_MOVING_NO_LOCALISATION, HUB_CONNECTED, LOCALISATION_LAST_SEEN, OUT_OF_RANGE_DISABLED, POD_IS_MOVING};
+use crate::core::fsm_status::DISABLE_BRAKE_MOVING_NO_LOCALISATION;
+use crate::core::fsm_status::HUB_CONNECTED;
 use crate::core::fsm_status::HV_BATTERIES_CONNECTED;
+use crate::core::fsm_status::LOCALISATION_LAST_SEEN;
 use crate::core::fsm_status::LV_BATTERIES_CONNECTED;
+use crate::core::fsm_status::OUT_OF_RANGE_DISABLED;
+use crate::core::fsm_status::POD_IS_MOVING;
 use crate::core::fsm_status::PROPULSION_CONNECTED;
-use crate::pconfig::{queue_data, queue_event};
+use crate::pconfig::queue_data;
+use crate::pconfig::queue_event;
 use crate::send_data;
 use crate::DataReceiver;
 use crate::DataSender;
@@ -76,7 +81,12 @@ pub async fn data_middle_step(
                         data.datatype.to_id() as u64,
                         data.value
                     );
-                    send_data!(outgoing, Datatype::Info, Info::ValueCausedBraking as u64, data.value);
+                    send_data!(
+                        outgoing,
+                        Datatype::Info,
+                        Info::ValueCausedBraking as u64,
+                        data.value
+                    );
                 },
             }
         }
@@ -104,7 +114,10 @@ pub async fn data_middle_step(
             }
         }
 
-        if POD_IS_MOVING.load(Ordering::Relaxed) && DISABLE_BRAKE_MOVING_NO_LOCALISATION.load(Ordering::Relaxed) && Duration::from_millis(3500) > unsafe { LOCALISATION_LAST_SEEN }.elapsed() {
+        if POD_IS_MOVING.load(Ordering::Relaxed)
+            && DISABLE_BRAKE_MOVING_NO_LOCALISATION.load(Ordering::Relaxed)
+            && Duration::from_millis(3500) > unsafe { LOCALISATION_LAST_SEEN }.elapsed()
+        {
             event_sender.send(Event::EmergencyBraking).await;
         }
 
@@ -121,7 +134,7 @@ pub async fn data_middle_step(
             },
             Datatype::Localisation => unsafe {
                 LOCALISATION_LAST_SEEN = Instant::now();
-            }
+            },
             _ => {},
         }
 
