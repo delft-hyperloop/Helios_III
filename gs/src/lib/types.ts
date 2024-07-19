@@ -116,7 +116,8 @@ export enum STATUS {
     LV_BATTERIES,
     HV_BATTERIES,
     BRAKING_PCB,
-    VOLTAGE_OVER
+    VOLTAGE_OVER,
+    TURNING
 }
 
 export type LogType = 'INFO' | 'WARNING' | 'ERROR' | 'STATUS';

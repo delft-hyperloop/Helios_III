@@ -4,12 +4,14 @@
     import Icon from "@iconify/svelte";
     import {invoke} from "@tauri-apps/api/tauri";
     import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
+  import {STATUS} from "$lib/types";
 
     let width: number;
 
     const storeManager = GrandDataDistributor.getInstance().stores;
     const lvBattery = storeManager.getWritable("ChargeStateLow");
     const hvBattery = storeManager.getWritable("ChargeStateHigh");
+    const statuses = storeManager.getWritable("ConnectionStatus");
 
     let tableTempsArr: any[][];
     let tableArr2: any[][];
@@ -40,7 +42,7 @@
         ["EMS AB", DE.LEVI_EMS_CURRENT_AB, "[-10,10] A", "EMS CD", DE.LEVI_EMS_CURRENT_CD, "[-10,10] A"],
     ]
 
-    const location = storeManager.getWritable("Localisation");
+    const location = storeManager.getWritable("levi_location");
 
     const toastStore = getToastStore();
 
@@ -82,7 +84,7 @@
         <div class="snap-x scroll-px-0.5 snap-mandatory overflow-x-auto h-[90vh]">
             <TileGrid className="p-4 w-full" columns="1fr 1fr" rows="">
                 <Tile bgToken={800} containerClass="col-span-2">
-                    <Localiser turning={true} loc={$location.value} showLabels={false} />
+                    <Localiser turning={$statuses.value[STATUS.TURNING]} loc={$location.value} showLabels={false} />
                 </Tile>
                 <Tile bgToken={700} containerClass="col-span-2">
                     <div class="flex flex-wrap justify-between">
@@ -90,7 +92,7 @@
                             <p>
                                 Velocity: <Store datatype="Velocity" /> m/s
                                 <br>
-                                Position: <Store datatype="Localisation" /> mm
+                                Position: <Store datatype="levi_location" /> mm
                                 <br>
                                 Acceleration: <Store datatype="Acceleration" /> m/s²
                             </p>
