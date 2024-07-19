@@ -41,7 +41,7 @@ FrontendHeartbeating = 1500
 
 [[Info]]
 label = "ServerStarted"
-colour = "Green"
+colour = "green"
 
 [[Info]]    
 label = "ServerFailedToStart"

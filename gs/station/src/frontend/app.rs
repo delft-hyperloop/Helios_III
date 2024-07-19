@@ -84,6 +84,7 @@ pub fn tauri_main(backend: Backend) {
                         sh.register("Space", move || {
                             send_command("EmergencyBrake".into(), 0);
                             // ss.emit_all(SHORTCUT_CHANNEL, "emergency_brake").unwrap();
+                            ss.emit_all(STATUS_CHANNEL, "Emergency Brake triggered!;red").unwrap();
                             ss.emit_all(ERROR_CHANNEL, "Emergency Brake triggered!").unwrap()
                         })
                         .expect("Could not register shortcut");
@@ -92,7 +93,8 @@ pub fn tauri_main(backend: Backend) {
                         sh.register("Esc", move || {
                             send_command("EmergencyBrake".into(), 0);
                             // ss.emit_all(SHORTCUT_CHANNEL, "emergency_brake").unwrap();
-                            ss.emit_all(ERROR_CHANNEL, "Emergency Brake triggered!").unwrap()
+                            ss.emit_all(ERROR_CHANNEL, "Emergency Brake triggered!").unwrap();
+                            ss.emit_all(STATUS_CHANNEL, "Emergency Brake triggered!;red").unwrap();
                         })
                         .expect("Could not register shortcut");
                     },

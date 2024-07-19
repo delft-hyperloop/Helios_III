@@ -193,7 +193,7 @@ impl Fsm {
             },
             State::EmergencyBraking => {
                 self.entry_emergency_braking();
-                self.pod_safe().await;
+                // self.pod_safe().await;
             },
             State::Exit => self.entry_exit(),
             State::Crashing => self.entry_exit(),

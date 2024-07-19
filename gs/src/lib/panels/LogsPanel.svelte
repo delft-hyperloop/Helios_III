@@ -52,7 +52,7 @@
 
           toastStore.trigger({
             message: message[0],
-            background: message[1] || "bg-surface-600",
+            background: `bg-${message[1]}-600` || "bg-surface-600",
           });
 
           switch (message[0]) {
