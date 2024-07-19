@@ -453,12 +453,12 @@ mod tests {
             speeds: LocationSpeedMap(
                 [
                     (Location::ForwardA, 195),
-                    (Location::BackwardsA, 194),
+                    (Location::BackwardsA, 187),
                     (Location::ForwardB, 199),
-                    (Location::BackwardsB, 0),
+                    (Location::BackwardsB, 184),
                     (Location::ForwardC, 199),
                     (Location::BackwardsC, 0),
-                    (Location::LaneSwitchStraight, 10),
+                    (Location::LaneSwitchStraight, 0),
                     (Location::LaneSwitchCurved, 0),
                     (Location::StopAndWait, 0),
                     (Location::BrakeHere, 0),
@@ -468,7 +468,7 @@ mod tests {
         };
         let s_bytes: u64 = route.speeds.clone().into();
         let r_bytes: u64 = route.positions.into();
-        // panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
 
         let mut r = Route::default();
         r.speeds_from(s_bytes);

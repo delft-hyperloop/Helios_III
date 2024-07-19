@@ -115,6 +115,14 @@
       });
     }
 
+    // todo: convert speeds to u8 with the following function:
+    // if speed = 0 {
+    //   return 0 
+    // } else {
+    //   return 128 + (128*((speed+10)/20))
+    // }
+    //
+
     async function processSpeeds() {
         console.log(`Sending command: speeds_to_u64`);
         await invoke('speeds_to_u64', {speeds: CurrentRouteConfig.speeds}).then(r => {
