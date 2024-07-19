@@ -49,6 +49,7 @@
           const message:string[] = event.payload.split(";");
 
           console.log(message)
+          console.log(`bg-${message[1]}-600`)
 
           toastStore.trigger({
             message: message[0],
