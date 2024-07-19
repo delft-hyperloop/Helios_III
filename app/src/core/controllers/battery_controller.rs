@@ -240,12 +240,13 @@ impl BatteryController {
         } else {
             Datatype::TotalBatteryVoltageLow
         };
-        queue_dp(self.data_sender, battery_voltage_dt, avg_cell_voltage, timestamp).await;
-        queue_dp(self.data_sender, battery_voltage_min, min_cell_voltage, timestamp).await;
-        queue_dp(self.data_sender, battery_voltage_max, max_cell_voltage, timestamp).await;
-        if total_pack_voltage != 0 {
+
+        if total_pack_voltage >= 1000 {
             queue_dp(self.data_sender, total_battery_voltage_dt, total_pack_voltage, timestamp)
-                .await
+                .await;
+            queue_dp(self.data_sender, battery_voltage_dt, avg_cell_voltage, timestamp).await;
+            queue_dp(self.data_sender, battery_voltage_min, min_cell_voltage, timestamp).await;
+            queue_dp(self.data_sender, battery_voltage_max, max_cell_voltage, timestamp).await;
         };
         if !self.high_voltage {
             queue_dp(self.data_sender, Datatype::SingleCellVoltageLV1, avg_cell_voltage, timestamp)
