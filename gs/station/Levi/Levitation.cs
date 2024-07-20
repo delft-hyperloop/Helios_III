@@ -101,8 +101,8 @@ namespace PmpGettingStartedCs
                     try
                     {
                         Console.WriteLine("INFO:disabling_control_loop\n");
-                        SetVerticalMode(0);
-                        SetLateralMode(0);
+                        SetVerticalMode(2);
+                        SetLateralMode(2);
                         Console.WriteLine("INFO:enabling_levi_HV\n");
                         EnableAndMove.EnableAxis(this);
 
@@ -155,10 +155,10 @@ namespace PmpGettingStartedCs
                 case "launch":
                     try
                     {
-                        this.SetVerticalMode(0);
+                        /*this.SetVerticalMode(0);*/
                         Console.Write("INFO:launching\n");
                         Thread.Sleep(3000);
-                        this.SetLateralMode(1);
+/*                        this.SetLateralMode(1);*/
                         Thread.Sleep(1000);
                         Console.Write("INFO:launch_complete\n");
                     }
@@ -171,7 +171,7 @@ namespace PmpGettingStartedCs
                 case "vert_mode_normal":
                     try
                     {
-                        this.SetVerticalMode(0);
+/*                        this.SetVerticalMode(0);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -183,7 +183,7 @@ namespace PmpGettingStartedCs
                 case "vert_mode_offsets":
                     try
                     {
-                        this.SetVerticalMode(5);
+/*                        this.SetVerticalMode(5);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -195,7 +195,7 @@ namespace PmpGettingStartedCs
                 case "vert_mode_dance":
                     try
                     {
-                        this.SetVerticalMode(6);
+/*                        this.SetVerticalMode(6);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -207,7 +207,7 @@ namespace PmpGettingStartedCs
                 case "vert_mode_sine":
                     try
                     {
-                        this.SetVerticalMode(7);
+/*                        this.SetVerticalMode(7);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -219,8 +219,8 @@ namespace PmpGettingStartedCs
                 case "vert0":
                     try
                     {
-                        this.SetVerticalZeroReset(0);
-                        this.SetVerticalMode(-1);
+/*                        this.SetVerticalZeroReset(0);
+                        this.SetVerticalMode(-1);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -232,7 +232,7 @@ namespace PmpGettingStartedCs
                 case "lat0":
                     try
                     {
-                        this.SetLateralMode(-1);
+/*                        this.SetLateralMode(-1);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -244,7 +244,7 @@ namespace PmpGettingStartedCs
                 case "LeviStartLS":
                     try
                     {
-                        this.SetLS_Signal(1);
+/*                        this.SetLS_Signal(1);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -256,7 +256,7 @@ namespace PmpGettingStartedCs
                 case "LeviStopLS":
                     try
                     {
-                        this.SetLS_Signal(0);
+/*                        this.SetLS_Signal(0);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -268,7 +268,7 @@ namespace PmpGettingStartedCs
                 case "vert0_reset":
                     try
                     {
-                        this.SetVerticalZeroReset(1);
+/*                        this.SetVerticalZeroReset(1);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -280,9 +280,9 @@ namespace PmpGettingStartedCs
                 case "lat0_reset":
                     try
                     {
-                        this.SetLateralZeroReset(1);
+/*                        this.SetLateralZeroReset(1);
                         Thread.Sleep(50);
-                        this.SetLateralZeroReset(0);
+                        this.SetLateralZeroReset(0);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -294,7 +294,7 @@ namespace PmpGettingStartedCs
                 case "lat_mode_normal":
                     try
                     {
-                        this.SetLateralMode(1);
+/*                        this.SetLateralMode(1);*/
                         Console.Write("INFO:mode_set\n");
                     }
                     catch (Exception)
@@ -306,12 +306,12 @@ namespace PmpGettingStartedCs
                 case "land":
                     try
                     {
-                        this.SetVerticalMode(3);
+/*                        this.SetVerticalMode(3);*/
                         Console.Write("INFO:landing\n");
                         Thread.Sleep(5000);
-                        this.SetLateralMode(2);
+/*                        this.SetLateralMode(2);*/
                         Thread.Sleep(5000);
-                        this.SetVerticalMode(2);
+/*                        this.SetVerticalMode(2);*/
                         Console.Write("INFO:landed\n");
                     }
                     catch (Exception)
