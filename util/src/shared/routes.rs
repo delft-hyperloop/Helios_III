@@ -553,5 +553,105 @@ mod tests {
 
         assert_eq!(r, route);
     }
+
+    #[test]
+    fn demonstration_A() {
+        let route = Route {
+            positions: LocationSequence([
+                Location::ForwardA,
+                Location::LaneSwitchStraight,
+                Location::ForwardB,
+                Location::StopAndWait,
+                Location::BackwardsB,
+                Location::LaneSwitchStraight,
+                Location::BackwardsA,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+            ]),
+            current_position: 0,
+            speeds: LocationSpeedMap(
+                [
+                    (Location::ForwardA, 0),
+                    (Location::BackwardsA, 0),
+                    (Location::ForwardB, 0),
+                    (Location::BackwardsB, 0),
+                    (Location::ForwardC, 0),
+                    (Location::BackwardsC, 0),
+                    (Location::LaneSwitchStraight, 0),
+                    (Location::LaneSwitchCurved, 0),
+                    (Location::StopAndWait, 0),
+                    (Location::BrakeHere, 0),
+                ]
+                .into(),
+            ),
+        };
+        let s_bytes: u64 = route.speeds.clone().into();
+        let r_bytes: u64 = route.positions.into();
+        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+
+        let mut r = Route::default();
+        r.speeds_from(s_bytes);
+        r.positions_from(r_bytes);
+
+        assert_eq!(r, route);
+    }
+
+
+    #[test]
+    fn demonstration_B() {
+        let route = Route {
+            positions: LocationSequence([
+                Location::ForwardA,
+                Location::LaneSwitchCurved,
+                Location::ForwardC,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+            ]),
+            current_position: 0,
+            speeds: LocationSpeedMap(
+                [
+                    (Location::ForwardA, 0),
+                    (Location::BackwardsA, 0),
+                    (Location::ForwardB, 0),
+                    (Location::BackwardsB, 0),
+                    (Location::ForwardC, 0),
+                    (Location::BackwardsC, 0),
+                    (Location::LaneSwitchStraight, 0),
+                    (Location::LaneSwitchCurved, 0),
+                    (Location::StopAndWait, 0),
+                    (Location::BrakeHere, 0),
+                ]
+                .into(),
+            ),
+        };
+        let s_bytes: u64 = route.speeds.clone().into();
+        let r_bytes: u64 = route.positions.into();
+        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+
+        let mut r = Route::default();
+        r.speeds_from(s_bytes);
+        r.positions_from(r_bytes);
+
+        assert_eq!(r, route);
+    }
+
 }
 

@@ -19,6 +19,11 @@ impl Fsm {
 
     pub async fn react_idle(&mut self, event: Event) {
         match event {
+            Event::Levitation => {
+                if self.status.fake_hv() {
+                    transit!(self, State::LeviLaunchingEvent);
+                }
+            }
             Event::TurnOnHVCommand => {
                 // check for preconditions
                 if (BRAKES_EXTENDED.load(Ordering::Acquire) || !self.status.brakes_armed)

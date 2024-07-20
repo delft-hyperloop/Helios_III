@@ -6,7 +6,6 @@
 mod batteries;
 mod sources;
 pub mod trash;
-// mod trash;
 
 use core::sync::atomic::Ordering;
 
@@ -52,89 +51,87 @@ pub async fn data_middle_step(
     outgoing: DataSender,
     event_sender: EventSender,
 ) -> ! {
-    let mut hb = HB::new();
-    let hb_dt = HEARTBEATS.iter().map(|x| x.0).collect::<Vec<Datatype, { HEARTBEATS_LEN }>>();
+    // let mut hb = HB::new();
+    // let hb_dt = HEARTBEATS.iter().map(|x| x.0).collect::<Vec<Datatype, { HEARTBEATS_LEN }>>();
 
     loop {
         let data = incoming.receive().await;
 
         // 1. check thresholds
-        if OUT_OF_RANGE_DISABLED.load(Ordering::Relaxed) {
-            match data.datatype.check_bounds(data.value) {
-                ValueCheckResult::Fine => {},
-                ValueCheckResult::Warn => {
-                    // send_data!(
-                    //     outgoing,
-                    //     Datatype::ValueWarning,
-                    //     data.datatype.to_id() as u64,
-                    //     data.value
-                    // ),
-                },
-                ValueCheckResult::Error => {
-                    // send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
-                },
-                ValueCheckResult::BrakeNow => {
-                    queue_event(event_sender, Event::ValueOutOfBounds).await;
-                    send_data!(
-                        outgoing,
-                        Datatype::ValueCausedBraking,
-                        data.datatype.to_id() as u64,
-                        data.value
-                    );
-                    send_data!(
-                        outgoing,
-                        Datatype::Info,
-                        Info::ValueCausedBraking as u64,
-                        data.value
-                    );
-                },
-            }
-        }
+        // if OUT_OF_RANGE_DISABLED.load(Ordering::Relaxed) {
+        //     match data.datatype.check_bounds(data.value) {
+        //         ValueCheckResult::Fine => {},
+        //         ValueCheckResult::Warn => {
+        //             // send_data!(
+        //             //     outgoing,
+        //             //     Datatype::ValueWarning,
+        //             //     data.datatype.to_id() as u64,
+        //             //     data.value
+        //             // ),
+        //         },
+        //         ValueCheckResult::Error => {
+        //             // send_data!(outgoing, Datatype::ValueError, data.datatype.to_id() as u64, data.value)
+        //         },
+        //         ValueCheckResult::BrakeNow => {
+        //             queue_event(event_sender, Event::ValueOutOfBounds).await;
+        //             send_data!(
+        //                 outgoing,
+        //                 Datatype::ValueCausedBraking,
+        //                 data.datatype.to_id() as u64,
+        //                 data.value
+        //             );
+        //             send_data!(
+        //                 outgoing,
+        //                 Datatype::Info,
+        //                 Info::ValueCausedBraking as u64,
+        //                 data.value
+        //             );
+        //         },
+        //     }
+        // }
         // 2. check heartbeats
-        let mut seen = !hb_dt.contains(&data.datatype);
+        // let mut seen = !hb_dt.contains(&data.datatype);
+        //
+        // for (dt, out, last) in hb.iter_mut() {
+        //     if !seen && *dt == data.datatype {
+        //         seen = true;
+        //         *last = Some(Instant::now());
+        //     } else if last.is_some_and(|l| l.elapsed() > *out) {
+        //         warn!("[heartbeat] timeout triggered for {:?}", dt);
+        //         event_sender.send(Event::EmergencyBraking).await;
+        //         queue_data(outgoing, Datatype::HeartbeatExpired, dt.to_id() as u64).await;
+        //         queue_data(outgoing, Datatype::Info, Info::HeartbeatExpired as u64).await;
+        //         *last = None;
+        //     }
+        // }
+        // if !seen {
+        //     match hb.push((data.datatype, timeout(data.datatype), None)) {
+        //         Ok(_) => {},
+        //         Err(_) => {
+        //             send_data!(outgoing, Datatype::Info, Info::lamp_error_unreachable.to_idx());
+        //         },
+        //     }
+        // }
 
-        for (dt, out, last) in hb.iter_mut() {
-            if !seen && *dt == data.datatype {
-                seen = true;
-                *last = Some(Instant::now());
-            } else if last.is_some_and(|l| l.elapsed() > *out) {
-                warn!("[heartbeat] timeout triggered for {:?}", dt);
-                event_sender.send(Event::EmergencyBraking).await;
-                queue_data(outgoing, Datatype::HeartbeatExpired, dt.to_id() as u64).await;
-                queue_data(outgoing, Datatype::Info, Info::HeartbeatExpired as u64).await;
-                *last = None;
-            }
-        }
-        if !seen {
-            match hb.push((data.datatype, timeout(data.datatype), None)) {
-                Ok(_) => {},
-                Err(_) => {
-                    send_data!(outgoing, Datatype::Info, Info::lamp_error_unreachable.to_idx());
-                },
-            }
-        }
-
-        if POD_IS_MOVING.load(Ordering::Relaxed)
-            && DISABLE_BRAKE_MOVING_NO_LOCALISATION.load(Ordering::Relaxed)
-            && Duration::from_millis(3500) > unsafe { LOCALISATION_LAST_SEEN }.elapsed()
-        {
-            event_sender.send(Event::EmergencyBraking).await;
-        }
+        // if POD_IS_MOVING.load(Ordering::Relaxed)
+        //     && DISABLE_BRAKE_MOVING_NO_LOCALISATION.load(Ordering::Relaxed)
+        //     && Duration::from_millis(3500) > unsafe { LOCALISATION_LAST_SEEN }.elapsed()
+        // {
+        //     event_sender.send(Event::EmergencyBraking).await;
+        // }
 
         // 3. check for special cases
         match data.datatype {
             x if LV_BMS_DATA.contains(&x) => LV_BATTERIES_CONNECTED.store(true, Ordering::Relaxed),
             x if HV_BMS_DATA.contains(&x) => HV_BATTERIES_CONNECTED.store(true, Ordering::Relaxed),
-            x if PROPULSION_DATA.contains(&x) => {
-                PROPULSION_CONNECTED.store(true, Ordering::Relaxed)
-            },
+            x if PROPULSION_DATA.contains(&x) => PROPULSION_CONNECTED.store(true, Ordering::Relaxed),
             x if SENSOR_HUB_DATA.contains(&x) => HUB_CONNECTED.store(true, Ordering::Relaxed),
             x if PROPULSION_DATA.contains(&x) => {
                 PROPULSION_CONNECTED.store(true, Ordering::Relaxed)
             },
-            Datatype::Localisation => unsafe {
-                LOCALISATION_LAST_SEEN = Instant::now();
-            },
+            // Datatype::Localisation => unsafe {
+            //     LOCALISATION_LAST_SEEN = Instant::now();
+            // },
             _ => {},
         }
 
@@ -142,16 +139,16 @@ pub async fn data_middle_step(
     }
 }
 
-fn timeout(dt: Datatype) -> Duration {
-    for (d, t) in HEARTBEATS {
-        if d == dt {
-            return Duration::from_millis(t);
-        }
-    }
-    Duration::from_millis(0) // This is unreachable,
-                             // but as to not panic we return zero timeout.
-                             // Since this will always be expired, it will always cause emergency braking
-}
+// fn timeout(dt: Datatype) -> Duration {
+//     for (d, t) in HEARTBEATS {
+//         if d == dt {
+//             return Duration::from_millis(t);
+//         }
+//     }
+//     Duration::from_millis(0) // This is unreachable,
+//                              // but as to not panic we return zero timeout.
+//                              // Since this will always be expired, it will always cause emergency braking
+// }
 //
 // fn value_warning(dt: Datatype, v: u64) -> Datapoint {
 //     Datapoint::new(Datatype::ValueWarning, dt.to_id() as u64, v)

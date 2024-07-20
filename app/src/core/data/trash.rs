@@ -7,7 +7,7 @@ use crate::DataReceiver;
 use crate::DataSender;
 use crate::Datatype;
 
-const DISCARD_NUMBER: usize = 50;
+const DISCARD_NUMBER: usize = 10;
 
 #[embassy_executor::task(pool_size = 2)]
 pub async fn overflow(data_sender: DataSender, data_receiver: DataReceiver) {

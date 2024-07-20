@@ -35,7 +35,6 @@ pub struct FSMPeripherals {
 }
 
 impl FSMPeripherals {
-    // pub fn new(p : Peripherals, x: &Spawner, q : &PriorityChannel<NoopRawMutex, Event, Max, 16>) -> Self {
     pub async fn new(p: Peripherals, x: &Spawner, i: InternalMessaging) -> Self {
         // set to high impedance, since there's a 24V signal being given and this would fry the PCB
         let _ = Input::new(p.PD4, Pull::None);
