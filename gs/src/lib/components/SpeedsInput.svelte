@@ -5,7 +5,7 @@
     import { getModalStore } from "@skeletonlabs/skeleton"
     import { invoke } from "@tauri-apps/api/tauri"
     import util from "$lib/util/util"
-    import { EventChannel, type RouteStep } from "$lib"
+    import { EventChannel, type RouteStep, TauriCommand } from "$lib"
     import Icon from "@iconify/svelte"
     import type { RouteConfig } from "$lib/types"
     import { routeConfig } from "$lib/stores/data"
@@ -434,6 +434,10 @@
                             on:click={resetRouteConfig}>
                         Reset Route
                     </button>
+
+                    <TauriCommand cmd="demonstration_a" />
+                    <TauriCommand cmd="demonstration_b" />
+
                     <span>Valid: {isValid}</span>
                 </div>
             </div>
