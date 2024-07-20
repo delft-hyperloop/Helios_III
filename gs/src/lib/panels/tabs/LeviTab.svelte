@@ -1,8 +1,6 @@
 <script lang="ts">
   import {Chart, TileGrid, Tile, Table, Command} from "$lib";
     import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
-  import { ViewWindow } from "$lib/util/WindowControl"
-  import Icon from "@iconify/svelte"
 
     $: tableGaps = [
         ["A", DE.LEVI_EMS_GAP_A, DE.LEVI_HEMS_GAP_A],
@@ -27,14 +25,7 @@
 </script>
 
 <div class="p-4">
-    <div class="flex gap-x-2 items-start">
-        <h2 class="text-xl font-semibold mb-4">Levitation</h2>
-        {#if pop_up}
-            <button on:click={() => new ViewWindow("Levi", `/view/tab/4`)}>
-                <Icon icon="carbon:popup" />
-            </button>
-        {/if}
-    </div>
+    <h2 class="text-xl font-semibold mb-4">Levitation</h2>
 
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="">
         <Tile heading="Levi Control" insideClass="flex gap-x-4" containerClass="col-span-4">

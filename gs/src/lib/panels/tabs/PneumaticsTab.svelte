@@ -1,8 +1,6 @@
 <script lang="ts">
     import { Chart, GrandDataDistributor, Pneumatics, Table, Tile, TileGrid } from "$lib"
     import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
-    import { ViewWindow } from "$lib/util/WindowControl"
-    import Icon from "@iconify/svelte"
 
     const storeManager = GrandDataDistributor.getInstance().stores;
     const lowPressure = storeManager.getWritable("LowPressureSensor");
@@ -20,14 +18,7 @@
 </script>
 
 <div class="p-4">
-    <div class="flex gap-x-2 items-start">
-        <h2 class="text-xl font-semibold mb-4">Pneumatics</h2>
-        {#if pop_up}
-            <button on:click={() => new ViewWindow("Pneumatics", `/view/tab/5`)}>
-                <Icon icon="carbon:popup" />
-            </button>
-        {/if}
-    </div>
+    <h2 class="text-xl font-semibold mb-4">Pneumatics</h2>
 
     <TileGrid columns="3fr 1fr" rows="">
         <Tile>

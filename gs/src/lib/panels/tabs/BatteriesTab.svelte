@@ -8,8 +8,6 @@
         Tile,
         TileGrid, ToggleCommand,
     } from "$lib"
-    import { ViewWindow } from "$lib/util/WindowControl"
-    import Icon from "@iconify/svelte"
   const storeManager = GrandDataDistributor.getInstance().stores;
   const lvBattery = storeManager.getWritable("ChargeStateLow");
   const hvBattery = storeManager.getWritable("ChargeStateHigh");
@@ -183,13 +181,8 @@
 </script>
 
 <div class="p-4">
+    <h2 class="text-xl font-semibold mb-4">Batteries</h2>
     <div class="flex gap-x-2 items-start">
-        <h2 class="text-xl font-semibold mb-4">Batteries</h2>
-        {#if pop_up}
-            <button on:click={() => new ViewWindow("Batteries", `/view/tab/3`)}>
-                <Icon icon="carbon:popup" />
-            </button>
-        {/if}
     </div>
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="auto 1fr auto">
         <Tile insideClass="flex h-full items-center gap-4">
