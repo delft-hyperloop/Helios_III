@@ -20,6 +20,9 @@ impl Fsm {
     pub async fn react_idle(&mut self, event: Event) {
         match event {
             Event::TurnOnHVCommand => {
+                // if self.status.fake_hv() {
+                //
+                // }
                 // check for preconditions
                 if (BRAKES_EXTENDED.load(Ordering::Acquire) || !self.status.brakes_armed)
                     && !self.status.overrides.hv_without_brakes_armed()

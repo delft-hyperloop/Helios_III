@@ -57,3 +57,4 @@ pub async fn timeout_finish_pre_charge(event_sender: EventSender, timeout: Durat
     Timer::after(timeout).await;
     event_sender.send(Event::FinishPrecharge).await;
 }
+

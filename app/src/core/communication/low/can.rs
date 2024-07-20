@@ -46,8 +46,8 @@ pub async fn can_transmitter(
     }
 }
 
-static mut HV_LAST_RECEIVED: Instant = Instant::from_millis(0);
-static mut LV_LAST_RECEIVED: Instant = Instant::from_millis(0);
+// static mut HV_LAST_RECEIVED: Instant = Instant::from_millis(0);
+// static mut LV_LAST_RECEIVED: Instant = Instant::from_millis(0);
 
 #[embassy_executor::task(pool_size = 2)]
 pub async fn can_receiving_handler(
@@ -136,12 +136,13 @@ pub async fn can_receiving_handler(
                     // since we are never supposed to change the speed through the can bus (and run config is the only event with an actual value), i want a magic number that i can filter out from the run config handler just to make sure the pod doesn't do something stupid
                     send_event(event_sender, Event::from_id(id, Some(69420)));
                 } else {
-                    send_data!(
-                        data_sender,
-                        Datatype::UnknownCanId,
-                        id as u64,
-                        bytes_to_u64(frame.data())
-                    );
+                    Timer::after_micros(1).await;
+                    // send_data!(
+                    //     data_sender,
+                    //     Datatype::UnknownCanId,
+                    //     id as u64,
+                    //     bytes_to_u64(frame.data())
+                    // );
                 }
             },
             Err(e) => {
@@ -163,37 +164,39 @@ pub async fn can_receiving_handler(
     }
 }
 
-#[embassy_executor::task]
-pub async fn can_two_watchdog(event_sender: EventSender, data_sender: DataSender) {
-    Timer::after_secs(5).await;
-    
-    send_data!(data_sender, Datatype::Info, Info::StartingCanWatchdog as u64);
-    warn!("Started Can Watchdog");
-    // let mut lv_trigger = true;
-    // let mut hv_trigger = true;
-    loop {
-        info!("test");
-        if unsafe { HV_LAST_RECEIVED.elapsed().as_ticks() > Duration::from_millis(2500).as_ticks() } {
-            // if lv_trigger {
-                queue_event(event_sender, Event::EmergencyBraking).await;
-                // lv_trigger = false;
-                send_data!(data_sender, Datatype::Info, Info::HvBmsTimedOut as u64);
-                warn!("HV BMS timed out");
-            }
-        // } else {
-        //     lv_trigger = true;
+// #[embassy_executor::task]
+// pub async fn can_two_watchdog(event_sender: EventSender, data_sender: DataSender) {
+//     Timer::after_secs(5).await;
+//     
+//     send_data!(data_sender, Datatype::Info, Info::StartingCanWatchdog as u64);
+//     warn!("Started Can Watchdog");
+//     // let mut lv_trigger = true;
+//     // let mut hv_trigger = true;
+//     loop {
+//         info!("test");
+//         if unsafe { HV_LAST_RECEIVED.elapsed().as_ticks() > Duration::from_millis(2500).as_ticks() } {
+//             // if lv_trigger {
+//                 queue_event(event_sender, Event::EmergencyBraking).await;
+//                 // lv_trigger = false;
+//                 send_data!(data_sender, Datatype::Info, Info::HvBmsTimedOut as u64);
+//                 warn!("HV BMS timed out");
+//             }
+//         // } else {
+//         //     lv_trigger = true;
+//
+//         if unsafe { LV_LAST_RECEIVED.elapsed()  > Duration::from_millis(2500) } {
+//             // if hv_trigger {
+//                 queue_event(event_sender, Event::EmergencyBraking).await;
+//                 // hv_trigger = false;
+//                 send_data!(data_sender, Datatype::Info, Info::LvBmsTimedOut as u64);
+//                 warn!("LV BMS timed out");
+//             // }
+//         } else {
+//             // hv_trigger = true;
+//         }
+//
+//         Timer::after_millis(500).await;
+//     }
+// }
 
-        if unsafe { LV_LAST_RECEIVED.elapsed()  > Duration::from_millis(2500) } {
-            // if hv_trigger {
-                queue_event(event_sender, Event::EmergencyBraking).await;
-                // hv_trigger = false;
-                send_data!(data_sender, Datatype::Info, Info::LvBmsTimedOut as u64);
-                warn!("LV BMS timed out");
-            // }
-        } else {
-            // hv_trigger = true;
-        }
 
-        Timer::after_millis(500).await;
-    }
-}

@@ -31,7 +31,7 @@
         ["Ambient", DE.AMBIENT_TEMP, "[0,50] °C", "HEMS 3", DE.TEMP_HEMS_3, "[0,80] °C"],
         ["Motor Front", "Temp_Motor_1", "[0,80] °C", "HEMS 4", DE.TEMP_HEMS_4, "[0,80] °C"],
         ["Motor Back", "Temp_Motor_2", "[0,80] °C", "EMS 1", DE.TEMP_EMS_1, "[0,80] °C"],
-        ["Brake", DE.BRAKETEMPERATURE, "[0,100] °C", "EMS 2", DE.TEMP_EMS_2, "[0,80] °C"],
+        ["", "", "", "EMS 2", DE.TEMP_EMS_2, "[0,80] °C"],
     ]
 
     $: tableArr2 = [

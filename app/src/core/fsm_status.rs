@@ -78,7 +78,7 @@ impl Fsm {
         value |= n(IN_A_LANE_SWITCH.load(Ordering::Relaxed), 8);
         send_data!(self.data_queue, Datatype::ConnectionStatus, value);
         PROPULSION_CONNECTED.store(false, Ordering::Relaxed);
-        HUB_CONNECTED.store(false, Ordering::Relaxed);
+        // HUB_CONNECTED.store(false, Ordering::Relaxed);
         LV_BATTERIES_CONNECTED.store(false, Ordering::Relaxed);
         HV_BATTERIES_CONNECTED.store(false, Ordering::Relaxed);
     }
@@ -121,6 +121,9 @@ impl Overrides {
     pub fn out_of_range_disabled(&self) -> bool { self.values & 0b100000 != 0 }
 
     pub fn disable_brake_moving_without_location(&self) -> bool { self.values & 0b1000000 != 0 }
+    
+    pub fn fake_hv(&self) -> bool { self.values & 0b10000000 != 0 }
+
 }
 
 include!("../../../util/src/shared/routes.rs");

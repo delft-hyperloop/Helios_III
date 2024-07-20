@@ -36,13 +36,13 @@ levi_requested_data = ["Localisation", "PropulsionCurrent"]
 # <datatype name> = <timeout in milliseconds>
 # LocalisationHeartbeat = 1500
 FrontendHeartbeating = 1000
-BatteryMinVoltageLow = 3500
+# BatteryMinVoltageLow = 3500
 # SensorHubHeartbeat = 1500
 
 
 [[Info]]
 label = "ServerStarted"
-colour = "Green"
+colour = "green"
 
 [[Info]]    
 label = "ServerFailedToStart"

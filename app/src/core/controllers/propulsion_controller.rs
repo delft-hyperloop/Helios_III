@@ -98,18 +98,18 @@ pub async fn read_prop_adc(
 ) {
     Timer::after_millis(1000).await;
     loop {
-        Timer::after_millis(250).await;
+        Timer::after_millis(50).await;
         if !CONNECTED.load(Ordering::Relaxed) {
             continue;
         }
+        for _ in 0..3 {
+            let i = adc.read(&mut pa6) as u64;
+            send_data!(data_sender, Datatype::PropulsionCurrent, i; 5000);
+            Timer::after_millis(100).await;
+        }
         let v_ref_int = adc.read_internal(&mut v_ref_int_channel);
         let v = adc.read(&mut pa5) as u64;
-        let i = adc.read(&mut pa6) as u64;
         send_data!(data_sender, Datatype::PropulsionVoltage, v; 5000);
-        send_data!(data_sender, Datatype::PropulsionCurrent, i; 5000);
         send_data!(data_sender, Datatype::PropulsionVRefInt, v_ref_int as u64; 5000);
-        // queue_data(data_sender, Datatype::PropulsionVoltage, v).await;
-        // queue_data(data_sender, Datatype::PropulsionCurrent, i).await;
-        // queue_data(data_sender, Datatype::PropulsionVRefInt, v_ref_int as u64).await;
     }
 }

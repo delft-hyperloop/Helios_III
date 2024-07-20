@@ -101,7 +101,7 @@ impl CanController {
                 })
             ))
         );
-        try_spawn!(event_sender, x.spawn(can_two_watchdog(event_sender, data_sender)));
+        // try_spawn!(event_sender, x.spawn(can_two_watchdog(event_sender, data_sender)));
         try_spawn!(event_sender, x.spawn(can_transmitter(can_one_receiver, c1_tx)));
         try_spawn!(event_sender, x.spawn(can_transmitter(can_two_receiver, c2_tx)));
 
