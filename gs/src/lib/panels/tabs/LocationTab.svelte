@@ -1,6 +1,8 @@
 <script lang="ts">
-    import {Localiser, TileGrid, Tile, Chart, inputTurn, GrandDataDistributor} from "$lib";
+    import { Localiser, TileGrid, Tile, Chart, inputTurn, GrandDataDistributor } from "$lib"
     import {LOCALISATION_NAME, RunMode} from "$lib/types";
+    import { ViewWindow } from "$lib/util/WindowControl"
+    import Icon from "@iconify/svelte"
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -17,10 +19,20 @@
 
     const storeManager = GrandDataDistributor.getInstance().stores;
     const location = storeManager.getWritable(LOCALISATION_NAME);
+
+    export const pop_up: boolean = true;
 </script>
 
 <div class="p-4">
-    <h2 class="text-xl font-semibold mb-4">Location & IMU</h2>
+    <div class="flex gap-x-2 items-start">
+        <h2 class="text-xl font-semibold mb-4">Location & IMU</h2>
+        {#if pop_up}
+            <button on:click={() => new ViewWindow("Location", `/view/tab/2`)}>
+                <Icon icon="carbon:popup" />
+            </button>
+        {/if}
+    </div>
+
     <TileGrid columns="1fr 1fr" rows="">
         <Tile containerClass="col-span-2">
             <Localiser loc={$location.value} max={13000} turning={$inputTurn !== RunMode.ShortRun}/>

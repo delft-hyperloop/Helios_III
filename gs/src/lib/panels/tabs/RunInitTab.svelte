@@ -12,9 +12,13 @@
     import {invoke} from "@tauri-apps/api/tauri";
     import {STATUS} from "$lib/types";
     import {routeConfig} from "$lib/stores/data";
-    const storeManager = GrandDataDistributor.getInstance().stores;
+    import Icon from "@iconify/svelte"
+    import { ViewWindow } from "$lib/util/WindowControl"
 
+    const storeManager = GrandDataDistributor.getInstance().stores;
     const statuses = storeManager.getWritable("ConnectionStatus")
+
+    export let pop_up: boolean = true;
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -46,7 +50,15 @@
 </script>
 
 <div class="p-4 h-full">
-    <h2 class="text-xl font-semibold mb-4">Initialization</h2>
+    <div class="flex gap-x-2 items-start">
+        <h2 class="text-xl font-semibold mb-4">Initialization</h2>
+        {#if pop_up}
+            <button on:click={() => new ViewWindow("RunInit", `/view/tab/1`)}>
+                <Icon icon="carbon:popup" />
+            </button>
+        {/if}
+    </div>
+
     <TileGrid columns="1fr 1fr 1.5fr" rows="auto 1fr">
         <Tile containerClass="row-span-2" insideClass="flex flex-col gap-2" heading="Run Initialisation">
             <div class="grid grid-cols-2 gap-2">
