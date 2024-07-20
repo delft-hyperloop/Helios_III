@@ -226,7 +226,6 @@ pub fn positions_to_u64(positions: LocationSequence) -> u64 { positions.into() }
 #[tauri::command]
 pub fn positions_from_u64(positions: u64) -> LocationSequence { positions.into() }
 
-
 // #[macro_export]
 // #[allow(unused)]
 // #[tauri::command]
@@ -234,7 +233,6 @@ pub fn positions_from_u64(positions: u64) -> LocationSequence { positions.into()
 //     send_command("SetRoute".into(), 1822648539875311616)
 //         && send_command("SetSpeeds".into(), 14104086254467416064)
 // }
-
 
 #[macro_export]
 #[allow(unused)]

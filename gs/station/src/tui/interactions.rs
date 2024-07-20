@@ -42,7 +42,9 @@ impl App {
     fn handle_key_event(&mut self, key_event: KeyEvent) {
         match key_event.code {
             KeyCode::Char('q') => self.quit(),
-            KeyCode::Esc =>{ self.backend.send_command(crate::Command::EmergencyBrake(0)); }
+            KeyCode::Esc => {
+                self.backend.send_command(crate::Command::EmergencyBrake(0));
+            },
             KeyCode::Up => self.scroll_up(1),
             KeyCode::Down => self.scroll_down(1),
             KeyCode::Char('j') => self.scroll_down(10),
