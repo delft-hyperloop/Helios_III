@@ -1,8 +1,9 @@
 <script lang="ts">
-  import {GrandDataDistributor, serverStatus, TauriCommand} from "$lib";
+    import {serverStatus, TauriCommand} from "$lib";
     import {getToastStore} from "@skeletonlabs/skeleton";
     import {procedures} from "$lib/stores/data";
     import {parseProcedure} from "$lib/util/parsers";
+    import {ViewWindow} from "$lib/util/WindowControl"
 
     const toastStore = getToastStore();
     const handleSuccess = () => {
@@ -43,7 +44,10 @@
         <TauriCommand cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />
         <TauriCommand cmd="quit_levi" />
         <TauriCommand cmd="disconnect" successCallback={() => serverStatus.set(false)} />
-        <TauriCommand cmd="save_logs"/>
+        <TauriCommand cmd="save_logs" />
+        <button class="btn py-2 text-black bg-primary-500" on:click={() => new ViewWindow("Chart", "/view")}>
+            Window
+        </button>
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
 
