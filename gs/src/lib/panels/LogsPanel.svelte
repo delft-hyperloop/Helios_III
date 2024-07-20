@@ -35,7 +35,9 @@
     }
 
     function clearLogs() {
-      logs = [];
+        if (logs.length > 50) {
+            logs = logs.slice(-50);
+        }
     }
 
     onMount(async () => {
