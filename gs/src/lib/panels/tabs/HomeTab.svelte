@@ -44,7 +44,6 @@
         <TauriCommand cmd="quit_levi" />
         <TauriCommand cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />
         <TauriCommand cmd="save_logs"/>
-        
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
 
