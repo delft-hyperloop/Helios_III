@@ -285,11 +285,7 @@ impl Fsm {
                 self.log(Info::DisablePropulsionGpio).await;
                 self.send_data(Datatype::PropGPIODebug, 0).await;
             },
-            Event::EnablePropulsionCommand => {
-                self.peripherals.propulsion_controller.enable();
-                self.log(Info::EnablePropulsionGpio).await;
-                self.send_data(Datatype::PropGPIODebug, 1).await;
-            },
+
             // Override immediately setting the speed of the propulsion controller
             Event::SetCurrentSpeedCommand(x) => {
                 self.peripherals.propulsion_controller.set_speed(x as u8);

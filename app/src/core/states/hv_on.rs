@@ -2,7 +2,7 @@ use defmt::info;
 use defmt::warn;
 
 use crate::core::finite_state_machine::*;
-use crate::transit;
+use crate::{Datatype, transit};
 use crate::Command;
 use crate::Event;
 use crate::Info;
@@ -34,6 +34,13 @@ impl Fsm {
                 info!("Starting Levitation");
 
                 transit!(self, State::Levitating);
+            },
+
+            Event::EnablePropulsionCommand => {
+                self.peripherals.propulsion_controller.enable();
+                self.peripherals.propulsion_controller.set_speed(0);
+                self.log(Info::EnablePropulsionGpio).await;
+                self.send_data(Datatype::PropGPIODebug, 1).await;
             },
 
             Event::RunStarting => {

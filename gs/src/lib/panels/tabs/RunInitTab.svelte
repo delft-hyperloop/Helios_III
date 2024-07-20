@@ -50,8 +50,8 @@
     <TileGrid columns="1fr 1fr 1.5fr" rows="auto 1fr">
         <Tile containerClass="row-span-2" insideClass="flex flex-col gap-2" heading="Run Initialisation">
             <div class="grid grid-cols-2 gap-2">
-                <Command cmd="StartHV" className="btn flex-grow rounded-md bg-surface-700 " />
-                <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
+                <Command cmd="EnablePropulsion" className="btn flex-grow rounded-md bg-surface-700 " />
+                <Command cmd="DisablePropulsion" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="SystemReset" className="btn flex-grow rounded-md bg-surface-700" />
                 <Command cmd="ArmBrakes" className="btn flex-grow rounded-md bg-surface-700" />
                 <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal} disabled={false}>
