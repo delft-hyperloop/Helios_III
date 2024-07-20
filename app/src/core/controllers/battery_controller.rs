@@ -5,7 +5,6 @@ use crate::pconfig::bytes_to_u64;
 use crate::pconfig::queue_dp;
 use crate::DataSender;
 use crate::Datatype;
-use crate::EventSender;
 use crate::Info;
 
 pub struct BatteryController {
@@ -20,10 +19,7 @@ pub struct BatteryController {
 }
 
 impl BatteryController {
-    pub fn new(
-        data_sender: DataSender,
-        high_voltage: bool,
-    ) -> Self {
+    pub fn new(data_sender: DataSender, high_voltage: bool) -> Self {
         // Initialise anything needed by the battery controller here
         Self {
             data_sender,

@@ -132,14 +132,14 @@ impl defmt::Format for Route {
 impl std::fmt::Display for Route {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         
-        std::writeln!(f, "Route {{");
+        std::writeln!(f, "Route {{")?;
         for l in self.positions.into_iter() {
-            std::writeln!(f, " -> {:?}", l);
+            std::writeln!(f, " -> {:?}", l)?;
         }
-        std::writeln!(f, "\n currently at: {:?}", self.current_position);
-        std::writeln!(f, " Speeds: ");
+        std::writeln!(f, "\n currently at: {:?}", self.current_position)?;
+        std::writeln!(f, " Speeds: ")?;
         for (key, value) in self.speeds.0.iter() {
-            std::writeln!(f, "  {:?}: {}", key, value);
+            std::writeln!(f, "  {:?}: {}", key, value)?;
         }
         std::writeln!(f, "}}")
     }

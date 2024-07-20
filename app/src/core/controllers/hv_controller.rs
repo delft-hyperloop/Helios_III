@@ -1,4 +1,3 @@
-use defmt::info;
 use embassy_stm32::gpio::Output;
 use embassy_time::Duration;
 use embassy_time::Instant;
@@ -50,4 +49,3 @@ pub async fn timeout_finish_pre_charge(event_sender: EventSender, timeout: Durat
     Timer::after(timeout).await;
     event_sender.send(Event::FinishPrecharge).await;
 }
-

@@ -1,12 +1,9 @@
 use defmt::*;
 use defmt_rtt as _;
-use embassy_executor::Spawner;
 use embassy_stm32::can::CanRx;
 use embassy_stm32::can::CanTx;
 use embassy_stm32::can::Frame;
 use embassy_stm32::can::Instance;
-use embassy_time::Duration;
-use embassy_time::Instant;
 use embassy_time::Timer;
 use panic_probe as _;
 
@@ -16,17 +13,13 @@ use crate::core::controllers::battery_controller::ground_fault_detection_voltage
 use crate::core::controllers::can_controller::CanTwoUtils;
 use crate::pconfig::bytes_to_u64;
 use crate::pconfig::id_as_value;
-use crate::pconfig::queue_event;
 use crate::pconfig::send_event;
-use crate::send_data;
-use crate::try_spawn;
 use crate::CanReceiver;
 use crate::CanSender;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
-use crate::Info;
 use crate::BATTERY_GFD_IDS;
 use crate::DATA_IDS;
 use crate::EVENT_IDS;
@@ -47,7 +40,7 @@ pub async fn can_transmitter(
 
 #[embassy_executor::task(pool_size = 2)]
 pub async fn can_receiving_handler(
-    x: Spawner,
+    // x: Spawner,
     event_sender: EventSender,
     can_sender: CanSender,
     data_sender: DataSender,
@@ -150,4 +143,3 @@ pub async fn can_receiving_handler(
         Timer::after_micros(500).await;
     }
 }
-

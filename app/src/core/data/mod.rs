@@ -9,37 +9,18 @@ pub mod trash;
 
 use core::sync::atomic::Ordering;
 
-use defmt::warn;
-use embassy_time::Duration;
-use embassy_time::Instant;
-use heapless::Vec;
-
 use crate::core::data::sources::HV_BMS_DATA;
 use crate::core::data::sources::LV_BMS_DATA;
 use crate::core::data::sources::PROPULSION_DATA;
 use crate::core::data::sources::SENSOR_HUB_DATA;
-use crate::core::fsm_status::DISABLE_BRAKE_MOVING_NO_LOCALISATION;
 use crate::core::fsm_status::HUB_CONNECTED;
 use crate::core::fsm_status::HV_BATTERIES_CONNECTED;
-use crate::core::fsm_status::LOCALISATION_LAST_SEEN;
 use crate::core::fsm_status::LV_BATTERIES_CONNECTED;
-use crate::core::fsm_status::OUT_OF_RANGE_DISABLED;
-use crate::core::fsm_status::POD_IS_MOVING;
 use crate::core::fsm_status::PROPULSION_CONNECTED;
-use crate::pconfig::queue_data;
-use crate::pconfig::queue_event;
-use crate::send_data;
 use crate::DataReceiver;
 use crate::DataSender;
-use crate::Datatype;
-use crate::Event;
-use crate::EventSender;
-use crate::Info;
-use crate::ValueCheckResult;
-use crate::HEARTBEATS;
-use crate::HEARTBEATS_LEN;
 
-type HB = Vec<(Datatype, Duration, Option<Instant>), { HEARTBEATS_LEN }>;
+// type HB = Vec<(Datatype, Duration, Option<Instant>), { HEARTBEATS_LEN }>;
 
 /// ## Individual handling of datapoints
 /// A lot of the subsystems on the pod use their own "encoding" for data.
@@ -49,7 +30,7 @@ type HB = Vec<(Datatype, Duration, Option<Instant>), { HEARTBEATS_LEN }>;
 pub async fn data_middle_step(
     incoming: DataReceiver,
     outgoing: DataSender,
-    event_sender: EventSender,
+    // event_sender: EventSender,
 ) -> ! {
     // let mut hb = HB::new();
     // let hb_dt = HEARTBEATS.iter().map(|x| x.0).collect::<Vec<Datatype, { HEARTBEATS_LEN }>>();
@@ -124,7 +105,9 @@ pub async fn data_middle_step(
         match data.datatype {
             x if LV_BMS_DATA.contains(&x) => LV_BATTERIES_CONNECTED.store(true, Ordering::Relaxed),
             x if HV_BMS_DATA.contains(&x) => HV_BATTERIES_CONNECTED.store(true, Ordering::Relaxed),
-            x if PROPULSION_DATA.contains(&x) => PROPULSION_CONNECTED.store(true, Ordering::Relaxed),
+            x if PROPULSION_DATA.contains(&x) => {
+                PROPULSION_CONNECTED.store(true, Ordering::Relaxed)
+            },
             x if SENSOR_HUB_DATA.contains(&x) => HUB_CONNECTED.store(true, Ordering::Relaxed),
             x if PROPULSION_DATA.contains(&x) => {
                 PROPULSION_CONNECTED.store(true, Ordering::Relaxed)

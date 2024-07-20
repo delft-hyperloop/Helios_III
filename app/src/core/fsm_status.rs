@@ -1,8 +1,6 @@
 use core::sync::atomic::AtomicBool;
 use core::sync::atomic::Ordering;
 
-use embassy_time::Instant;
-
 use crate::core::finite_state_machine::Fsm;
 use crate::send_data;
 use crate::Datatype;
@@ -36,7 +34,7 @@ pub static DISABLE_BRAKE_MOVING_NO_LOCALISATION: AtomicBool = AtomicBool::new(fa
 
 pub static POD_IS_MOVING: AtomicBool = AtomicBool::new(false);
 
-pub static mut LOCALISATION_LAST_SEEN: Instant = Instant::from_millis(0);
+// pub static mut LOCALISATION_LAST_SEEN: Instant = Instant::from_millis(0);
 
 #[derive(Debug, Default)]
 pub struct Status {
@@ -121,9 +119,8 @@ impl Overrides {
     pub fn out_of_range_disabled(&self) -> bool { self.values & 0b100000 != 0 }
 
     pub fn disable_brake_moving_without_location(&self) -> bool { self.values & 0b1000000 != 0 }
-    
-    pub fn fake_hv(&self) -> bool { self.values & 0b10000000 != 0 }
 
+    pub fn fake_hv(&self) -> bool { self.values & 0b10000000 != 0 }
 }
 
 include!("../../../util/src/shared/routes.rs");
