@@ -10,7 +10,6 @@ use embassy_time::Instant;
 use embassy_time::Timer;
 use panic_probe as _;
 
-// use embedded_hal::can::Id;
 use crate::core::communication::Datapoint;
 use crate::core::controllers::battery_controller::ground_fault_detection_isolation_details;
 use crate::core::controllers::battery_controller::ground_fault_detection_voltage_details;
@@ -46,9 +45,6 @@ pub async fn can_transmitter(
     }
 }
 
-// static mut HV_LAST_RECEIVED: Instant = Instant::from_millis(0);
-// static mut LV_LAST_RECEIVED: Instant = Instant::from_millis(0);
-
 #[embassy_executor::task(pool_size = 2)]
 pub async fn can_receiving_handler(
     x: Spawner,
@@ -62,9 +58,6 @@ pub async fn can_receiving_handler(
     info!("[CAN] Ready for bus {:?}", bus_nr);
     let mut error_counter = 0u64;
     let mut gfd_counter = 0u64;
-    // if bus_nr == 2 {
-    //     try_spawn!(event_sender, x.spawn(can_two_watchdog(event_sender, data_sender)));
-    // }
     loop {
         match bus.read().await {
             Ok(envelope) => {
@@ -79,16 +72,10 @@ pub async fn can_receiving_handler(
                             ut.hv_controller
                                 .bms_can_handle(id, frame.data(), data_sender, timestamp.as_ticks())
                                 .await;
-                            unsafe {
-                                HV_LAST_RECEIVED = Instant::now();
-                            }
                         } else if LV_IDS.contains(&id) {
                             ut.lv_controller
                                 .bms_can_handle(id, frame.data(), data_sender, timestamp.as_ticks())
                                 .await;
-                            unsafe {
-                                LV_LAST_RECEIVED = Instant::now();
-                            }
                         } else if GFD_IDS.contains(&id) {
                             if id == Datatype::IMDVoltageDetails.to_id() {
                                 ground_fault_detection_isolation_details(
@@ -163,40 +150,4 @@ pub async fn can_receiving_handler(
         Timer::after_micros(500).await;
     }
 }
-
-// #[embassy_executor::task]
-// pub async fn can_two_watchdog(event_sender: EventSender, data_sender: DataSender) {
-//     Timer::after_secs(5).await;
-//     
-//     send_data!(data_sender, Datatype::Info, Info::StartingCanWatchdog as u64);
-//     warn!("Started Can Watchdog");
-//     // let mut lv_trigger = true;
-//     // let mut hv_trigger = true;
-//     loop {
-//         info!("test");
-//         if unsafe { HV_LAST_RECEIVED.elapsed().as_ticks() > Duration::from_millis(2500).as_ticks() } {
-//             // if lv_trigger {
-//                 queue_event(event_sender, Event::EmergencyBraking).await;
-//                 // lv_trigger = false;
-//                 send_data!(data_sender, Datatype::Info, Info::HvBmsTimedOut as u64);
-//                 warn!("HV BMS timed out");
-//             }
-//         // } else {
-//         //     lv_trigger = true;
-//
-//         if unsafe { LV_LAST_RECEIVED.elapsed()  > Duration::from_millis(2500) } {
-//             // if hv_trigger {
-//                 queue_event(event_sender, Event::EmergencyBraking).await;
-//                 // hv_trigger = false;
-//                 send_data!(data_sender, Datatype::Info, Info::LvBmsTimedOut as u64);
-//                 warn!("LV BMS timed out");
-//             // }
-//         } else {
-//             // hv_trigger = true;
-//         }
-//
-//         Timer::after_millis(500).await;
-//     }
-// }
-
 
