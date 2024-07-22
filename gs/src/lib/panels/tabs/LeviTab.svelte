@@ -33,6 +33,15 @@
             <Command cmd="vert_mode_sine" text="Vertical Sine" />
             <Command cmd="vert0_reset" text="Reset Vertical 0 current" />
         </Tile>
+        <Tile heading="Gaps" containerClass="col-span-2">
+            <Table background="bg-surface-900" titles={["Gap", "EMS", "HEMS"]} tableArr={tableGaps} />
+        </Tile>
+        <Tile heading="Levi Voltages" insideClass="flex flex-col justify-center">
+            <Table background="bg-surface-900" titles={["Value", "V"]} tableArr={leviVolt} />
+        </Tile>
+        <Tile heading="Levi Rotation" insideClass="flex flex-col justify-center">
+            <Table background="bg-surface-900" titles={["Axis", "Value"]} tableArr={leviHems} />
+        </Tile>
         <Tile containerClass="col-span-4">
             <Chart title="HEMS Current" background="bg-surface-900" height={300} />
         </Tile>
@@ -44,15 +53,6 @@
         </Tile>
         <Tile containerClass="col-span-2">
             <Chart title="EMS Temperatures" background="bg-surface-900" />
-        </Tile>
-        <Tile heading="Gaps" containerClass="col-span-2">
-            <Table background="bg-surface-900" titles={["Gap", "EMS", "HEMS"]} tableArr={tableGaps} />
-        </Tile>
-        <Tile heading="Levi Voltages" insideClass="flex flex-col justify-center">
-            <Table background="bg-surface-900" titles={["Value", "V"]} tableArr={leviVolt} />
-        </Tile>
-        <Tile heading="Levi Rotation" insideClass="flex flex-col justify-center">
-            <Table background="bg-surface-900" titles={["Axis", "Value"]} tableArr={leviHems} />
         </Tile>
     </TileGrid>
     <br>

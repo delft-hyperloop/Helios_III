@@ -132,14 +132,14 @@ impl defmt::Format for Route {
 impl std::fmt::Display for Route {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         
-        std::writeln!(f, "Route {{");
+        std::writeln!(f, "Route {{")?;
         for l in self.positions.into_iter() {
-            std::writeln!(f, " -> {:?}", l);
+            std::writeln!(f, " -> {:?}", l)?;
         }
-        std::writeln!(f, "\n currently at: {:?}", self.current_position);
-        std::writeln!(f, " Speeds: ");
+        std::writeln!(f, "\n currently at: {:?}", self.current_position)?;
+        std::writeln!(f, " Speeds: ")?;
         for (key, value) in self.speeds.0.iter() {
-            std::writeln!(f, "  {:?}: {}", key, value);
+            std::writeln!(f, "  {:?}: {}", key, value)?;
         }
         std::writeln!(f, "}}")
     }
@@ -445,8 +445,117 @@ mod tests {
         assert_eq!(route.speeds, new_speeds);
     }
 
+    // #[test]
+    // fn printing_speed_values() {
+    //     let route = Route {
+    //         positions: LocationSequence([
+    //             Location::ForwardA,
+    //             Location::LaneSwitchStraight,
+    //             Location::ForwardB,
+    //             Location::StopAndWait,
+    //             Location::BackwardsB,
+    //             Location::LaneSwitchStraight,
+    //             Location::BackwardsA,
+    //             Location::BrakeHere,
+    //             Location::StopAndWait,
+    //             Location::ForwardA,
+    //             Location::LaneSwitchCurved,
+    //             Location::ForwardC,
+    //             Location::BrakeHere,
+    //             Location::BrakeHere,
+    //             Location::BrakeHere,
+    //             Location::BrakeHere,
+    //         ]),
+    //         current_position: 0,
+    //         speeds: LocationSpeedMap(
+    //             [
+    //                 (Location::ForwardA, 195),
+    //                 (Location::BackwardsA, 187),
+    //                 (Location::ForwardB, 199),
+    //                 (Location::BackwardsB, 184),
+    //                 (Location::ForwardC, 199),
+    //                 (Location::BackwardsC, 0),
+    //                 (Location::LaneSwitchStraight, 0),
+    //                 (Location::LaneSwitchCurved, 0),
+    //                 (Location::StopAndWait, 0),
+    //                 (Location::BrakeHere, 0),
+    //             ]
+    //             .into(),
+    //         ),
+    //     };
+    //     let s_bytes: u64 = route.speeds.clone().into();
+    //     let r_bytes: u64 = route.positions.into();
+    //     panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+    //
+    //     let mut r = Route::default();
+    //     r.speeds_from(s_bytes);
+    //     r.positions_from(r_bytes);
+    //
+    //     assert_eq!(r, route);
+    // }
+
+    // #[test]
+    // fn import_speeds_from_kiril() {
+    //     let x = 15256443658052882000u64;
+    //     let y: LocationSpeedMap = x.into();
+    //     let mut r = Route::default();
+    //     r.speeds_from(x);
+    //     panic!("{}\n\n{}", x, r);
+    // }
+
+
+
+    // #[test]
+    // fn demonstration() {
+    //     let route = Route {
+    //         positions: LocationSequence([
+    //             Location::ForwardA,
+    //             Location::LaneSwitchStraight,
+    //             Location::ForwardB,
+    //             Location::StopAndWait,
+    //             Location::BackwardsB,
+    //             Location::LaneSwitchStraight,
+    //             Location::BackwardsA,
+    //             Location::BrakeHere,
+    //             Location::StopAndWait,
+    //             Location::ForwardA,
+    //             Location::LaneSwitchCurved,
+    //             Location::ForwardC,
+    //             Location::BrakeHere,
+    //             Location::BrakeHere,
+    //             Location::BrakeHere,
+    //             Location::BrakeHere,
+    //         ]),
+    //         current_position: 0,
+    //         speeds: LocationSpeedMap(
+    //             [
+    //                 (Location::ForwardA, 195),
+    //                 (Location::BackwardsA, 187),
+    //                 (Location::ForwardB, 199),
+    //                 (Location::BackwardsB, 184),
+    //                 (Location::ForwardC, 199),
+    //                 (Location::BackwardsC, 0),
+    //                 (Location::LaneSwitchStraight, 0),
+    //                 (Location::LaneSwitchCurved, 0),
+    //                 (Location::StopAndWait, 0),
+    //                 (Location::BrakeHere, 0),
+    //             ]
+    //             .into(),
+    //         ),
+    //     };
+    //     let s_bytes: u64 = route.speeds.clone().into();
+    //     let r_bytes: u64 = route.positions.into();
+    //     panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+    //
+    //     let mut r = Route::default();
+    //     r.speeds_from(s_bytes);
+    //     r.positions_from(r_bytes);
+    //
+    //     assert_eq!(r, route);
+    // }
+
     #[test]
-    fn printing_speed_values() {
+    fn demonstration_A() {
         let route = Route {
             positions: LocationSequence([
                 Location::ForwardA,
@@ -457,23 +566,23 @@ mod tests {
                 Location::LaneSwitchStraight,
                 Location::BackwardsA,
                 Location::BrakeHere,
-                Location::StopAndWait,
-                Location::ForwardA,
-                Location::LaneSwitchCurved,
-                Location::ForwardC,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
                 Location::BrakeHere,
                 Location::BrakeHere,
                 Location::BrakeHere,
                 Location::BrakeHere,
             ]),
             current_position: 0,
-            speeds: LocationSpeedMap(
+            speeds: LocationSpeedMap( // 4m/s: 218  | 0.5m/s:  195 | -4: 166 | -0.5: 188
                 [
-                    (Location::ForwardA, 195),
-                    (Location::BackwardsA, 187),
-                    (Location::ForwardB, 199),
-                    (Location::BackwardsB, 184),
-                    (Location::ForwardC, 199),
+                    (Location::ForwardA, 218),
+                    (Location::BackwardsA, 188),
+                    (Location::ForwardB, 195),
+                    (Location::BackwardsB, 166),
+                    (Location::ForwardC, 195),
                     (Location::BackwardsC, 0),
                     (Location::LaneSwitchStraight, 0),
                     (Location::LaneSwitchCurved, 0),
@@ -494,30 +603,11 @@ mod tests {
         assert_eq!(r, route);
     }
 
-    #[test]
-    fn import_speeds_from_kiril() {
-        let x = 15256443658052882000u64;
-        let y: LocationSpeedMap = x.into();
-        let mut r = Route::default();
-        r.speeds_from(x);
-        panic!("{}\n\n{}", x, r);
-    }
-
-
 
     #[test]
-    fn demonstration() {
+    fn demonstration_B() {
         let route = Route {
             positions: LocationSequence([
-                Location::ForwardA,
-                Location::LaneSwitchStraight,
-                Location::ForwardB,
-                Location::StopAndWait,
-                Location::BackwardsB,
-                Location::LaneSwitchStraight,
-                Location::BackwardsA,
-                Location::BrakeHere,
-                Location::StopAndWait,
                 Location::ForwardA,
                 Location::LaneSwitchCurved,
                 Location::ForwardC,
@@ -525,18 +615,27 @@ mod tests {
                 Location::BrakeHere,
                 Location::BrakeHere,
                 Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
+                Location::BrakeHere,
             ]),
             current_position: 0,
-            speeds: LocationSpeedMap(
+            speeds: LocationSpeedMap( // 4m/s: 218  | 0.5m/s:  195 | -4: 166 | -0.5: 188
                 [
-                    (Location::ForwardA, 195),
-                    (Location::BackwardsA, 187),
-                    (Location::ForwardB, 199),
-                    (Location::BackwardsB, 184),
-                    (Location::ForwardC, 199),
+                    (Location::ForwardA, 218),
+                    (Location::BackwardsA, 0),
+                    (Location::ForwardB, 0),
+                    (Location::BackwardsB, 0),
+                    (Location::ForwardC, 195),
                     (Location::BackwardsC, 0),
                     (Location::LaneSwitchStraight, 0),
-                    (Location::LaneSwitchCurved, 0),
+                    (Location::LaneSwitchCurved, 200),
                     (Location::StopAndWait, 0),
                     (Location::BrakeHere, 0),
                 ]
@@ -553,5 +652,6 @@ mod tests {
 
         assert_eq!(r, route);
     }
+
 }
 

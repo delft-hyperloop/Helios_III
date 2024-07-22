@@ -27,10 +27,10 @@
         invoke('send_command', {cmdName:onCmd, val}).then((r) => {
             if (r) {
                 status = true;
-                util.log(`send command ${offCmd} worked`, EventChannel.WARNING);
+                util.log(`send command ${onCmd} worked`, EventChannel.WARNING);
                 callback(val);
             } else {
-                util.log(`send command ${offCmd} failed`, EventChannel.WARNING);
+                util.log(`send command ${onCmd} failed`, EventChannel.WARNING);
             }
         });
     };
