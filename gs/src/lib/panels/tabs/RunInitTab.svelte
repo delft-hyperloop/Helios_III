@@ -12,9 +12,11 @@
     import {invoke} from "@tauri-apps/api/tauri";
     import {STATUS} from "$lib/types";
     import {routeConfig} from "$lib/stores/data";
-    const storeManager = GrandDataDistributor.getInstance().stores;
 
+    const storeManager = GrandDataDistributor.getInstance().stores;
     const statuses = storeManager.getWritable("ConnectionStatus")
+
+    export let pop_up: boolean = true;
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -47,6 +49,7 @@
 
 <div class="p-4 h-full">
     <h2 class="text-xl font-semibold mb-4">Initialization</h2>
+
     <TileGrid columns="1fr 1fr 1.5fr" rows="auto 1fr">
         <Tile containerClass="row-span-2" insideClass="flex flex-col gap-2" heading="Run Initialisation">
             <div class="grid grid-cols-2 gap-2">

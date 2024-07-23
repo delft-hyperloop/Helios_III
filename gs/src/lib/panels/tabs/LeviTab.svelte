@@ -20,10 +20,13 @@
         ["Pitch", DE.LEVI_HEMS_PITCH],
         ["Roll", DE.LEVI_HEMS_ROLL],
     ]
+
+    export const pop_up: boolean = true;
 </script>
 
 <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Levitation</h2>
+
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="">
         <Tile heading="Levi Control" insideClass="flex gap-x-4" containerClass="col-span-4">
             <Command cmd="launch" />

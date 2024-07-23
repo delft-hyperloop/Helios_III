@@ -1,8 +1,12 @@
 <script lang="ts">
     import {AppRail, AppRailTile} from "@skeletonlabs/skeleton";
     import {procedures} from "$lib/stores/data";
+    import { ViewWindow } from "$lib/util/WindowControl"
+    import Icon from "@iconify/svelte"
 
     let currentTile: number = 0;
+
+    export const pop_up: boolean = true;
 </script>
 
 <div class="h-full flex items-stretch">
@@ -16,7 +20,15 @@
         </AppRail>
     </div>
     <div class="p-8 w-10/12 flex-grow flex flex-col gap-4">
-        <h2 class="text-2xl font-bold">{$procedures[currentTile]?.title || 'NONE LOADED'}</h2>
+        <div class="flex gap-x-2 items-start">
+            <h2 class="text-xl font-semibold mb-4">{$procedures[currentTile]?.title || 'NONE LOADED'}</h2>
+            {#if pop_up}
+                <button on:click={() => new ViewWindow("Procedures", `/view/tab/6`)}>
+                    <Icon icon="carbon:popup" />
+                </button>
+            {/if}
+        </div>
+
         <span>Needed personnel:</span>
         <ul class="list-disc">
             {#each $procedures[currentTile]?.people || [] as person}

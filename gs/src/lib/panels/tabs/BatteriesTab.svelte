@@ -1,13 +1,13 @@
 <script lang="ts">
-  import {
-    Battery,
-    Chart,
-    GrandDataDistributor,
-    Status, Store,
-    Table,
-    Tile,
-    TileGrid, ToggleCommand
-  } from "$lib";
+    import {
+        Battery,
+        Chart,
+        GrandDataDistributor,
+        Status, Store,
+        Table,
+        Tile,
+        TileGrid, ToggleCommand,
+    } from "$lib"
   const storeManager = GrandDataDistributor.getInstance().stores;
   const lvBattery = storeManager.getWritable("ChargeStateLow");
   const hvBattery = storeManager.getWritable("ChargeStateHigh");
@@ -177,10 +177,13 @@
     let connectorStatus:boolean = false;
 
     const lvTotalStore = storeManager.getWritable("TotalBatteryVoltageLow");
+    export const pop_up: boolean = true;
 </script>
 
 <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Batteries</h2>
+    <div class="flex gap-x-2 items-start">
+    </div>
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="auto 1fr auto">
         <Tile insideClass="flex h-full items-center gap-4">
             <div class="flex flex-col items-center">
