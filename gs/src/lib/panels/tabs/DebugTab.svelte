@@ -3,9 +3,11 @@
     import {NamedCommandValues} from "$lib/types";
 
     const values:number[] = new Array(NamedCommandValues.length).fill(0);
+
+    export const pop_up: boolean = true;
 </script>
 
-<p>Andreas</p>
+<h2 class="text-xl font-semibold mb-4">Andreas</h2>
 
 <div class="grid grid-cols-4 w-full gap-4 pb-20">
     {#each NamedCommandValues as cmd, i}

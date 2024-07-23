@@ -9,13 +9,14 @@
         addEntryToChart,
     } from "$lib";
     import {initializeStores, Modal, Toast} from '@skeletonlabs/skeleton';
-    import {chartStore} from "$lib/stores/state";
+    import {chartStore, latestTimestamp} from "$lib/stores/state";
     import {initProcedures} from "$lib/stores/data";
     import {onDestroy} from "svelte";
     import {listen} from "@tauri-apps/api/event";
     import {parseShortCut, setBitsToBooleans} from "$lib/util/parsers";
     import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
     import { storePopup } from '@skeletonlabs/skeleton';
+    import {LOCALISATION_NAME} from "$lib/types";
 
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
@@ -26,6 +27,10 @@
     //////////////////////////////
     /////////// CHARTS ///////////
     //////////////////////////////
+
+    let breakingCommsChart = new PlotBuffer(500, 60000, [0, 120], true, "Breaking Comms");
+    $chartStore.set("Breaking Comms", breakingCommsChart);
+
     let emsTempChart = new PlotBuffer(500, 60000, [0, 120], true, "EMS 1");
     emsTempChart.addSeries(StrokePresets.theoretical("EMS 2"))
     $chartStore.set("EMS Temperatures", emsTempChart);
@@ -307,6 +312,8 @@
     gdd.stores.registerStore<number>("BatteryEnergyParamsHigh", 0);
     gdd.stores.registerStore<number>("BatteryEnergyParamsLow", 0);
 
+    gdd.stores.registerStore<number>("Temp_Motor_1", 0);
+    gdd.stores.registerStore<number>("Temp_Motor_2", 0);
     ////////////////////////////////////////////////////////////////
     ///////////////// PROPULSION REGISTER //////////////////////////
     ////////////////////////////////////////////////////////////////
@@ -317,13 +324,12 @@
         return curr;
     });
 
-    gdd.stores.registerStore<number>("Localisation", 0, data => {
+    gdd.stores.registerStore<number>(LOCALISATION_NAME, 0, data => {
         const curr = Number(data);
         $chartStore.get("Localisation")!.addEntry(1, curr);
         return curr;
     });
 
-    gdd.stores.registerStore<number>("Localisation", 0);
     gdd.stores.registerStore<number>("Acceleration", 0);
     gdd.stores.registerStore<number>("Direction", 0);
 
@@ -446,7 +452,10 @@
 
     gdd.stores.registerStore<number>("LowPressureSensor", 0);
     gdd.stores.registerStore<number>("HighPressureSensor", 0);
-    gdd.stores.registerStore<number>("BrakingCommDebug", 0);
+    gdd.stores.registerStore<number>("BrakingCommDebug", 0, data => {
+        breakingCommsChart.addEntry(1, data);
+        return data;
+    });
     gdd.stores.registerStore<number>("BrakingSignalDebug", 0)
     gdd.stores.registerStore<number>("BrakingRearmDebug", 0)
 
@@ -464,11 +473,16 @@
     ///////////////////////////////////////////////////////////////
 
     gdd.stores.registerStore<number>("FSMState", 0);
-    gdd.stores.registerStore<boolean[]>("ConnectionStatus", [false, false, false, false, false, false], setBitsToBooleans)
+
+    gdd.stores.registerStore<boolean[]>("ConnectionStatus", [false, false, false, false, false, false, false, false, false], setBitsToBooleans)
 
     gdd.start(50);
 
     initializeStores();
+
+    setInterval(() => {
+       latestTimestamp.set(Date.now());
+    }, 1000)
 
     onDestroy(async () => {
       GrandDataDistributor.getInstance().kill();

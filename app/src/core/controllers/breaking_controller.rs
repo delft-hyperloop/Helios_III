@@ -18,12 +18,13 @@ use crate::core::fsm_status::BRAKE;
 use crate::core::fsm_status::BRAKES_EXTENDED;
 use crate::core::fsm_status::DISABLE_BRAKING_COMMUNICATION;
 use crate::pconfig::queue_event;
-use crate::{Info, send_data};
+use crate::send_data;
 use crate::try_spawn;
 use crate::DataSender;
 use crate::Datatype;
 use crate::Event;
 use crate::EventSender;
+use crate::Info;
 
 pub struct BrakingController {
     pub braking_rearm: Output<'static>,
@@ -91,7 +92,7 @@ async fn read_braking_communication(
             edge = true;
             BRAKES_EXTENDED.store(false, Ordering::Relaxed);
         }
-        Timer::after_micros(100).await;
+        Timer::after_micros(10).await;
         if Instant::now().duration_since(last_timestamp) > Duration::from_millis(500) {
             send_data!(data_sender, Datatype::BrakingCommDebug, v as u64);
             last_timestamp = Instant::now();

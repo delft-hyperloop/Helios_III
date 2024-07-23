@@ -1,9 +1,12 @@
+use core::sync::atomic::Ordering;
+
 use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::core::fsm_status::Location;
 use crate::core::fsm_status::RouteUse;
+use crate::core::fsm_status::POD_IS_MOVING;
 use crate::transit;
 use crate::Command;
 use crate::Event;
@@ -12,6 +15,7 @@ use crate::Info;
 impl Fsm {
     pub fn entry_ls_cv(&mut self) {
         self.peripherals.propulsion_controller.set_speed(self.route.current_speed());
+        POD_IS_MOVING.store(true, Ordering::Relaxed);
     }
 
     pub async fn react_mv_ls_cv(&mut self, event: Event) {

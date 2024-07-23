@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {GrandDataDistributor, Pneumatics, Table, Tile, TileGrid} from "$lib";
+    import { Chart, GrandDataDistributor, Pneumatics, Table, Tile, TileGrid } from "$lib"
     import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
 
     const storeManager = GrandDataDistributor.getInstance().stores;
@@ -13,10 +13,13 @@
         ["Braking Signal", DE.BRAKINGSIGNALDEBUG],
         ["Braking Rearm", DE.BRAKINGREARMDEBUG],
     ]
+
+    export const pop_up: boolean = true;
 </script>
 
 <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Pneumatics</h2>
+
     <TileGrid columns="3fr 1fr" rows="">
         <Tile>
             <Pneumatics pressure_left={$highPressure.value} max_pressure_left={250}
@@ -24,6 +27,9 @@
         </Tile>
         <Tile>
             <Table background="bg-surface-900" titles={["Section", "Bars"]} tableArr={pressureTable}/>
+        </Tile>
+        <Tile>
+            <Chart title="Breaking Comms" />
         </Tile>
     </TileGrid>
 </div>

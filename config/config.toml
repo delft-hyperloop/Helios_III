@@ -1,10 +1,10 @@
 [gs]
 ip = [192,168,1,15]
 force = true 
-port = 6957
+port = 6949
 buffer_size = 1460 # this is the MAXIMUM size of messages transmitted, in bytes.
-timeout = 1500 # this is the timeout for the socket, in milliseconds.
-heartbeat = 500 # how often to send a keep_alive heartbeat, in milliseconds.
+timeout = 900 # this is the timeout for the socket, in milliseconds.
+heartbeat = 300 # how often to send a keep_alive heartbeat, in milliseconds.
 status_channel = "status_channel"
 info_channel = "info_channel"
 warning_channel = "warning_channel"
@@ -34,14 +34,12 @@ levi_requested_data = ["Localisation", "PropulsionCurrent"]
 [pod.heartbeats]
 # syntax:
 # <datatype name> = <timeout in milliseconds>
-# LocalisationHeartbeat = 1500
-FrontendHeartbeating = 1500 
-# SensorHubHeartbeat = 1500
+FrontendHeartbeating = 1000
 
 
 [[Info]]
 label = "ServerStarted"
-colour = "Green"
+colour = "green"
 
 [[Info]]    
 label = "ServerFailedToStart"
@@ -269,7 +267,16 @@ colour = "yellow"
 label = "PrechargeFinished"
 colour = "green"
 
+
 [[Info]]
-label = "EntryEmergencyBrakeState"
-colour = "magenta"
+label = "HvBmsTimedOut"
+colour = "red"
+
+[[Info]]
+label = "LvBmsTimedOut"
+colour = "red"
+
+[[Info]]
+label = "StartingCanWatchdog"
+colour = "blue"
 

@@ -1,6 +1,7 @@
 use std::collections::VecDeque;
 
 use gslib::Datapoint;
+
 use crate::battery::DataSender;
 use crate::connect::handle_incoming_data::handle_incoming_data;
 use crate::CommandSender;

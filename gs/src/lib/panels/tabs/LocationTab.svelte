@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {Localiser, TileGrid, Tile, Chart, inputTurn, GrandDataDistributor} from "$lib";
-    import {RunMode} from "$lib/types";
+    import { Localiser, TileGrid, Tile, Chart, inputTurn, GrandDataDistributor } from "$lib"
+    import {LOCALISATION_NAME, RunMode} from "$lib/types";
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -16,11 +16,14 @@
     ]
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const location = storeManager.getWritable("Localisation");
+    const location = storeManager.getWritable(LOCALISATION_NAME);
+
+    export const pop_up: boolean = true;
 </script>
 
 <div class="p-4">
     <h2 class="text-xl font-semibold mb-4">Location & IMU</h2>
+
     <TileGrid columns="1fr 1fr" rows="">
         <Tile containerClass="col-span-2">
             <Localiser loc={$location.value} max={13000} turning={$inputTurn !== RunMode.ShortRun}/>
@@ -34,8 +37,5 @@
         <Tile containerClass="col-start-1 col-span-2">
             <Chart title="Localisation" background="bg-surface-900" />
         </Tile>
-<!--        <Tile containerClass="col-start-1 col-span-2">-->
-<!--            <Table tableArr={tableArr2} background="bg-surface-900" titles={["Important", "Variable"]}/>-->
-<!--        </Tile>-->
     </TileGrid>
 </div>

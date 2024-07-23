@@ -69,20 +69,17 @@ const parseShortCut = async (shortcut:string):Promise<void> => {
 }
 
 function setBitsToBooleans(num: number): boolean[] {
+    console.log("We are statusing " + num);
+
     const numBits = 6;
-    const float64 = new Float64Array(1);
-    float64[0] = num;
-    const uint32 = new Uint32Array(float64.buffer);
     const bits = Array(numBits).fill(false);
 
     for (let i = 0; i < numBits; i++) {
-        const index = Math.floor(i / 32);
-        const bitPos = i % 32;
-
-        if ((uint32[index] & (1 << bitPos)) !== 0) {
-            bits[i] = true;
-        }
+        // Shift right by i and check if the least significant bit is 1
+        bits[numBits - 1 - i] = ((num >> i) & 1) === 1;
     }
+
+    console.log(bits);
 
     return bits;
 }

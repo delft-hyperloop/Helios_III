@@ -8,8 +8,10 @@ use crate::core::controllers::hv_controller::timeout_finish_pre_charge;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::pconfig::send_event;
-use crate::{Datatype, send_data, transit};
+use crate::send_data;
+use crate::transit;
 use crate::Command;
+use crate::Datatype;
 use crate::Event;
 use crate::Info;
 

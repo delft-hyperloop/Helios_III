@@ -1,6 +1,7 @@
 use core::sync::atomic::Ordering;
 
 use defmt::error;
+use defmt::warn;
 use embassy_time::Timer;
 
 use crate::core::communication::CommunicationLayer;
@@ -16,6 +17,7 @@ pub async fn external_communication_task(mut comm: impl CommunicationLayer + 'st
             Err(_) => continue 'netstack,
         };
         comm.handshake().await;
+        warn!("hand shaked");
 
         'connection: loop {
             if !comm.try_send_data().await {

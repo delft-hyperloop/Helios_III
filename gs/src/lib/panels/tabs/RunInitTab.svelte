@@ -11,9 +11,12 @@
     import {DatatypeEnum} from "$lib/namedDatatypeEnum";
     import {invoke} from "@tauri-apps/api/tauri";
     import {STATUS} from "$lib/types";
-    const storeManager = GrandDataDistributor.getInstance().stores;
+    import {routeConfig} from "$lib/stores/data";
 
+    const storeManager = GrandDataDistributor.getInstance().stores;
     const statuses = storeManager.getWritable("ConnectionStatus")
+
+    export let pop_up: boolean = true;
 
     let tableArr2:any[][];
     $: tableArr2 = [
@@ -46,11 +49,12 @@
 
 <div class="p-4 h-full">
     <h2 class="text-xl font-semibold mb-4">Initialization</h2>
+
     <TileGrid columns="1fr 1fr 1.5fr" rows="auto 1fr">
         <Tile containerClass="row-span-2" insideClass="flex flex-col gap-2" heading="Run Initialisation">
             <div class="grid grid-cols-2 gap-2">
-                <Command cmd="StartHV" className="btn flex-grow rounded-md bg-surface-700 " />
-                <Command cmd="StopHV" className="btn flex-grow rounded-md bg-surface-700 " />
+                <Command cmd="EnablePropulsion" className="btn flex-grow rounded-md bg-surface-700 " />
+                <Command cmd="DisablePropulsion" className="btn flex-grow rounded-md bg-surface-700 " />
                 <Command cmd="SystemReset" className="btn flex-grow rounded-md bg-surface-700" />
                 <Command cmd="ArmBrakes" className="btn flex-grow rounded-md bg-surface-700" />
                 <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal} disabled={false}>
@@ -59,6 +63,23 @@
                 <button class="btn rounded-md bg-primary-500 col-span-2" on:click={finishRunConfig} disabled={false}>
                     Submit Configuration
                 </button>
+                <h3 class="col-span-2">Desired speeds</h3>
+                <p>Forward A</p>
+                <p>{$routeConfig.speeds.ForwardA} m/s</p>
+                <p>Forward B</p>
+                <p>{$routeConfig.speeds.ForwardB} m/s</p>
+                <p>Forward C</p>
+                <p>{$routeConfig.speeds.ForwardC} m/s</p>
+                <p>Backwards A</p>
+                <p>{$routeConfig.speeds.BackwardsA} m/s</p>
+                <p>Backwards B</p>
+                <p>{$routeConfig.speeds.BackwardsB} m/s</p>
+                <p>Backwards C</p>
+                <p>{$routeConfig.speeds.BackwardsC} m/s</p>
+                <p>Lane Switch Curved</p>
+                <p>{$routeConfig.speeds.LaneSwitchCurved} m/s</p>
+                <p>Lane Switch Straight</p>
+                <p>{$routeConfig.speeds.LaneSwitchStraight} m/s</p>
             </div>
         </Tile>
         <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >

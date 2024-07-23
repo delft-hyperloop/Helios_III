@@ -76,19 +76,11 @@ impl CanController {
         c1_tx.write(&can::frame::Frame::new_standard(0x123, &[1, 2, 3, 4]).unwrap()).await;
         try_spawn!(
             event_sender,
-            x.spawn(can_receiving_handler(
-                x,
-                event_sender,
-                _can_one_sender,
-                data_sender,
-                c1_rx,
-                None
-            ))
+            x.spawn(can_receiving_handler(event_sender, _can_one_sender, data_sender, c1_rx, None))
         );
         try_spawn!(
             event_sender,
             x.spawn(can_receiving_handler(
-                x,
                 event_sender,
                 can_two_sender,
                 data_sender,
@@ -101,7 +93,6 @@ impl CanController {
                 })
             ))
         );
-
         try_spawn!(event_sender, x.spawn(can_transmitter(can_one_receiver, c1_tx)));
         try_spawn!(event_sender, x.spawn(can_transmitter(can_two_receiver, c2_tx)));
 

@@ -35,7 +35,6 @@ pub struct FSMPeripherals {
 }
 
 impl FSMPeripherals {
-    // pub fn new(p : Peripherals, x: &Spawner, q : &PriorityChannel<NoopRawMutex, Event, Max, 16>) -> Self {
     pub async fn new(p: Peripherals, x: &Spawner, i: InternalMessaging) -> Self {
         // set to high impedance, since there's a 24V signal being given and this would fry the PCB
         let _ = Input::new(p.PD4, Pull::None);
@@ -57,9 +56,9 @@ impl FSMPeripherals {
 
         debug!("creating hv controller");
         // the battery controllers contain functions related to interpreting the `BMS CAN` messages
-        let hv_controller = BatteryController::new(i.event_sender, i.data_sender, true);
+        let hv_controller = BatteryController::new(i.data_sender, true);
         debug!("creating lv controller");
-        let lv_controller = BatteryController::new(i.event_sender, i.data_sender, false);
+        let lv_controller = BatteryController::new(i.data_sender, false);
 
         debug!("creating ethernet controller");
         // The ethernet controller configures IP and then spawns the ethernet task

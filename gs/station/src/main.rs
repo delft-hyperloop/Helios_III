@@ -2,7 +2,10 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![warn(clippy::absolute_paths)]
 
-use gslib::{Command, GS_IP_ADDRESS, Message};
+use gslib::Command;
+use gslib::Message;
+use gslib::GS_IP_ADDRESS;
+
 use crate::backend::Backend;
 #[cfg(feature = "backend")]
 use crate::frontend::app::tauri_main;
@@ -18,7 +21,6 @@ mod frontend;
 mod levi;
 #[cfg(feature = "tui")]
 pub mod tui;
-
 
 pub type CommandSender = tokio::sync::broadcast::Sender<Command>;
 pub type CommandReceiver = tokio::sync::broadcast::Receiver<Command>;

@@ -5,6 +5,7 @@ use defmt::info;
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::core::fsm_status::BRAKES_EXTENDED;
+use crate::core::fsm_status::POD_IS_MOVING;
 use crate::transit;
 use crate::Event;
 use crate::Info;
@@ -12,11 +13,17 @@ use crate::Info;
 impl Fsm {
     pub fn entry_idle(&mut self) {
         info!("Entering Idle State");
+        POD_IS_MOVING.store(false, Ordering::Relaxed);
         // self.peripherals.led_controller.hv_led.set_high();
     }
 
     pub async fn react_idle(&mut self, event: Event) {
         match event {
+            Event::LeviLaunchingEvent => {
+                if self.status.overrides.fake_hv() {
+                    transit!(self, State::Levitating);
+                }
+            },
             Event::TurnOnHVCommand => {
                 // check for preconditions
                 if (BRAKES_EXTENDED.load(Ordering::Acquire) || !self.status.brakes_armed)

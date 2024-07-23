@@ -1,8 +1,11 @@
+use core::sync::atomic::Ordering;
+
 use defmt::info;
 
 use crate::core::finite_state_machine::Fsm;
 use crate::core::finite_state_machine::State;
 use crate::core::fsm_status::BRAKE;
+use crate::core::fsm_status::POD_IS_MOVING;
 use crate::transit;
 use crate::Datatype;
 use crate::Event;
@@ -19,6 +22,7 @@ impl Fsm {
         self.status.speeds_set = false;
         self.status.levitating = false;
         info!("In exit state...");
+        POD_IS_MOVING.store(false, Ordering::Relaxed);
     }
 
     pub async fn react_exit(&mut self, event: Event) {

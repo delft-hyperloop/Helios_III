@@ -26,6 +26,15 @@ pub static LEVITATION_CONNECTED: AtomicBool = AtomicBool::new(false);
 pub static LV_BATTERIES_CONNECTED: AtomicBool = AtomicBool::new(false);
 /// Is the HV BMS alive and well, are we receiving values.
 pub static HV_BATTERIES_CONNECTED: AtomicBool = AtomicBool::new(false);
+/// Disable braking because of out-of-range values
+pub static OUT_OF_RANGE_DISABLED: AtomicBool = AtomicBool::new(false);
+/// frontend highlight the ls track
+pub static IN_A_LANE_SWITCH: AtomicBool = AtomicBool::new(false);
+pub static DISABLE_BRAKE_MOVING_NO_LOCALISATION: AtomicBool = AtomicBool::new(false);
+
+pub static POD_IS_MOVING: AtomicBool = AtomicBool::new(false);
+
+// pub static mut LOCALISATION_LAST_SEEN: Instant = Instant::from_millis(0);
 
 #[derive(Debug, Default)]
 pub struct Status {
@@ -64,9 +73,10 @@ impl Fsm {
         value |= n(HV_BATTERIES_CONNECTED.load(Ordering::Relaxed), 5);
         value |= n(BRAKES_EXTENDED.load(Ordering::Relaxed), 6);
         value |= n(VOLTAGE_OVER_50.load(Ordering::Relaxed), 7);
+        value |= n(IN_A_LANE_SWITCH.load(Ordering::Relaxed), 8);
         send_data!(self.data_queue, Datatype::ConnectionStatus, value);
         PROPULSION_CONNECTED.store(false, Ordering::Relaxed);
-        HUB_CONNECTED.store(false, Ordering::Relaxed);
+        // HUB_CONNECTED.store(false, Ordering::Relaxed);
         LV_BATTERIES_CONNECTED.store(false, Ordering::Relaxed);
         HV_BATTERIES_CONNECTED.store(false, Ordering::Relaxed);
     }
@@ -88,6 +98,9 @@ impl Overrides {
         self.values = value;
         DISABLE_BRAKING_COMMUNICATION
             .store(self.prevent_braking_communication(), Ordering::Relaxed);
+        OUT_OF_RANGE_DISABLED.store(self.out_of_range_disabled(), Ordering::Relaxed);
+        DISABLE_BRAKE_MOVING_NO_LOCALISATION
+            .store(self.disable_brake_moving_without_location(), Ordering::Relaxed);
     }
 
     /// Allow propulsion to start while not levitating
@@ -102,6 +115,12 @@ impl Overrides {
     pub fn run_without_configure(&self) -> bool { self.values & 0b1000 != 0 }
 
     pub fn hv_without_levi(&self) -> bool { self.values & 0b10000 != 0 }
+
+    pub fn out_of_range_disabled(&self) -> bool { self.values & 0b100000 != 0 }
+
+    pub fn disable_brake_moving_without_location(&self) -> bool { self.values & 0b1000000 != 0 }
+
+    pub fn fake_hv(&self) -> bool { self.values & 0b10000000 != 0 }
 }
 
 include!("../../../util/src/shared/routes.rs");

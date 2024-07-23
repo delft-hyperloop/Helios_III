@@ -1,5 +1,7 @@
-use gslib::{Datatype, Message};
+use gslib::Datatype;
+use gslib::Message;
 use gslib::ProcessedData;
+
 use crate::battery::DataSender;
 use crate::battery::HV_DATATYPES;
 use crate::Command;
@@ -15,6 +17,9 @@ pub fn handle_line_from_levi(
     let params = line.split(':').collect::<Vec<&str>>();
 
     match params[0] {
+        "EXIT" => {
+            cmd_send.send(Command::EndRun(0))?;
+        },
         "INFO" => {
             // msg_send.send(Message::Info(format!("Levi: {}", params[1..].join(","))))?;
         },

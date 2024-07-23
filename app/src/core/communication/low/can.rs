@@ -1,6 +1,5 @@
 use defmt::*;
 use defmt_rtt as _;
-use embassy_executor::Spawner;
 use embassy_stm32::can::CanRx;
 use embassy_stm32::can::CanTx;
 use embassy_stm32::can::Frame;
@@ -8,7 +7,6 @@ use embassy_stm32::can::Instance;
 use embassy_time::Timer;
 use panic_probe as _;
 
-// use embedded_hal::can::Id;
 use crate::core::communication::Datapoint;
 use crate::core::controllers::battery_controller::ground_fault_detection_isolation_details;
 use crate::core::controllers::battery_controller::ground_fault_detection_voltage_details;
@@ -42,7 +40,7 @@ pub async fn can_transmitter(
 
 #[embassy_executor::task(pool_size = 2)]
 pub async fn can_receiving_handler(
-    _x: Spawner,
+    // x: Spawner,
     event_sender: EventSender,
     can_sender: CanSender,
     data_sender: DataSender,
@@ -59,13 +57,6 @@ pub async fn can_receiving_handler(
                 error_counter = 0;
                 let (frame, timestamp) = envelope.parts();
                 let id = id_as_value(frame.id());
-                // #[cfg(debug_assertions)]
-                // send_data!(
-                //     data_sender,
-                //     Datatype::ReceivedCan,
-                //     id as u64,
-                //     bytes_to_u64(frame.data())
-                // );
                 trace!("[CAN ({})] received frame: id={:?} data={:?}", bus_nr, id, frame.data());
                 if DATA_IDS.contains(&id) {
                     if BATTERY_GFD_IDS.contains(&id) && utils.is_some() {
@@ -125,8 +116,7 @@ pub async fn can_receiving_handler(
                     // since we are never supposed to change the speed through the can bus (and run config is the only event with an actual value), i want a magic number that i can filter out from the run config handler just to make sure the pod doesn't do something stupid
                     send_event(event_sender, Event::from_id(id, Some(69420)));
                 } else {
-                    // #[cfg(debug_assertions)]
-                    // info!("[CAN ({})] unknown ID: {:?}", bus_nr, id);
+                    Timer::after_micros(1).await;
                     // send_data!(
                     //     data_sender,
                     //     Datatype::UnknownCanId,
@@ -150,6 +140,6 @@ pub async fn can_receiving_handler(
         // without this, our main pcb is magically converted to an adhd CAN
         // pcb with no mind for anything else. Tread carefully around it
         // thread_delay(100).await;
-        Timer::after_micros(400).await;
+        Timer::after_micros(500).await;
     }
 }

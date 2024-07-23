@@ -3,9 +3,10 @@ mod read_from_stdout;
 mod write_to_stdin;
 
 use anyhow::anyhow;
+use gslib::Message;
+use gslib::LEVI_EXEC_PATH;
 use tokio::task::AbortHandle;
 
-use gslib::{LEVI_EXEC_PATH, Message};
 use crate::battery::DataSender;
 use crate::CommandReceiver;
 use crate::CommandSender;

@@ -1,6 +1,7 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import {get, type Writable, writable} from "svelte/store";
 import {type dataConvFun, type Datapoint, type NamedDatatype} from "$lib/types";
+import {latestTimestamp} from "$lib/stores/state";
 
 /**
  * The GrandDataDistributor class is responsible for fetching data from the backend
@@ -61,6 +62,11 @@ export class GrandDataDistributor {
         if (!this.intervalId) this.intervalId = setInterval(() => this.fetchData(), interval);
     }
 
+    public async fetchTestOnce() {
+        const data:Datapoint[] = await invoke('generate_test_data');
+        this.processData(data);
+    }
+
     /**
      * Stop the data fetching process. This will clear the interval.
      */
@@ -83,8 +89,7 @@ export class GrandDataDistributor {
      */
     protected processData(data: Datapoint[]) {
         data.forEach((datapoint) => {
-            this.StoreManager.updateStore(datapoint.datatype, datapoint.style, datapoint.units, datapoint.value);
-            console.log(datapoint)
+            this.StoreManager.updateStore(datapoint.datatype, new Date().getTime(), datapoint.style, datapoint.units, datapoint.value);
         });
     }
 
@@ -114,21 +119,22 @@ class StoreManager {
      * @param processFunction - the function to process the data
      */
     public registerStore<T>(name: NamedDatatype, initial: T, processFunction?: dataConvFun<T>, initialUnits?:string) {
-        this.stores.set(name, writable<Store<T>>(new Store(initial, '', initialUnits || '', processFunction)));
+        this.stores.set(name, writable<Store<T>>(new Store(initial, '', initialUnits || '', 0, processFunction)));
     }
 
     /**
      * Update a store
      * @param name - the name of the store
+     * @param timestamp
      * @param style
      * @param units
      * @param data - the data to update the store with
      */
-    public updateStore(name: NamedDatatype, style:string, units:string, data: number) {
+    public updateStore(name: NamedDatatype, timestamp:number, style:string, units:string, data: number) {
         const store = this.stores.get(name);
         if (store) {
             const storeVal = get(store);
-            store.set(new Store(storeVal.processFunction(data, storeVal.value), style, units, storeVal.processFunction))
+            store.set(new Store(storeVal.processFunction(data, storeVal.value), style, units, timestamp, storeVal.processFunction))
         }
     }
 
@@ -153,19 +159,21 @@ class Store<T> {
     private _value: T;
     private _style: string;
     private _units: string;
+    private _timestamp: number;
 
-    constructor(initial:T, style:string, units:string, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
+    constructor(initial:T, style:string, units:string, timestamp: number, processFunction: dataConvFun<T> = (data) => data.valueOf() as unknown as T) {
         this._value = initial;
         this.processFunction = processFunction;
         this._style = style;
         this._units = units;
+        this._timestamp = timestamp;
     }
 
-    public set(data: number, style: string, units:string) {
-        this._value = this.processFunction(data, this._value);
-        this._style = style;
-        this._units = units;
-    }
+    // public set(data: number, style: string, units:string) {
+    //     this._value = this.processFunction(data, this._value);
+    //     this._style = style;
+    //     this._units = units;
+    // }
 
     public get value():T {
         return this._value;
@@ -177,5 +185,10 @@ class Store<T> {
 
     get units(): string {
         return this._units;
+    }
+
+
+    get timestamp(): number {
+        return this._timestamp;
     }
 }

@@ -7,7 +7,8 @@ use embassy_stm32::rcc;
 use embassy_stm32::rcc::Pll;
 use embassy_stm32::rcc::*;
 use embassy_stm32::Config;
-use embassy_time::{Instant, Timer};
+use embassy_time::Instant;
+use embassy_time::Timer;
 use embedded_can::ExtendedId;
 use embedded_nal_async::Ipv4Addr;
 use embedded_nal_async::SocketAddr;
@@ -269,9 +270,6 @@ pub async fn queue_dp(data_sender: DataSender, t: Datatype, d: u64, p: u64) {
     data_sender.send(Datapoint::new(t, d, p)).await
 }
 
-
 /// Wrapper function around timer::after to signify that this is a context-switch delay
 #[allow(dead_code)]
-pub async fn thread_delay(micros: u64) {
-    Timer::after_micros(micros).await;
-}
+pub async fn thread_delay(micros: u64) { Timer::after_micros(micros).await; }

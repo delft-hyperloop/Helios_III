@@ -11,6 +11,7 @@
         BatteriesTab,
         DebugTab, details_pane
     } from "$lib";
+    import { ViewWindow } from "$lib/util/WindowControl"
 
     let i = 0;
     let tabs = [
@@ -30,7 +31,9 @@
 
 <TabGroup regionPanel="m-0 !mt-0" padding="px-3 py-3" regionList="bg-surface-700" border="border-b border-surface-900" >
     {#each tabs as tab}
-        <Tab bind:group={$detailTabSet} value={tab.value} name={tab.name}><span>{tab.name}</span></Tab>
+        <Tab bind:group={$detailTabSet} value={tab.value} name={tab.name}>
+            <span>{tab.name}</span>
+        </Tab>
     {/each}
     <svelte:fragment slot="panel">
         <div style={style} class="snap-x scroll-px-4 snap-mandatory scroll-smooth overflow-x-auto">

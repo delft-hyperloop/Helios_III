@@ -6,7 +6,7 @@
     export let cmd: NamedCommand;
     export let val: number = 0;
     export let callback: (val:number) => void = () => {};
-
+    export let text: string = '';
 
     let send = async () => {
         console.log(`Sending command: ${cmd}, value: ${val}`);
@@ -22,5 +22,5 @@
 
 <button class="btn rounded-md font-number font-medium {className ? className : 'py-2 bg-primary-500 text-surface-900'}"
         on:click={send}>
-    {util.snakeToCamel(cmd)}
+    {text ? text : util.snakeToCamel(cmd)}
 </button>

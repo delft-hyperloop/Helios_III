@@ -116,7 +116,8 @@ export enum STATUS {
     LV_BATTERIES,
     HV_BATTERIES,
     BRAKING_PCB,
-    VOLTAGE_OVER
+    VOLTAGE_OVER,
+    TURNING
 }
 
 export type LogType = 'INFO' | 'WARNING' | 'ERROR' | 'STATUS';
@@ -135,6 +136,8 @@ export type RouteConfig = {
     positions: RouteStep[],
     current_position: number
 }
+
+export const LOCALISATION_NAME = "Localisation"; // 'levi_location'
 
 // OLD TYPES
 export type IntervalFunction = () => void;

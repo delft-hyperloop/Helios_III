@@ -4,6 +4,8 @@
     import {listen, type UnlistenFn} from "@tauri-apps/api/event";
     import {afterUpdate, onDestroy, onMount} from "svelte";
     import {EventChannel, type Log, type LogType} from "$lib/types";
+    import {bigErrorStatus, ErrorStatus} from "$lib/stores/state";
+    import {getToastStore} from "@skeletonlabs/skeleton";
 
     let unlistens: UnlistenFn[] = [];
     let logContainer: HTMLElement;
@@ -18,6 +20,7 @@
     ]);
 
     let filters: Record<string, boolean> = { 'STATUS': true, 'WARNING': true, 'INFO': true, 'ERROR': true }; // filter variable
+    const toastStore = getToastStore();
 
     $: filteredLogs = logs.filter(log => filters[log.log_type]);
 
@@ -32,7 +35,9 @@
     }
 
     function clearLogs() {
-      logs = [];
+        if (logs.length > 50) {
+            logs = logs.slice(-50);
+        }
     }
 
     onMount(async () => {
@@ -40,6 +45,27 @@
 
         unlistens[1] = await listen(EventChannel.STATUS, (event: {payload: string}) => {
           logs = [...logs, {message: event.payload.split(';')[0], log_type: 'STATUS', timestamp: Date.now().valueOf()}]
+
+          console.log("received smth", event.payload)
+
+          const message:string[] = event.payload.split(";");
+
+          console.log(message)
+          console.log(`bg-${message[1]}-600`)
+
+          toastStore.trigger({
+            message: message[0],
+            background: `bg-surface-600` || "bg-surface-600",
+          });
+
+          switch (message[0]) {
+            case "Unsafe":
+              bigErrorStatus.set(ErrorStatus.UNSAFE)
+              break;
+            case "Safe":
+              bigErrorStatus.set(ErrorStatus.SAFE)
+              break;
+          }
         });
 
         unlistens[2] = await registerChannel(EventChannel.WARNING, 'WARNING');

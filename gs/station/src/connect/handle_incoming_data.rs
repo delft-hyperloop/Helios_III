@@ -1,19 +1,20 @@
 #![allow(clippy::single_match)]
 
 use gslib::Datapoint;
+use gslib::Datatype;
+use gslib::Info;
 use gslib::Message;
+use gslib::COMMAND_HASH;
+use gslib::CONFIG_HASH;
+use gslib::DATA_HASH;
+use gslib::EVENTS_HASH;
+
 use crate::battery::DataSender;
 use crate::battery::HV_DATATYPES;
 use crate::data::process::process;
 use crate::Command;
 use crate::CommandSender;
-use gslib::Datatype;
-use gslib::Info;
 use crate::MessageSender;
-use gslib::COMMAND_HASH;
-use gslib::CONFIG_HASH;
-use gslib::DATA_HASH;
-use gslib::EVENTS_HASH;
 
 pub async fn handle_incoming_data(
     data: Datapoint,
@@ -58,6 +59,12 @@ pub async fn handle_incoming_data(
             } else {
                 msg_sender.send(Message::Status(Info::ConfigHashPassed))?;
             }
+        },
+        Datatype::Info => {
+            msg_sender.send(Message::Status(Info::from_id(data.value as u16)))?;
+        },
+        Datatype::ConnectionStatus => {
+            eprintln!("got a new connection status {:?}", data);
         },
         x if HV_DATATYPES.contains(&x) => {
             data_sender.send(process(&data))?;
