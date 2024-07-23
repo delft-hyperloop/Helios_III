@@ -594,7 +594,7 @@ mod tests {
         };
         let s_bytes: u64 = route.speeds.clone().into();
         let r_bytes: u64 = route.positions.into();
-        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+        // panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
 
         let mut r = Route::default();
         r.speeds_from(s_bytes);
@@ -644,7 +644,7 @@ mod tests {
         };
         let s_bytes: u64 = route.speeds.clone().into();
         let r_bytes: u64 = route.positions.into();
-        panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
+        // panic!("Speeds: {}\nPositions: {}", s_bytes, r_bytes);
 
         let mut r = Route::default();
         r.speeds_from(s_bytes);
