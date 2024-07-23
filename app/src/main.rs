@@ -188,11 +188,7 @@ async fn main(spawner: Spawner) -> ! {
 
     try_spawn!(
         event_sender,
-        spawner.spawn(data_middle_step(
-            data_queue.receiver(),
-            parsed_data_queue.sender(),
-            event_sender
-        ))
+        spawner.spawn(data_middle_step(data_queue.receiver(), parsed_data_queue.sender(),))
     );
 
     try_spawn!(event_sender, spawner.spawn(trash::overflow(data_sender, data_queue.receiver())));

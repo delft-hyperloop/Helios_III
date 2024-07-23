@@ -161,6 +161,14 @@ id = 0x67
 name = "EndRun"
 id = 0x6b
 
+[[Command]]
+name = "EnablePropulsion"
+id = 0x6c
+
+[[Command]]
+name = "DisablePropulsion"
+id = 0x6d
+
 
 # Ground station-related commands
 

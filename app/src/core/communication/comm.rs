@@ -154,6 +154,12 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
                             debug!("[tcp] SetCurrentSpeed command received");
                             send_event(self.es, Event::SetCurrentSpeedCommand(x));
                         },
+                        Command::EnablePropulsion(_) => {
+                            send_event(self.es, Event::EnablePropulsionCommand);
+                        },
+                        Command::DisablePropulsion(_) => {
+                            send_event(self.es, Event::DisablePropulsionCommand);
+                        },
                         Command::StartRun(_) => {
                             debug!("[tcp] Start Run command received");
                             send_event(self.es, Event::RunStarting);
@@ -168,7 +174,7 @@ impl<I: HardwareLayer> CommunicationLayer for ExternalCommunicationHandler<I> {
                         },
                         Command::EndRun(_) => {
                             send_event(self.es, Event::ExitEvent);
-                        }
+                        },
                         Command::StartHV(_) => {
                             debug!("[tcp] StartHV command received");
                             send_event(self.es, Event::TurnOnHVCommand);

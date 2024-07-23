@@ -239,10 +239,35 @@ pub fn positions_from_u64(positions: String) -> Result<LocationSequence, String>
     }
 }
 
+// #[macro_export]
+// #[allow(unused)]
+// #[tauri::command]
+// pub fn set_route(route: Route) -> bool {
+//     send_command("SetRoute".into(), 1822648539875311616)
+//         && send_command("SetSpeeds".into(), 14104086254467416064)
+// }
+
 #[macro_export]
 #[allow(unused)]
 #[tauri::command]
 pub fn set_route(route: Route) -> bool {
-    send_command("SetRoute".into(), 1822648539875311616)
-        && send_command("SetSpeeds".into(), 14104086254467416064)
+    send_command("SetRoute".into(), route.positions.into())
+        && send_command("SetSpeeds".into(), route.speeds.into())
+}
+
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn demonstration_a() -> bool {
+    send_command("SetRoute".into(), 1822648536894799872)
+        && send_command("SetSpeeds".into(), 15761687916893437952)
+}
+
+#[macro_export]
+#[allow(unused)]
+#[tauri::command]
+pub fn demonstration_b() -> bool {
+    send_command("SetRoute".into(), 1905022642377719808)
+        && send_command("SetSpeeds".into(), 15708555503539847368)
 }
