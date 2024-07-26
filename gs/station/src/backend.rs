@@ -29,6 +29,7 @@ use crate::MessageSender;
 
 pub struct Backend {
     pub server_handle: Option<AbortHandle>,
+    pub braking_handle: Option<AbortHandle>,
     pub levi_handle: Option<(AbortHandle, AbortHandle)>,
     pub message_transmitter: MessageSender,
     pub message_receiver: MessageReceiver,
@@ -68,6 +69,32 @@ impl Backend {
             processed_data_receiver,
             log: Log { messages: vec![], commands: vec![] },
             save_path: PathBuf::from_str("/Users/andtsa/Desktop/log.txt").unwrap(),
+        }
+    }
+
+    pub fn braking_server(&mut self) -> bool {
+        let (command_transmitter, command_receiver) =
+            tokio::sync::broadcast::channel::<Command>(128);
+
+        if self.braking_handle.is_none() {
+            let m = self.message_transmitter.clone();
+            let c = self.command_receiver.resubscribe();
+            let t = self.command_transmitter.clone();
+            let s = self.processed_data_sender.clone();
+            let r = self.processed_data_receiver.resubscribe();
+            self.server_handle = Some(
+                tokio::spawn(
+                    async move { crate::connect::connect_main(m, c, t, r, s).await.unwrap() },
+                )
+                    .abort_handle(), // todo:
+                // is unwrap necessary?
+            );
+            // self.status(crate::api::Status::ServerStarted);
+            // self.info(format!("Server handle: {:?}", self.server_handle));
+            true
+        } else {
+            self.warn("Server already running".to_string());
+            false
         }
     }
 

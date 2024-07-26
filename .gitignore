@@ -12,4 +12,5 @@ Cargo.lock
 **/.vs/**
 **/.idea/*
 **/.vscode/*
-
+gs/station/src/analysis/venv/**
+*.py

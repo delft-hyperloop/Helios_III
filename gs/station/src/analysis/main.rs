@@ -5,14 +5,14 @@ use gslib::Message;
 use gslib::ProcessedData;
 
 fn main() -> Result<()> {
-    let x = std::fs::read_to_string("/Users/andtsa/downloads/logs_scrut.txt")?;
+    let x = std::fs::read_to_string("/Users/andtsa/Desktop/log-20_07_2024 at 17_09_47.txt")?;
     let y: Log = serde_json::from_str(&x)?;
 
     let z = y
         .messages
         .iter()
         .filter(|x| {
-            matches!(x, Message::Data(ProcessedData { datatype: Datatype::BatteryCurrentHigh, .. }))
+            matches!(x, Message::Data(ProcessedData { datatype: Datatype::BrakingSignalDebug, .. }))
         })
         .collect::<Vec<&Message>>();
 
@@ -25,7 +25,7 @@ fn main() -> Result<()> {
         .collect::<Vec<(f64, u64)>>();
 
     std::fs::write(
-        "/Users/andtsa/downloads/out.csv",
+        "/Users/andtsa/downloads/braking_signal_3.csv",
         w.iter().map(|(a, b)| format!("{},{}", b, a)).collect::<Vec<String>>().join("\n"),
     )?;
 
