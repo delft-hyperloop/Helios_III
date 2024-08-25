@@ -3,7 +3,7 @@
     import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
     import { GrandDataDistributor } from '$lib';
 
-    const storeManager = GrandDataDistributor.getInstance().stores;
+    const storeManager = GrandDataDistributor.getInstance();
     const lowPressure = storeManager.getWritable("LowPressureSensor");
     const highPressure = storeManager.getWritable("HighPressureSensor");
 

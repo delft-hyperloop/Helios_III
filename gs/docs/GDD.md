@@ -86,7 +86,7 @@ front-end! This is done using the `$storeName` syntax. For example, if you have 
 <script lang="js">
     import {GrandDataDistributor} from "$lib";
 
-    let storeManager = GrandDataDistributor.getInstance().stores;
+    let storeManager = GrandDataDistributor.getInstance();
     let lvBattery = $storeManager.getWritable("BatteryBalanceLow");
 </script>
 

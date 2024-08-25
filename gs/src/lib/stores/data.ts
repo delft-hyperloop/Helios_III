@@ -23,9 +23,6 @@ export const initProcedures = async () => {
   });
 }
 
-export type SpeedFormKey =
-  "BackwardC" | "ForwardB" | "ForwardA" | "LaneSwitchCurved" | "ForwardC" | "LaneSwitchStraight" | "BackwardA" | "BackwardB";
-
 export const routeConfig:Writable<RouteConfig> = writable({
   speeds: {
     BackwardsA: 0,

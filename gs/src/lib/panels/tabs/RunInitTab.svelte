@@ -19,7 +19,7 @@
     setContext<string>('serpenta-context-channel-info', 'info_channel');
     setContext<string>('serpenta-context-channel-error', 'error_channel');
 
-    const storeManager = GrandDataDistributor.getInstance().stores;
+    const storeManager = GrandDataDistributor.getInstance();
     const statuses = storeManager.getWritable('ConnectionStatus');
 
     let tableArr2: any[][];
