@@ -2,12 +2,14 @@
     import {
         Battery,
         Chart,
-        GrandDataDistributor,
         Status, Store,
         Table,
         Tile,
-        TileGrid, ToggleCommand,
-    } from "$lib"
+        TileGrid, ToggleCommandButton,
+    } from "@delft-hyperloop/serpenta";
+
+    import { GrandDataDistributor } from '$lib';
+
   const storeManager = GrandDataDistributor.getInstance().stores;
   const lvBattery = storeManager.getWritable("ChargeStateLow");
   const hvBattery = storeManager.getWritable("ChargeStateHigh");
@@ -177,7 +179,6 @@
     let connectorStatus:boolean = false;
 
     const lvTotalStore = storeManager.getWritable("TotalBatteryVoltageLow");
-    export const pop_up: boolean = true;
 </script>
 
 <div class="p-4">
@@ -187,11 +188,11 @@
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="auto 1fr auto">
         <Tile insideClass="flex h-full items-center gap-4">
             <div class="flex flex-col items-center">
-                <Battery fill="#3b669c" orientation="horizontal" height={40} perc={Number($lvBattery.value)} />
+                <Battery fill="#3b669c" vertical={false} height={40} percentage={Number($lvBattery.value)} />
                 <p>Low voltage</p>
             </div>
             <div class="flex flex-col items-center">
-                <Battery fill="#723f9c" orientation="horizontal" height={40} perc={Number($hvBattery.value)} />
+                <Battery fill="#723f9c" vertical={false} height={40} percentage={Number($hvBattery.value)} />
                 <p>High voltage</p>
             </div>
         </Tile>
@@ -199,11 +200,11 @@
             <div class="w-full flex justify-between items-center">
                 <Status label="HV Battery relay status" onColor="text-error-400" offColor="text-surface-50"
                         on="HV Relays ON" off="HV Relays Off" bind:status={connectorStatus} />
-                <ToggleCommand onCmd="StartHV" offCmd="StopHV" bind:status={connectorStatus} />
+                <ToggleCommandButton onCmd="StartHV" offCmd="StopHV" bind:status={connectorStatus} />
             </div>
             <div class="w-full flex justify-between items-center">
                 <Status label="DC Converter status" on="charging" off="off" offColor="text-surface-50" bind:status={dcStatus} />
-                <ToggleCommand onCmd="DcOn" offCmd="DcOff" bind:status={dcStatus} disabled={$lvTotalStore.value > 21} />
+                <ToggleCommandButton onCmd="DcOn" offCmd="DcOff" bind:status={dcStatus} disabled={$lvTotalStore.value > 21} />
             </div>
         </Tile>
         <Tile insideClass="flex h-full items-center">

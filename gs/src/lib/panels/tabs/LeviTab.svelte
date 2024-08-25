@@ -1,25 +1,25 @@
 <script lang="ts">
-  import {Chart, TileGrid, Tile, Table, Command} from "$lib";
-    import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
+    import { Chart, TileGrid, Tile, Table, CommandButton } from '@delft-hyperloop/serpenta';
+    import { DatatypeEnum as DE } from '$lib/namedDatatypeEnum';
 
     $: tableGaps = [
-        ["A", DE.LEVI_EMS_GAP_A, DE.LEVI_HEMS_GAP_A],
-        ["B", DE.LEVI_EMS_GAP_B, DE.LEVI_HEMS_GAP_B],
-        ["C", DE.LEVI_EMS_GAP_C, DE.LEVI_HEMS_GAP_C],
-        ["D", DE.LEVI_EMS_GAP_D, DE.LEVI_HEMS_GAP_D],
-    ]
+        ['A', DE.LEVI_EMS_GAP_A, DE.LEVI_HEMS_GAP_A],
+        ['B', DE.LEVI_EMS_GAP_B, DE.LEVI_HEMS_GAP_B],
+        ['C', DE.LEVI_EMS_GAP_C, DE.LEVI_HEMS_GAP_C],
+        ['D', DE.LEVI_EMS_GAP_D, DE.LEVI_HEMS_GAP_D],
+    ];
 
     $: leviVolt = [
-        ["Min", DE.LEVI_VOLT_MIN],
-        ["Max", DE.LEVI_VOLT_MAX],
-        ["Avg", DE.LEVI_VOLT_AVG],
-    ]
+        ['Min', DE.LEVI_VOLT_MIN],
+        ['Max', DE.LEVI_VOLT_MAX],
+        ['Avg', DE.LEVI_VOLT_AVG],
+    ];
 
     $: leviHems = [
-        ["Air Gap", DE.LEVI_HEMS_AIRGAP],
-        ["Pitch", DE.LEVI_HEMS_PITCH],
-        ["Roll", DE.LEVI_HEMS_ROLL],
-    ]
+        ['Air Gap', DE.LEVI_HEMS_AIRGAP],
+        ['Pitch', DE.LEVI_HEMS_PITCH],
+        ['Roll', DE.LEVI_HEMS_ROLL],
+    ];
 
     export const pop_up: boolean = true;
 </script>
@@ -29,12 +29,12 @@
 
     <TileGrid columns="1fr 1fr 1fr 1fr" rows="">
         <Tile heading="Levi Control" insideClass="flex gap-x-4" containerClass="col-span-4">
-            <Command cmd="launch" />
-            <Command cmd="land" />
-            <Command cmd="vert0" text="Vertical 0 current" />
-            <Command cmd="vert_mode_dance" text="Vertical Dance" />
-            <Command cmd="vert_mode_sine" text="Vertical Sine" />
-            <Command cmd="vert0_reset" text="Reset Vertical 0 current" />
+            <CommandButton cmd="launch" />
+            <CommandButton cmd="land" />
+            <CommandButton cmd="vert0" text="Vertical 0 current" />
+            <CommandButton cmd="vert_mode_dance" text="Vertical Dance" />
+            <CommandButton cmd="vert_mode_sine" text="Vertical Sine" />
+            <CommandButton cmd="vert0_reset" text="Reset Vertical 0 current" />
         </Tile>
         <Tile heading="Gaps" containerClass="col-span-2">
             <Table background="bg-surface-900" titles={["Gap", "EMS", "HEMS"]} tableArr={tableGaps} />

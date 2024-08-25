@@ -110,8 +110,8 @@ gdd.stores.registerStore<bigint>("CurrentVelocity", BigInt(-1), data => {
 });
 ```
 
-The default behaviour of the Chart is to append the data, received on `event.payload.data` to the chart. You can of 
-course modify this to support multiple series in a chart:
+The default behaviour of the Chart is to append the data, received on `event.payload.data` to the chart. 
+You can, of course, modify this to support multiple series in a chart:
 
 ```typescript
 gdd.stores.registerStore<bigint>("BatteryCurrentHigh", BigInt(-1), data => {
@@ -126,6 +126,7 @@ And then when creating the chart:
 
 <script>
     import {Chart} from "$lib";
+    import { PlotBuffer } from "@delft-hyperloop/serpenta";
     
     let offsetXChart:PlotBuffer;
 </script>

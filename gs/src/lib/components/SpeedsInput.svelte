@@ -1,26 +1,27 @@
 <script lang="ts">
-    import type { SvelteComponent } from "svelte"
-    import DragDropList, { VerticalDropZone, reorder, type DropEvent } from "svelte-dnd-list"
+    import type { SvelteComponent } from 'svelte';
+    import DragDropList, { VerticalDropZone, reorder, type DropEvent } from 'svelte-dnd-list';
 
-    import { getModalStore } from "@skeletonlabs/skeleton"
-    import { invoke } from "@tauri-apps/api/tauri"
-    import util from "$lib/util/util"
-    import { EventChannel, type RouteStep, TauriCommand } from "$lib"
-    import Icon from "@iconify/svelte"
-    import type { RouteConfig } from "$lib/types"
-    import { routeConfig } from "$lib/stores/data"
-    import { get } from "svelte/store"
+    import { getModalStore } from '@skeletonlabs/skeleton';
+    import { invoke } from '@tauri-apps/api/tauri';
+    import util from '$lib/util/util';
+    import { EventChannel, type RouteStep } from '$lib';
+    import { TauriCommandButton } from '@delft-hyperloop/serpenta';
+    import Icon from '@iconify/svelte';
+    import type { RouteConfig } from '$lib/types';
+    import { routeConfig } from '$lib/stores/data';
+    import { get } from 'svelte/store';
 
-    const CurrentRouteConfig: RouteConfig = get(routeConfig)
+    const CurrentRouteConfig: RouteConfig = get(routeConfig);
 
-    const RouteStepNames: RouteStep[] = ["ForwardA", "ForwardB", "ForwardC", "BackwardsA", "BackwardsB", "BackwardsC",
-        "LaneSwitchStraight", "LaneSwitchCurved", "StopAndWait", "BrakeHere"]
+    const RouteStepNames: RouteStep[] = ['ForwardA', 'ForwardB', 'ForwardC', 'BackwardsA', 'BackwardsB', 'BackwardsC',
+        'LaneSwitchStraight', 'LaneSwitchCurved', 'StopAndWait', 'BrakeHere'];
 
-    let isValid: boolean = false
-    $: focusedInput = ""
-    let invalidInputs: SpeedFormKey[] = []
-    export let parent: SvelteComponent
-    const modalStore = getModalStore()
+    let isValid: boolean = false;
+    $: focusedInput = '';
+    let invalidInputs: SpeedFormKey[] = [];
+    export let parent: SvelteComponent;
+    const modalStore = getModalStore();
 
     type SpeedFormType = {
         ForwardA: number,
@@ -33,31 +34,31 @@
         LaneSwitchStraight: number,
     }
 
-    const speedForm: SpeedFormType = CurrentRouteConfig.speeds
+    const speedForm: SpeedFormType = CurrentRouteConfig.speeds;
     type SpeedFormKey = keyof typeof speedForm;
-    const inputs: SpeedFormKey[] = Object.keys(CurrentRouteConfig.speeds) as SpeedFormKey[]
+    const inputs: SpeedFormKey[] = Object.keys(CurrentRouteConfig.speeds) as SpeedFormKey[];
 
     function onRouteStepClick(step: RouteStep): void {
         if (CurrentRouteConfig.positions.length < 16) {
-            CurrentRouteConfig.positions = [...CurrentRouteConfig.positions, step]
+            CurrentRouteConfig.positions = [...CurrentRouteConfig.positions, step];
         }
     }
 
     function removeRouteStep(index: number): void {
-        CurrentRouteConfig.positions = CurrentRouteConfig.positions.filter((_, i) => i !== index)
+        CurrentRouteConfig.positions = CurrentRouteConfig.positions.filter((_, i) => i !== index);
     }
 
     function onDrop({ detail: { from, to } }: CustomEvent<DropEvent>) {
-        if (!to || from === to) return
-        CurrentRouteConfig.positions = reorder(CurrentRouteConfig.positions, from.index, to.index)
+        if (!to || from === to) return;
+        CurrentRouteConfig.positions = reorder(CurrentRouteConfig.positions, from.index, to.index);
     }
 
     function speedToU8(speed: number): number {
-        return speed === 0 ? 0 : Math.floor(128 + (128 * ((speed + 10) / 20)))
+        return speed === 0 ? 0 : Math.floor(128 + (128 * ((speed + 10) / 20)));
     }
 
     function u8ToSpeed(u8: number): number {
-        return u8 === 0 ? 0 : Math.floor(20 * ((u8 - 128) / 128) - 10)
+        return u8 === 0 ? 0 : Math.floor(20 * ((u8 - 128) / 128) - 10);
     }
 
     function u8toSpeeds(speeds: SpeedFormType): SpeedFormType {
@@ -70,7 +71,7 @@
             BackwardsC: u8ToSpeed(speeds.BackwardsC),
             LaneSwitchCurved: u8ToSpeed(speeds.LaneSwitchCurved),
             LaneSwitchStraight: u8ToSpeed(speeds.LaneSwitchStraight),
-        }
+        };
     }
 
     function speedsToU8(speeds: SpeedFormType): SpeedFormType {
@@ -83,106 +84,106 @@
             BackwardsC: speedToU8(speeds.BackwardsC),
             LaneSwitchCurved: speedToU8(speeds.LaneSwitchCurved),
             LaneSwitchStraight: speedToU8(speeds.LaneSwitchStraight),
-        }
+        };
     }
 
     async function onFormSubmit() {
-        let modifiedRouteConfig = { ...CurrentRouteConfig, positions: [...CurrentRouteConfig.positions] }
+        let modifiedRouteConfig = { ...CurrentRouteConfig, positions: [...CurrentRouteConfig.positions] };
 
-        modifiedRouteConfig.speeds = speedsToU8(CurrentRouteConfig.speeds)
+        modifiedRouteConfig.speeds = speedsToU8(CurrentRouteConfig.speeds);
 
         if (modifiedRouteConfig.positions.length < 16) {
             for (let i = modifiedRouteConfig.positions.length; i < 16; i++) {
-                modifiedRouteConfig.positions.push("BrakeHere")
+                modifiedRouteConfig.positions.push('BrakeHere');
             }
         }
 
-        await invoke("set_route", { route: modifiedRouteConfig }).then(r => {
-            console.log(`Route config SET: ${r}`)
-            isValid = r as boolean
-            modalStore.close()
+        await invoke('set_route', { route: modifiedRouteConfig }).then(r => {
+            console.log(`Route config SET: ${r}`);
+            isValid = r as boolean;
+            modalStore.close();
 
         }).catch(e => {
-            console.error(`Error setting route config: ${e}`)
-        })
+            console.error(`Error setting route config: ${e}`);
+        });
     }
 
     async function importSpeeds() {
-        console.log(`Sending command: speeds_from_u64`)
-        await invoke("speeds_from_u64", { speeds: speedInputValue }).then(r => {
-            console.log(`Command speeds_from_u64 sent with response: `)
-            console.log(r)
-            util.log(`Command speeds_from_u64 sent`, EventChannel.INFO)
-            CurrentRouteConfig.speeds = u8toSpeeds(r as SpeedFormType)
+        console.log(`Sending command: speeds_from_u64`);
+        await invoke('speeds_from_u64', { speeds: speedInputValue }).then(r => {
+            console.log(`Command speeds_from_u64 sent with response: `);
+            console.log(r);
+            util.log(`Command speeds_from_u64 sent`, EventChannel.INFO);
+            CurrentRouteConfig.speeds = u8toSpeeds(r as SpeedFormType);
         }).catch((e) => {
-            console.error(`Error sending command speeds_from_u64: ${e}`)
-            util.log(`Command speeds_from_u64 ERROR sending`, EventChannel.WARNING)
-        })
+            console.error(`Error sending command speeds_from_u64: ${e}`);
+            util.log(`Command speeds_from_u64 ERROR sending`, EventChannel.WARNING);
+        });
     }
 
     async function importRoutes() {
-        console.log(`Sending command: positions_from_u64`)
-        await invoke("positions_from_u64", { positions: routesInputValue }).then(r => {
-            console.log(`Command positions_from_u64 sent with response: `)
-            console.log(r)
-            CurrentRouteConfig.positions = r as RouteStep[]
+        console.log(`Sending command: positions_from_u64`);
+        await invoke('positions_from_u64', { positions: routesInputValue }).then(r => {
+            console.log(`Command positions_from_u64 sent with response: `);
+            console.log(r);
+            CurrentRouteConfig.positions = r as RouteStep[];
         }).catch((e) => {
-            console.error(`Error sending command positions_from_u64: ${e}`)
-            util.log(`Command positions_from_u64 ERROR sending`, EventChannel.WARNING)
-        })
+            console.error(`Error sending command positions_from_u64: ${e}`);
+            util.log(`Command positions_from_u64 ERROR sending`, EventChannel.WARNING);
+        });
     }
 
     async function processSpeeds() {
-        console.log(`Sending command: speeds_to_u64`)
-        await invoke("speeds_to_u64", { speeds: speedsToU8(CurrentRouteConfig.speeds) }).then(r => {
-            console.log(`Command speeds_to_u64 sent with response: `)
-            console.log(r)
-            util.log(`Command speeds_to_u64 sent`, EventChannel.INFO)
-            exportedSpeeds.value = r as string
+        console.log(`Sending command: speeds_to_u64`);
+        await invoke('speeds_to_u64', { speeds: speedsToU8(CurrentRouteConfig.speeds) }).then(r => {
+            console.log(`Command speeds_to_u64 sent with response: `);
+            console.log(r);
+            util.log(`Command speeds_to_u64 sent`, EventChannel.INFO);
+            exportedSpeeds.value = r as string;
         }).catch((e) => {
-            console.error(`Error sending command speeds_to_u64: ${e}`)
-            util.log(`Command speeds_to_u64 ERROR sending`, EventChannel.WARNING)
-        })
+            console.error(`Error sending command speeds_to_u64: ${e}`);
+            util.log(`Command speeds_to_u64 ERROR sending`, EventChannel.WARNING);
+        });
     }
 
     async function processRoutes() {
-        console.log(`Sending command: positions_to_u64`)
-        let modifiedPos = [...CurrentRouteConfig.positions]
+        console.log(`Sending command: positions_to_u64`);
+        let modifiedPos = [...CurrentRouteConfig.positions];
 
         if (modifiedPos.length < 16) {
             for (let i = modifiedPos.length; i < 16; i++) {
-                modifiedPos.push("BrakeHere")
+                modifiedPos.push('BrakeHere');
             }
         }
 
-        await invoke("positions_to_u64", { positions: modifiedPos }).then(r => {
-            console.log(`Command positions_to_u64 sent with response: `)
-            console.log(r)
-            util.log(`Command positions_to_u64 sent`, EventChannel.INFO)
-            exportedRoutes.value = r as string
+        await invoke('positions_to_u64', { positions: modifiedPos }).then(r => {
+            console.log(`Command positions_to_u64 sent with response: `);
+            console.log(r);
+            util.log(`Command positions_to_u64 sent`, EventChannel.INFO);
+            exportedRoutes.value = r as string;
         }).catch((e) => {
-            console.error(`Error sending command positions_to_u64: ${e}`)
-            util.log(`Command positions_to_u64 ERROR sending`, EventChannel.WARNING)
-        })
+            console.error(`Error sending command positions_to_u64: ${e}`);
+            util.log(`Command positions_to_u64 ERROR sending`, EventChannel.WARNING);
+        });
     }
 
     async function validateCurrentRouteConfig() {
-        let modifiedRouteConfig = { ...CurrentRouteConfig, positions: [...CurrentRouteConfig.positions] }
+        let modifiedRouteConfig = { ...CurrentRouteConfig, positions: [...CurrentRouteConfig.positions] };
 
-        modifiedRouteConfig.speeds = speedsToU8(CurrentRouteConfig.speeds)
+        modifiedRouteConfig.speeds = speedsToU8(CurrentRouteConfig.speeds);
 
         if (modifiedRouteConfig.positions.length < 16) {
             for (let i = modifiedRouteConfig.positions.length; i < 16; i++) {
-                modifiedRouteConfig.positions.push("BrakeHere")
+                modifiedRouteConfig.positions.push('BrakeHere');
             }
         }
 
-        await invoke("validate_route", { route: modifiedRouteConfig }).then(r => {
-            console.log(`Route config validated: ${r}`)
-            isValid = r as boolean
+        await invoke('validate_route', { route: modifiedRouteConfig }).then(r => {
+            console.log(`Route config validated: ${r}`);
+            isValid = r as boolean;
         }).catch(e => {
-            console.error(`Error validating route config: ${e}`)
-        })
+            console.error(`Error validating route config: ${e}`);
+        });
     }
 
     async function resetSpeeds() {
@@ -195,32 +196,32 @@
             BackwardsC: 0,
             LaneSwitchCurved: 0,
             LaneSwitchStraight: 0,
-        }
+        };
     }
 
     async function resetRouteConfig() {
-        CurrentRouteConfig.positions = []
+        CurrentRouteConfig.positions = [];
     }
 
     $: if (CurrentRouteConfig.positions) {
-        validateCurrentRouteConfig()
-        processRoutes()
+        validateCurrentRouteConfig();
+        processRoutes();
     }
 
     $: if (CurrentRouteConfig.speeds) {
-        validateCurrentRouteConfig()
-        processSpeeds()
+        validateCurrentRouteConfig();
+        processSpeeds();
     }
 
     async function clickToCopy(elem: HTMLInputElement) {
-        await navigator.clipboard.writeText(elem.value)
+        await navigator.clipboard.writeText(elem.value);
     }
 
-    let speedInputValue = "14104086254467416064"
-    let routesInputValue = "1822648539875311616"
+    let speedInputValue = '14104086254467416064';
+    let routesInputValue = '1822648539875311616';
 
-    let exportedRoutes: HTMLInputElement
-    let exportedSpeeds: HTMLInputElement
+    let exportedRoutes: HTMLInputElement;
+    let exportedSpeeds: HTMLInputElement;
 </script>
 
 {#if $modalStore[0]}
@@ -435,8 +436,8 @@
                         Reset Route
                     </button>
 
-                    <TauriCommand cmd="demonstration_a" />
-                    <TauriCommand cmd="demonstration_b" />
+                    <TauriCommandButton cmd="demonstration_a" />
+                    <TauriCommandButton cmd="demonstration_b" />
 
                     <span>Valid: {isValid}</span>
                 </div>

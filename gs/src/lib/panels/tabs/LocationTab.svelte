@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { Localiser, TileGrid, Tile, Chart, inputTurn, GrandDataDistributor } from "$lib"
+    import { inputTurn, GrandDataDistributor } from "$lib"
+    import { Localiser, TileGrid, Tile, Chart } from "@delft-hyperloop/serpenta"
     import {LOCALISATION_NAME, RunMode} from "$lib/types";
 
     let tableArr2:any[][];
@@ -17,8 +18,6 @@
 
     const storeManager = GrandDataDistributor.getInstance().stores;
     const location = storeManager.getWritable(LOCALISATION_NAME);
-
-    export const pop_up: boolean = true;
 </script>
 
 <div class="p-4">

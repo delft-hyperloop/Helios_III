@@ -1,5 +1,5 @@
-import {type dataConvFun, type Procedure, STATUS} from "$lib/types";
-import {PlotBuffer} from "$lib/util/PlotBuffer";
+import {type dataConvFun, type Procedure} from "$lib/types";
+import {PlotBuffer} from "@delft-hyperloop/serpenta";
 import {detailTabSet} from "$lib";
 import {invoke} from "@tauri-apps/api/tauri";
 const MAX_VALUE = 4_294_967_295;

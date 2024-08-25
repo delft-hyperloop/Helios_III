@@ -1,8 +1,8 @@
 <script lang="ts">
-    import {AppRail, AppRailTile} from "@skeletonlabs/skeleton";
-    import {procedures} from "$lib/stores/data";
-    import { ViewWindow } from "$lib/util/WindowControl"
-    import Icon from "@iconify/svelte"
+    import { AppRail, AppRailTile } from '@skeletonlabs/skeleton';
+    import { procedures } from '$lib/stores/data';
+    import { ViewWindow } from '$lib/util/WindowControl';
+    import Icon from '@iconify/svelte';
 
     let currentTile: number = 0;
 
@@ -13,7 +13,9 @@
     <div>
         <AppRail background="bg-surface-900" aspectRatio="aspect-auto" width="w-50">
             {#each $procedures as procedure, i}
-                <AppRailTile regionLabel="text-left px-4" bind:group={currentTile} name={procedure?.name || 'NONE LOADED'} value={i} title={procedure?.title || 'NONE LOADED'}>
+                <AppRailTile regionLabel="text-left px-4" bind:group={currentTile}
+                             name={procedure?.name || 'NONE LOADED'} value={i}
+                             title={procedure?.title || 'NONE LOADED'}>
                     <p class="py-2 text-base font-medium">{procedure?.name || 'NONE LOADED'}</p>
                 </AppRailTile>
             {/each}

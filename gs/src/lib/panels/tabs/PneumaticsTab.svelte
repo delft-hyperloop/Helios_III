@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { Chart, GrandDataDistributor, Pneumatics, Table, Tile, TileGrid } from "$lib"
+    import { Chart, Pneumatics, Table, Tile, TileGrid } from "@delft-hyperloop/serpenta"
     import {DatatypeEnum as DE} from "$lib/namedDatatypeEnum";
+    import { GrandDataDistributor } from '$lib';
 
     const storeManager = GrandDataDistributor.getInstance().stores;
     const lowPressure = storeManager.getWritable("LowPressureSensor");
