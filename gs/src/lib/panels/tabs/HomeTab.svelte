@@ -1,10 +1,9 @@
 <script lang="ts">
     import { serverStatus } from '$lib';
-    import { TauriCommandButton } from '@delft-hyperloop/serpenta';
+    import { TauriCommandButton, ViewWindow } from '@delft-hyperloop/serpenta';
     import { getToastStore } from '@skeletonlabs/skeleton';
     import { procedures } from '$lib/stores/data';
     import { parseProcedure } from '$lib/util/parsers';
-    import { ViewWindow } from '$lib/util/WindowControl';
 
     const toastStore = getToastStore();
     const handleSuccess = () => {
@@ -44,7 +43,7 @@
         <TauriCommandButton cmd="disconnect" successCallback={() => serverStatus.set(false)} />
         <TauriCommandButton cmd="start_levi" />
         <TauriCommandButton cmd="quit_levi" />
-        <button class="btn py-2 text-black bg-primary-500" on:click={() => new ViewWindow("Chart", "/view")}>
+        <button class="btn py-2 text-black bg-primary-500" on:click={() => ViewWindow.newWindow("Chart", "/view")}>
             Window
         </button>
         <TauriCommandButton cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />

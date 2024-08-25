@@ -1,7 +1,7 @@
 <script lang="ts">
     import { AppRail, AppRailTile } from '@skeletonlabs/skeleton';
     import { procedures } from '$lib/stores/data';
-    import { ViewWindow } from '$lib/util/WindowControl';
+    import { ViewWindow } from '@delft-hyperloop/serpenta';
     import Icon from '@iconify/svelte';
 
     let currentTile: number = 0;
@@ -25,7 +25,7 @@
         <div class="flex gap-x-2 items-start">
             <h2 class="text-xl font-semibold mb-4">{$procedures[currentTile]?.title || 'NONE LOADED'}</h2>
             {#if pop_up}
-                <button on:click={() => new ViewWindow("Procedures", `/view/tab/6`)}>
+                <button on:click={() => ViewWindow.newWindow("Procedures", `/view/tab/6`)}>
                     <Icon icon="carbon:popup" />
                 </button>
             {/if}
