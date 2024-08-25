@@ -1,49 +1,53 @@
 <script lang="ts">
     import {
-    Table,
-    Status,
-    Command,
-    Tile,
-    TileGrid,
-    SpeedsInput, GrandDataDistributor, Chart
-    } from "$lib";
-    import {getModalStore, type ModalComponent} from "@skeletonlabs/skeleton";
-    import {DatatypeEnum} from "$lib/namedDatatypeEnum";
-    import {invoke} from "@tauri-apps/api/tauri";
-    import {STATUS} from "$lib/types";
-    import {routeConfig} from "$lib/stores/data";
+        Table,
+        Status,
+        Tile,
+        TileGrid,
+        Chart,
+        CommandButton
+    } from '@delft-hyperloop/serpenta';
+    import { getModalStore, type ModalComponent } from '@skeletonlabs/skeleton';
+    import { DatatypeEnum } from '$lib/namedDatatypeEnum';
+    import { invoke } from '@tauri-apps/api/tauri';
+    import { STATUS } from '$lib/types';
+    import { routeConfig } from '$lib/stores/data';
+    import { setContext } from 'svelte';
+    import { GrandDataDistributor, SpeedsInput } from '$lib';
+
+    setContext<string>('serpenta-context-generic_command_name', 'send_command');
+    setContext<string>('serpenta-context-channel-info', 'info_channel');
+    setContext<string>('serpenta-context-channel-error', 'error_channel');
 
     const storeManager = GrandDataDistributor.getInstance().stores;
-    const statuses = storeManager.getWritable("ConnectionStatus")
+    const statuses = storeManager.getWritable('ConnectionStatus');
 
-    export let pop_up: boolean = true;
-
-    let tableArr2:any[][];
+    let tableArr2: any[][];
     $: tableArr2 = [
-        ["Acceleration X", DatatypeEnum.ACCELERATIONX],
-        ["Acceleration Y", DatatypeEnum.ACCELERATIONY],
-        ["Acceleration Z", DatatypeEnum.ACCELERATIONZ],
-        ["Gyroscope X", DatatypeEnum.GYROSCOPEX],
-        ["Gyroscope Y", DatatypeEnum.GYROSCOPEY],
-        ["Gyroscope Z", DatatypeEnum.GYROSCOPEZ],
-    ]
+        ['Acceleration X', DatatypeEnum.ACCELERATIONX],
+        ['Acceleration Y', DatatypeEnum.ACCELERATIONY],
+        ['Acceleration Z', DatatypeEnum.ACCELERATIONZ],
+        ['Gyroscope X', DatatypeEnum.GYROSCOPEX],
+        ['Gyroscope Y', DatatypeEnum.GYROSCOPEY],
+        ['Gyroscope Z', DatatypeEnum.GYROSCOPEZ],
+    ];
 
     const modalStore = getModalStore();
 
-    const input:ModalComponent = {ref: SpeedsInput};
+    const input: ModalComponent = { ref: SpeedsInput };
     let inputModal = () => {
         modalStore.trigger({
-            type: "component",
+            type: 'component',
             component: input,
-            title: "Run Configuration",
-        })
-    }
+            title: 'Run Configuration',
+        });
+    };
     let finishRunConfig = () => {
-        invoke('send_command', {cmdName: "FinishRunConfig", val: 0}).then(() => {
+        invoke('send_command', { cmdName: 'FinishRunConfig', val: 0 }).then(() => {
             console.log(`Command FinishRunConfig sent`);
             modalStore.close();
         });
-    }
+    };
 
 </script>
 
@@ -53,10 +57,8 @@
     <TileGrid columns="1fr 1fr 1.5fr" rows="auto 1fr">
         <Tile containerClass="row-span-2" insideClass="flex flex-col gap-2" heading="Run Initialisation">
             <div class="grid grid-cols-2 gap-2">
-                <Command cmd="EnablePropulsion" className="btn flex-grow rounded-md bg-surface-700 " />
-                <Command cmd="DisablePropulsion" className="btn flex-grow rounded-md bg-surface-700 " />
-                <Command cmd="SystemReset" className="btn flex-grow rounded-md bg-surface-700" />
-                <Command cmd="ArmBrakes" className="btn flex-grow rounded-md bg-surface-700" />
+                <CommandButton cmd="SystemReset" className="btn flex-grow rounded-md bg-surface-700" />
+                <CommandButton cmd="ArmBrakes" className="btn flex-grow rounded-md bg-surface-700" />
                 <button class="btn rounded-md bg-primary-500 col-span-2" on:click={inputModal} disabled={false}>
                     Configure Run
                 </button>
@@ -82,7 +84,7 @@
                 <p>{$routeConfig.speeds.LaneSwitchStraight} m/s</p>
             </div>
         </Tile>
-        <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses" >
+        <Tile insideClass="grid grid-cols-2 gap-y-2 auto-rows-min" heading="Statuses">
             <p>Main PCB</p>
             <Status status={$statuses.value[STATUS.MAIN_PCB]} />
             <p>Propulsion</p>
@@ -103,7 +105,7 @@
                     status={$statuses.value[STATUS.VOLTAGE_OVER]} />
         </Tile>
         <Tile heading="Data">
-            <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]}/>
+            <Table tableArr={tableArr2} background="bg-surface-900" titles={["important", "variable"]} />
         </Tile>
         <Tile containerClass="col-span-2">
             <Chart height={250} background="bg-surface-900" title="Velocity" />
