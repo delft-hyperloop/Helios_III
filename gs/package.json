@@ -41,7 +41,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@delft-hyperloop/serpenta": "0.1.1",
+    "@delft-hyperloop/serpenta": "0.2.0",
     "@tauri-apps/api": "^1.6.0",
     "svelte-dnd-list": "^0.1.8",
     "zod": "^3.23.4"

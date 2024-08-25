@@ -24,9 +24,6 @@ pub static APP_HANDLE: Mutex<Option<AppHandle>> = Mutex::new(None);
 
 pub fn tauri_main(backend: Backend) {
     println!("Starting tauri application");
-    println!("Starting tauri application");
-    println!("Starting tauri application");
-    println!("Starting tauri application");
     tauri::Builder::default()
         .manage(BackendState::default())
         .invoke_handler(tauri::generate_handler![

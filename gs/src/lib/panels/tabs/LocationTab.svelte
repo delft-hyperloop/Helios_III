@@ -16,7 +16,7 @@
         ["here", 0]
     ]
 
-    const storeManager = GrandDataDistributor.getInstance().stores;
+    const storeManager = GrandDataDistributor.getInstance();
     const location = storeManager.getWritable(LOCALISATION_NAME);
 </script>
 

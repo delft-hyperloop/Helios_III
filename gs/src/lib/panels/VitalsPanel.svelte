@@ -9,7 +9,7 @@
 
     let width: number;
 
-    const storeManager = GrandDataDistributor.getInstance().stores;
+    const storeManager = GrandDataDistributor.getInstance();
     const lvBattery = storeManager.getWritable('ChargeStateLow');
     const hvBattery = storeManager.getWritable('ChargeStateHigh');
     const statuses = storeManager.getWritable('ConnectionStatus');
