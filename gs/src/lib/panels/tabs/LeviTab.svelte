@@ -31,10 +31,10 @@
         <Tile heading="Levi Control" insideClass="flex gap-x-4" containerClass="col-span-4">
             <CommandButton cmd="launch" />
             <CommandButton cmd="land" />
-            <CommandButton cmd="vert0" text="Vertical 0 current" />
-            <CommandButton cmd="vert_mode_dance" text="Vertical Dance" />
-            <CommandButton cmd="vert_mode_sine" text="Vertical Sine" />
-            <CommandButton cmd="vert0_reset" text="Reset Vertical 0 current" />
+            <CommandButton cmd="vert0" textOverride="Vertical 0 current" />
+            <CommandButton cmd="vert_mode_dance" textOverride="Vertical Dance" />
+            <CommandButton cmd="vert_mode_sine" textOverride="Vertical Sine" />
+            <CommandButton cmd="vert0_reset" textOverride="Reset Vertical 0 current" />
         </Tile>
         <Tile heading="Gaps" containerClass="col-span-2">
             <Table background="bg-surface-900" titles={["Gap", "EMS", "HEMS"]} tableArr={tableGaps} />

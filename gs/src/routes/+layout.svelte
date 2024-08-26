@@ -480,14 +480,21 @@
     });
 
     import { appWindow } from '@tauri-apps/api/window';
+    import { WindowCreator } from '$lib/util/WindowControl';
+    import { CommandInvoker } from '$lib/util/CommandInvoker';
 
     gdd.start(50);
+
+    const we = new WindowCreator();
+    const ci = new CommandInvoker();
 
     const config = defineConfig({
         appWindow: appWindow,
         pod_name: 'Helios III',
         grand_data_distributor: GrandDataDistributor.getInstance(),
-        grand_charter: chartStore
+        grand_charter: chartStore,
+        window_engine: we,
+        command_invocation: ci
     });
 </script>
 
