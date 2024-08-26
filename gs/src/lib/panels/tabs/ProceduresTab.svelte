@@ -1,12 +1,14 @@
 <script lang="ts">
     import { AppRail, AppRailTile } from '@skeletonlabs/skeleton';
     import { procedures } from '$lib/stores/data';
-    import { ViewWindow } from '@delft-hyperloop/serpenta';
     import Icon from '@iconify/svelte';
+    import { getSerpentaContext } from '@delft-hyperloop/serpenta';
 
     let currentTile: number = 0;
 
     export const pop_up: boolean = true;
+
+    const context = getSerpentaContext();
 </script>
 
 <div class="h-full flex items-stretch">
@@ -25,7 +27,7 @@
         <div class="flex gap-x-2 items-start">
             <h2 class="text-xl font-semibold mb-4">{$procedures[currentTile]?.title || 'NONE LOADED'}</h2>
             {#if pop_up}
-                <button on:click={() => ViewWindow.newWindow("Procedures", `/view/tab/6`)}>
+                <button on:click={() => context.window_engine.spawnWindow("Procedures", `/view/tab/6`)}>
                     <Icon icon="carbon:popup" />
                 </button>
             {/if}

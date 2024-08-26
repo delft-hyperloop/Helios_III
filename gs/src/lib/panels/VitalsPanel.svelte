@@ -56,7 +56,7 @@
         </svelte:fragment>
         <span>Vitals</span>
         <svelte:fragment slot="trail">
-            <CommandButton callback={() => {
+            <CommandButton successCallback={() => {
                 toastStore.trigger({
                     //@ts-ignore
                     message: "Emergency Brake triggered!",

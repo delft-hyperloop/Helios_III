@@ -436,8 +436,8 @@
                         Reset Route
                     </button>
 
-                    <TauriCommandButton cmd="demonstration_a" />
-                    <TauriCommandButton cmd="demonstration_b" />
+                    <TauriCommandButton options={{}} cmd="demonstration_a" />
+                    <TauriCommandButton options={{}} cmd="demonstration_b" />
 
                     <span>Valid: {isValid}</span>
                 </div>

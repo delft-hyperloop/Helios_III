@@ -1,6 +1,6 @@
 <script lang="ts">
     import { serverStatus } from '$lib';
-    import { TauriCommandButton, ViewWindow } from '@delft-hyperloop/serpenta';
+    import { getSerpentaContext, TauriCommandButton } from '@delft-hyperloop/serpenta';
     import { getToastStore } from '@skeletonlabs/skeleton';
     import { procedures } from '$lib/stores/data';
     import { parseProcedure } from '$lib/util/parsers';
@@ -25,6 +25,8 @@
     const parseProcedures = (rawProcedures: string[][]) => {
         procedures.set(rawProcedures.map(parseProcedure));
     };
+
+    const context = getSerpentaContext();
 </script>
 
 <div class="h-full w-full p-4 flex flex-col gap-8 text-surface-50">
@@ -39,15 +41,15 @@
         </div>
     </div>
     <div>
-        <TauriCommandButton cmd="connect_to_pod" successCallback={handleSuccess} errorCallback={handleFailure} />
-        <TauriCommandButton cmd="disconnect" successCallback={() => serverStatus.set(false)} />
-        <TauriCommandButton cmd="start_levi" />
-        <TauriCommandButton cmd="quit_levi" />
-        <button class="btn py-2 text-black bg-primary-500" on:click={() => ViewWindow.newWindow("Chart", "/view")}>
+        <TauriCommandButton options={{}} cmd="connect_to_pod" successCallback={handleSuccess} errorCallback={handleFailure} />
+        <TauriCommandButton options={{}} cmd="disconnect" successCallback={() => serverStatus.set(false)} />
+        <TauriCommandButton options={{}} cmd="start_levi" />
+        <TauriCommandButton options={{}} cmd="quit_levi" />
+        <button class="btn py-2 text-black bg-primary-500" on:click={() => context.window_engine.spawnWindow("Chart", "/view")}>
             Window
         </button>
-        <TauriCommandButton cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />
-        <TauriCommandButton cmd="save_logs" />
+        <TauriCommandButton options={{}} cmd="procedures" textOverride="Refresh Procedures" successCallback={parseProcedures} />
+        <TauriCommandButton options={{}} cmd="save_logs" />
     </div>
     <p><kbd class="kbd">Esc</kbd> to trigger Emergency Braking.</p>
 
