@@ -127,16 +127,13 @@ pub fn save_logs() -> bool {
         let log = &backend_mutex.lock().unwrap().log;
         let now = Local::now().naive_local();
         let formatted_time = now.format("%d_%m_%Y at %H_%M_%S").to_string();
-        if let Ok(x) = PathBuf::from_str(&format!("../../ehw/logs/log-{}.txt", formatted_time)) {
-            if Backend::save_to_path(log, x).is_ok() {
-                APP_HANDLE
-                    .try_lock()
-                    .map(|x| x.as_ref().map(|y| y.emit_all("a", "b").is_ok()).is_some())
-                    .is_ok()
-                // APP_HANDLE.try_borrow().map(|x| x.emit_all("clear_logs", "kiko").is_ok()).is_ok()
-            } else {
-                false
-            }
+        let Ok(x) = PathBuf::from_str(&format!("../../ehw/logs/log-{}.txt", formatted_time));
+        if Backend::save_to_path(log, x).is_ok() {
+            APP_HANDLE
+                .try_lock()
+                .map(|x| x.as_ref().map(|y| y.emit_all("a", "b").is_ok()).is_some())
+                .is_ok()
+            // APP_HANDLE.try_borrow().map(|x| x.emit_all("clear_logs", "kiko").is_ok()).is_ok()
         } else {
             false
         }
@@ -151,11 +148,8 @@ pub fn save_logs() -> bool {
 pub fn save_to_file(path: &str) -> bool {
     if let Some(backend_mutex) = unsafe { BACKEND.as_ref() } {
         let log = &backend_mutex.lock().unwrap().log;
-        if let Ok(x) = PathBuf::from_str(path) {
-            Backend::save_to_path(log, x).is_ok()
-        } else {
-            false
-        }
+        let Ok(x) = PathBuf::from_str(path);
+        Backend::save_to_path(log, x).is_ok()
     } else {
         false
     }
@@ -254,7 +248,6 @@ pub fn set_route(route: Route) -> bool {
     send_command("SetRoute".into(), route.positions.into())
         && send_command("SetSpeeds".into(), route.speeds.into())
 }
-
 
 #[macro_export]
 #[allow(unused)]
